@@ -1,0 +1,15 @@
+{
+    "name": "@scoped-observer/react",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.json"
+    },
+    "peerDependencies": {
+        "scoped-observer": "^1.0.9"
+    },
+    "dependencies": {
+        "react": "^18.0.0"
+    }
+}
