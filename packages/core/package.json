@@ -1,7 +1,7 @@
 {
   "homepage": "https://github.com/medanmilos1831/scoped-observer#readme",
   "name": "@scoped-observer/core",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
