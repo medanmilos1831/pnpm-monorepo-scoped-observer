@@ -1,0 +1,37 @@
+{
+  "homepage": "https://github.com/medanmilos1831/scoped-observer-toggle-manager-react#readme",
+  "name": "scoped-observer-toggle-manager-react",
+  "version": "1.0.6",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medanmilos1831/scoped-observer-toggle-manager-react.git"
+  },
+  "keywords": [
+    "react",
+    "toggle",
+    "event",
+    "manager"
+  ],
+  "files": [
+    "dist"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "18.3.1",
+    "react": "18.3.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "scoped-observer": "^1.0.8"
+  },
+  "peerDependencies": {
+    "react": "18.3.1"
+  }
+}

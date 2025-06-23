@@ -7,7 +7,7 @@
         "build": "tsc -p tsconfig.json"
     },
     "peerDependencies": {
-        "scoped-observer": "^1.0.9"
+        "@scoped-observer/core": "^1.1.0"
     },
     "dependencies": {
         "react": "^18.0.0"
