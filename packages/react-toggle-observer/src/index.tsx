@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createEventManager } from "scoped-observer";
+import { createEventManager } from "@scoped-observer/core";
 import { IToggleState } from "./types";
 
 /**
@@ -24,7 +24,7 @@ const ToggleController = ({
 }: {
   initStatus?: boolean;
   name: string;
-  children: (params: IToggleState) => JSX.Element;
+  children: (params: IToggleState) => any;
 }) => {
   // Local toggle state exposed to children
   const [state, setState] = useState<IToggleState>({
