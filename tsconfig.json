@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@scoped-observer/core": ["packages/core/src/index.ts"]
-    },
     "composite": true,
     "declaration": true,
     "declarationMap": true,
@@ -14,10 +10,12 @@
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "."
   },
   "references": [
     { "path": "./packages/core" },
     { "path": "./packages/react-toggle-observer" }
+    { "path": "./packages/react-store-observer" }
   ]
 }
