@@ -1,7 +1,29 @@
-src/
-*.ts
-tsconfig.json
-test/
-dist/
+# Node modules
 node_modules/
 
+# Output folders
+dist/
+packages/*/dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript build output
+*.tsbuildinfo
+
+# macOS
+.DS_Store
+
+# VSCode settings
+.vscode/
+
+# Environment files (ako koristiš)
+.env
+.env.local
+.env.*
+
+# Package lock (ako želiš da ga ignorišeš unutar paketa)
+packages/*/package-lock.json

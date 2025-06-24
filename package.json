@@ -1,24 +1,15 @@
 {
-    "name": "scoped-observer-monorepo",
-    "private": true,
-    "version": "1.0.0",
-    "description": "Monorepo for scoped-observer core and related packages.",
-    "author": "Tvoje Ime",
-    "license": "MIT",
-    "workspaces": [
-        "packages/*"
-    ],
-    "scripts": {
-        "build:core": "npm run build --workspace=@scoped-observer/core",
-        "build:react": "npm run build --workspace=@scoped-observer/react",
-        "build:react-toggle-observer": "npm run build --workspace=@scoped-observer/react-toggle-observer",
-        "build:all": "npm run build:core && npm run build:react",
-        "publish:core": "npm publish --workspace=@scoped-observer/core --access public",
-        "publish:react-toggle-observer": "npm publish --workspace=@scoped-observer/react-toggle-observer --access public",
-        "publish:react": "npm publish --workspace=@scoped-observer/react --access public",
-        "publish:all": "npm run publish:core && npm run publish:react"
-    },
-    "devDependencies": {
-        "typescript": "^5.0.0"
-    }
+  "name": "my-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:core": "npm run build --workspace=@scoped-observer/core",
+    "build:react-toggle-observer": "npm run build --workspace=@scoped-observer/react-toggle-observer"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
 }

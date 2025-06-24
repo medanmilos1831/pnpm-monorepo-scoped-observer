@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2019",
-    "module": "CommonJS",
+    "composite": true,
     "declaration": true,
-    "outDir": "dist",
+    "declarationMap": true,
     "strict": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "ES2019",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   }
 }

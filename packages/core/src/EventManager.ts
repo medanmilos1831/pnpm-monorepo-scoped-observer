@@ -1,0 +1,110 @@
+import { EventEntity } from './EventEntity';
+import { actionType, interceptorType, subscribeType } from './types';
+
+export class EventManager {
+  events: { [key: string]: EventEntity } = {};
+  protected log(
+    type: 'dispatch' | 'subscribe' | 'interceptor',
+    payload: any,
+    scope: string,
+    eventName: string
+  ) {
+    console.group(`[EventManager] ${type.toUpperCase()}`);
+
+    console.table({
+      Scope: scope,
+      Event: eventName,
+      Payload: payload,
+    });
+    console.groupEnd();
+  }
+
+  findScope(scope: string) {
+    const scopes = scope.split(':').filter(Boolean);
+    let current = this.events;
+    for (let i = 0; i < scopes.length; i++) {
+      const key = scopes[i];
+      if (!current[key]) {
+        console.warn(`Scope "${key}" not found in hierarchy.`);
+        return undefined;
+      }
+
+      if (i === scopes.length - 1) {
+        return current[key];
+      } else {
+        current = current[key].scopedEvents;
+      }
+    }
+  }
+
+  managerAction = ({ scope, eventName, payload }: actionType) => {
+    let entity = this.findScope(scope);
+    if (!entity || !entity.listeners.has(eventName)) return;
+    if (entity.log) {
+      this.log('dispatch', payload, scope, eventName);
+    }
+    entity.dispatch({
+      eventName,
+      payload,
+    });
+  };
+
+  managerSubscribe = ({ scope, eventName, callback }: subscribeType) => {
+    let entity = this.findScope(scope);
+    let unsubscribe: () => void = () => {};
+    if (!entity) return unsubscribe;
+    unsubscribe = entity.subscribe(eventName, (e: any) => {
+      callback(
+        entity.eventInterceptor.has(eventName)
+          ? this.runInterceptor(entity, e.detail, scope, eventName)
+          : { payload: e.detail.payload }
+      );
+      if (entity.log) {
+        this.log('subscribe', e.detail.payload, scope, eventName);
+      }
+    });
+    return unsubscribe;
+  };
+
+  managerEventInterceptor = ({
+    scope,
+    eventName,
+    callback,
+  }: interceptorType) => {
+    let entity = this.findScope(scope);
+    if (!entity) return;
+    if (!entity.eventInterceptor.has(eventName)) {
+      entity.eventInterceptor.set(eventName, []);
+    }
+
+    entity.eventInterceptor.get(eventName)!.push(callback);
+  };
+
+  private runInterceptor(
+    event: EventEntity,
+    eventDetail: any,
+    scope: string,
+    eventName: interceptorType['eventName']
+  ) {
+    let payload = eventDetail.payload;
+
+    // If interceptors exist for the event, run them in order
+    if (event.eventInterceptor.has(eventName)) {
+      event.eventInterceptor
+        .get(eventName)!
+        .forEach((callback: interceptorType['callback']) => {
+          // Update the payload with each interceptor’s return value
+
+          payload = callback(payload);
+          this.log('interceptor', payload, scope, eventName);
+        });
+    }
+
+    // Return the final payload after interception
+    return { payload };
+  }
+
+  logging = () => {
+    console.log(this);
+  };
+}

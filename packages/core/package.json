@@ -1,30 +1,9 @@
 {
-  "homepage": "https://github.com/medanmilos1831/scoped-observer#readme",
   "name": "@scoped-observer/core",
-  "version": "1.1.0",
-  "description": "",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/medanmilos1831/scoped-observer.git"
-  },
-  "keywords": [
-    "npm",
-    "typescript",
-    "package"
-  ],
-  "files": [
-    "dist"
-  ],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^22.15.17",
-    "typescript": "^5.8.3"
+    "build": "tsc -p tsconfig.json"
   }
 }
