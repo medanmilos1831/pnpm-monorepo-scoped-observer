@@ -16,7 +16,7 @@ Designed for full flexibility, deep encapsulation, and zero direct state access 
 ## 🚀 Installation
 
 ```bash
-npm i scoped-observer-toggle-manager-react
+npm i @scoped-observer/react-toggle-observer
 ```
 
 ## 🧠 Core Concepts
