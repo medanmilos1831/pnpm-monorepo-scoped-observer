@@ -1,5 +1,5 @@
 {
-  "name": "@scoped-observer/react-store-observer",
+  "name": "@scoped-observer/react-store",
   "version": "1.0.0",
   "peerDependencies": {
     "@scoped-observer/core": "^1.1.1",

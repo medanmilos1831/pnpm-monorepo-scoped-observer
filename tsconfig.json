@@ -15,7 +15,7 @@
   },
   "references": [
     { "path": "./packages/core" },
-    { "path": "./packages/react-toggle-observer" }
-    { "path": "./packages/react-store-observer" }
+    { "path": "./packages/react-toggle-observer" },
+    { "path": "./packages/react-store" }
   ]
 }

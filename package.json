@@ -8,10 +8,10 @@
   "scripts": {
     "build:core": "npm run build --workspace=@scoped-observer/core",
     "build:react-toggle-observer": "npm run build --workspace=@scoped-observer/react-toggle-observer",
-    "build:react-store-observer": "npm run build --workspace=@scoped-observer/react-store-observer",
+    "build:react-store": "npm run build --workspace=@scoped-observer/react-store",
     "publish:core": "npm publish ./packages/core --access public",
     "publish:react-toggle-observer": "npm publish ./packages/react-toggle-observer --access public",
-    "publish:react-store-observer": "npm publish ./packages/react-store-observer --access public"
+    "publish:react-store": "npm publish ./packages/react-store --access public"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
