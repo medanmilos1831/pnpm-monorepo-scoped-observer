@@ -1,5 +1,5 @@
 import { Descriptor, GetFn, mutateParams, MutFn } from "./types";
-import { createEventManager } from "@scoped-observer/core";
+import { createEventManager, IEventManager } from "@scoped-observer/core";
 
 export class Slice<
   DATA,
@@ -7,7 +7,7 @@ export class Slice<
   GETS extends Record<string, GetFn<DATA, any>>
 > {
   data: DATA;
-  manager!: any;
+  manager!: IEventManager;
   constructor(
     private name: string,
     initial: DATA,
