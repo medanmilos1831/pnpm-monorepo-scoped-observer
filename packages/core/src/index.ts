@@ -23,3 +23,5 @@ export const createEventManager = (arr: scopeNodeType[]) => {
     logging: manager.logging,
   };
 };
+
+export type { IEventManager } from './types';

@@ -21,3 +21,10 @@ export type scopeNodeType = {
   log?: boolean;
   subScopes?: scopeNodeType[];
 };
+
+export interface IEventManager {
+  dispatch: ({ scope, eventName, payload }: actionType) => void;
+  subscribe: ({ scope, eventName, callback }: subscribeType) => () => void;
+  eventInterceptor: ({ scope, eventName, callback }: interceptorType) => void;
+  logging: () => void;
+}
