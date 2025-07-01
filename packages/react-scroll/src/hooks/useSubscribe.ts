@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
-import { scrollService } from '../service/ScrollService';
-import { AXIS, EVENT_MANAGER_SCROLL_OBSERVER } from '../types';
+import { useRef, useEffect } from "react";
+import { scrollService } from "../service/ScrollService";
+import { AXIS, EVENT_MANAGER_SCROLL_OBSERVER } from "../types";
 
 /**
  * Custom React hook that subscribes to scroll-to events for a given scroll container
@@ -32,7 +32,7 @@ const useSubscribe = (name: string, axis: `${AXIS}`) => {
       callback({ payload }) {
         if (container.current) {
           container.current.scrollTo({
-            [axis === AXIS.X ? 'left' : 'top']: payload.position,
+            [axis === AXIS.X ? "left" : "top"]: payload.position,
             behavior: payload.behavior,
           });
         }

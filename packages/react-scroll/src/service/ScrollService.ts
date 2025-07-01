@@ -1,12 +1,12 @@
-import { CSSProperties } from 'react';
-import { createEventManager } from 'scoped-observer';
+import { CSSProperties } from "react";
+import { createEventManager } from "@scoped-observer/core";
 import {
   AXIS,
   axisOptionsConfigType,
   DIRECTION,
   EVENT_MANAGER_SCROLL_OBSERVER,
   scrollContainerType,
-} from '../types';
+} from "../types";
 
 /**
  * ScrollService is a utility class responsible for handling scroll events, configuration,
@@ -28,19 +28,19 @@ class ScrollService {
    */
   axisConfig: axisOptionsConfigType = {
     [AXIS.X]: {
-      scrollPosition: 'scrollLeft',
-      client: 'clientWidth',
-      scroll: 'scrollWidth',
+      scrollPosition: "scrollLeft",
+      client: "clientWidth",
+      scroll: "scrollWidth",
       direction: (prev, next) =>
         next > prev ? DIRECTION.RIGHT : DIRECTION.LEFT,
-      overflow: 'overflowX',
+      overflow: "overflowX",
     },
     [AXIS.Y]: {
-      scrollPosition: 'scrollTop',
-      client: 'clientHeight',
-      scroll: 'scrollHeight',
+      scrollPosition: "scrollTop",
+      client: "clientHeight",
+      scroll: "scrollHeight",
       direction: (prev, next) => (next > prev ? DIRECTION.DOWN : DIRECTION.UP),
-      overflow: 'overflowY',
+      overflow: "overflowY",
     },
   };
 
@@ -52,9 +52,9 @@ class ScrollService {
    */
   containerStyle = (axis: `${AXIS}`): CSSProperties => {
     return {
-      height: '100%',
-      position: 'relative',
-      [this.axisConfig[axis].overflow]: 'auto',
+      height: "100%",
+      position: "relative",
+      [this.axisConfig[axis].overflow]: "auto",
     };
   };
 
@@ -65,9 +65,9 @@ class ScrollService {
    * @returns {CSSProperties} - CSS style for the scroll inner content wrapper.
    */
   innerContainerStyle = (axis: `${AXIS}`): CSSProperties => ({
-    height: axis === AXIS.Y ? '100%' : 'auto',
-    width: axis === AXIS.X ? 'max-content' : '100%',
-    position: 'absolute',
+    height: axis === AXIS.Y ? "100%" : "auto",
+    width: axis === AXIS.X ? "max-content" : "100%",
+    position: "absolute",
     top: 0,
     left: 0,
   });
@@ -171,7 +171,7 @@ class ScrollService {
   scrollTo = (
     name: string,
     position: number,
-    behavior: ScrollToOptions['behavior']
+    behavior: ScrollToOptions["behavior"]
   ) => {
     this.eventManager.dispatch({
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
