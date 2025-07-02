@@ -17,6 +17,7 @@
     { "path": "./packages/core" },
     { "path": "./packages/react-toggle-observer" },
     { "path": "./packages/react-store" },
-    { "path": "./packages/react-scroll" }
+    { "path": "./packages/react-scroll" },
+    { "path": "./packages/react-state-machine" }
   ]
 }

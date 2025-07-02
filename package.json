@@ -18,14 +18,19 @@
     "version:react-scroll:patch": "npm version patch --workspace=@scoped-observer/react-scroll",
     "version:react-scroll:minor": "npm version minor --workspace=@scoped-observer/react-scroll",
     "version:react-scroll:major": "npm version major --workspace=@scoped-observer/react-scroll",
+    "version:react-state-machine:patch": "npm version patch --workspace=@scoped-observer/react-state-machine",
+    "version:react-state-machine:minor": "npm version minor --workspace=@scoped-observer/react-state-machine",
+    "version:react-state-machine:major": "npm version major --workspace=@scoped-observer/react-state-machine",
     "build:core": "npm run build --workspace=@scoped-observer/core",
     "build:react-toggle-observer": "npm run build --workspace=@scoped-observer/react-toggle-observer",
     "build:react-store": "npm run build --workspace=@scoped-observer/react-store",
     "build:react-scroll": "npm run build --workspace=@scoped-observer/react-scroll",
+    "build:react-state-machine": "npm run build --workspace=@scoped-observer/react-state-machine",
     "publish:core": "npm publish ./packages/core --access public",
     "publish:react-toggle-observer": "npm publish ./packages/react-toggle-observer --access public",
     "publish:react-store": "npm publish ./packages/react-store --access public",
-    "publish:react-scroll": "npm publish ./packages/react-scroll --access public"
+    "publish:react-scroll": "npm publish ./packages/react-scroll --access public",
+    "publish:react-state-machine": "npm publish ./packages/react-state-machine --access public"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
