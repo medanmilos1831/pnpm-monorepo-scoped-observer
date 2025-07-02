@@ -1,7 +1,7 @@
-import { IEventManager } from '../scoped-observer/types';
+import { IEventManager } from "@scoped-observer/core";
 
-export const MACHINE_EVENT = 'machineEvent';
-export const MACHINE_SCOPE = 'machineScope';
+export const MACHINE_EVENT = "machineEvent";
+export const MACHINE_SCOPE = "machineScope";
 
 export interface IStateMachine<S extends string> {
   state: S;

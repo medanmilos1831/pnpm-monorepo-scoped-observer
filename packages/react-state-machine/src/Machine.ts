@@ -1,11 +1,11 @@
-import { createEventManager } from 'scoped-observer';
+import { createEventManager } from "@scoped-observer/core";
 import {
   IStateMachine,
   TransitionMap,
   MACHINE_SCOPE,
   MACHINE_EVENT,
-} from './types';
-import { useStateMachine } from './useStateMachine';
+} from "./types";
+import { useStateMachine } from "./useStateMachine";
 
 export class Machine<S extends string> {
   stateMachine!: IStateMachine<S>;
