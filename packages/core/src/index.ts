@@ -1,9 +1,9 @@
-import { EventEntity } from './EventEntity';
-import { EventManager } from './EventManager';
-import { scopeNodeType } from './types';
+import { EventEntity } from "./EventEntity";
+import { ScopedObserver } from "./ScopedObserver";
+import { scopeNodeType } from "./types";
 
-export const createEventManager = (arr: scopeNodeType[]) => {
-  let manager = new EventManager();
+export const createScopedObserver = (arr: scopeNodeType[]) => {
+  let manager = new ScopedObserver();
   const buildScopes = (arr: scopeNodeType[]) => {
     const obj: { [key: string]: EventEntity } = {};
     arr.forEach(({ scope, subScopes, log = false }) => {
@@ -17,11 +17,11 @@ export const createEventManager = (arr: scopeNodeType[]) => {
   };
   manager.events = buildScopes(arr);
   return {
-    dispatch: manager.managerAction,
-    subscribe: manager.managerSubscribe,
-    eventInterceptor: manager.managerEventInterceptor,
+    dispatch: manager.scopedObserverAction,
+    subscribe: manager.scopedObserverSubscribe,
+    eventInterceptor: manager.scopedObserverInterceptor,
     logging: manager.logging,
   };
 };
 
-export type { IEventManager } from './types';
+export type { IScopedObserver } from "./types";

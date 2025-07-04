@@ -22,7 +22,7 @@ export type scopeNodeType = {
   subScopes?: scopeNodeType[];
 };
 
-export interface IEventManager {
+export interface IScopedObserver {
   dispatch: ({ scope, eventName, payload }: actionType) => void;
   subscribe: ({ scope, eventName, callback }: subscribeType) => () => void;
   eventInterceptor: ({ scope, eventName, callback }: interceptorType) => void;

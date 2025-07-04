@@ -1,15 +1,15 @@
-import { EventEntity } from './EventEntity';
-import { actionType, interceptorType, subscribeType } from './types';
+import { EventEntity } from "./EventEntity";
+import { actionType, interceptorType, subscribeType } from "./types";
 
-export class EventManager {
+export class ScopedObserver {
   events: { [key: string]: EventEntity } = {};
   protected log(
-    type: 'dispatch' | 'subscribe' | 'interceptor',
+    type: "dispatch" | "subscribe" | "interceptor",
     payload: any,
     scope: string,
     eventName: string
   ) {
-    console.group(`[EventManager] ${type.toUpperCase()}`);
+    console.group(`[ScopedObserver] ${type.toUpperCase()}`);
 
     console.table({
       Scope: scope,
@@ -20,7 +20,7 @@ export class EventManager {
   }
 
   findScope(scope: string) {
-    const scopes = scope.split(':').filter(Boolean);
+    const scopes = scope.split(":").filter(Boolean);
     let current = this.events;
     for (let i = 0; i < scopes.length; i++) {
       const key = scopes[i];
@@ -37,11 +37,11 @@ export class EventManager {
     }
   }
 
-  managerAction = ({ scope, eventName, payload }: actionType) => {
+  scopedObserverAction = ({ scope, eventName, payload }: actionType) => {
     let entity = this.findScope(scope);
     if (!entity || !entity.listeners.has(eventName)) return;
     if (entity.log) {
-      this.log('dispatch', payload, scope, eventName);
+      this.log("dispatch", payload, scope, eventName);
     }
     entity.dispatch({
       eventName,
@@ -49,7 +49,7 @@ export class EventManager {
     });
   };
 
-  managerSubscribe = ({ scope, eventName, callback }: subscribeType) => {
+  scopedObserverSubscribe = ({ scope, eventName, callback }: subscribeType) => {
     let entity = this.findScope(scope);
     let unsubscribe: () => void = () => {};
     if (!entity) return unsubscribe;
@@ -60,13 +60,13 @@ export class EventManager {
           : { payload: e.detail.payload }
       );
       if (entity.log) {
-        this.log('subscribe', e.detail.payload, scope, eventName);
+        this.log("subscribe", e.detail.payload, scope, eventName);
       }
     });
     return unsubscribe;
   };
 
-  managerEventInterceptor = ({
+  scopedObserverInterceptor = ({
     scope,
     eventName,
     callback,
@@ -84,7 +84,7 @@ export class EventManager {
     event: EventEntity,
     eventDetail: any,
     scope: string,
-    eventName: interceptorType['eventName']
+    eventName: interceptorType["eventName"]
   ) {
     let payload = eventDetail.payload;
 
@@ -92,11 +92,11 @@ export class EventManager {
     if (event.eventInterceptor.has(eventName)) {
       event.eventInterceptor
         .get(eventName)!
-        .forEach((callback: interceptorType['callback']) => {
+        .forEach((callback: interceptorType["callback"]) => {
           // Update the payload with each interceptor’s return value
 
           payload = callback(payload);
-          this.log('interceptor', payload, scope, eventName);
+          this.log("interceptor", payload, scope, eventName);
         });
     }
 

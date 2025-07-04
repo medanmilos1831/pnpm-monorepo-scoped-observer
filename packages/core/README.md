@@ -1,4 +1,4 @@
-# 🔄 Scoped Event Manager
+# 🔄 Scoped Observer (Event Manager)
 
 A lightweight, modular, and dependency-free **event system** for frontend applications. Designed to enable scoped event dispatching and subscriptions, with support for **interceptors**, **logging**, and **nested event structures** — all built on top of the native `EventTarget` API.
 
@@ -16,16 +16,16 @@ A lightweight, modular, and dependency-free **event system** for frontend applic
 
 ## 📦 Installation
 
-`npm i scoped-observer`
+`npm i @scoped-observer/core`
 
 ---
 
 ## ⚙️ Setup
 
-Use the factory function createEventManager() to initialize your event system with a scoped structure:
+Use the factory function createScopedObserver() to initialize your event system with a scoped structure:
 
 ```ts
-const manager = createEventManager([
+const scopedObserver = createScopedObserver([
   {
     scope: "global",
     subScopes: [
@@ -54,7 +54,7 @@ You can now refer to fully qualified scopes like:
 ## 📤 Dispatching an Event
 
 ```
-manager.dispatch({
+scopedObserver.dispatch({
   scope: 'global:company:user',
   eventName: 'userUpdated',
   payload: { id: 1, name: 'John' },
@@ -64,7 +64,7 @@ manager.dispatch({
 ## 📥 Subscribing to an Event
 
 ```
-const unsubscribe = manager.subscribe({
+const unsubscribe = scopedObserver.subscribe({
   scope: 'global:company:user',
   eventName: 'userUpdated',
   callback: ({ payload }) => {
@@ -80,7 +80,7 @@ Call unsubscribe() to stop listening.
 Interceptors allow you to modify event payloads before they reach subscribers:
 
 ```
-manager.eventInterceptor({
+scopedObserver.eventInterceptor({
   scope: 'global:company:user',
   eventName: 'userUpdated',
   callback: (data) => {
