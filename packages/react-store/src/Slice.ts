@@ -1,5 +1,5 @@
 import { Descriptor, GetFn, mutateParams, MutFn } from "./types";
-import { createEventManager, IEventManager } from "@scoped-observer/core";
+import { createScopedObserver, IScopedObserver } from "@scoped-observer/core";
 
 export class Slice<
   DATA,
@@ -7,14 +7,14 @@ export class Slice<
   GETS extends Record<string, GetFn<DATA, any>>
 > {
   data: DATA;
-  manager!: IEventManager;
+  manager!: IScopedObserver;
   constructor(
     private name: string,
     initial: DATA,
     private descriptor: Descriptor<DATA, MUTS, GETS>
   ) {
     this.data = initial;
-    this.manager = createEventManager([
+    this.manager = createScopedObserver([
       {
         scope: this.name,
       },
