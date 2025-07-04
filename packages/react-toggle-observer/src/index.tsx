@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createEventManager } from "@scoped-observer/core";
+import { createScopedObserver } from "@scoped-observer/core";
 import { IToggleState } from "./types";
 
 /**
@@ -11,7 +11,7 @@ import { IToggleState } from "./types";
  * @returns JSX element rendered by the children function.
  */
 
-const manager = createEventManager([
+const manager = createScopedObserver([
   {
     scope: "toggleManager",
   },
