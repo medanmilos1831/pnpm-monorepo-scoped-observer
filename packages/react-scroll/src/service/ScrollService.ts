@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { createEventManager } from "@scoped-observer/core";
+import { createScopedObserver } from "@scoped-observer/core";
 import {
   AXIS,
   axisOptionsConfigType,
@@ -17,7 +17,7 @@ class ScrollService {
   /**
    * Event manager used for dispatching and subscribing to scroll-related events.
    */
-  eventManager = createEventManager([
+  eventManager = createScopedObserver([
     {
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
     },

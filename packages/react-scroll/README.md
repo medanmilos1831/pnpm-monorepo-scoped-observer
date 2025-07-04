@@ -13,7 +13,7 @@ A lightweight and flexible React utility for tracking scroll position, direction
 ## Installation
 
 ```bash
-npm install react-scroll-scoped-observer
+npm i @scoped-observer/react-scroll
 ```
 
 ## ScrollObserver

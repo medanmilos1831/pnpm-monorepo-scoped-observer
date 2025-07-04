@@ -1,8 +1,8 @@
 {
   "name": "@scoped-observer/react-scroll",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "peerDependencies": {
-    "@scoped-observer/core": "^1.3.0",
+    "@scoped-observer/core": "^2.3.0",
     "react": "^18.0.0"
   },
   "devDependencies": {
@@ -15,5 +15,10 @@
     "build": "tsc -p tsconfig.json"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medanmilos1831/scoped-observer.git"
+  },
+  "homepage": "https://github.com/medanmilos1831/scoped-observer/tree/main/packages/react-scroll#readme"
 }
