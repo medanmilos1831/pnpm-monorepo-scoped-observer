@@ -1,11 +1,11 @@
-import { IEventManager } from "@scoped-observer/core";
+import { IScopedObserver } from "@scoped-observer/core";
 
 export const MACHINE_EVENT = "machineEvent";
 export const MACHINE_SCOPE = "machineScope";
 
 export interface IStateMachine<S extends string> {
   state: S;
-  manager: IEventManager;
+  manager: IScopedObserver;
   transition: TransitionMap<S>;
   dispatch(payload: any): void;
   subscribe(cb: (data: { state: S; payload: any }) => void): () => void;

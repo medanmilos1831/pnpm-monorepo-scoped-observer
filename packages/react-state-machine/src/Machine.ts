@@ -1,4 +1,4 @@
-import { createEventManager } from "@scoped-observer/core";
+import { createScopedObserver } from "@scoped-observer/core";
 import {
   IStateMachine,
   TransitionMap,
@@ -12,7 +12,7 @@ export class Machine<S extends string> {
   constructor({ init, transition }: { init: S; transition: TransitionMap<S> }) {
     this.stateMachine = {
       state: init,
-      manager: createEventManager([
+      manager: createScopedObserver([
         {
           scope: MACHINE_SCOPE,
         },

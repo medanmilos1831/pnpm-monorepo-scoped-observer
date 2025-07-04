@@ -1,4 +1,4 @@
-import { Machine } from './Machine';
+import { Machine } from "./Machine";
 
 const createMachine = <
   T extends Record<string, { handle(): void }>,
@@ -23,4 +23,4 @@ const createMachine = <
 };
 
 export { createMachine };
-export type { TransitionMap } from './types';
+export type { TransitionMap } from "./types";
