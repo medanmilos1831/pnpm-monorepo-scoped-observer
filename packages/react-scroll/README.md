@@ -1,14 +1,24 @@
-# Scroll Observer
+# React Scroll Observer
 
-A lightweight and flexible React utility for tracking scroll position, direction, and progress — perfect for building custom scroll-based interactions and animations.
+A lightweight, event-driven React utility for tracking scroll position, direction, progress, and waypoints in any scroll container — built with TypeScript and powered by custom event management.
 
 ## Features
 
-- Observe scroll position and direction on any container or window
-- Track scroll progress as a normalized value (0 to 1)
-- Easily subscribe to scroll events with React hooks or a dedicated ScrollObserver component
-- Supports both vertical and horizontal scrolling
-- Built with TypeScript for type safety and great DX
+- Track scroll position, direction (up/down/left/right), and normalized scroll progress (0 to 100%)
+
+- Supports vertical (y) and horizontal (x) scrolling
+
+- Event-driven architecture with subscription-based updates
+
+- Supports throttled scroll events for performance
+
+- Waypoint detection via IntersectionObserver integrated as ScrollWaypoint
+
+- Programmatic smooth scrolling support via exposed API
+
+- Full TypeScript support with typed contexts and hooks
+
+- Modular: includes ScrollProvider, ScrollContainer, ScrollObserver components, and useScroll hook
 
 ## Installation
 
@@ -16,150 +26,111 @@ A lightweight and flexible React utility for tracking scroll position, direction
 npm i @scoped-observer/react-scroll
 ```
 
-## ScrollObserver
+## API
 
-`ScrollObserver` is a React component and service designed to efficiently track scroll behavior within any scrollable container or the `window` object.
+<ScrollProvider scroll={scrollObserverInstance}>
 
-### Features
+Provides global scroll state management. Should wrap your app or scrollable parts.
 
-- Tracks current scroll position (horizontal or vertical)
-- Detects scroll direction (`up`, `down`, `left`, `right`)
-- Calculates scroll progress as a normalized value between 0 and 1
-- Provides callbacks for scroll start, ongoing scroll, and scroll end events
-- Supports throttling to optimize performance on scroll events
-- Supports waypoints using the `IntersectionObserver` API for fine-grained scroll event detection
+```
+import { ScrollProvider, ScrollObserver } from "@scoped-observer/react-scroll";
 
----
+const scrollObserver = new ScrollObserver();
 
-#### `ScrollObserver`
-
-```tsx
-import React from "react";
-import { ScrollObserver } from "react-scroll-scoped-observer";
-
-const MyComponent = () => {
-  const handleScroll = ({ scrollPosition, direction, scrollProgress }) => {
-    console.log("Scroll position:", scrollPosition);
-    console.log("Scroll direction:", direction);
-    console.log("Scroll progress:", scrollProgress);
-  };
-
-  return (
-    <ScrollObserver name="myScrollContainer">
-      <div style={{ height: "400px", overflowY: "auto" }}>
-        {/* Scrollable content */}
-      </div>
-    </ScrollObserver>
-  );
-};
+<ScrollProvider scroll={scrollObserver}>
+  <App />
+</ScrollProvider>;
 ```
 
-- 🔑 **`name`** _(string, required)_  
+### `<ScrollContainer>`
+
+A scrollable container component that tracks scroll events and supports waypoints.
+
+#### Props
+
+- **`name`** `(string, required)`  
   Unique identifier for the scroll container.
 
-- ↔️ **`axis`** _('x' | 'y', required)_  
-  Scroll axis to observe — horizontal (`x`) or vertical (`y`).
+- **`axis`** `('x' | 'y', default: 'y')`  
+  The scroll axis to observe — horizontal (`x`) or vertical (`y`).
 
-- ⏳ **`throttle`** _(number, optional)_  
-  Throttle delay in milliseconds for scroll events.
+- **`throttle`** `(number, optional)`  
+  Throttle delay in milliseconds to optimize scroll event frequency and improve performance.
 
-- 🚦 **`onStart`** _(() => void, optional)_  
-  Callback fired when scrolling starts.
+- **`onScroll`** `(function, optional)`  
+  Callback function triggered on every scroll event. Receives the current scroll state.
 
-- 🔄 **`onScroll`** _((scroll: scroll) => void, optional)_  
-  Callback fired on every scroll event, receives scroll data.
+- **`onStart`** `(function, optional)`  
+  Callback fired when the scroll reaches the start position (scroll offset 0).
 
-- 🛑 **`onEnd`** _(() => void, optional)_  
-  Callback fired when scrolling ends.
+- **`onEnd`** `(function, optional)`  
+  Callback fired when the scroll reaches the end of the content.
 
-- ⚙️ **`config`** _(object, required)_  
-  Axis-specific scroll configuration:
+- **`intersectionObserverInit`** `(IntersectionObserverInit, optional)`  
+  Configuration options for the IntersectionObserver used to detect waypoints inside the scroll container.
 
-  - 🧭 `scrollPosition` — Property for scroll position (`scrollTop` or `scrollLeft`).
+- **`children`** `(React.ReactNode, required)`  
+  The content rendered inside the scroll container.
 
-  - 📏 `client` — Visible container size (`clientHeight` or `clientWidth`).
+### `ScrollContainer.ScrollWaypoint`
 
-  - 📐 `scroll` — Total scrollable size (`scrollHeight` or `scrollWidth`).
+A child component used within a `ScrollContainer` to detect when its content enters or leaves the visible scroll area using the `IntersectionObserver` API.
 
-  - 🔁 `direction` — Function to calculate scroll direction: `(current: number, previous: number) => DIRECTION`.
+#### Props
 
-  - 🌊 `overflow` — Relevant CSS overflow property (`overflowY` or `overflowX`).
+- **`status`** `(function, optional)`  
+  Callback function called whenever the waypoint’s visibility changes.  
+  Receives an object containing:
 
-- 🔍 **`intersectionObserverInit`** _(IntersectionObserverInit, optional)_  
-  Configuration for IntersectionObserver to detect waypoints inside the scroll container.
+  - `visibilityStatus`: a string with value `'enter'` (when the element becomes visible) or `'leave'` (when it leaves visibility).
+  - `observerEntry`: the full [`IntersectionObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry) object with detailed intersection information.
 
----
+- **`children`** `(React.ReactNode, required)`  
+  The content rendered inside the waypoint element.
 
-#### `ScrollWaypoint`
-
-`ScrollWaypoint` is a child component of `ScrollObserver` that tracks visibility changes of its content within the scroll container.
-
-It uses an `IntersectionObserver` (provided via context) to detect when the waypoint enters or leaves the visible viewport inside the scroll container. It triggers the `status` callback accordingly with detailed information.
+#### Usage Example
 
 ```tsx
-<ScrollObserver name="myScrollContainer">
-  <ScrollObserver.ScrollWaypoint
+<ScrollContainer name="myScrollContainer">
+  <ScrollContainer.ScrollWaypoint
     status={({ visibilityStatus, observerEntry }) => {
       console.log(`Waypoint is now: ${visibilityStatus}`);
     }}
   >
     <div>Waypoint content here</div>
-  </ScrollObserver.ScrollWaypoint>
-</ScrollObserver>
+  </ScrollContainer.ScrollWaypoint>
+</ScrollContainer>
 ```
 
-- 🔄 **`status`** _(optional)_  
-  A callback function called whenever the waypoint's visibility changes. It receives an object containing:
+### `useScroll(name?: string)`
 
-  - `visibilityStatus`:
-    - `'enter'` — the waypoint element is now visible in the viewport
-    - `'leave'` — the waypoint element is no longer visible
-  - `observerEntry`: The full [`IntersectionObserverEntry`](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry) object providing detailed info about the intersection event.
+A custom React hook that subscribes to scroll state updates for a specified scroll container.
 
-- 📦 **`children`** _(required)_  
-  React nodes/elements that are rendered inside the waypoint container.
+#### Parameters
 
----
+- **`name`** `(string, optional)`  
+  The unique identifier of the scroll container to observe.  
+  If omitted, the hook must be called inside a `ScrollContainer` component to access its context.
 
-## 🎯 `useScroll` Hook
+#### Returns
 
-`useScroll` is a custom React hook that subscribes to scroll state updates for a named scroll container managed by the `scrollService`.
+An object containing the current scroll state and utility methods:
 
-It provides real-time information about the scroll position, scroll direction, scroll progress, and client container height, and also exposes a convenient method to programmatically scroll the container.
+- `scrollPosition` `(number)` — The current scroll offset in pixels.
 
-### 🔧 Returned State & Methods
+- `clientHeight` `(number | undefined)` — The visible height of the scroll container.
 
-- **`scrollPosition`** `(number)`  
-  The current scroll offset (in pixels) along the vertical axis.
+- `direction` `(string)` — The current scroll direction, e.g. `'up'`, `'down'`, `'left'`, or `'right'`.
 
-- **`clientHeight`** `(number | undefined)`  
-  The visible height of the scroll container.
+- `scrollProgress` `(number)` — A normalized value between 0 and 1 indicating the scroll progress relative to total scrollable content.
 
-- **`direction`** `(DIRECTION)`  
-  The current scroll direction. Possible values:
+- `scrollTo(position: number, behavior?: ScrollToOptions['behavior'])` `(function)` — Function to programmatically scroll the container to a specific position.
+  - `position`: The target scroll offset in pixels.
+  - `behavior` (optional): Scroll behavior like `'auto'` or `'smooth'` (defaults to `'smooth'`).
 
-  - `DIRECTION.UP`
-  - `DIRECTION.DOWN`
-
-- **`scrollProgress`** `(number)`  
-  Scroll progress as a value between 0 and 1 indicating how far the user has scrolled relative to the total scrollable content.
-
-- **`scrollTo(position: number, behavior?: ScrollToOptions["behavior"])`** `(function)`  
-  Programmatically scrolls the container to a specific vertical position.
-  - `position`: target scroll offset in pixels.
-  - `behavior` (optional): scroll behavior, e.g. `"auto"` or `"smooth"`. Defaults to `"smooth"`.
-
-### ⚙️ How It Works
-
-- Subscribes to scroll events scoped to the container identified by `name`.
-- Updates internal state with the latest scroll information when events occur.
-- Returns current scroll state and the `scrollTo` method for smooth programmatic scrolling
-
-### 📖 Example Usage
+#### Usage Example
 
 ```tsx
-import { useScroll, DIRECTION } from "your-scroll-library";
-
 function MyComponent() {
   const { scrollPosition, direction, scrollProgress, scrollTo } =
     useScroll("myScrollContainer");
@@ -173,4 +144,56 @@ function MyComponent() {
     </div>
   );
 }
+```
+
+## Example
+
+```
+
+const scrollObserver = new ScrollObserver();
+
+const ScrollExample = () => {
+  return (
+    <ScrollProvider scroll={scrollObserver}>
+      <ScrollContainer
+        name="mainScroll"
+        axis="y"
+        throttle={100}
+        onStart={() => console.log('Scroll started')}
+        onEnd={() => console.log('Scroll ended')}
+        onScroll={(state) => console.log('Scrolling', state.scrollPosition)}
+        intersectionObserverInit={{ rootMargin: '0px', threshold: 0.1 }}
+        style={{ height: 300, border: '1px solid black' }} // optional styling >
+          <ScrollableContent />
+      </ScrollContainer>
+    </ScrollProvider>
+  );
+};
+
+const ScrollableContent = () => {
+  const { scrollPosition, direction, scrollProgress, scrollTo } = useScroll('mainScroll');
+
+  return (
+    <div style={{ height: 1000, padding: 20 }}>
+    <h2>Scroll Info</h2>
+    <p>Position: {scrollPosition}px</p>
+    <p>Direction: {direction}</p>
+    <p>Progress: {(scrollProgress \* 100).toFixed(2)}%</p>
+    <button onClick={() => scrollTo(0)}>Scroll to Top</button>
+
+          <ScrollContainer.ScrollWaypoint
+            status={({ visibilityStatus }) => {
+              console.log('Waypoint is', visibilityStatus);
+            }}
+          >
+            <div style={{ marginTop: 800, padding: 20, backgroundColor: '#eee' }}>
+              Scroll Waypoint
+            </div>
+          </ScrollContainer.ScrollWaypoint>
+        </div>
+
+  );
+};
+
+export default ScrollExample;
 ```

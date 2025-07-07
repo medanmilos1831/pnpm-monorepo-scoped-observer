@@ -1,3 +1,5 @@
+import { ScrollEntity } from './ScrollEntity';
+
 /**
  * Enum representing scroll direction.
  */
@@ -83,7 +85,7 @@ export type scrollContainerType = {
   /**
    * Optional IntersectionObserver configuration for waypoint detection.
    */
-  intersectionObserverInit?: IntersectionObserverInit;
+  intersectionObserverInit?: Omit<IntersectionObserverInit, 'root'>;
 };
 
 /**
@@ -184,3 +186,8 @@ export type waypoint = {
     observerEntry: IntersectionObserverEntry;
   }) => void;
 };
+
+export interface IScrollObserver {
+  registry: Map<string, ScrollEntity>;
+  clearRegisty: () => void;
+}

@@ -1,19 +1,14 @@
 import { CSSProperties } from "react";
-import { createScopedObserver } from "@scoped-observer/core";
 import {
   AXIS,
   axisOptionsConfigType,
   DIRECTION,
   EVENT_MANAGER_SCROLL_OBSERVER,
   scrollContainerType,
-} from "../types";
+} from "./types";
+import { createScopedObserver } from "@scoped-observer/core";
 
-/**
- * ScrollService is a utility class responsible for handling scroll events, configuration,
- * styles, throttling, and scrolling programmatically. It supports both horizontal (X)
- * and vertical (Y) axes and dispatches scoped events for consumers to react to scroll behaviors.
- */
-class ScrollService {
+export class ScrollEntity {
   /**
    * Event manager used for dispatching and subscribing to scroll-related events.
    */
@@ -22,6 +17,23 @@ class ScrollService {
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
     },
   ]);
+  props = {
+    isScrolling: false,
+    scrollPosition: 0,
+    client: 0,
+    direction: DIRECTION.DOWN,
+    scrollProgress: 0,
+    scrollTo: (position: number, behavior?: ScrollToOptions["behavior"]) => {
+      this.eventManager.dispatch({
+        scope: EVENT_MANAGER_SCROLL_OBSERVER,
+        eventName: `scrollTo`,
+        payload: {
+          position,
+          behavior: behavior || "smooth",
+        },
+      });
+    },
+  };
 
   /**
    * Axis-specific configuration for scroll-related calculations and properties.
@@ -127,19 +139,23 @@ class ScrollService {
         direction,
         scrollProgress,
       };
-
+      this.props = {
+        ...this.props,
+        ...payload,
+      };
       this.eventManager.dispatch({
         scope: EVENT_MANAGER_SCROLL_OBSERVER,
-        eventName: `${name}_scrolling`,
-        payload,
+        eventName: `scrolling`,
+        payload: this.props,
       });
 
       if (isScrollingTimeout) clearTimeout(isScrollingTimeout);
       isScrollingTimeout = setTimeout(() => {
         this.eventManager.dispatch({
           scope: EVENT_MANAGER_SCROLL_OBSERVER,
-          eventName: `${name}_scrolling`,
+          eventName: `scrolling`,
           payload: {
+            ...this.props,
             isScrolling: false,
           },
         });
@@ -160,30 +176,4 @@ class ScrollService {
 
     return throttle > 0 ? this.throttle(handler, throttle) : handler;
   };
-
-  /**
-   * Programmatically scrolls to a specific position using event dispatch.
-   *
-   * @param {string} name - The name of the scroll container to scroll.
-   * @param {number} position - The scroll position (top or left) to scroll to.
-   * @param {ScrollToOptions['behavior']} behavior - The scroll behavior ('auto', 'smooth', etc.).
-   */
-  scrollTo = (
-    name: string,
-    position: number,
-    behavior: ScrollToOptions["behavior"]
-  ) => {
-    this.eventManager.dispatch({
-      scope: EVENT_MANAGER_SCROLL_OBSERVER,
-      eventName: `${name}_scrollTo`,
-      payload: {
-        position,
-        behavior,
-      },
-    });
-  };
 }
-
-const scrollService = new ScrollService();
-
-export { scrollService };

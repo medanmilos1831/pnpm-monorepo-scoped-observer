@@ -1,4 +1,8 @@
-import { ScrollObserver as ScrollObserver } from './ScrollObserver';
-import { useScroll as useScroll } from './hooks/useScroll';
+import { ScrollObserver as ScrollObserver } from "./ScrollObserver";
+import { ScrollProvider as ScrollProvider } from "./ScrollProvider";
+import {
+  ScrollContainer as ScrollContainer,
+  useScroll as useScroll,
+} from "./ScrollContainer";
 
-export { ScrollObserver, useScroll };
+export { ScrollObserver, ScrollProvider, ScrollContainer, useScroll };
