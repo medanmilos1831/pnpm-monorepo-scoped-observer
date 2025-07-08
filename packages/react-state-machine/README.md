@@ -40,37 +40,41 @@ import React from "react";
 import { createMachine } from "your-package-name";
 
 const modalMachine = createMachine({
-  init: "closed",
+  init: "close",
   transition: {
-    closed: {
-      handle() {
-        return "open";
+    close: {
+      on: {
+        TOGGLE: "open",
+        Pera: "open",
       },
     },
     open: {
-      handle() {
-        return "closed";
+      on: {
+        TOGGLE: "close",
       },
     },
   },
 });
-
 export const Modal = () => {
-  const { handler, forceHandler, StateMachineSlot } = modalMachine;
-
   return (
     <>
-      <button onClick={() => handler()}>Toggle Modal</button>
-      <button onClick={() => forceHandler("closed")}>Force Close</button>
+      <button
+        onClick={() =>
+          modalMachine.handler({
+            type: "TOGGLE",
+            payload: 1,
+          })
+        }
+      >
+        Toggle Modal
+      </button>
 
-      <StateMachineSlot>
-        {({ state, payload }) => (
-          <div>
-            Modal is <strong>{state}</strong>
-            {payload && <p>Payload: {JSON.stringify(payload)}</p>}
-          </div>
-        )}
-      </StateMachineSlot>
+      <modalMachine.StateMachineSlot>
+        {(data) => {
+          console.log("data", data);
+          return <></>;
+        }}
+      </modalMachine.StateMachineSlot>
     </>
   );
 };
@@ -89,23 +93,14 @@ Creates a new state machine instance.
 
 **Returns:**
 
-- `handler(payload?)`: triggers the current state's handler, optionally with a payload
-- `forceHandler(state, payload?)`: forces the machine into the specified state if valid
+- `handler({ type, payload? })`: Triggers a transition from the current state using the given type. If the transition exists, it updates the internal state and notifies all subscribers. An optional payload can be passed and will be sent to listeners
 - `StateMachineSlot`: a React render-prop component providing `{ state, payload }`
 
 ---
 
-### handler(payload?)
+### handler({ type, payload? })
 
 Triggers the current state's handler. Optionally accepts a payload.
-
----
-
-### forceHandler(state, payload?)
-
-Forces a state transition to the given state. Throws an error if state is invalid.
-
----
 
 ### StateMachineSlot
 

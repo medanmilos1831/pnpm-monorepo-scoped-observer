@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { IStateMachine } from './types';
+import { useEffect, useState } from "react";
+import { IStateMachine } from "./types";
 
 const useStateMachine = <S extends string>(machine: IStateMachine<S>) => {
   const [state, setState] = useState(() => {

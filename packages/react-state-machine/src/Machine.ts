@@ -1,15 +1,22 @@
 import { createScopedObserver } from "@scoped-observer/core";
 import {
   IStateMachine,
-  TransitionMap,
-  MACHINE_SCOPE,
   MACHINE_EVENT,
+  MACHINE_SCOPE,
+  TransitionMap,
 } from "./types";
 import { useStateMachine } from "./useStateMachine";
 
-export class Machine<S extends string> {
-  stateMachine!: IStateMachine<S>;
-  constructor({ init, transition }: { init: S; transition: TransitionMap<S> }) {
+export class Machine<S extends string, T extends string = string> {
+  stateMachine: IStateMachine<S, T>;
+
+  constructor({
+    init,
+    transition,
+  }: {
+    init: S;
+    transition: TransitionMap<S, T>;
+  }) {
     this.stateMachine = {
       state: init,
       manager: createScopedObserver([
@@ -17,56 +24,41 @@ export class Machine<S extends string> {
           scope: MACHINE_SCOPE,
         },
       ]),
-      transition: transition,
-      dispatch(payload) {
-        this.state = this.transition[this.state].handle();
-        this.manager.dispatch({
+      transition,
+      dispatch: (payload: any) => {
+        this.stateMachine.manager.dispatch({
           scope: MACHINE_SCOPE,
           eventName: MACHINE_EVENT,
           payload: {
-            state: this.state,
+            state: this.stateMachine.state,
             payload,
           },
         });
       },
-      subscribe(cb) {
-        return this.manager.subscribe({
+      subscribe: (cb: (data: { state: S; payload: any }) => void) => {
+        return this.stateMachine.manager.subscribe({
           scope: MACHINE_SCOPE,
           eventName: MACHINE_EVENT,
-          callback: (data: {
-            payload: {
-              state: S;
-              payload: any;
-            };
-          }) => {
-            cb(data.payload);
-          },
+          callback: ({ payload }: any) => cb(payload),
         });
       },
     };
   }
-  handler = (payload?: any) => {
-    this.stateMachine.dispatch(payload);
-  };
-  forceHandler = (state: string, payload?: any) => {
-    if (
-      !this.stateMachine.transition[
-        state as keyof typeof this.stateMachine.transition
-      ]
-    ) {
-      console.error(`Invalid state "${state}" passed to forceHandler.`);
-      return;
+
+  handler = (data: { type: T; payload?: any }) => {
+    const currentState = this.stateMachine.state;
+    const nextState = this.stateMachine.transition[currentState].on[data.type];
+
+    if (nextState) {
+      this.stateMachine.state = nextState;
+      this.stateMachine.dispatch(data.payload);
+    } else {
+      console.warn(
+        `[Machine] Invalid transition from "${currentState}" using type "${data.type}"`
+      );
     }
-    this.stateMachine.state = state as any;
-    this.stateMachine.manager.dispatch({
-      scope: MACHINE_SCOPE,
-      eventName: MACHINE_EVENT,
-      payload: {
-        state: this.stateMachine.state,
-        payload,
-      },
-    });
   };
+
   Component = ({
     children,
   }: {
@@ -74,5 +66,10 @@ export class Machine<S extends string> {
   }) => {
     const data = useStateMachine(this.stateMachine);
     return children(data);
+  };
+
+  useMachine = () => {
+    const data = useStateMachine(this.stateMachine);
+    return data;
   };
 }

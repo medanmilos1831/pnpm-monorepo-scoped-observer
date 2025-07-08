@@ -1,26 +1,21 @@
 import { Machine } from "./Machine";
+import { TransitionMap } from "./types";
 
-const createMachine = <
-  T extends Record<string, { handle(): void }>,
-  S extends Extract<keyof T, string> = Extract<keyof T, string>
->({
+const createMachine = <S extends string, T extends string = string>({
   init,
   transition,
 }: {
   init: S;
-  transition: T;
+  transition: TransitionMap<S, T>;
 }) => {
-  const instance = new Machine<S>({
-    init: init as any,
-    transition: transition as any,
-  });
+  const instance = new Machine<S, T>({ init, transition });
 
   return {
     handler: instance.handler,
-    forceHandler: instance.forceHandler,
     StateMachineSlot: instance.Component,
+    useMachine: instance.useMachine,
   };
 };
 
 export { createMachine };
-export type { TransitionMap } from "./types";
+export type { TransitionMap };
