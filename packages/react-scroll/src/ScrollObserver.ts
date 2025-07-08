@@ -1,7 +1,7 @@
-import { ScrollEntity } from './ScrollEntity';
+import { ScrollInstance } from './ScrollInstance';
 
 export class ScrollObserver {
-  registry = new Map<string, ScrollEntity>();
+  registry = new Map<string, ScrollInstance>();
 
   clearRegisty = () => {
     this.registry.clear();

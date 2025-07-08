@@ -1,6 +1,6 @@
 {
   "name": "@scoped-observer/react-scroll",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "peerDependencies": {
     "@scoped-observer/core": "^2.3.0",
     "react": "^18.0.0"

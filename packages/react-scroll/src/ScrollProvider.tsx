@@ -1,12 +1,12 @@
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
-import { ScrollEntity } from './ScrollEntity';
+import { ScrollInstance } from './ScrollInstance';
 import { IScrollObserver } from './types';
 
 const ScrollContext = createContext<
   | {
       scroll: IScrollObserver;
-      getScroll: (name: string) => ScrollEntity | undefined;
-      setScroll: (name: string) => ScrollEntity | undefined;
+      getScroll: (name: string) => ScrollInstance | undefined;
+      setScroll: (name: string) => ScrollInstance | undefined;
       removeScroll: (name: string) => void;
     }
   | undefined
@@ -23,7 +23,7 @@ const ScrollProvider = ({
         return this.scroll.registry.get(name);
       },
       setScroll(name: string) {
-        this.scroll.registry.set(name, new ScrollEntity());
+        this.scroll.registry.set(name, new ScrollInstance());
         return this.scroll.registry.get(name);
       },
       removeScroll(name: string) {

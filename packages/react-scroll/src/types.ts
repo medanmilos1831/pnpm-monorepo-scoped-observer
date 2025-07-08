@@ -1,4 +1,4 @@
-import { ScrollEntity } from './ScrollEntity';
+import { ScrollInstance } from './ScrollInstance';
 
 /**
  * Enum representing scroll direction.
@@ -30,7 +30,7 @@ export type scrollContainerType = {
   /**
    * Callback fired on every scroll event.
    */
-  onScroll?: (params: scroll) => void;
+  onScroll?: (params: IScrollState) => void;
 
   /**
    * Callback fired when scroll starts.
@@ -91,7 +91,7 @@ export type scrollContainerType = {
 /**
  * Object passed to onScroll callback containing current scroll state.
  */
-export type scroll = {
+export interface IScrollState {
   /**
    * Indicates if the container is currently being scrolled.
    */
@@ -116,7 +116,7 @@ export type scroll = {
    * Progress of scrolling as a value between 0 and 1.
    */
   scrollProgress: number;
-};
+}
 
 /**
  * Global identifier for event scoping in ScrollObserver system.
@@ -188,6 +188,6 @@ export type waypoint = {
 };
 
 export interface IScrollObserver {
-  registry: Map<string, ScrollEntity>;
+  registry: Map<string, ScrollInstance>;
   clearRegisty: () => void;
 }

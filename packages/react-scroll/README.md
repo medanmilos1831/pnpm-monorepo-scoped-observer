@@ -102,15 +102,9 @@ A child component used within a `ScrollContainer` to detect when its content ent
 </ScrollContainer>
 ```
 
-### `useScroll(name?: string)`
+### `useScroll()`
 
-A custom React hook that subscribes to scroll state updates for a specified scroll container.
-
-#### Parameters
-
-- **`name`** `(string, optional)`  
-  The unique identifier of the scroll container to observe.  
-  If omitted, the hook must be called inside a `ScrollContainer` component to access its context.
+A custom React hook that subscribes to scroll state updates.
 
 #### Returns
 
@@ -132,8 +126,7 @@ An object containing the current scroll state and utility methods:
 
 ```tsx
 function MyComponent() {
-  const { scrollPosition, direction, scrollProgress, scrollTo } =
-    useScroll("myScrollContainer");
+  const { scrollPosition, direction, scrollProgress, scrollTo } = useScroll();
 
   return (
     <div>
@@ -171,7 +164,7 @@ const ScrollExample = () => {
 };
 
 const ScrollableContent = () => {
-  const { scrollPosition, direction, scrollProgress, scrollTo } = useScroll('mainScroll');
+  const { scrollPosition, direction, scrollProgress, scrollTo } = useScroll();
 
   return (
     <div style={{ height: 1000, padding: 20 }}>

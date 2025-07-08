@@ -6,20 +6,20 @@ import {
   useEffect,
   createContext,
   useLayoutEffect,
-} from "react";
+} from 'react';
 import {
   AXIS,
   scrollContainerType,
   EVENT_MANAGER_SCROLL_OBSERVER,
   waypoint,
-} from "./types";
-import { ScrollContext } from "./ScrollProvider";
-import { ScrollEntity } from "./ScrollEntity";
+} from './types';
+import { ScrollContext } from './ScrollProvider';
+import { ScrollInstance } from './ScrollInstance';
 
 const ScrollContainerContext = createContext<
   | {
-      scrollService: ScrollEntity;
-      waypointObserver: () => IntersectionObserver | undefined;
+      scrollService: ScrollInstance;
+      waypointObserver: () => IntersectionObserver | null;
       name: string;
     }
   | undefined
@@ -34,46 +34,59 @@ const ScrollContainer = ({
   throttle,
   axis = AXIS.Y,
   intersectionObserverInit,
-}: PropsWithChildren<Omit<scrollContainerType, "config">>) => {
-  const context = useContext(ScrollContext)!;
-  const scrollContainer = useRef<HTMLDivElement | null>(null);
+}: PropsWithChildren<Omit<scrollContainerType, 'config'>>) => {
+  const context = useContext(ScrollContext);
+  if (!context) {
+    throw new Error(
+      '<ScrollContainer> must be used within a <ScrollProvider>.'
+    );
+  }
+
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const waypointObserverRef = useRef<IntersectionObserver | null>(null);
 
   const [{ scrollService }] = useState(() => {
-    let scrollService = context.setScroll(name)!;
-
-    return {
-      scrollService,
-    };
+    const service = context.setScroll(name);
+    if (!service) {
+      throw new Error(`Scroll service not found for name: ${name}`);
+    }
+    return { scrollService: service };
   });
+
   useLayoutEffect(() => {
-    if (intersectionObserverInit && scrollContainer.current) {
+    if (intersectionObserverInit && scrollContainerRef.current) {
       waypointObserverRef.current = new IntersectionObserver(
         (entries) => {
-          for (const entry of entries) {
-            scrollService!.eventManager.dispatch({
+          entries.forEach((entry) => {
+            scrollService.eventManager.dispatch({
               scope: EVENT_MANAGER_SCROLL_OBSERVER,
               eventName: `waypointObserver`,
               payload: entry,
             });
-          }
+          });
         },
         {
-          root: scrollContainer.current,
+          root: scrollContainerRef.current,
           ...intersectionObserverInit,
         }
       );
     }
-  }, []);
+
+    return () => {
+      if (waypointObserverRef.current && scrollContainerRef.current) {
+        waypointObserverRef.current.disconnect();
+      }
+    };
+  }, [intersectionObserverInit, scrollService]);
 
   useEffect(() => {
     const unsubscribe = scrollService.eventManager.subscribe({
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
       eventName: `scrollTo`,
       callback({ payload }: any) {
-        if (scrollContainer.current) {
-          scrollContainer.current.scrollTo({
-            [axis === AXIS.X ? "left" : "top"]: payload.position,
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTo({
+            [axis === AXIS.X ? 'left' : 'top']: payload.position,
             behavior: payload.behavior,
           });
         }
@@ -83,18 +96,18 @@ const ScrollContainer = ({
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [axis, scrollService]);
 
   useEffect(() => {
     return () => {
       context.removeScroll(name);
     };
-  });
+  }, [context, name]);
 
   return (
     <div
-      style={scrollService!.containerStyle(axis)}
-      onScroll={scrollService!.onScroll({
+      style={scrollService.containerStyle(axis)}
+      onScroll={scrollService.onScroll({
         name,
         onScroll,
         onStart,
@@ -103,13 +116,13 @@ const ScrollContainer = ({
         axis,
         config: scrollService.axisConfig[axis],
       })}
-      ref={scrollContainer}
+      ref={scrollContainerRef}
     >
-      <div style={scrollService!.innerContainerStyle(axis)}>
+      <div style={scrollService.innerContainerStyle(axis)}>
         <ScrollContainerContext.Provider
           value={{
             scrollService,
-            waypointObserver: () => waypointObserverRef.current!,
+            waypointObserver: () => waypointObserverRef.current,
             name,
           }}
         >
@@ -124,79 +137,72 @@ ScrollContainer.ScrollWaypoint = ({
   children,
   status,
 }: PropsWithChildren<waypoint>) => {
-  const { scrollService, waypointObserver } = useContext(
-    ScrollContainerContext
-  )!;
-  const element = useRef<HTMLDivElement | null>(null);
+  const context = useContext(ScrollContainerContext);
+  if (!context) {
+    throw new Error(
+      '<ScrollWaypoint> must be used within a <ScrollContainer>.'
+    );
+  }
+  const { scrollService, waypointObserver } = context;
+
+  const elementRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    const unsubscibe = scrollService.eventManager.subscribe({
+    const unsubscribe = scrollService.eventManager.subscribe({
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
       eventName: `waypointObserver`,
       callback({ payload }: { payload: IntersectionObserverEntry }) {
-        if (payload.target === element.current && status) {
+        if (payload.target === elementRef.current && status) {
           status({
-            visibilityStatus: payload.isIntersecting ? "enter" : "leave",
+            visibilityStatus: payload.isIntersecting ? 'enter' : 'leave',
             observerEntry: payload,
           });
         }
       },
     });
     return () => {
-      unsubscibe();
+      unsubscribe();
     };
-  }, []);
-  useEffect(() => {
-    if (!element.current || !waypointObserver) return;
+  }, [scrollService, status]);
 
-    waypointObserver()!.observe(element.current);
+  useEffect(() => {
+    const observer = waypointObserver?.();
+    if (!elementRef.current || !observer) return;
+
+    observer.observe(elementRef.current);
     return () => {
-      waypointObserver()!.unobserve(element.current!);
+      observer.unobserve(elementRef.current!);
     };
-  }, []);
-  return <div ref={element}>{children}</div>;
+  }, [waypointObserver]);
+
+  return <div ref={elementRef}>{children}</div>;
 };
 
-const useScroll = (name?: string) => {
-  const scrollContext = useContext(ScrollContext);
+const useScroll = () => {
   const scrollContainerContext = useContext(ScrollContainerContext);
-  if (!scrollContext) {
-    throw new Error(
-      "useScroll must be used inside <ScrollProvider>. " +
-        "Wrap your app (or part of it) with <ScrollProvider scroll={...}>."
-    );
+
+  if (!scrollContainerContext) {
+    throw new Error('useScroll must be used inside <ScrollContainer>.');
   }
 
-  if (!name && !scrollContainerContext) {
-    throw new Error(
-      'useScroll without a "name" parameter must be used inside <ScrollContainer>. ' +
-        'Either give useScroll a container name (useScroll("myId")) ' +
-        "or call it inside the corresponding <ScrollContainer> tree."
-    );
-  }
-
-  const service = !name
-    ? scrollContainerContext!.scrollService
-    : scrollContext.getScroll(name);
+  const service = scrollContainerContext.scrollService;
   const [state, setState] = useState(() => {
-    return service!.props;
+    return service.state;
   });
+
   useEffect(() => {
-    const unsubscibe = service!.eventManager.subscribe({
+    const unsubscribe = service.eventManager.subscribe({
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
       eventName: `scrolling`,
       callback({ payload }: { payload: typeof state }) {
-        setState((prev: any) => {
-          return {
-            ...prev,
-            ...payload,
-          };
-        });
+        setState(payload);
       },
     });
     return () => {
-      unsubscibe();
+      unsubscribe();
     };
-  }, []);
+  }, [service]);
+
   return state;
 };
 

@@ -1,38 +1,30 @@
-import { CSSProperties } from "react";
+import { CSSProperties } from 'react';
 import {
   AXIS,
   axisOptionsConfigType,
   DIRECTION,
   EVENT_MANAGER_SCROLL_OBSERVER,
   scrollContainerType,
-} from "./types";
-import { createScopedObserver } from "@scoped-observer/core";
+  IScrollState,
+} from './types';
+import { createEventManager } from '../scoped-observer';
 
-export class ScrollEntity {
+export class ScrollInstance {
   /**
    * Event manager used for dispatching and subscribing to scroll-related events.
    */
-  eventManager = createScopedObserver([
+  eventManager = createEventManager([
     {
       scope: EVENT_MANAGER_SCROLL_OBSERVER,
     },
   ]);
-  props = {
+
+  state: IScrollState = {
     isScrolling: false,
     scrollPosition: 0,
     client: 0,
     direction: DIRECTION.DOWN,
     scrollProgress: 0,
-    scrollTo: (position: number, behavior?: ScrollToOptions["behavior"]) => {
-      this.eventManager.dispatch({
-        scope: EVENT_MANAGER_SCROLL_OBSERVER,
-        eventName: `scrollTo`,
-        payload: {
-          position,
-          behavior: behavior || "smooth",
-        },
-      });
-    },
   };
 
   /**
@@ -40,19 +32,19 @@ export class ScrollEntity {
    */
   axisConfig: axisOptionsConfigType = {
     [AXIS.X]: {
-      scrollPosition: "scrollLeft",
-      client: "clientWidth",
-      scroll: "scrollWidth",
+      scrollPosition: 'scrollLeft',
+      client: 'clientWidth',
+      scroll: 'scrollWidth',
       direction: (prev, next) =>
         next > prev ? DIRECTION.RIGHT : DIRECTION.LEFT,
-      overflow: "overflowX",
+      overflow: 'overflowX',
     },
     [AXIS.Y]: {
-      scrollPosition: "scrollTop",
-      client: "clientHeight",
-      scroll: "scrollHeight",
+      scrollPosition: 'scrollTop',
+      client: 'clientHeight',
+      scroll: 'scrollHeight',
       direction: (prev, next) => (next > prev ? DIRECTION.DOWN : DIRECTION.UP),
-      overflow: "overflowY",
+      overflow: 'overflowY',
     },
   };
 
@@ -64,9 +56,9 @@ export class ScrollEntity {
    */
   containerStyle = (axis: `${AXIS}`): CSSProperties => {
     return {
-      height: "100%",
-      position: "relative",
-      [this.axisConfig[axis].overflow]: "auto",
+      height: '100%',
+      position: 'relative',
+      [this.axisConfig[axis].overflow]: 'auto',
     };
   };
 
@@ -77,9 +69,9 @@ export class ScrollEntity {
    * @returns {CSSProperties} - CSS style for the scroll inner content wrapper.
    */
   innerContainerStyle = (axis: `${AXIS}`): CSSProperties => ({
-    height: axis === AXIS.Y ? "100%" : "auto",
-    width: axis === AXIS.X ? "max-content" : "100%",
-    position: "absolute",
+    height: axis === AXIS.Y ? '100%' : 'auto',
+    width: axis === AXIS.X ? 'max-content' : '100%',
+    position: 'absolute',
     top: 0,
     left: 0,
   });
@@ -129,39 +121,31 @@ export class ScrollEntity {
       const client = target[config.client];
       const scroll = target[config.scroll];
       const direction = config.direction(position, scrollPosition);
-
       const scrollProgress = (scrollPosition / (scroll - client)) * 100;
-
-      const payload = {
+      this.state = {
         isScrolling: true,
         scrollPosition,
         client,
         direction,
         scrollProgress,
       };
-      this.props = {
-        ...this.props,
-        ...payload,
-      };
       this.eventManager.dispatch({
         scope: EVENT_MANAGER_SCROLL_OBSERVER,
-        eventName: `scrolling`,
-        payload: this.props,
+        eventName: 'scrolling',
+        payload: this.state,
       });
 
       if (isScrollingTimeout) clearTimeout(isScrollingTimeout);
       isScrollingTimeout = setTimeout(() => {
+        this.state.isScrolling = false;
         this.eventManager.dispatch({
           scope: EVENT_MANAGER_SCROLL_OBSERVER,
-          eventName: `scrolling`,
-          payload: {
-            ...this.props,
-            isScrolling: false,
-          },
+          eventName: 'scrolling',
+          payload: this.state,
         });
       }, 200);
 
-      if (onScroll) onScroll(payload);
+      if (onScroll) onScroll(this.state);
 
       position = scrollPosition;
 
@@ -176,4 +160,12 @@ export class ScrollEntity {
 
     return throttle > 0 ? this.throttle(handler, throttle) : handler;
   };
+
+  scrollTo(position: number, behavior: ScrollToOptions['behavior'] = 'smooth') {
+    this.eventManager.dispatch({
+      scope: EVENT_MANAGER_SCROLL_OBSERVER,
+      eventName: 'scrollTo',
+      payload: { position, behavior },
+    });
+  }
 }
