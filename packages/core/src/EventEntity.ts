@@ -4,6 +4,7 @@ export class EventEntity extends EventTarget {
   scopedEvents: Record<string, EventEntity> = {};
   listeners: Map<string, Set<(e: any) => void>> = new Map();
   log = false;
+  lastEventPayloads = new Map();
 
   constructor(name: string, log: boolean) {
     super();
@@ -39,5 +40,11 @@ export class EventEntity extends EventTarget {
         this.listeners.delete(eventName);
       }
     };
+  };
+  setDispatchCache = (eventName: string, payload: any) => {
+    this.lastEventPayloads.set(eventName, payload);
+  };
+  getDispatchCache = (eventName: string) => {
+    this.lastEventPayloads.get(eventName);
   };
 }
