@@ -1,38 +1,25 @@
 {
-  "name": "my-monorepo",
-  "private": true,
-  "version": "1.0.0",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "version:core:patch": "npm version patch --workspace=@scoped-observer/core",
-    "version:core:minor": "npm version minor --workspace=@scoped-observer/core",
-    "version:core:major": "npm version major --workspace=@scoped-observer/core",
-    "version:react-toggle-observer:patch": "npm version patch --workspace=@scoped-observer/react-toggle-observer",
-    "version:react-toggle-observer:minor": "npm version minor --workspace=@scoped-observer/react-toggle-observer",
-    "version:react-toggle-observer:major": "npm version major --workspace=@scoped-observer/react-toggle-observer",
-    "version:react-store:patch": "npm version patch --workspace=@scoped-observer/react-store",
-    "version:react-store:minor": "npm version minor --workspace=@scoped-observer/react-store",
-    "version:react-store:major": "npm version major --workspace=@scoped-observer/react-store",
-    "version:react-scroll:patch": "npm version patch --workspace=@scoped-observer/react-scroll",
-    "version:react-scroll:minor": "npm version minor --workspace=@scoped-observer/react-scroll",
-    "version:react-scroll:major": "npm version major --workspace=@scoped-observer/react-scroll",
-    "version:react-state-machine:patch": "npm version patch --workspace=@scoped-observer/react-state-machine",
-    "version:react-state-machine:minor": "npm version minor --workspace=@scoped-observer/react-state-machine",
-    "version:react-state-machine:major": "npm version major --workspace=@scoped-observer/react-state-machine",
-    "build:core": "npm run build --workspace=@scoped-observer/core",
-    "build:react-toggle-observer": "npm run build --workspace=@scoped-observer/react-toggle-observer",
-    "build:react-store": "npm run build --workspace=@scoped-observer/react-store",
-    "build:react-scroll": "npm run build --workspace=@scoped-observer/react-scroll",
-    "build:react-state-machine": "npm run build --workspace=@scoped-observer/react-state-machine",
-    "publish:core": "npm publish ./packages/core --access public",
-    "publish:react-toggle-observer": "npm publish ./packages/react-toggle-observer --access public",
-    "publish:react-store": "npm publish ./packages/react-store --access public",
-    "publish:react-scroll": "npm publish ./packages/react-scroll --access public",
-    "publish:react-state-machine": "npm publish ./packages/react-state-machine --access public"
-  },
-  "devDependencies": {
-    "typescript": "^5.8.3"
-  }
+    "name": "pnpm-monorepo-scoped-observer",
+    "private": true,
+    "version": "1.0.0",
+    "workspaces": [
+        "packages/*"
+    ],
+    "devDependencies": {
+        "@types/react": "^18.3.23",
+        "@types/react-dom": "^18.0.11",
+        "typescript": "^5.8.3"
+    },
+    "dependencies": {
+        "react": "^18.3.1"
+    },
+    "scripts": {
+        "version:core:patch": "pnpm version patch --filter @scoped-observer/core",
+        "version:core:minor": "pnpm version minor --filter @scoped-observer/core",
+        "version:core:major": "pnpm version major --filter @scoped-observer/core",
+        "publish:core": "pnpm publish --filter @scoped-observer/core --access public",
+        "build:core": "pnpm run build --filter @scoped-observer/core",
+        "build:react": "pnpm run build --filter @scoped-observer/react",
+        "build:state-machine": "pnpm run build --filter @scoped-observer/react-state-machine"
+    }
 }

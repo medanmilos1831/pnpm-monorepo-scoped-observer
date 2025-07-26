@@ -1,29 +1,43 @@
-# Node modules
+# Node.js
 node_modules/
-
-# Output folders
 dist/
-packages/*/dist/
+build/
+.pnpm-debug.log*
+.npmrc
+.pnpm-store/
+
+# TypeScript
+*.tsbuildinfo
 
 # Logs
+*.log
+logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-# TypeScript build output
-*.tsbuildinfo
+# Testing
+coverage/
+.jest/
 
-# macOS
-.DS_Store
-
-# VSCode settings
+# VSCode
 .vscode/
+.history/
 
-# Environment files (ako koristiš)
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
 .env
-.env.local
 .env.*
 
-# Package lock (ako želiš da ga ignorišeš unutar paketa)
-packages/*/package-lock.json
+# Monorepo-specific
+packages/*/dist/
+packages/*/build/
+packages/*/node_modules/
+
+# Optional: IDEs
+.idea/
+*.sublime-workspace
+*.sublime-project
