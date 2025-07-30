@@ -1,115 +1,128 @@
-# React State Machine
+# @scoped-observer/react
 
-A lightweight, fully typed, and flexible state machine implementation for React applications.  
-This package enables clean and predictable state transitions with a simple API, seamlessly integrated with React hooks and render props.
-
-It is designed to work well for common UI patterns such as modals, drawers, wizards, tabs, and more — anywhere you need controlled state management with clear transitions.  
-Thanks to its generic design and TypeScript support, it ensures type safety and excellent developer experience.
-
-## Installation
-
-Install the package using npm or yarn:
-
-```bash
-npm install @scoped-observer/react-state-machine
-```
-
-⚠️ **Peer dependencies:** This package requires @scoped-observer/core as peer dependencies.
-Make sure to install them in your project:
-
-```
-npm install @scoped-observer/core
-```
+A lightweight React library providing scoped, event-driven state management hooks and a context provider.  
+Built on top of the core `@scoped-observer/core` event system, this package enables clean and flexible communication between components using scoped events — ideal for medium to large React applications requiring modular and decoupled event handling.
 
 ## Features
 
-- 🔥 Fully typed with TypeScript generics for strong type safety
-- ⚡ Simple and intuitive API: dispatch, force state, subscribe, and render prop React component
-- 🔄 Supports custom payloads on state transitions
-- 🎯 Easily integrates with React hooks and functional components
-- 🚀 Lightweight and dependency-free except React & TypeScript
-- 🔧 Flexible and generic enough for modals, wizards, tabs, and other UI state machines
-- 🛠 Custom event manager handles efficient communication and subscriptions
+- Scoped event dispatching and subscription with React hooks
+- Support for both stateful and silent event listeners
+- Simple context provider to easily integrate into your React app
+- Fully typed with TypeScript
+- Minimal dependencies and zero runtime overhead
 
-## Usage
+## When to use
 
-### Basic modal toggle example
-
-```tsx
-import React from "react";
-import { createMachine } from "your-package-name";
-
-const modalMachine = createMachine({
-  init: "close",
-  transition: {
-    close: {
-      on: {
-        TOGGLE: "open",
-        Pera: "open",
-      },
-    },
-    open: {
-      on: {
-        TOGGLE: "close",
-      },
-    },
-  },
-});
-export const Modal = () => {
-  return (
-    <>
-      <button
-        onClick={() =>
-          modalMachine.handler({
-            type: "TOGGLE",
-            payload: 1,
-          })
-        }
-      >
-        Toggle Modal
-      </button>
-
-      <modalMachine.StateMachineSlot>
-        {(data) => {
-          console.log("data", data);
-          return <></>;
-        }}
-      </modalMachine.StateMachineSlot>
-    </>
-  );
-};
-```
-
-This example demonstrates how to create a simple open/close modal state machine, handle toggle actions, force states, and subscribe to state updates with an optional payload.
-
-## API
-
-### createMachine({ init, transition })
-
-Creates a new state machine instance.
-
-- `init`: initial state (must be a key from `transition`)
-- `transition`: object mapping states to their `handle` functions
-
-**Returns:**
-
-- `handler({ type, payload? })`: Triggers a transition from the current state using the given type. If the transition exists, it updates the internal state and notifies all subscribers. An optional payload can be passed and will be sent to listeners
-- `StateMachineSlot`: a React render-prop component providing `{ state, payload }`
+If you want a flexible event system for React that goes beyond simple context or Redux, and prefer fine-grained control with scoped event dispatching — `@scoped-observer/react` is designed for you.
 
 ---
 
-### handler({ type, payload? })
+## Getting Started
 
-Triggers the current state's handler. Optionally accepts a payload.
+### Installation
 
-### StateMachineSlot
+You can install the package using npm or pnpm:
 
-A render-prop React component that provides the current state and payload:
+```bash
+npm install @scoped-observer/core
+
+npm install @scoped-observer/react
+```
+
+## Usage
+
+### Providing the Observer
+
+Wrap your React app (or part of it) with `ScopedObserverProvider` and pass your observer instance:
 
 ```tsx
-<StateMachineSlot>
-  {({ state, payload }) => (
-    // Render UI based on state and payload
-  )}
-</StateMachineSlot>
+import { createScopedObserver } from "@scoped-observer/core";
+import { ScopedObserverProvider } from "@scoped-observer/react";
+
+const observer = createScopedObserver([
+  {
+    scope: "counter",
+  },
+]);
+
+<ScopedObserverProvider observer={observer}>
+  <App />
+</ScopedObserverProvider>;
 ```
+
+---
+
+### Dispatching Events
+
+Use the `useDispatch` hook to send events within your app:
+
+```tsx
+import { useDispatch } from "@scoped-observer/react";
+
+function SomeComponent() {
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch({
+      scope: "counter",
+      eventName: "inc",
+      payload: 1,
+    });
+  };
+
+  return <button onClick={handleClick}>Select Name</button>;
+}
+```
+
+---
+
+### Subscribing with State Updates
+
+Use the `useScopedObserver` hook to subscribe to events and update local React state automatically on event dispatch:
+
+```tsx
+import { useScopedObserver } from "@scoped-observer/react";
+
+function Counter() {
+  const count = useScopedObserver(
+    0,
+    {
+      scope: "counter",
+      callback(prev, payload) {
+        return prev + payload;
+      },
+    },
+    ["inc"]
+  );
+
+  return <div>Count: {count}</div>;
+}
+```
+
+This hook maintains internal state that updates whenever the specified events are dispatched within the given scope.
+
+---
+
+### Subscribing Without Re-render
+
+Use the `useSilentScopedObserver` hook to listen for events and execute side effects without triggering a React component re-render:
+
+```tsx
+import { useSilentScopedObserver } from "@scoped-observer/react";
+
+function Logger() {
+  useSilentScopedObserver(
+    {
+      scope: "counter",
+      callback(payload) {
+        console.log("Received increment:", payload);
+      },
+    },
+    ["inc"]
+  );
+
+  return null;
+}
+```
+
+This hook is useful for cases where you want to respond to events (e.g., logging, analytics, imperative actions) without affecting the React state lifecycle.
