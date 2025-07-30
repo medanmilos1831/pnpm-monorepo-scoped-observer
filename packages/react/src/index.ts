@@ -1,2 +1,6 @@
-import pera from "@scoped-observer/core";
-console.log("heloooo");
+export {
+  ScopedObserverProvider,
+  useDispatch,
+  useScopedObserver,
+  useSilentScopedObserver,
+} from "./ScopedObserverProvider";
