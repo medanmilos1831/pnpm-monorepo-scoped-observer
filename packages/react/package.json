@@ -15,5 +15,11 @@
     "@scoped-observer/core": "workspace:*",
     "react": "^18.0.0",
     "@types/react": "^18.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medanmilos1831/scoped-observer.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/medanmilos1831/scoped-observer/tree/main/packages/react#readme"
 }
