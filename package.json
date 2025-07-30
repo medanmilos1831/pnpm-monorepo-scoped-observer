@@ -17,9 +17,9 @@
         "version:core:patch": "pnpm version patch --filter @scoped-observer/core",
         "version:core:minor": "pnpm version minor --filter @scoped-observer/core",
         "version:core:major": "pnpm version major --filter @scoped-observer/core",
-        "build:core": "pnpm run build --filter @scoped-observer/core",
+        "build:core": "pnpm --filter @scoped-observer/core run build",
         "publish:core": "pnpm publish --filter @scoped-observer/core --access public",
-        "build:react": "pnpm run build --filter @scoped-observer/react",
+        "build:react": "pnpm --filter @scoped-observer/react run build",
         "publish:react": "pnpm publish --filter @scoped-observer/react --access public"
     }
 }
