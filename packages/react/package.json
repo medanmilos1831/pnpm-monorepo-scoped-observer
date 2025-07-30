@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "peerDependencies": {
     "react": "^18.0.0",
-    "@scoped-observer/core": "^2.3.1"
+    "@scoped-observer/core": "^2.3.3"
   },
   "dependencies": {},
   "devDependencies": {
