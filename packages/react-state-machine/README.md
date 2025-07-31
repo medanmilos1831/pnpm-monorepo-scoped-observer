@@ -1,13 +1,14 @@
-## @scoped-observer/react
+# @scoped-observer/react-state-machine
 
-A lightweight, scoped event-driven state system for React.
+A lightweight, flexible state machine library built on top of an event-driven scoped observer pattern.  
+Designed to seamlessly integrate with React or work standalone, this package provides a robust way to manage state transitions using clear, typed events and scoped event dispatching.
 
-This package provides React bindings for `@scoped-observer/core`, enabling components to subscribe to scoped events and reactively update local state or side effects without the need for global stores or third-party state management libraries.
+- Strongly typed state and event definitions for maximum type safety
+- Event-based architecture enabling scalable and modular state management
+- React hooks for easy integration and reactive UI updates
+- Decoupled core logic that can be used outside React as well
 
-- 🔬 Scoped subscriptions
-- ⚡ Local reactive updates
-- 🧩 Modular and encapsulated
-- 💡 Great for micro frontends and isolated features
+Perfect for managing complex UI states, orchestrating asynchronous flows, or building scalable front-end architectures with clean separation of concerns.
 
 ## Installation
 
