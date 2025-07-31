@@ -1,6 +1,6 @@
 {
   "name": "@scoped-observer/react-state-machine",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,5 +13,11 @@
   "devDependencies": {
     "typescript": "^5.8.3",
     "@scoped-observer/core": "workspace:*"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medanmilos1831/scoped-observer.git",
+    "directory": "packages/react-state-machine"
+  },
+  "homepage": "https://github.com/medanmilos1831/scoped-observer/tree/main/packages/react-state-machine#readme"
 }
