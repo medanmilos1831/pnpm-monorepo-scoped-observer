@@ -1,5 +1,6 @@
-import { Machine } from "./Machine";
-import { TransitionMap } from "./types";
+import { useEffect, useRef, useState } from 'react';
+import { Machine } from './Machine';
+import { TransitionMap } from './types';
 
 const createMachine = <S extends string, T extends string = string>({
   init,
@@ -9,13 +10,28 @@ const createMachine = <S extends string, T extends string = string>({
   transition: TransitionMap<S, T>;
 }) => {
   const instance = new Machine<S, T>({ init, transition });
+  return instance;
+};
 
+const useMachine = <S extends string, T extends string = string>(
+  machine: Machine<S, T>
+) => {
+  const [state, setState] = useState(machine.state);
+  const payload = useRef<any>(undefined);
+  useEffect(() => {
+    const unsubscribe = machine.subscribe(({ state, payload: data }) => {
+      payload.current = data;
+      setState(state);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   return {
-    handler: instance.handler,
-    StateMachineSlot: instance.Component,
-    useMachine: instance.useMachine,
+    state,
+    payload: payload.current,
   };
 };
 
-export { createMachine };
+export { createMachine, useMachine };
 export type { TransitionMap };

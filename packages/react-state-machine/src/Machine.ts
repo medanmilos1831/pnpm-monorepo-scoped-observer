@@ -1,15 +1,14 @@
-import { createScopedObserver } from "@scoped-observer/core";
-import {
-  IStateMachine,
-  MACHINE_EVENT,
-  MACHINE_SCOPE,
-  TransitionMap,
-} from "./types";
-import { useStateMachine } from "./useStateMachine";
+import { createScopedObserver } from '@scoped-observer/core';
+import { MACHINE_EVENT, MACHINE_SCOPE, TransitionMap } from './types';
 
 export class Machine<S extends string, T extends string = string> {
-  stateMachine: IStateMachine<S, T>;
-
+  state!: S;
+  transition!: TransitionMap<S, T>;
+  manager = createScopedObserver([
+    {
+      scope: MACHINE_SCOPE,
+    },
+  ]);
   constructor({
     init,
     transition,
@@ -17,41 +16,17 @@ export class Machine<S extends string, T extends string = string> {
     init: S;
     transition: TransitionMap<S, T>;
   }) {
-    this.stateMachine = {
-      state: init,
-      manager: createScopedObserver([
-        {
-          scope: MACHINE_SCOPE,
-        },
-      ]),
-      transition,
-      dispatch: (payload: any) => {
-        this.stateMachine.manager.dispatch({
-          scope: MACHINE_SCOPE,
-          eventName: MACHINE_EVENT,
-          payload: {
-            state: this.stateMachine.state,
-            payload,
-          },
-        });
-      },
-      subscribe: (cb: (data: { state: S; payload: any }) => void) => {
-        return this.stateMachine.manager.subscribe({
-          scope: MACHINE_SCOPE,
-          eventName: MACHINE_EVENT,
-          callback: ({ payload }: any) => cb(payload),
-        });
-      },
-    };
+    this.state = init;
+    this.transition = transition;
   }
 
   handler = (data: { type: T; payload?: any }) => {
-    const currentState = this.stateMachine.state;
-    const nextState = this.stateMachine.transition[currentState].on[data.type];
+    const currentState = this.state;
+    const nextState = this.transition[currentState].on[data.type];
 
     if (nextState) {
-      this.stateMachine.state = nextState;
-      this.stateMachine.dispatch(data.payload);
+      this.state = nextState;
+      this.dispatch(data.payload);
     } else {
       console.warn(
         `[Machine] Invalid transition from "${currentState}" using type "${data.type}"`
@@ -59,17 +34,22 @@ export class Machine<S extends string, T extends string = string> {
     }
   };
 
-  Component = ({
-    children,
-  }: {
-    children: (data: { state: S; payload: any }) => React.ReactNode;
-  }) => {
-    const data = useStateMachine(this.stateMachine);
-    return children(data);
-  };
+  private dispatch(payload: any) {
+    this.manager.dispatch({
+      scope: MACHINE_SCOPE,
+      eventName: MACHINE_EVENT,
+      payload: {
+        state: this.state,
+        payload,
+      },
+    });
+  }
 
-  useMachine = () => {
-    const data = useStateMachine(this.stateMachine);
-    return data;
-  };
+  subscribe(cb: (data: { state: S; payload: any }) => void) {
+    return this.manager.subscribe({
+      scope: MACHINE_SCOPE,
+      eventName: MACHINE_EVENT,
+      callback: ({ payload }: any) => cb(payload),
+    });
+  }
 }

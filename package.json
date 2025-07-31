@@ -14,12 +14,11 @@
         "react": "^18.3.1"
     },
     "scripts": {
-        "version:core:patch": "pnpm version patch --filter @scoped-observer/core",
-        "version:core:minor": "pnpm version minor --filter @scoped-observer/core",
-        "version:core:major": "pnpm version major --filter @scoped-observer/core",
         "build:core": "pnpm --filter @scoped-observer/core run build",
         "publish:core": "pnpm publish --filter @scoped-observer/core --access public",
         "build:react": "pnpm --filter @scoped-observer/react run build",
-        "publish:react": "pnpm publish --filter @scoped-observer/react --access public"
+        "publish:react": "pnpm publish --filter @scoped-observer/react --access public",
+        "build:react-state-machine": "pnpm --filter @scoped-observer/react-state-machine run build",
+        "publish:react-state-machine": "pnpm publish --filter @scoped-observer/react-state-machine --access public"
     }
 }

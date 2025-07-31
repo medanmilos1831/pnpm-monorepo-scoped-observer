@@ -1,13 +1,13 @@
 {
   "name": "@scoped-observer/react-state-machine",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b"
   },
   "peerDependencies": {
-    "@scoped-observer/core": "^2.3.1",
+    "@scoped-observer/core": "^2.3.3",
     "react": "^18.0.0"
   },
   "devDependencies": {
