@@ -1,0 +1,17 @@
+{
+  "name": "react-visibility-state",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "@scoped-observer/react-state-machine": "^3.0.3"
+  },
+  "devDependencies": {
+    "@scoped-observer/react-state-machine": "workspace:*",
+    "typescript": "^5.0.0"
+  }
+}

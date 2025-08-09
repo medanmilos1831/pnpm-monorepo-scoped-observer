@@ -19,6 +19,8 @@
         "build:react": "pnpm --filter @scoped-observer/react run build",
         "publish:react": "pnpm publish --filter @scoped-observer/react --access public",
         "build:react-state-machine": "pnpm --filter @scoped-observer/react-state-machine run build",
-        "publish:react-state-machine": "pnpm publish --filter @scoped-observer/react-state-machine --access public"
+        "publish:react-state-machine": "pnpm publish --filter @scoped-observer/react-state-machine --access public",
+        "build:react-visibility-state": "pnpm --filter react-visibility-state run build",
+        "publish:react-visibility-state": "pnpm publish --filter react-visibility-state --access public"
     }
 }
