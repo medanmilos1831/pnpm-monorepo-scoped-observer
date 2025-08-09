@@ -1,6 +1,6 @@
-export { createVisibilityRegistry } from './createVisibilityRegistry';
+export { createVisibilityRegistry } from "./createVisibilityRegistry";
 export {
   VisibilityStateProvider,
   VisibilityHandler,
   useVisibility,
-} from './VisibilityStateProvider';
+} from "./VisibilityStateProvider";

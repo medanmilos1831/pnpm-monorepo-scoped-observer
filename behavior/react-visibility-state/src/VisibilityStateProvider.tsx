@@ -16,8 +16,10 @@ const VisibilityContext = createContext<VisibilityRegistry | undefined>(
   undefined
 );
 
-const VisibilityStateProvider = ({ children }: PropsWithChildren) => {
-  const [value] = useState(() => createVisibilityRegistry());
+const VisibilityStateProvider = ({
+  children,
+  value,
+}: PropsWithChildren<{ value: VisibilityRegistry }>) => {
   return (
     <VisibilityContext.Provider value={value}>
       {children}
@@ -75,4 +77,9 @@ const useVisibility = (name: string) => {
   };
 };
 
-export { VisibilityHandler, VisibilityStateProvider, useVisibility };
+export {
+  VisibilityHandler,
+  VisibilityStateProvider,
+  useVisibility,
+  createVisibilityRegistry,
+};

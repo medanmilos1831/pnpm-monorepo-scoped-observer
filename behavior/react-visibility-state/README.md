@@ -30,7 +30,7 @@ npm install react-visibility-state
 npm install react @scoped-observer/react-state-machine
 ```
 
-## Usage Example with Ant Design Modal
+## Usage Example
 
 This example demonstrates how to use `react-visibility-state` to manage visibility state of multiple modals across different components using `VisibilityProvider`, `VisibilityHandler`, and `useVisibility` hook.
 
@@ -40,63 +40,43 @@ import {
   useVisibility,
   VisibilityHandler,
   VisibilityProvider,
+  createVisibilityRegistry,
 } from "react-visibility-state";
 
+const value = createVisibilityRegistry();
+
 const SomeComponentOne = () => {
-  return <span>SomeComponentOne</span>;
+  const item = useVisibility("two");
+  return (
+    <>
+      <span>SomeComponentOne</span>
+      <button onClick={() => item.handle(1)}>open modal</button>
+    </>
+  );
 };
 
 const SomeComponentTwo = () => {
   return (
     <>
-      <span>SomeComponentTwo</span>
-      <VisibilityHandler name="two">
-        {(state, toggle) => (
-          <Modal open={state === "open"} onCancel={toggle} closable>
-            <span>Modal Two Content</span>
-          </Modal>
-        )}
+      <VisibilityHandler name={"two"}>
+        {(data, handler) => {
+          return (
+            <Modal open={data === "open"} onCancel={handler} closable>
+              {/* element */}
+            </Modal>
+          );
+        }}
       </VisibilityHandler>
     </>
   );
 };
 
-const HomePage = () => {
-  const modalOne = useVisibility("one");
-  const modalTwo = useVisibility("two");
-
-  return (
-    <div>
-      <button onClick={() => modalOne.handle()}>Open Modal One</button>
-
-      <VisibilityHandler name="one">
-        {(state, toggle) => (
-          <Modal
-            open={state === "open"}
-            onCancel={toggle}
-            closable
-            onOk={() => {
-              modalTwo.handle();
-            }}
-          >
-            <span>Modal One Content</span>
-          </Modal>
-        )}
-      </VisibilityHandler>
-
-      <br />
-      <SomeComponentOne />
-      <br />
-      <SomeComponentTwo />
-    </div>
-  );
-};
-
 export const App = () => (
   <div style={{ background: "black", height: "100vh", color: "white" }}>
-    <VisibilityProvider>
-      <HomePage />
-    </VisibilityProvider>
+    <VisibilityStateProvider value={value}>
+      <SomeComponentTwo />
+      <SomeComponentOne />
+    </VisibilityStateProvider>
   </div>
 );
 ```
