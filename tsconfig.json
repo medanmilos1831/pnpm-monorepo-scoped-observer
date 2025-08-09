@@ -16,7 +16,6 @@
   "references": [
     { "path": "./packages/core" },
     { "path": "./packages/react-state-machine" },
-    { "path": "./packages/react-visibility" },
     { "path": "./behavior/react-visibility-state" }
   ]
 }
