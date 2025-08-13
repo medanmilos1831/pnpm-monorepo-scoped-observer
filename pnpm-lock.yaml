@@ -35,6 +35,19 @@ importers:
         specifier: ^5.0.0
         version: 5.8.3
 
+  behavior/react-wizzard:
+    dependencies:
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+    devDependencies:
+      '@scoped-observer/react-state-machine':
+        specifier: workspace:*
+        version: link:../../packages/react-state-machine
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+
   packages/core: {}
 
   packages/react:

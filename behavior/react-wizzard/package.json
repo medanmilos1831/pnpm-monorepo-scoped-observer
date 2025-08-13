@@ -1,0 +1,23 @@
+{
+  "name": "react-wizzard",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "@scoped-observer/react-state-machine": "^3.0.3"
+  },
+  "devDependencies": {
+    "@scoped-observer/react-state-machine": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medanmilos1831/scoped-observer.git",
+    "directory": "behavior/react-wizzard"
+  },
+  "homepage": "https://github.com/medanmilos1831/scoped-observer/tree/main/behavior/react-wizzard#readme"
+}
