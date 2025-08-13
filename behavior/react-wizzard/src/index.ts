@@ -1,6 +1,2 @@
-export { createVisibilityRegistry } from "./createVisibilityRegistry";
-export {
-  VisibilityStateProvider,
-  VisibilityHandler,
-  useVisibility,
-} from "./VisibilityStateProvider";
+export { WizzardProvider, useWizzard, WizzardClient } from './WizzardProvider';
+export { Wizzard } from './Wizzard';
