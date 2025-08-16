@@ -1,13 +1,13 @@
 {
   "name": "@scoped-observer/react-state-machine",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b"
   },
   "peerDependencies": {
-    "@scoped-observer/core": "^2.3.3",
+    "@scoped-observer/core": "^2.3.5",
     "react": "^18.0.0"
   },
   "devDependencies": {
@@ -17,7 +17,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/medanmilos1831/scoped-observer.git",
-    "directory": "packages/react-state-machine"
+    "directory": "scoped-observer/react-state-machine"
   },
-  "homepage": "https://github.com/medanmilos1831/scoped-observer/tree/main/packages/react-state-machine#readme"
+  "homepage": "https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/react-state-machine#readme"
 }
