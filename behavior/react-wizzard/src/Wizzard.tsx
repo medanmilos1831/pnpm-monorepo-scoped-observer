@@ -1,6 +1,6 @@
-import { PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { WizzardContext } from './WizzardProvider';
-import { WizzardService } from './WizzardService';
+import { PropsWithChildren, useContext, useEffect, useState } from "react";
+import { WizzardContext } from "./WizzardProvider";
+import { WizzardService } from "./WizzardService";
 
 export const Wizzard = ({
   children,
@@ -13,7 +13,7 @@ export const Wizzard = ({
   steps: { [key: string]: { element: (props: any) => JSX.Element } };
 }>) => {
   const context = useContext(WizzardContext)!;
-  const [wizzard] = useState(() => {
+  useState(() => {
     const item = new WizzardService({
       name,
       init,
