@@ -1,10 +1,10 @@
-import { EventEntity } from './EventEntity';
-import { actionType, interceptorType, subscribeType } from './types';
+import { EventEntity } from "./EventEntity";
+import { actionType, interceptorType, subscribeType } from "./types";
 
 export class ScopedObserver {
   events: { [key: string]: EventEntity } = {};
   protected log(
-    type: 'dispatch' | 'subscribe' | 'interceptor',
+    type: "dispatch" | "subscribe" | "interceptor",
     payload: any,
     scope: string,
     eventName: string
@@ -20,7 +20,7 @@ export class ScopedObserver {
   }
 
   findScope(scope: string) {
-    const scopes = scope.split(':').filter(Boolean);
+    const scopes = scope.split(":").filter(Boolean);
     let current = this.events;
     for (let i = 0; i < scopes.length; i++) {
       const key = scopes[i];
@@ -40,9 +40,11 @@ export class ScopedObserver {
   scopedObserverAction = ({ scope, eventName, payload }: actionType) => {
     let entity = this.findScope(scope);
     if (!entity) return;
-    entity.lastEventPayloads.set(eventName, payload);
+    if (!entity.listeners.has(eventName)) {
+      entity.lastEventPayloads.set(eventName, payload);
+    }
     if (entity.log) {
-      this.log('dispatch', payload, scope, eventName);
+      this.log("dispatch", payload, scope, eventName);
     }
     if (!entity.listeners.has(eventName)) {
       return;
@@ -67,7 +69,7 @@ export class ScopedObserver {
           : { payload: e.detail.payload }
       );
       if (entity.log) {
-        this.log('subscribe', e.detail.payload, scope, eventName);
+        this.log("subscribe", e.detail.payload, scope, eventName);
       }
     });
     return unsubscribe;
@@ -91,7 +93,7 @@ export class ScopedObserver {
     event: EventEntity,
     eventDetail: any,
     scope: string,
-    eventName: interceptorType['eventName']
+    eventName: interceptorType["eventName"]
   ) {
     let payload = eventDetail.payload;
 
@@ -99,11 +101,11 @@ export class ScopedObserver {
     if (event.eventInterceptor.has(eventName)) {
       event.eventInterceptor
         .get(eventName)!
-        .forEach((callback: interceptorType['callback']) => {
+        .forEach((callback: interceptorType["callback"]) => {
           // Update the payload with each interceptor’s return value
 
           payload = callback(payload);
-          this.log('interceptor', payload, scope, eventName);
+          this.log("interceptor", payload, scope, eventName);
         });
     }
 

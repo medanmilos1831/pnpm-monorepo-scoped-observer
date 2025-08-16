@@ -44,7 +44,4 @@ export class EventEntity extends EventTarget {
   setDispatchCache = (eventName: string, payload: any) => {
     this.lastEventPayloads.set(eventName, payload);
   };
-  getDispatchCache = (eventName: string) => {
-    this.lastEventPayloads.get(eventName);
-  };
 }
