@@ -33,9 +33,12 @@ Thumbs.db
 .env.*
 
 # Monorepo-specific
-packages/*/dist/
-packages/*/build/
-packages/*/node_modules/
+scoped-observer/*/dist/
+scoped-observer/*/build/
+scoped-observer/*/node_modules/
+behavior/*/dist/
+behavior/*/build/
+behavior/*/node_modules/
 
 # Optional: IDEs
 .idea/

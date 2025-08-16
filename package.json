@@ -1,5 +1,5 @@
 {
-    "name": "pnpm-monorepo-scoped-observer",
+    "name": "pnpm-monorepo",
     "private": true,
     "version": "1.0.0",
     "workspaces": [
