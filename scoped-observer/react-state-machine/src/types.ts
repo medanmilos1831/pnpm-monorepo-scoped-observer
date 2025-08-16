@@ -1,5 +1,7 @@
-export const MACHINE_EVENT = "machineEvent";
-export const MACHINE_SCOPE = "machineScope";
+import { IScopedObserver } from '../scoped-observer';
+
+export const MACHINE_EVENT = 'machineEvent';
+export const MACHINE_SCOPE = 'machineScope';
 
 export type TransitionMap<S extends string, T extends string = string> = {
   [K in S]: {

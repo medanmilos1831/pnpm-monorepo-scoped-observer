@@ -1,24 +1,22 @@
 # @scoped-observer/react-state-machine
 
-A lightweight, flexible state machine library built on top of an event-driven scoped observer pattern.  
-Designed to seamlessly integrate with React or work standalone, this package provides a robust way to manage state transitions using clear, typed events and scoped event dispatching.
+A lightweight, fully typed, and flexible state machine implementation for React applications.  
+This package enables clean and predictable state transitions with a simple API, seamlessly integrated with React hooks and render props.
 
-- Strongly typed state and event definitions for maximum type safety
-- Event-based architecture enabling scalable and modular state management
-- React hooks for easy integration and reactive UI updates
-- Decoupled core logic that can be used outside React as well
-
-Perfect for managing complex UI states, orchestrating asynchronous flows, or building scalable front-end architectures with clean separation of concerns.
+It is designed to work well for common UI patterns such as modals, drawers, wizards, tabs, and more — anywhere you need controlled state management with clear transitions.  
+Thanks to its generic design and TypeScript support, it ensures type safety and excellent developer experience.
 
 ## Installation
 
-You need both the core package and the React bindings:
+Install the package using npm:
 
 ```bash
-npm i @scoped-observer/core
-
-npm i @scoped-observer/react-state-machine
+npm install @scoped-observer/react-state-machine
 ```
+
+> **Note:**  
+> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/core`.  
+> Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
 
 ## Example Usage
 
@@ -57,12 +55,13 @@ const SomeComponent = () => {
 };
 
 const HomePage = () => {
+  const { send } = useMachine(SomeMachine);
   return (
     <div>
       <h1>Home Page</h1>
       <button
         onClick={() =>
-          SomeMachine.handler({
+          send({
             type: "TOGGLE",
             payload: 111,
           })

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useSyncExternalStore } from 'react';
 import { Machine } from './Machine';
 import { TransitionMap } from './types';
 
@@ -16,21 +16,20 @@ const createMachine = <S extends string, T extends string = string>({
 const useMachine = <S extends string, T extends string = string>(
   machine: Machine<S, T>
 ) => {
-  const [state, setState] = useState(machine.state);
-  const payload = useRef<any>(undefined);
-  useEffect(() => {
-    const unsubscribe = machine.subscribe(({ state, payload: data }) => {
-      payload.current = data;
-      setState(state);
+  const payloadRef = useRef<any>(undefined);
+
+  const subscribe = (callback: () => void) => {
+    return machine.subscribe(({ payload }) => {
+      payloadRef.current = payload;
+      callback();
     });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-  return {
-    state,
-    payload: payload.current,
   };
+
+  const getSnapshot = () => machine.state;
+
+  const state = useSyncExternalStore(subscribe, getSnapshot);
+
+  return { state, payload: payloadRef.current, send: machine.handler };
 };
 
 export { createMachine, useMachine };
