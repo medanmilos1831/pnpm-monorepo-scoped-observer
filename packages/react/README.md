@@ -1,12 +1,10 @@
 # @scoped-observer/react
 
-A lightweight React library providing scoped, event-driven state management hooks and a context provider.  
 Built on top of the core `@scoped-observer/core` event system, this package enables clean and flexible communication between components using scoped events — ideal for medium to large React applications requiring modular and decoupled event handling.
 
 ## Features
 
 - Scoped event dispatching and subscription with React hooks
-- Support for both stateful and silent event listeners
 - Simple context provider to easily integrate into your React app
 - Fully typed with TypeScript
 - Minimal dependencies and zero runtime overhead
@@ -76,53 +74,25 @@ function SomeComponent() {
 
 ---
 
-### Subscribing with State Updates
+### Subscribing
 
-Use the `useScopedObserver` hook to subscribe to events and update local React state automatically on event dispatch:
+Use the `useSubscribe` hook to subscribe to events:
 
 ```tsx
-import { useScopedObserver } from "@scoped-observer/react";
+import { useSubscribe } from "@scoped-observer/react";
 
 function Counter() {
-  const count = useScopedObserver(
-    0,
+  const [counter, setCounter] = useState(0);
+  useSubscribe(
     {
       scope: "counter",
-      callback(prev, payload) {
-        return prev + payload;
+      callback({ payload }) {
+        setCounter((prev) => prev + payload);
       },
     },
     ["inc"]
   );
 
-  return <div>Count: {count}</div>;
+  return <div>Count: {counter}</div>;
 }
 ```
-
-This hook maintains internal state that updates whenever the specified events are dispatched within the given scope.
-
----
-
-### Subscribing Without Re-render
-
-Use the `useSilentScopedObserver` hook to listen for events and execute side effects without triggering a React component re-render:
-
-```tsx
-import { useSilentScopedObserver } from "@scoped-observer/react";
-
-function Logger() {
-  useSilentScopedObserver(
-    {
-      scope: "counter",
-      callback(payload) {
-        console.log("Received increment:", payload);
-      },
-    },
-    ["inc"]
-  );
-
-  return null;
-}
-```
-
-This hook is useful for cases where you want to respond to events (e.g., logging, analytics, imperative actions) without affecting the React state lifecycle.

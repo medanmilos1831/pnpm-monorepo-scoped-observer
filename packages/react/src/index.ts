@@ -1,6 +1,5 @@
 export {
   ScopedObserverProvider,
   useDispatch,
-  useScopedObserver,
-  useSilentScopedObserver,
+  useSubscribe,
 } from "./ScopedObserverProvider";

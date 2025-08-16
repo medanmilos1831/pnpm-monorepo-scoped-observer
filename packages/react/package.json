@@ -1,6 +1,6 @@
 {
   "name": "@scoped-observer/react",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "@scoped-observer/core": "^2.3.3"
+    "@scoped-observer/core": "^2.3.4"
   },
   "dependencies": {},
   "devDependencies": {

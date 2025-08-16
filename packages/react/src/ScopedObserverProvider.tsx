@@ -1,11 +1,5 @@
-import { IScopedObserver } from '@scoped-observer/core';
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { IScopedObserver } from "@scoped-observer/core";
+import { createContext, PropsWithChildren, useContext, useEffect } from "react";
 
 const ScopedObserverContext = createContext<IScopedObserver | undefined>(
   undefined
@@ -28,61 +22,24 @@ const useDispatch = () => {
     context?.dispatch(prop);
 };
 
-function useScopedObserver<T>(
-  initState: T,
-  {
-    scope,
-    callback,
-  }: { scope: string; callback: (prev: T, payload: any) => T },
-  events: string[]
-): T {
-  const [state, setState] = useState<T>(initState);
-  const context = useContext(ScopedObserverContext)!;
-
-  useEffect(() => {
-    const clear = events.map((event) =>
-      context.subscribe({
-        scope,
-        callback: ({ payload }) => {
-          setState((prev) => callback(prev, payload));
-        },
-        eventName: event,
-      })
-    );
-    return () => {
-      clear.forEach((item) => item());
-    };
-  }, [scope, events.join(',')]);
-
-  return state;
-}
-
-const useSilentScopedObserver = (
+const useSubscribe = (
   { scope, callback }: { scope: string; callback: (payload: any) => void },
   events: string[]
 ) => {
   const context = useContext(ScopedObserverContext)!;
 
   useEffect(() => {
-    const clear = events.map((event) =>
+    const clean = events.map((event) =>
       context.subscribe({
         scope,
         eventName: event,
-        callback: ({ payload }) => {
-          callback(payload);
-        },
+        callback,
       })
     );
-
     return () => {
-      clear.forEach((unsubscribe) => unsubscribe());
+      clean.forEach((unsubscribe) => unsubscribe());
     };
-  }, [scope, events.join(',')]);
+  }, [scope, events, context]);
 };
 
-export {
-  ScopedObserverProvider,
-  useDispatch,
-  useScopedObserver,
-  useSilentScopedObserver,
-};
+export { ScopedObserverProvider, useSubscribe, useDispatch };
