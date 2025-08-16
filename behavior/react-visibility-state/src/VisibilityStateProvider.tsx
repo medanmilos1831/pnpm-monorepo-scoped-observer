@@ -5,12 +5,12 @@ import {
   useEffect,
   ReactNode,
   useState,
-} from 'react';
+} from "react";
 import {
   createVisibilityRegistry,
   VisibilityRegistry,
-} from './createVisibilityRegistry';
-import { useMachine } from '@scoped-observer/react-state-machine';
+} from "./createVisibilityRegistry";
+import { useMachine } from "@scoped-observer/react-state-machine";
 
 const VisibilityContext = createContext<VisibilityRegistry | undefined>(
   undefined
@@ -30,7 +30,7 @@ const VisibilityStateProvider = ({
 type VisibilityHandlerProps = {
   name: string;
   children: (
-    props: 'open' | 'close',
+    props: "open" | "close",
     handler: (payload?: any) => void
   ) => ReactNode;
 };
@@ -38,7 +38,7 @@ type VisibilityHandlerProps = {
 const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
   const context = useContext(VisibilityContext);
   if (!context) {
-    throw new Error('VisibilityHandler must be used within VisibilityProvider');
+    throw new Error("VisibilityHandler must be used within VisibilityProvider");
   }
   const [machine] = useState(() => context.subscribe(name));
 
@@ -50,13 +50,13 @@ const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
     };
   }, [name]);
 
-  const state = machine.state as 'open' | 'close';
+  const state = machine.state as "open" | "close";
 
   return (
     <>
       {children(state, (payload?: any) => {
         machine.handler({
-          type: 'TOGGLE',
+          type: "TOGGLE",
           payload,
         });
       })}
@@ -67,7 +67,7 @@ const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
 const useVisibility = (name: string) => {
   const context = useContext(VisibilityContext);
   if (!context) {
-    throw new Error('useVisibility must be used within VisibilityProvider');
+    throw new Error("useVisibility must be used within VisibilityProvider");
   }
 
   return {
