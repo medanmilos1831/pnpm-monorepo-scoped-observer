@@ -14,8 +14,8 @@
     "baseUrl": "."
   },
   "references": [
-    { "path": "./packages/core" },
-    { "path": "./packages/react-state-machine" },
+    { "path": "./scoped-observer/core" },
+    { "path": "./scoped-observer/react-state-machine" },
     { "path": "./behavior/react-visibility-state" },
     { "path": "./behavior/react-wizzard" }
   ]
