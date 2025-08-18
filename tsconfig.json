@@ -16,6 +16,7 @@
   "references": [
     { "path": "./scoped-observer/core" },
     { "path": "./scoped-observer/react-state-machine" },
+    { "path": "./scoped-observer/react-store" },
     { "path": "./behavior/react-visibility-state" },
     { "path": "./behavior/react-wizzard" }
   ]
