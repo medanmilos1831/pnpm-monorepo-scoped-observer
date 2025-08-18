@@ -1,6 +1,5 @@
-import { useMachine } from '@scoped-observer/react-state-machine';
-import { createContext, PropsWithChildren, useContext } from 'react';
-import { WizzardClient } from './WizzardClient';
+import { createContext, PropsWithChildren, useContext } from "react";
+import { WizzardClient } from "./WizzardClient";
 
 export const WizzardContext = createContext<WizzardClient | undefined>(
   undefined
@@ -18,10 +17,10 @@ const WizzardProvider = ({
 const useWizzard = (name: string) => {
   const context = useContext(WizzardContext)!;
   if (!context) {
-    throw new Error('useWizzard must be used within WizzardProvider');
+    throw new Error("useWizzard must be used within WizzardProvider");
   }
   let wizzard = context.getWizzardByName(name);
-  useMachine(wizzard.machine);
+  wizzard.machine.useMachine();
   return {
     totalSteps: wizzard.totalSteps,
     stepsName: wizzard.stepsName,

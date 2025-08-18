@@ -1,4 +1,4 @@
-import { createMachine } from '@scoped-observer/react-state-machine';
+import { createMachine } from "@scoped-observer/react-state-machine";
 
 type StepConfig<T extends string> = Record<
   T,
