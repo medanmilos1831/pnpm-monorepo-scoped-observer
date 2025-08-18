@@ -1,6 +1,6 @@
 {
   "name": "react-visibility-state",
-  "version": "1.0.7",
+  "version": "1.0.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "@scoped-observer/react-state-machine": "^3.0.5"
+    "@scoped-observer/react-state-machine": "^3.0.6"
   },
   "devDependencies": {
     "@scoped-observer/react-state-machine": "workspace:*",

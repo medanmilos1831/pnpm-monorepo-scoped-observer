@@ -1,4 +1,4 @@
-import { createVisibilityMachine } from './createVisibilityMachine';
+import { createVisibilityMachine } from "./createVisibilityMachine";
 
 export type VisibilityMachine = ReturnType<typeof createVisibilityMachine>;
 
@@ -51,7 +51,7 @@ export const createVisibilityRegistry = (): VisibilityRegistry => {
     handleVisibility(name: string, payload?: VisibilityPayload): void {
       const machine = registry.get(name);
       if (machine) {
-        machine.handler({ type: 'TOGGLE', payload });
+        machine.send({ type: "TOGGLE", payload });
       } else {
         fallbackHandler.handler(name);
       }

@@ -1,17 +1,17 @@
-import { createMachine } from '@scoped-observer/react-state-machine';
+import { createMachine } from "@scoped-observer/react-state-machine";
 
 export const createVisibilityMachine = () => {
   return createMachine({
-    init: 'close',
+    init: "close",
     transition: {
       close: {
         on: {
-          TOGGLE: 'open',
+          TOGGLE: "open",
         },
       },
       open: {
         on: {
-          TOGGLE: 'close',
+          TOGGLE: "close",
         },
       },
     },

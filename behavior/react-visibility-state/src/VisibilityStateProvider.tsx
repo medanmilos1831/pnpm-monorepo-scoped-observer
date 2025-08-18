@@ -10,7 +10,6 @@ import {
   createVisibilityRegistry,
   VisibilityRegistry,
 } from "./createVisibilityRegistry";
-import { useMachine } from "@scoped-observer/react-state-machine";
 
 const VisibilityContext = createContext<VisibilityRegistry | undefined>(
   undefined
@@ -42,7 +41,7 @@ const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
   }
   const [machine] = useState(() => context.subscribe(name));
 
-  useMachine(machine);
+  const { state } = machine.useMachine();
 
   useEffect(() => {
     return () => {
@@ -50,12 +49,10 @@ const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
     };
   }, [name]);
 
-  const state = machine.state as "open" | "close";
-
   return (
     <>
       {children(state, (payload?: any) => {
-        machine.handler({
+        machine.send({
           type: "TOGGLE",
           payload,
         });
