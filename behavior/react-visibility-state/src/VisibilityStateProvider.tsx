@@ -4,7 +4,6 @@ import {
   useContext,
   useEffect,
   ReactNode,
-  useState,
 } from "react";
 import {
   createVisibilityRegistry,
@@ -39,9 +38,8 @@ const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
   if (!context) {
     throw new Error("VisibilityHandler must be used within VisibilityProvider");
   }
-  const [machine] = useState(() => context.subscribe(name));
 
-  const { state } = machine.useMachine();
+  const { state, send } = context.subscribe(name).useMachine();
 
   useEffect(() => {
     return () => {
@@ -52,7 +50,7 @@ const VisibilityHandler = ({ children, name }: VisibilityHandlerProps) => {
   return (
     <>
       {children(state, (payload?: any) => {
-        machine.send({
+        send({
           type: "TOGGLE",
           payload,
         });
@@ -74,9 +72,24 @@ const useVisibility = (name: string) => {
   };
 };
 
+const useVisibilityStateClient = () => {
+  const context = useContext(VisibilityContext);
+  if (!context) {
+    throw new Error(
+      "useVisibilityStateClient must be used within VisibilityProvider"
+    );
+  }
+  return {
+    handleVisibility(name: string, payload?: any) {
+      context.handleVisibility(name, payload);
+    },
+  };
+};
+
 export {
   VisibilityHandler,
   VisibilityStateProvider,
   useVisibility,
   createVisibilityRegistry,
+  useVisibilityStateClient,
 };

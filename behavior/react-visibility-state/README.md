@@ -41,16 +41,17 @@ import {
   VisibilityHandler,
   VisibilityProvider,
   createVisibilityRegistry,
+  useVisibilityStateClient,
 } from "react-visibility-state";
 
 const value = createVisibilityRegistry();
 
 const SomeComponentOne = () => {
-  const item = useVisibility("two");
+  const { handleVisibility } = useVisibilityStateClient();
   return (
     <>
       <span>SomeComponentOne</span>
-      <button onClick={() => item.handle(1)}>open modal</button>
+      <button onClick={() => handleVisibility("userModal")}>open modal</button>
     </>
   );
 };
@@ -58,7 +59,7 @@ const SomeComponentOne = () => {
 const SomeComponentTwo = () => {
   return (
     <>
-      <VisibilityHandler name={"two"}>
+      <VisibilityHandler name={"userModal"}>
         {(data, handler) => {
           return (
             <Modal open={data === "open"} onCancel={handler} closable>
