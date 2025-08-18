@@ -1,4 +1,4 @@
-import { createMachine } from "@scoped-observer/react-state-machine";
+import { createMachine } from '@scoped-observer/react-state-machine';
 
 type StepConfig<T extends string> = Record<
   T,
@@ -73,7 +73,7 @@ export class WizzardService<T extends string = string> {
     this.isFirst = this.activeStep === this.keys[0];
     this.isLast = this.activeStep === this.keys[this.keys.length - 1];
 
-    this.machine.handler({ type: step });
+    this.machine.send({ type: step });
   }
 
   nextStep() {

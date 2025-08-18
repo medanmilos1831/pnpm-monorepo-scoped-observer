@@ -54,13 +54,16 @@ const WizardBody = () => {
   return (
     <div>
       <h2>Current Step: {wizard.activeStep}</h2>
-      <button onClick={() => wizard.prevStep()} disabled={wizard.isFirst}>
-        Prev
-      </button>
-      <button onClick={() => wizard.nextStep()} disabled={wizard.isLast}>
-        Next
-      </button>
     </div>
+  );
+};
+const WizzFooter = () => {
+  const wizz = useWizzardClient().getWizzardClient("myWizard");
+  return (
+    <>
+      <button onClick={() => wizz.prevStep()}>Prev</button>
+      <button onClick={() => wizz.nextStep()}>Next</button>
+    </>
   );
 };
 
@@ -76,6 +79,7 @@ export const App = () => (
       }}
     >
       <WizardBody />
+      <WizzFooter />
     </Wizzard>
   </WizzardProvider>
 );

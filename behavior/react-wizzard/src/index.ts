@@ -1,2 +1,7 @@
-export { WizzardProvider, useWizzard, WizzardClient } from './WizzardProvider';
+export {
+  WizzardProvider,
+  useWizzard,
+  WizzardClient,
+  useWizzardClient,
+} from './WizzardProvider';
 export { Wizzard } from './Wizzard';
