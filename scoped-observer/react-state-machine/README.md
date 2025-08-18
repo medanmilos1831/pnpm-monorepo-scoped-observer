@@ -27,7 +27,7 @@ import {
   useMachine,
 } from "@scoped-observer/react-state-machine";
 
-const SomeMachine = createMachine({
+const machine = createMachine({
   init: "open",
   transition: {
     close: {
@@ -44,7 +44,7 @@ const SomeMachine = createMachine({
 });
 
 const SomeComponent = () => {
-  const { state, payload } = useMachine(SomeMachine);
+  const { state, payload, send } = machine.useMachine();
 
   return (
     <div>
@@ -55,15 +55,14 @@ const SomeComponent = () => {
 };
 
 const HomePage = () => {
-  const { send } = useMachine(SomeMachine);
   return (
     <div>
       <h1>Home Page</h1>
       <button
         onClick={() =>
-          send({
+          machine.send({
             type: "TOGGLE",
-            payload: 111,
+            payload: 1,
           })
         }
       >

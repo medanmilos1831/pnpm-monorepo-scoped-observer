@@ -1,36 +1,69 @@
-import { useRef, useSyncExternalStore } from 'react';
-import { Machine } from './Machine';
-import { TransitionMap } from './types';
+import { useRef, useSyncExternalStore } from "react";
+import { createScopedObserver } from "@scoped-observer/core";
+import { TransitionMap } from "./types";
 
-const createMachine = <S extends string, T extends string = string>({
+const MACHINE_SCOPE = "machineScope";
+const MACHINE_EVENT = "machineEvent";
+
+type Event<T extends string, P = any> = {
+  type: T;
+  payload?: P;
+};
+
+const createMachine = <S extends string, T extends string, P = any>({
   init,
   transition,
 }: {
   init: S;
   transition: TransitionMap<S, T>;
 }) => {
-  const instance = new Machine<S, T>({ init, transition });
-  return instance;
-};
+  const manager = createScopedObserver([
+    {
+      scope: MACHINE_SCOPE,
+    },
+  ]);
 
-const useMachine = <S extends string, T extends string = string>(
-  machine: Machine<S, T>
-) => {
-  const payloadRef = useRef<any>(undefined);
-
-  const subscribe = (callback: () => void) => {
-    return machine.subscribe(({ payload }) => {
-      payloadRef.current = payload;
-      callback();
+  const handler = (data: Event<T, P>) => {
+    const next = transition[init].on[data.type];
+    if (!next) {
+      console.warn(
+        `[Machine] Invalid transition from "${init}" using type "${data.type}"`
+      );
+      return;
+    }
+    init = next;
+    manager.dispatch({
+      scope: MACHINE_SCOPE,
+      eventName: MACHINE_EVENT,
+      payload: data.payload,
     });
   };
 
-  const getSnapshot = () => machine.state;
+  return {
+    send: handler,
+    useMachine() {
+      const payloadRef = useRef<P | undefined>(undefined);
 
-  const state = useSyncExternalStore(subscribe, getSnapshot);
+      const subscribe = (callback: () => void) => {
+        return manager.subscribe({
+          scope: MACHINE_SCOPE,
+          eventName: MACHINE_EVENT,
+          callback: ({ payload }: { payload: P }) => {
+            payloadRef.current = payload;
+            callback();
+          },
+        });
+      };
 
-  return { state, payload: payloadRef.current, send: machine.handler };
+      const state = useSyncExternalStore(subscribe, () => init);
+
+      return {
+        state: state,
+        payload: payloadRef.current,
+        send: handler,
+      };
+    },
+  };
 };
 
-export { createMachine, useMachine };
-export type { TransitionMap };
+export { createMachine };
