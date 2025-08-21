@@ -18,6 +18,7 @@
     { "path": "./scoped-observer/react-state-machine" },
     { "path": "./scoped-observer/react-store" },
     { "path": "./behavior/react-visibility-state" },
-    { "path": "./behavior/react-wizzard" }
+    { "path": "./behavior/react-wizzard" },
+    { "path": "./behavior/react-scrollium" }
   ]
 }

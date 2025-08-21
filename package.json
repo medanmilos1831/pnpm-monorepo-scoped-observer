@@ -26,6 +26,8 @@
         "build:react-visibility-state": "pnpm --filter react-visibility-state run build",
         "publish:react-visibility-state": "pnpm publish --filter react-visibility-state --access public",
         "build:react-wizzard": "pnpm --filter react-wizzard run build",
-        "publish:react-wizzard": "pnpm publish --filter react-wizzard --access public"
+        "publish:react-wizzard": "pnpm publish --filter react-wizzard --access public",
+        "build:react-scrollium": "pnpm --filter react-scrollium run build",
+        "publish:react-scrollium": "pnpm publish --filter react-scrollium --access public"
     }
 }
