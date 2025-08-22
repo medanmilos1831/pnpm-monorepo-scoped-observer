@@ -1,6 +1,6 @@
 {
   "name": "react-scrollium",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "@scoped-observer/react-store": "^3.0.1"
+    "@scoped-observer/react-store": "^3.0.2"
   },
   "devDependencies": {
     "@scoped-observer/react-store": "workspace:*",
