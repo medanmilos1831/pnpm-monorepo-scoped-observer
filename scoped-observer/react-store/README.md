@@ -72,3 +72,16 @@ export const App = () => {
   );
 };
 ```
+
+### 🔇 Silent updates
+
+Sometimes you may want to update the state **without emitting an event** (e.g. during initialization or hydration).  
+You can achieve this by passing `silent: true` to the `action` call.
+
+```tsx
+action({
+  type: "updateAge",
+  payload: 5,
+  silent: true, // 👈 state will be updated, but no event is dispatched
+});
+```

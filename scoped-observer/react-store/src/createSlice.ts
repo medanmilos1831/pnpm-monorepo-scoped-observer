@@ -1,6 +1,6 @@
-import { useSyncExternalStore } from "react";
-import { createScopedObserver } from "@scoped-observer/core";
-import { Slice } from "./types";
+import { useSyncExternalStore } from 'react';
+import { createScopedObserver } from '@scoped-observer/core';
+import { Slice } from './types';
 
 function createSlice<T, E extends string>(config: {
   scope: string;
@@ -47,11 +47,14 @@ function createSlice<T, E extends string>(config: {
     action({
       type,
       payload,
+      silent = false,
     }: {
       type: keyof typeof config.onEvent;
       payload?: any;
+      silent?: boolean;
     }) {
       config.state = config.onEvent[type](config.state, payload);
+      if (silent) return;
       manager.dispatch({
         scope: config.scope,
         eventName: type,
