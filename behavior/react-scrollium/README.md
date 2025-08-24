@@ -43,22 +43,20 @@ import {
 
 export const HomePage = () => {
   // Create two independent scroll objects
-  const scrollOne = useScroll();
-  const scrollTwo = useScroll();
+  const scrollOne = useScroll("scrollOne", {
+    scrollPosition: 10,
+    behavior: "smooth",
+    throttleDelay: 10,
+  });
 
   // Subscribe to scroll position updates for each scroll object
   const scrollPosOne = useWatch((state) => state.scrollPosition, scrollOne, [
     SCROLL_EVENTS.ON_SCROLL,
   ]);
 
-  const scrollPosTwo = useWatch((state) => state.scrollPosition, scrollTwo, [
-    SCROLL_EVENTS.ON_SCROLL,
-  ]);
-
   return (
     <>
       <p>Scroll One Position: {scrollPosOne}</p>
-      <p>Scroll Two Position: {scrollPosTwo}</p>
 
       {/* First scrollable area */}
       <div
@@ -69,17 +67,6 @@ export const HomePage = () => {
         }}
       >
         <ScrollElement scroll={scrollOne}>
-          {Array.from({ length: 100 }).map((_, index) => (
-            <div key={index} style={{ padding: "0.25rem" }}>
-              Item {index + 1}
-            </div>
-          ))}
-        </ScrollElement>
-      </div>
-
-      {/* Second scrollable area */}
-      <div style={{ height: "10rem", border: "1px solid #ccc" }}>
-        <ScrollElement scroll={scrollTwo}>
           {Array.from({ length: 100 }).map((_, index) => (
             <div key={index} style={{ padding: "0.25rem" }}>
               Item {index + 1}

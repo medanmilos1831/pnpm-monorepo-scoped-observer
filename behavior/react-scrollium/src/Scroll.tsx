@@ -1,68 +1,18 @@
-import { PropsWithChildren, useRef } from 'react';
-import { SCROLL_EVENTS } from './types';
+import { PropsWithChildren, useEffect } from 'react';
+import { ScrollInstance } from './ScrollInstance';
+import { handleScroll } from './scrollService';
 
 export function Scroll({
   children,
-  reference,
-  throttleDelay = 16,
-}: PropsWithChildren<{ reference: any; throttleDelay?: number }>) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const lastYRef = useRef(0);
-  const stopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastCallRef = useRef(0);
-
-  const handleScroll = (e: any) => {
-    const el = e.target as HTMLDivElement;
-    const y = el.scrollTop;
-    const now = Date.now();
-
-    if (now - lastCallRef.current >= throttleDelay) {
-      lastCallRef.current = now;
-
-      const direction =
-        y > lastYRef.current ? 'down' : y < lastYRef.current ? 'up' : 'none';
-      lastYRef.current = y;
-
-      const isTop = y === 0;
-      const isBottom = el.scrollHeight - y === el.clientHeight;
-
-      reference.action({
-        type: SCROLL_EVENTS.ON_SCROLL,
-        payload: { y, direction, isTop, isBottom },
-      });
-
-      if (isTop) {
-        reference.action({ type: SCROLL_EVENTS.ON_TOP });
-      }
-      if (isBottom) {
-        reference.action({ type: SCROLL_EVENTS.ON_BOTTOM });
-      }
-    }
-
-    if (stopTimerRef.current) {
-      clearTimeout(stopTimerRef.current);
-    }
-    stopTimerRef.current = setTimeout(() => {
-      const direction =
-        y > lastYRef.current ? 'down' : y < lastYRef.current ? 'up' : 'none';
-      const isTop = y === 0;
-      const isBottom = el.scrollHeight - y === el.clientHeight;
-
-      reference.action({
-        type: SCROLL_EVENTS.ON_SCROLL_STOP,
-        payload: { y, direction, isTop, isBottom },
-      });
-
-      if (isTop) {
-        reference.action({ type: SCROLL_EVENTS.ON_TOP });
-      }
-      if (isBottom) {
-        reference.action({ type: SCROLL_EVENTS.ON_BOTTOM });
-      }
-    }, 150);
-  };
-
+  scrollInstance,
+}: PropsWithChildren<{
+  scrollInstance: ScrollInstance;
+}>) {
+  useEffect(() => {
+    scrollInstance.api.scrollTop({
+      top: scrollInstance.store.getState().scrollPosition,
+    });
+  }, []);
   return (
     <div
       style={{
@@ -72,7 +22,18 @@ export function Scroll({
       }}
     >
       <div
-        ref={ref}
+        ref={(element) => {
+          scrollInstance.store.action({
+            type: 'onMount',
+            payload: {
+              element,
+              elementHeight: element?.clientHeight,
+              scrollableHeight: element?.scrollHeight! - element?.clientHeight!,
+              scrollHeight: element?.scrollHeight,
+            },
+            silent: true,
+          });
+        }}
         style={{
           position: 'absolute',
           left: 0,
@@ -81,7 +42,7 @@ export function Scroll({
           width: '100%',
           overflow: 'auto',
         }}
-        onScroll={handleScroll}
+        onScroll={handleScroll(scrollInstance.store)}
       >
         {children}
       </div>

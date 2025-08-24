@@ -1,22 +1,33 @@
-import { generateSlice } from './slice';
-
-type ScrollObj = {
+type ScrollApi = {
   getPosition: () => number;
   getDirection: () => 'up' | 'down' | 'none';
   isTop: () => boolean;
   isBottom: () => boolean;
   isScrolling: () => boolean;
+  scrollTop: (options?: ScrollToOptions) => void;
+  elementHeight: () => number;
+  scrollableHeight: () => number;
+  scrollHeight: () => number;
+  getProgress: () => number;
 };
-
-type stateType = ReturnType<ReturnType<typeof generateSlice>['getState']>;
-
-type itemsType = WeakMap<ScrollObj, ReturnType<typeof generateSlice>>;
 
 enum SCROLL_EVENTS {
   ON_SCROLL = 'onScroll',
   ON_SCROLL_STOP = 'onScrollStop',
   ON_TOP = 'onTop',
   ON_BOTTOM = 'onBottom',
+  ON_CHANGE = 'onChange',
 }
 
-export { ScrollObj, stateType, itemsType, SCROLL_EVENTS };
+type configType = {
+  throttleDelay?: number;
+  scrollPosition?: number;
+  behavior?: ScrollBehavior;
+};
+type configDefaultType = {
+  throttleDelay: number;
+  scrollPosition: number;
+  behavior?: ScrollBehavior;
+};
+
+export { ScrollApi, SCROLL_EVENTS, configType, configDefaultType };
