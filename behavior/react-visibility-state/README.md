@@ -1,83 +1,159 @@
 # react-visibility-state
 
-`react-visibility-state` is a lightweight React package designed to manage simple visibility states — specifically, toggling between "open" and "close" — using a finite state machine under the hood.
+Lightweight, type-safe visibility state management for React modals, drawers, and other UI components. Built with state machines and TypeScript.
 
-Built on top of a modular state machine system, this package provides a clean, predictable, and testable way to control visibility in React applications, whether for modals, dropdowns, accordions, or any UI element requiring open/close state management.
+## Features
 
-The package leverages a layered architecture:
-
-- **@scoped-observer/core** — a core event bus system,
-- **@scoped-observer/react-state-machine** — a finite state machine built on the core,
-- **react-visibility-state** — the React-focused behavior layer providing an easy-to-use interface for visibility toggling.
-
-This separation of concerns ensures flexibility, extensibility, and ease of maintenance.
-
-Use `react-visibility-state` to simplify your component visibility logic with a robust, minimal dependency solution.
+- **Type-safe API** with generic key constraints
+- **State Machine** for predictable open/close transitions
+- **Instance Management** with automatic cleanup
+- **Reactive state** watching with `useWatch`
 
 ## Installation
 
-You can install `react-visibility-state` via npm or yarn:
-
 ```bash
-npm install react-visibility-state
+npm install react-visibility-state @scoped-observer/core @scoped-observer/react-state-machine
 ```
 
-> **Note:**  
-> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/react-state-machine`.  
-> Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
+**Note:** `@scoped-observer/react-state-machine` has `@scoped-observer/core` as a peer dependency.
 
-```bash
-npm install react @scoped-observer/react-state-machine
-```
-
-## Usage Example
-
-This example demonstrates how to use `react-visibility-state` to manage visibility state of multiple modals across different components using `VisibilityProvider`, `VisibilityHandler`, and `useVisibility` hook.
+## Quick Start
 
 ```tsx
-import { Modal } from "antd";
-import {
-  useVisibility,
-  VisibilityHandler,
-  VisibilityProvider,
-  createVisibilityRegistry,
-  useVisibilityStateClient,
-} from "react-visibility-state";
+import { useState } from "react";
+import { createVisibility } from "react-visibility-state";
 
-const value = createVisibilityRegistry();
+const { useVisibility, VisibilityHandler, getItem, useWatch } =
+  createVisibility({
+    keys: ["userModal"] as const,
+  });
 
 const SomeComponentOne = () => {
-  const { handleVisibility } = useVisibilityStateClient();
   return (
-    <>
-      <span>SomeComponentOne</span>
-      <button onClick={() => handleVisibility("userModal")}>open modal</button>
-    </>
+    <div>
+      <VisibilityHandler name="userModal">
+        {({ state, payload, close }) => {
+          console.log("render SomeComponentOne");
+          return <span>STATE: {state}</span>;
+        }}
+      </VisibilityHandler>
+    </div>
   );
 };
 
 const SomeComponentTwo = () => {
+  const { state, payload, send } = useWatch("userModal");
+  return <div>SomeComponentTwo {state}</div>;
+};
+
+const SomeComponentThree = () => {
   return (
-    <>
-      <VisibilityHandler name={"userModal"}>
-        {(data, handler) => {
-          return (
-            <Modal open={data === "open"} onCancel={handler} closable>
-              {/* element */}
-            </Modal>
-          );
-        }}
-      </VisibilityHandler>
-    </>
+    <div>
+      <h1>SomeComponentThree</h1>
+    </div>
   );
 };
 
-export const App = () => (
-  <div style={{ background: "black", height: "100vh", color: "white" }}>
-    <VisibilityStateProvider value={value}>
-      <SomeComponentTwo />
+export const HomePage = () => {
+  const item = useVisibility("userModal", {
+    initState: "close",
+  });
+
+  return (
+    <>
       <SomeComponentOne />
-    </VisibilityStateProvider>
-  </div>
-);
+      <br />
+      <SomeComponentTwo />
+      <br />
+      <SomeComponentThree />
+      <br />
+      <button
+        onClick={() => {
+          item.open({
+            fname: "John",
+            lname: "Doe",
+          });
+        }}
+      >
+        Click me
+      </button>
+    </>
+  );
+};
 ```
+
+## API
+
+### `createVisibility(config)`
+
+Creates a visibility manager with predefined keys.
+
+```tsx
+const visibility = createVisibility({
+  keys: ["modal", "drawer", "tooltip"] as const,
+});
+```
+
+### `useVisibility(name, options?)`
+
+Creates a visibility instance for the specified name.
+
+```tsx
+const api = visibility.useVisibility("modal", {
+  initState: "open", // 'open' | 'close', default: 'close'
+});
+```
+
+**Returns API:**
+
+- `open(payload?)` - Opens the instance with optional payload
+- `close()` - Closes the instance
+- `reset()` - Resets to initial state
+
+### `useWatch(name)`
+
+Reactive hook that returns current state and payload.
+
+```tsx
+const { state, payload, send } = visibility.useWatch("modal");
+```
+
+### `VisibilityHandler`
+
+Render prop component for handling visibility state.
+
+```tsx
+<visibility.VisibilityHandler name="modal">
+  {({ state, payload, close }) => <div>Modal State: {state}</div>}
+</visibility.VisibilityHandler>
+```
+
+**Props:**
+
+- `name: T[number]` - Instance name (must be one of defined keys)
+- `children: (props) => JSX.Element` - Render function
+
+**Children Props:**
+
+- `state: 'open' | 'close'` - Current state
+- `payload: any` - Current payload
+- `close: () => void` - Close function
+
+## Usage Patterns
+
+### Multiple Instances
+
+```tsx
+const visibility = createVisibility({
+  keys: ["userModal", "settingsModal"] as const,
+});
+
+const userModal = visibility.useVisibility("userModal");
+const settingsModal = visibility.useVisibility("settingsModal");
+```
+
+### Instance Management
+
+- **Map-based storage** for multiple instances
+- **Automatic cleanup** on component unmount
+- **Type-safe keys** with generic constraints
