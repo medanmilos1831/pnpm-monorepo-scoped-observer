@@ -30,6 +30,7 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
         state: 'open' | 'close';
         payload: any;
         close: () => void;
+        open: () => void;
       }) => JSX.Element;
       name: T[number];
     }) => {
@@ -49,19 +50,20 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
         state,
         payload,
         close: item.api.close,
+        open: item.api.open,
       });
     },
 
     useWatch: (name: T[number]) => {
       const item = items.get(name)!;
-      const { state, payload, send } = item.machine.useMachine();
+      const { state, payload } = item.machine.useMachine();
 
-      return { state, payload, send };
+      return { state, payload, ...item.api };
     },
 
     getItem: (name: T[number]) => {
-      let item = items.get(name);
-      return item?.api;
+      let item = items.get(name)!;
+      return item.api;
     },
   };
 };
