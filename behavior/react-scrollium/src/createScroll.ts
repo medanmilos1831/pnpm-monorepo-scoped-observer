@@ -1,10 +1,15 @@
 import { createElement, PropsWithChildren, useEffect, useState } from 'react';
-import { Scroll } from './Scroll';
+import { Fallback, Scroll } from './Scroll';
 import { ScrollInstance } from './ScrollInstance';
-import { configType, SCROLL_EVENTS } from './types';
+import { configDefaultType, configType, SCROLL_EVENTS } from './types';
+import { defaultConfig } from './ScrollService';
 
-export const createScroll = () => {
+export const createScroll = (config?: configType) => {
   let activeScrolls = new Map<string, ScrollInstance>();
+  const globalConfig: configDefaultType = {
+    ...defaultConfig,
+    ...(config ?? {}),
+  };
 
   return {
     ScrollElement: ({
@@ -13,19 +18,17 @@ export const createScroll = () => {
     }: PropsWithChildren<{ name: string }>) => {
       let scrollInstance = activeScrolls.get(name);
       if (!scrollInstance) {
-        throw new Error('Scroll object not registered in items map');
+        return createElement(Fallback, null);
       }
       return createElement(Scroll, { scrollInstance }, children);
     },
 
     useScroll(name: string, config?: configType) {
-      function init() {
-        const instance = new ScrollInstance(name, config);
-        return instance;
-      }
-
       const [instance] = useState(() => {
-        let obj = init();
+        let obj = new ScrollInstance(name, {
+          ...globalConfig,
+          ...(config ?? {}),
+        });
         activeScrolls.set(name, obj);
         return obj;
       });
@@ -44,40 +47,11 @@ export const createScroll = () => {
           silent: true,
         });
       }
-
-      if (
-        config?.throttleDelay &&
-        config.throttleDelay !== instance.store.getState().throttleDelay
-      ) {
-        instance.store.action({
-          type: 'onChange',
-          payload: {
-            key: 'throttleDelay',
-            value: config.throttleDelay,
-          },
-          silent: true,
-        });
-      }
-      if (
-        config?.behavior &&
-        config.behavior !== instance.store.getState().behavior
-      ) {
-        instance.store.action({
-          type: 'onChange',
-          payload: {
-            key: 'behavior',
-            value: config.behavior,
-          },
-          silent: true,
-        });
-      }
       // END :: RENDER
 
       useEffect(() => {
         return () => {
           activeScrolls.delete(name);
-          const timer = instance.store.getState().stopTimerRef;
-          if (timer) clearTimeout(timer);
         };
       }, [name]);
 
@@ -91,11 +65,15 @@ export const createScroll = () => {
     ) {
       const slice = activeScrolls.get(name);
       if (!slice) {
-        throw new Error('Scroll object not registered in items map');
+        throw new Error(`[ScrollService] Scroll instance with name "${name}" was not found. 
+Make sure you wrapped your content with <ScrollElement name="${name}"> 
+and that you are using the same name in useScroll / useWatch.`);
       }
 
       const { useSubscribe } = slice.store;
-      const state = useSubscribe(cb, events);
+      const state = useSubscribe((state) => {
+        return cb(state);
+      }, events);
       return state;
     },
   };

@@ -16,18 +16,19 @@ enum SCROLL_EVENTS {
   ON_SCROLL_STOP = 'onScrollStop',
   ON_TOP = 'onTop',
   ON_BOTTOM = 'onBottom',
-  ON_CHANGE = 'onChange',
 }
 
 type configType = {
-  throttleDelay?: number;
   scrollPosition?: number;
-  behavior?: ScrollBehavior;
+  behaviour?: ScrollBehavior;
+  throttle?: number;
+  stopDelay?: number;
 };
 type configDefaultType = {
-  throttleDelay: number;
   scrollPosition: number;
-  behavior?: ScrollBehavior;
+  behaviour: ScrollBehavior;
+  throttle: number;
+  stopDelay: number;
 };
 
 export { ScrollApi, SCROLL_EVENTS, configType, configDefaultType };

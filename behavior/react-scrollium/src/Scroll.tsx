@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect } from 'react';
 import { ScrollInstance } from './ScrollInstance';
-import { handleScroll } from './scrollService';
+import { handleScroll } from './ScrollService';
 
 export function Scroll({
   children,
@@ -46,6 +46,14 @@ export function Scroll({
       >
         {children}
       </div>
+    </div>
+  );
+}
+export function Fallback({ children }: PropsWithChildren) {
+  return (
+    <div className="p-4 border rounded-lg bg-gray-100 text-gray-500 text-sm">
+      ⚠️ Scroll instance not found
+      <div className="mt-2">{children}</div>
     </div>
   );
 }

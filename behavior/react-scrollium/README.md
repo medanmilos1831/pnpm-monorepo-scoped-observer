@@ -1,80 +1,136 @@
 # react-scrollium
 
-`react-scrollium` is a lightweight React package designed to track scroll events with type-safe hooks and components.  
-It supports multiple scroll events, including `onScroll`, `onScrollStop`, `onTop`, and `onBottom`.
+Lightweight, typed scroll management for React. Clean hook-based API to read and control scroll, subscribe to events, and compute progress with built‑in throttling and scroll‑stop detection.
 
-Built on top of a modular slice/event system, `scrollium` provides a predictable, testable, and minimal-dependency solution for scroll-aware components in React applications.
+## Features
 
-The package leverages a layered architecture:
-
-- **@scoped-observer/core** — a core event bus system,
-- **@scoped-observer/react-store** — a lightweight reactive store that manages state based on events
-- **react-visibility-state** — the React-focused behavior layer providing an easy-to-use interface for visibility toggling.
-
-This separation of concerns ensures flexibility, extensibility, and ease of maintenance.
+- **Live state**: position, direction, top/bottom, isScrolling
+- **Progress**: 0–100% based on scrollable height
+- **Imperative control**: `scrollTop` with behavior
+- **Performance**: throttled handler + scroll-stop detection
+- **Composable**: hook-based API with event filtering
+- **TypeScript-first**
 
 ## Installation
 
-You can install `react-scrollium` via npm:
+Install as a library in your React app:
 
 ```bash
-npm install react-scrollium
+npm i react-scrollium @scoped-observer/react-store
 ```
 
-> **Note:**  
-> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/react-store`.  
-> Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
+Peer dependencies: `react@^18` and `@scoped-observer/react-store`.
 
-```bash
-npm install react @scoped-observer/react-store
-```
-
-## Usage Example
-
-This example demonstrates how to use `scrollium` to track scroll state across different components using the `ScrollElement` component, `useScroll` hook, and `useWatch` hook.
+## Quick start
 
 ```tsx
-import {
-  SCROLL_EVENTS,
-  ScrollElement,
-  useScroll,
-  useWatch,
-} from "react-scrollium";
+import { createScroll, SCROLL_EVENTS } from "react-scrollium";
 
-export const HomePage = () => {
-  // Create two independent scroll objects
-  const scrollOne = useScroll("scrollOne", {
-    scrollPosition: 10,
-    behavior: "smooth",
-    throttleDelay: 10,
+const { ScrollElement, useScroll, useWatch } = createScroll({
+  // global defaults (optional)
+  throttle: 16,
+  stopDelay: 250,
+  behaviour: "smooth",
+});
+
+export function App() {
+  return (
+    <div style={{ height: 300 }}>
+      <ScrollElement name="main">
+        {Array.from({ length: 100 }).map((_, i) => (
+          <div key={i} style={{ padding: 8 }}>
+            Item {i + 1}
+          </div>
+        ))}
+      </ScrollElement>
+      <Panel />
+    </div>
+  );
+}
+
+function Panel() {
+  const api = useScroll("main", {
+    // per-instance overrides (optional)
+    // scrollPosition: 0,
+    // behaviour: 'instant',
+    // throttle: 16,
+    // stopDelay: 250,
   });
 
-  // Subscribe to scroll position updates for each scroll object
-  const scrollPosOne = useWatch((state) => state.scrollPosition, scrollOne, [
-    SCROLL_EVENTS.ON_SCROLL,
-  ]);
+  const state = useWatch(
+    (s) => ({
+      position: s.scrollPosition,
+      progress: s.progress,
+      direction: s.direction,
+      isTop: s.isTop,
+      isBottom: s.isBottom,
+      isScrolling: s.isScrolling,
+    }),
+    "main",
+    [SCROLL_EVENTS.ON_SCROLL, SCROLL_EVENTS.ON_SCROLL_STOP]
+  );
 
   return (
-    <>
-      <p>Scroll One Position: {scrollPosOne}</p>
-
-      {/* First scrollable area */}
-      <div
-        style={{
-          height: "10rem",
-          border: "1px solid #ccc",
-          marginBottom: "1rem",
-        }}
-      >
-        <ScrollElement scroll={scrollOne}>
-          {Array.from({ length: 100 }).map((_, index) => (
-            <div key={index} style={{ padding: "0.25rem" }}>
-              Item {index + 1}
-            </div>
-          ))}
-        </ScrollElement>
-      </div>
-    </>
+    <div>
+      <div>Position: {state.position}</div>
+      <div>Progress: {state.progress}%</div>
+      <div>Direction: {state.direction}</div>
+      <button onClick={() => api.scrollTop({ top: 0 })}>Scroll to top</button>
+    </div>
   );
-};
+}
 ```
+
+## API
+
+### createScroll(config?)
+
+Returns:
+
+- `ScrollElement`: React wrapper that owns the scroll container.
+- `useScroll(name, config?)`: returns an API bound to `name`.
+- `useWatch(selector, name, events)`: subscribes to selected state for given events.
+
+### <ScrollElement />
+
+- Props: `{ name: string }`
+- Wrap your scrollable content. Use the same `name` in hooks.
+
+### useScroll(name, config?)
+
+Config fields:
+
+- `scrollPosition?: number`
+- `behaviour?: ScrollBehavior` ('smooth' | 'auto' | 'instant')
+- `throttle?: number` (ms, default 16)
+- `stopDelay?: number` (ms, default 250)
+
+Returns API:
+
+- `getPosition(): number`
+- `getDirection(): 'up' | 'down' | 'none'`
+- `isTop(): boolean`
+- `isBottom(): boolean`
+- `isScrolling(): boolean`
+- `elementHeight(): number`
+- `scrollableHeight(): number`
+- `scrollHeight(): number`
+- `getProgress(): number` (0–100)
+- `scrollTop(options?: ScrollToOptions): void`
+
+### useWatch(selector, name, events)
+
+- `selector(state) => any`
+- `name: string`
+- `events: SCROLL_EVENTS[]` — `ON_SCROLL`, `ON_SCROLL_STOP`, `ON_TOP`, `ON_BOTTOM`
+
+## Tips & patterns
+
+- **Multiple instances**: use different `name` values.
+- **Jump to position**: `useScroll('name').scrollTop({ top: 0 })`.
+- **Performance**: increase `throttle` for heavy UIs; tune `stopDelay`.
+
+## Notes
+
+- Internal state is powered by `@scoped-observer/react-store`.
+- A simple `Fallback` is rendered if `<ScrollElement>` is not ready for a given `name`.

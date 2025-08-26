@@ -1,32 +1,17 @@
 import { createSlice } from '@scoped-observer/react-store';
-import {
-  configDefaultType,
-  configType,
-  SCROLL_EVENTS,
-  ScrollApi,
-} from './types';
-
-const defaultConfig: Required<
-  Pick<configType, 'throttleDelay' | 'scrollPosition' | 'behavior'>
-> = {
-  throttleDelay: 16,
-  scrollPosition: 0,
-  behavior: 'smooth',
-};
+import { configDefaultType, SCROLL_EVENTS, ScrollApi } from './types';
 
 export class ScrollInstance {
   store;
   api: ScrollApi;
 
-  constructor(name: string, config?: configType) {
+  constructor(name: string, config: configDefaultType) {
     let self = this;
-
-    const mergedConfig: configDefaultType = { ...defaultConfig, ...config };
 
     this.store = createSlice({
       scope: name,
       state: {
-        ...mergedConfig,
+        ...config,
         progress: 0,
         direction: 'none' as 'up' | 'down' | 'none',
         isTop: true,
@@ -36,16 +21,14 @@ export class ScrollInstance {
         elementHeight: 0,
         scrollableHeight: 0,
         scrollHeight: 0,
-        lastCallRef: 0,
         lastYRef: 0,
-        stopTimerRef: null as ReturnType<typeof setTimeout> | null,
       },
       onEvent: {
         [SCROLL_EVENTS.ON_SCROLL](state, payload: any) {
-          return { ...state, ...payload, isScrolling: true };
+          return { ...state, ...payload };
         },
         [SCROLL_EVENTS.ON_SCROLL_STOP](state, payload: any) {
-          return { ...state, ...payload, isScrolling: false };
+          return { ...state, ...payload };
         },
         [SCROLL_EVENTS.ON_TOP](state) {
           return { ...state, isTop: true, isBottom: false };
@@ -73,15 +56,12 @@ export class ScrollInstance {
             return { ...state, scrollPosition: value as number };
           }
 
-          if (key === 'throttleDelay') {
-            self.store.getState().throttleDelay = value as number;
-            return state;
+          if (key === 'behaviour') {
+            return { ...state, behaviour: value as ScrollBehavior };
           }
 
-          if (key === 'behavior') {
-            self.store.getState().behavior = value as ScrollBehavior;
-            return state;
-          }
+          // THROTTLE I DELAY
+
           return state;
         },
       },
@@ -98,14 +78,13 @@ export class ScrollInstance {
       scrollHeight: () => this.store.getState().scrollHeight,
       getProgress: () => this.store.getState().progress,
       scrollTop: (options?: ScrollToOptions) => {
-        this.store
-          .getState()
-          .element?.scrollTo({
-            top: 0,
-            behavior: this.store.getState().behavior,
-            ...options,
-          });
+        this.store.getState().element?.scrollTo({
+          top: 0,
+          behavior: this.store.getState().behaviour,
+          ...options,
+        });
       },
     };
+    // console.log('state', this.store.getState());
   }
 }
