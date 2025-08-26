@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Visibility Service Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .diagram-container {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .section.react {
+            border-color: #61dafb;
+        }
+
+        .section.visibility {
+            border-color: #ff6b6b;
+        }
+
+        .section.state-machine {
+            border-color: #4ecdc4;
+        }
+
+        .section.core-observer {
+            border-color: #45b7d1;
+            grid-column: 2;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .component {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .component:hover {
+            transform: translateX(5px);
+        }
+
+        .component.react {
+            border-left-color: #61dafb;
+            background: linear-gradient(135deg, #61dafb20, #61dafb10);
+        }
+
+        .component.visibility {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b20, #ff6b6b10);
+        }
+
+        .component.state-machine {
+            border-left-color: #4ecdc4;
+            background: linear-gradient(135deg, #4ecdc420, #4ecdc410);
+        }
+
+        .component.core-observer {
+            border-left-color: #45b7d1;
+            background: linear-gradient(135deg, #45b7d120, #45b7d110);
+        }
+
+        .component.api {
+            border-left-color: #f9ca24;
+            background: linear-gradient(135deg, #f9ca2420, #f9ca2410);
+        }
+
+        .component-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .component-desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        .flow-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .flow-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .flow-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .features-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #667eea;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #34495e;
+        }
+
+        .legend-text {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 768px) {
+            .diagram-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section.core-observer {
+                grid-column: 1;
+            }
+            
+            .flow-diagram {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 React Visibility Service Architecture</h1>
+            <p>Complete system overview and data flow diagram</p>
+        </div>
+
+        <div class="diagram-container">
+            <div class="diagram-grid">
+                <!-- React Components Section -->
+                <div class="section react">
+                    <div class="section-title">⚛️ React Components</div>
+                    
+                    <div class="component react">
+                        <div class="component-name">Component</div>
+                        <div class="component-desc">React komponenta koja koristi visibility hook-ove</div>
+                    </div>
+                    
+                    <div class="component react">
+                        <div class="component-name">useVisibility Hook</div>
+                        <div class="component-desc">Glavni hook za upravljanje visibility stanjem</div>
+                    </div>
+                    
+                    <div class="component react">
+                        <div class="component-name">VisibilityHandler</div>
+                        <div class="component-desc">Renderuje children funkciju sa visibility stanjem</div>
+                    </div>
+                    
+                    <div class="component react">
+                        <div class="component-name">useWatch Hook</div>
+                        <div class="component-desc">Hook za praćenje visibility stanja</div>
+                    </div>
+                </div>
+
+                <!-- Visibility Instance Section -->
+                <div class="section visibility">
+                    <div class="section-title">👁️ Visibility Instance</div>
+                    
+                    <div class="component visibility">
+                        <div class="component-name">VisibilityInstance</div>
+                        <div class="component-desc">Upravlja stanjem svakog visibility item-a</div>
+                    </div>
+                    
+                    <div class="component state-machine">
+                        <div class="component-name">State Machine</div>
+                        <div class="component-desc">Upravlja open/close stanjima</div>
+                    </div>
+                    
+                    <div class="component api">
+                        <div class="component-name">API Methods</div>
+                        <div class="component-desc">open(), close(), reset() metode</div>
+                    </div>
+                    
+                    <div class="component state-machine">
+                        <div class="component-name">States</div>
+                        <div class="component-desc">open | close stanja</div>
+                    </div>
+                </div>
+
+                <!-- State Machine Engine Section -->
+                <div class="section state-machine">
+                    <div class="section-title">⚙️ State Machine Engine</div>
+                    
+                    <div class="component state-machine">
+                        <div class="component-name">@scoped-observer/react-state-machine</div>
+                        <div class="component-desc">Core state machine biblioteka</div>
+                    </div>
+                    
+                    <div class="component state-machine">
+                        <div class="component-name">createMachine</div>
+                        <div class="component-desc">Kreira state machine instancu</div>
+                    </div>
+                    
+                    <div class="component state-machine">
+                        <div class="component-name">State Transitions</div>
+                        <div class="component-desc">ON_OPEN, ON_CLOSE, RESET</div>
+                    </div>
+                </div>
+
+                <!-- Core Observer Section -->
+                <div class="section core-observer">
+                    <div class="section-title">🔗 Core Observer System</div>
+                    
+                    <div class="component core-observer">
+                        <div class="component-name">@scoped-observer/core</div>
+                        <div class="component-desc">Osnovni observer sistem</div>
+                    </div>
+                    
+                    <div class="component core-observer">
+                        <div class="component-name">ScopedObserver</div>
+                        <div class="component-desc">Upravlja event-ima i scope-ovima</div>
+                    </div>
+                    
+                    <div class="component core-observer">
+                        <div class="component-name">EventEntity</div>
+                        <div class="component-desc">Individualni event objekti</div>
+                    </div>
+                    
+                    <div class="component core-observer">
+                        <div class="component-name">Event Management</div>
+                        <div class="component-desc">Centralizovano upravljanje event-ima</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Section -->
+            <div class="flow-section">
+                <div class="flow-title">🔄 Data Flow Architecture</div>
+                <div class="flow-diagram">
+                    <div class="flow-item">Component</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-item">useVisibility</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-item">VisibilityInstance</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-item">State Machine</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-item">Core Observer</div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <div class="flow-title">🚀 Key Features</div>
+                <div class="features-grid">
+                    <div class="feature">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-title">Scoped Management</div>
+                        <div class="feature-desc">Svaki visibility item ima svoj scope</div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">💾</div>
+                        <div class="feature-title">State Persistence</div>
+                        <div class="feature-desc">Stanje se čuva u Map strukturi</div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">📡</div>
+                        <div class="feature-title">Event System</div>
+                        <div class="feature-desc">Integrisan sa core observer sistemom</div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-title">Type Safety</div>
+                        <div class="feature-desc">Full TypeScript podrška</div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">🧹</div>
+                        <div class="feature-title">Memory Management</div>
+                        <div class="feature-desc">Automatsko čišćenje pri unmount-u</div>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-title">Performance</div>
+                        <div class="feature-desc">Optimizovan za React rendering</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #61dafb;"></div>
+                    <div class="legend-text">React Components</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ff6b6b;"></div>
+                    <div class="legend-text">Visibility Instance</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4ecdc4;"></div>
+                    <div class="legend-text">State Machine</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #45b7d1;"></div>
+                    <div class="legend-text">Core Observer</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f9ca24;"></div>
+                    <div class="legend-text">API Methods</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
