@@ -28,6 +28,10 @@
         "build:react-wizzard": "pnpm --filter react-wizzard run build",
         "publish:react-wizzard": "pnpm publish --filter react-wizzard --access public",
         "build:react-scrollium": "pnpm --filter react-scrollium run build",
-        "publish:react-scrollium": "pnpm publish --filter react-scrollium --access public"
+        "publish:react-scrollium": "pnpm publish --filter react-scrollium --access public",
+        "test-app:dev": "pnpm --filter test-app run dev",
+        "test-app:build": "pnpm --filter test-app run build",
+        "test-app:preview": "pnpm --filter test-app run preview",
+        "test-app:install": "pnpm --filter test-app install"
     }
 }

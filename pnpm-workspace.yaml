@@ -1,3 +1,4 @@
 packages:
   - "scoped-observer/*"
   - "behavior/*"
+  - "test-app"

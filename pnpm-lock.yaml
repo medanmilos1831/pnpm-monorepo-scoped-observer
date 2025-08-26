@@ -138,6 +138,9 @@ importers:
       react-router-dom:
         specifier: ^7.8.2
         version: 7.8.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      react-visibility-state:
+        specifier: ^1.0.13
+        version: 1.0.13(@scoped-observer/react-state-machine@3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
@@ -1478,6 +1481,12 @@ packages:
     peerDependenciesMeta:
       react-dom:
         optional: true
+
+  react-visibility-state@1.0.13:
+    resolution: {integrity: sha512-OJ5P1DXHsfS/Dxfx9P+GNE54gC4jY3x63qU7E28PpnnpmAt66wT2mc5turd9MHgopMU0B38/IkMogeI/ode0wg==}
+    peerDependencies:
+      '@scoped-observer/react-state-machine': ^3.0.6
+      react: ^18.0.0
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -3062,6 +3071,11 @@ snapshots:
       set-cookie-parser: 2.7.1
     optionalDependencies:
       react-dom: 19.1.1(react@19.1.1)
+
+  react-visibility-state@1.0.13(@scoped-observer/react-state-machine@3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1):
+    dependencies:
+      '@scoped-observer/react-state-machine': 3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1)
+      react: 19.1.1
 
   react@18.3.1:
     dependencies:

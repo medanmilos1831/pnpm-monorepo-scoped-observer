@@ -1,4 +1,4 @@
-import { createVisibility } from "../react-visibility-state";
+import { createVisibility } from "react-visibility-state";
 
 const { useVisibility, VisibilityHandler, getItem, useWatch } =
   createVisibility({
