@@ -62,12 +62,12 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
       const item = items.get(name)!;
       const { state, payload } = item.machine.useMachine();
 
-      if (callback) {
-        const callbackResult = callback(state, payload);
-        return { state, payload, callbackValue: callbackResult } as any;
-      }
-
-      return { state, payload, ...item.api } as any;
+      return {
+        state,
+        payload,
+        ...item.api,
+        callbackValue: callback ? callback(state, payload) : null,
+      } as any;
     },
 
     getItem: (name: T[number]) => {

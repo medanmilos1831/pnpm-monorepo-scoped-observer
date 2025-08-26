@@ -1,4 +1,4 @@
-import { createMachine } from "@scoped-observer/react-state-machine";
+import { createMachine } from "../../../scoped-observer/react-state-machine";
 
 class VisibilityInstance {
   name: string;
