@@ -13,6 +13,10 @@ class WizzardInstance {
   isLast: boolean;
   currentStepIndex: number;
   infinite: boolean; // ← NOVO: infinite loop mode opcija
+  onChange?: (
+    step: string,
+    direction: "next" | "prev" | "goTo" | "reset"
+  ) => void; // ← NOVO: onChange callback
 
   /**
    * Creates a new wizzard instance with the specified configuration.
@@ -45,26 +49,19 @@ class WizzardInstance {
     }
 
     // Validation: Check if initStep exists in steps
-    const availableSteps = Object.keys(config.steps);
-    if (!availableSteps.includes(config.initStep)) {
-      throw new Error(
-        `[Wizzard] initStep "${
-          config.initStep
-        }" not found in steps. Available steps: [${availableSteps.join(", ")}]`
-      );
-    }
 
     this.name = name;
-    this.steps = availableSteps;
-    this.stepsConfig = config.steps; // ← NOVO: čuvamo originalnu konfiguraciju
-    this.currentStep = config.initStep;
+    this.steps = Object.keys(config.steps);
     this.activeStep = config.initStep;
+    this.currentStep = config.initStep;
+    this.currentStepIndex = this.steps.indexOf(this.currentStep);
+    this.stepsConfig = config.steps;
     this.nextStep = this.steps.length > 1 ? this.steps[1] : this.steps[0];
     this.prevStep = this.steps[0];
-    this.isFirst = true;
-    this.isLast = this.steps.length === 1;
-    this.currentStepIndex = this.steps.indexOf(this.currentStep);
-    this.infinite = config.infinite || false; // ← NOVO: infinite loop mode opcija
+    this.isFirst = this.currentStepIndex === 0;
+    this.isLast = this.currentStepIndex === this.steps.length - 1;
+    this.infinite = config.infinite || false;
+    this.onChange = config.onChange;
 
     const transitions: any = {};
 
@@ -84,8 +81,6 @@ class WizzardInstance {
         },
       };
     });
-
-    console.log("transitions", transitions);
 
     this.machine = createMachine({
       init: config.initStep,
@@ -111,8 +106,6 @@ class WizzardInstance {
       }
       this.activeStep = this.steps[this.currentStepIndex];
       this.currentStep = this.activeStep;
-
-      // Ažuriraj sve properties
       this.isFirst = this.currentStepIndex === 0;
       this.isLast = this.currentStepIndex === this.steps.length - 1;
       this.nextStep = this.isLast
@@ -121,8 +114,8 @@ class WizzardInstance {
       this.prevStep = this.isFirst
         ? this.activeStep
         : this.steps[this.currentStepIndex - 1];
-
       this.machine.send({ type: "NEXT" });
+      this.onChange?.(this.activeStep, "next");
     },
     /**
      * Goes back to the previous step in the sequence.
@@ -176,6 +169,21 @@ class WizzardInstance {
       this.machine.send({ type: "RESET" });
     },
   };
+
+  update(name: string, config: any) {
+    this.name = name;
+    this.steps = Object.keys(config.steps);
+    this.activeStep = config.initStep;
+    this.currentStep = config.initStep;
+    this.currentStepIndex = this.steps.indexOf(this.currentStep);
+    this.stepsConfig = config.steps;
+    this.nextStep = this.steps.length > 1 ? this.steps[1] : this.steps[0];
+    this.prevStep = this.steps[0];
+    this.isFirst = this.currentStepIndex === 0;
+    this.isLast = this.currentStepIndex === this.steps.length - 1;
+    this.infinite = config.infinite || false;
+    this.onChange = config.onChange;
+  }
 }
 
 export { WizzardInstance };

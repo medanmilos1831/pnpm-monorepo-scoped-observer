@@ -1,5 +1,5 @@
-import { createSlice } from '@scoped-observer/react-store';
-import { configDefaultType, SCROLL_EVENTS, ScrollApi } from './types';
+import { createSlice } from "@scoped-observer/react-store";
+import { configDefaultType, SCROLL_EVENTS, ScrollApi } from "./types";
 
 export class ScrollInstance {
   store;
@@ -13,7 +13,7 @@ export class ScrollInstance {
       state: {
         ...config,
         progress: 0,
-        direction: 'none' as 'up' | 'down' | 'none',
+        direction: "none" as "up" | "down" | "none",
         isTop: true,
         isBottom: false,
         isScrolling: false,
@@ -49,14 +49,14 @@ export class ScrollInstance {
             value: number | ScrollBehavior;
           }
         ) {
-          if (key === 'scrollPosition') {
+          if (key === "scrollPosition") {
             self.api.scrollTop({
               top: value as number,
             });
             return { ...state, scrollPosition: value as number };
           }
 
-          if (key === 'behaviour') {
+          if (key === "behaviour") {
             return { ...state, behaviour: value as ScrollBehavior };
           }
 
@@ -85,6 +85,5 @@ export class ScrollInstance {
         });
       },
     };
-    // console.log('state', this.store.getState());
   }
 }

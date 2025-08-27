@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useRef, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import type { WizzardHandlerProps, WizzardConfig } from "./types";
 
@@ -44,11 +44,20 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * ```
      */
     useWizzard: (name: T[number], config: WizzardConfig) => {
+      const isInitialRender = useRef(true);
+
       const [state] = useState(() => {
-        let wizzard = new WizzardInstance(name, config);
+        let wizzard = new WizzardInstance(name, { ...config });
         items.set(name, wizzard);
         return wizzard;
       });
+      if (!isInitialRender.current) {
+        state.update(name, config);
+      }
+      if (isInitialRender.current) {
+        isInitialRender.current = false;
+      }
+
       useEffect(() => {
         return () => {
           items.delete(name);
@@ -84,8 +93,6 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       }
 
       item.machine.useMachine();
-
-      // Vraćamo React komponentu umesto renderovanog elementa
       const ElementComponent = item.stepsConfig[item.activeStep]?.element;
 
       return children({
@@ -101,7 +108,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         prevStepFn: () => item.api.prevStep(),
         goToStep: (step: string) => item.api.goToStep(step),
         reset: () => item.api.reset(),
-        Element: ElementComponent, // ← Uvek vraća JSX element
+        Element: ElementComponent,
       });
     },
 
