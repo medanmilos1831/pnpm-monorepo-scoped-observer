@@ -86,13 +86,21 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * </wizzard.WizzardHandler>
      * ```
      */
-    WizzardHandler: ({ children, name }: WizzardHandlerProps) => {
+    WizzardHandler: ({ children, name, onChange }: WizzardHandlerProps) => {
       const item = items.get(name);
       if (!item) {
         return null;
       }
 
-      item.machine.useMachine();
+      const { state } = item.machine.useMachine();
+      // console.log("state", state);
+      useEffect(() => {
+        console.log("item", item.activeStep);
+        if (onChange) {
+          const { machine, ...rest } = item;
+          onChange?.(rest);
+        }
+      }, [state]);
       const ElementComponent = item.stepsConfig[item.activeStep]?.element;
 
       return children({
