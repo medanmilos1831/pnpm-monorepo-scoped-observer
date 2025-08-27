@@ -29,6 +29,7 @@ const createMachine = <S extends string, T extends string, P = any>({
     if (referenceCount === 0) {
       return;
     }
+
     const next = transition[initState].on[data.type];
     if (!next) {
       console.warn(
