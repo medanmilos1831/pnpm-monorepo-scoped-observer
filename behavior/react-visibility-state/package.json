@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "@scoped-observer/react-state-machine": "^3.0.6"
+    "@scoped-observer/react-state-machine": "^3.0.7"
   },
   "devDependencies": {
     "@scoped-observer/react-state-machine": "workspace:*",
