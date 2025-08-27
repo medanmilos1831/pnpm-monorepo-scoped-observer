@@ -93,7 +93,6 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       }
 
       const { state } = item.machine.useMachine();
-      // console.log("state", state);
       useEffect(() => {
         console.log("item", item.activeStep);
         if (onChange) {
