@@ -124,8 +124,8 @@ importers:
         specifier: ^2.3.5
         version: 2.3.5
       '@scoped-observer/react-state-machine':
-        specifier: ^3.0.6
-        version: 3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1)
+        specifier: ^3.0.7
+        version: 3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1)
       '@xstate/react':
         specifier: ^6.0.0
         version: 6.0.0(@types/react@19.1.11)(react@19.1.1)(xstate@5.20.2)
@@ -143,7 +143,7 @@ importers:
         version: 7.8.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react-visibility-state:
         specifier: ^1.0.14
-        version: 1.0.14(@scoped-observer/react-state-machine@3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1)
+        version: 1.0.14(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1)
       xstate:
         specifier: ^5.20.2
         version: 5.20.2
@@ -715,8 +715,8 @@ packages:
   '@scoped-observer/core@2.3.5':
     resolution: {integrity: sha512-bklWun7hq0/CURXNQddXeW15WXrXVEFj/xGW8WxkDfKYzuoEjTdS4MyGBmw7BO7OxMGsTmDBBzYwfWY2WFnK9A==}
 
-  '@scoped-observer/react-state-machine@3.0.6':
-    resolution: {integrity: sha512-/+A0uPreR03nZ8AwLiD5ifTmKLJBXPnQl4H72oXj4unmK/GDuHdt25ETtHlkNAY63OFTwtpZ5tnUG/ti80P6Uw==}
+  '@scoped-observer/react-state-machine@3.0.7':
+    resolution: {integrity: sha512-7ez+wFLZO/btF/Ta/ZbuaDRpcKxIztZy3nQj2L6tYz3HDqo8rCZWqW1PkEL5xETz6ifH60uD0D217TuiZjCA5A==}
     peerDependencies:
       '@scoped-observer/core': ^2.3.5
       react: ^18.0.0
@@ -2161,7 +2161,7 @@ snapshots:
 
   '@scoped-observer/core@2.3.5': {}
 
-  '@scoped-observer/react-state-machine@3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1)':
+  '@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1)':
     dependencies:
       '@scoped-observer/core': 2.3.5
       react: 19.1.1
@@ -3114,9 +3114,9 @@ snapshots:
     optionalDependencies:
       react-dom: 19.1.1(react@19.1.1)
 
-  react-visibility-state@1.0.14(@scoped-observer/react-state-machine@3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1):
+  react-visibility-state@1.0.14(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1):
     dependencies:
-      '@scoped-observer/react-state-machine': 3.0.6(@scoped-observer/core@2.3.5)(react@19.1.1)
+      '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1)
       react: 19.1.1
 
   react@18.3.1:

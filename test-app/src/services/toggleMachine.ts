@@ -1,4 +1,4 @@
-import { createMachine } from "../scoped-observer-state-machine";
+import { createMachine } from "@scoped-observer/react-state-machine";
 
 const toggleMachine = createMachine({
   init: "inactive",
