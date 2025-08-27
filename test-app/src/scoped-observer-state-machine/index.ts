@@ -1,9 +1,9 @@
-import { useRef, useSyncExternalStore } from 'react';
-import { createScopedObserver } from '../scoped-observer';
-import { TransitionMap } from './types';
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { createScopedObserver } from "@scoped-observer/core";
+import type { TransitionMap } from "./types";
 
-const MACHINE_SCOPE = 'machineScope';
-const MACHINE_EVENT = 'machineEvent';
+const MACHINE_SCOPE = "machineScope";
+const MACHINE_EVENT = "machineEvent";
 
 type Event<T extends string, P = any> = {
   type: T;
@@ -17,21 +17,26 @@ const createMachine = <S extends string, T extends string, P = any>({
   init: S;
   transition: TransitionMap<S, T>;
 }) => {
+  let referenceCount = 0;
   const manager = createScopedObserver([
     {
       scope: MACHINE_SCOPE,
     },
   ]);
+  let initState = structuredClone(init);
 
   const handler = (data: Event<T, P>) => {
-    const next = transition[init].on[data.type];
+    if (referenceCount === 0) {
+      return;
+    }
+    const next = transition[initState].on[data.type];
     if (!next) {
       console.warn(
-        `[Machine] Invalid transition from "${init}" using type "${data.type}"`
+        `[Machine] Invalid transition from "${initState}" using type "${data.type}"`
       );
       return;
     }
-    init = next;
+    initState = next;
     manager.dispatch({
       scope: MACHINE_SCOPE,
       eventName: MACHINE_EVENT,
@@ -55,13 +60,25 @@ const createMachine = <S extends string, T extends string, P = any>({
         });
       };
 
-      const state = useSyncExternalStore(subscribe, () => init);
+      const state = useSyncExternalStore(subscribe, () => initState);
+      useEffect(() => {
+        referenceCount = referenceCount + 1;
+        return () => {
+          referenceCount = referenceCount - 1;
+          if (referenceCount === 0) {
+            initState = init;
+          }
+        };
+      }, []);
 
       return {
         state: state,
         payload: payloadRef.current,
         send: handler,
       };
+    },
+    getState() {
+      return initState;
     },
   };
 };

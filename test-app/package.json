@@ -12,11 +12,13 @@
   "dependencies": {
     "@scoped-observer/core": "^2.3.5",
     "@scoped-observer/react-state-machine": "^3.0.6",
+    "@xstate/react": "^6.0.0",
     "antd": "^5.27.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.8.2",
-    "react-visibility-state": "^1.0.14"
+    "react-visibility-state": "^1.0.14",
+    "xstate": "^5.20.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
