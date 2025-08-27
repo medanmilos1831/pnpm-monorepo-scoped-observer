@@ -11,12 +11,15 @@ Thanks to its generic design and TypeScript support, it ensures type safety and 
 Install the package using npm or yarn:
 
 ```bash
-npm install @scoped-observer/react-state-machine
+npm install your-package-name
 ```
 
-> **Note:**  
-> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/core`.  
-> Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
+⚠️ **Peer dependencies:** This package requires @scoped-observer/core as peer dependencies.
+Make sure to install them in your project:
+
+```
+npm install @scoped-observer/core
+```
 
 ## Features
 
@@ -33,20 +36,20 @@ npm install @scoped-observer/react-state-machine
 ### Basic modal toggle example
 
 ```tsx
-import React from "react";
-import { createMachine } from "@scoped-observer/react-state-machine";
+import React from 'react';
+import { createMachine } from 'your-package-name';
 
-const toggleMachine = createMachine({
-  init: "on",
+const modalMachine = createMachine({
+  init: 'closed',
   transition: {
-    on: {
-      on: {
-        TOOGLE: "off",
+    closed: {
+      handle() {
+        return 'open';
       },
     },
-    off: {
-      on: {
-        TOOGLE: "on",
+    open: {
+      handle() {
+        return 'closed';
       },
     },
   },
@@ -58,7 +61,7 @@ export const Modal = () => {
   return (
     <>
       <button onClick={() => handler()}>Toggle Modal</button>
-      <button onClick={() => forceHandler("closed")}>Force Close</button>
+      <button onClick={() => forceHandler('closed')}>Force Close</button>
 
       <StateMachineSlot>
         {({ state, payload }) => (
