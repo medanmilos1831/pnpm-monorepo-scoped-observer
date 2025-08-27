@@ -22,10 +22,7 @@ npm install @scoped-observer/react-state-machine
 
 ```tsx
 import React from "react";
-import {
-  createMachine,
-  useMachine,
-} from "@scoped-observer/react-state-machine";
+import { createMachine } from "@scoped-observer/react-state-machine";
 
 const machine = createMachine({
   init: "open",
