@@ -3,10 +3,7 @@ import React from "react";
 export type WizzardConfig = {
   initStep: string;
   infinite?: boolean; // ← NOVO: infinite loop mode opcija
-  onChange?: (
-    step: string,
-    direction: "next" | "prev" | "goTo" | "reset"
-  ) => void; // ← NOVO: onChange callback
+  onChange?: (data: any) => void; // ← NOVO: onChange callback
   steps: {
     [key: string]: {
       element: React.ComponentType<any>; // ← React komponenta umesto funkcije

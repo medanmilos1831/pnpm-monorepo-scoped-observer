@@ -45,9 +45,8 @@ export function HomePage() {
               },
             },
           },
-    onChange(step, direction) {
+    onChange(step) {
       console.log("ovo je create change", step);
-      console.log("count", count);
     },
   });
   return (
@@ -58,11 +57,9 @@ export function HomePage() {
         name="wizzardOne"
         onChange={(data) => {
           console.log("ovo je hander change", data);
-          console.log("count", count);
         }}
       >
         {({ Element }) => {
-          console.log("Element");
           return <Element />;
         }}
       </WizzardHandler>

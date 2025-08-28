@@ -13,10 +13,7 @@ class WizzardInstance {
   isLast: boolean;
   currentStepIndex: number;
   infinite: boolean; // ← NOVO: infinite loop mode opcija
-  onChange?: (
-    step: string,
-    direction: "next" | "prev" | "goTo" | "reset"
-  ) => void; // ← NOVO: onChange callback
+  onChange?: (data: any) => void; // ← NOVO: onChange callback
 
   /**
    * Creates a new wizzard instance with the specified configuration.
@@ -86,6 +83,7 @@ class WizzardInstance {
       init: config.initStep,
       transition: transitions,
     });
+    this.onChange = config.onChange;
   }
 
   /**
@@ -115,7 +113,8 @@ class WizzardInstance {
         ? this.activeStep
         : this.steps[this.currentStepIndex - 1];
       this.machine.send({ type: "NEXT" });
-      this.onChange?.(this.activeStep, "next");
+      let { onChange, machine, api, ...rest } = this;
+      this.onChange?.(rest);
     },
     /**
      * Goes back to the previous step in the sequence.

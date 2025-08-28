@@ -1,6 +1,7 @@
 import { createElement, useEffect, useRef, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import type { WizzardHandlerProps, WizzardConfig } from "./types";
+import { useInitialRender } from "./hooks";
 
 /**
  * Creates a wizzard manager with predefined keys for type-safe wizzard instances.
@@ -44,18 +45,15 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * ```
      */
     useWizzard: (name: T[number], config: WizzardConfig) => {
-      const isInitialRender = useRef(true);
+      const isInitialRender = useInitialRender();
 
       const [state] = useState(() => {
         let wizzard = new WizzardInstance(name, { ...config });
         items.set(name, wizzard);
         return wizzard;
       });
-      if (!isInitialRender.current) {
+      if (!isInitialRender) {
         state.update(name, config);
-      }
-      if (isInitialRender.current) {
-        isInitialRender.current = false;
       }
 
       useEffect(() => {
@@ -87,6 +85,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * ```
      */
     WizzardHandler: ({ children, name, onChange }: WizzardHandlerProps) => {
+      const isInitialRender = useInitialRender();
       const item = items.get(name);
       if (!item) {
         return null;
@@ -94,8 +93,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       const { state } = item.machine.useMachine();
       useEffect(() => {
-        console.log("item", item.activeStep);
-        if (onChange) {
+        if (onChange && !isInitialRender) {
           const { machine, ...rest } = item;
           onChange?.(rest);
         }
