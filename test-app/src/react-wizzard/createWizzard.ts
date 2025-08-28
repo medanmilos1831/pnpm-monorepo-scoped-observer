@@ -60,11 +60,6 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       const [api] = useState(() => new Api(state));
 
-      // Update state when config changes
-      useEffect(() => {
-        state.update(name, config);
-      }, [name, config, state]);
-
       useEffect(() => {
         return () => {
           items.delete(name);
@@ -101,6 +96,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         return null;
       }
 
+      // Use machine hook to trigger re-renders when state changes
       item.machine.useMachine();
 
       const ElementComponent = item.stepsConfig[item.activeStep]?.element;
@@ -147,21 +143,6 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * ```
      */
 
-    // useWatch: <C = undefined>(
-    //   name: T[number],
-    //   callback?: (state: "open" | "close", payload: any) => C
-    // ): UseWatchReturn<C> => {
-    //   const item = items.get(name)!;
-    //   const { state, payload } = item.machine.useMachine();
-
-    //   return {
-    //     state,
-    //     payload,
-    //     ...item.api,
-    //     callbackValue: callback ? callback(state, payload) : null,
-    //   } as any;
-    // },
-
     useWatch: <C = undefined>(
       name: T[number],
       callback?: (wizzardData: WizzardData) => C
@@ -171,7 +152,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         return null as any; // Silent fail - returns null instead of an error
       }
 
-      const { state } = item.machine.useMachine();
+      item.machine.useMachine();
 
       // Create the same rest object as onChange using utility function
       const rest = createOnChangeObject(item);

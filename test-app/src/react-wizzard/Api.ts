@@ -36,7 +36,9 @@ export class Api {
       : this.instance.steps[this.instance.currentStepIndex - 1];
     let { onChange, machine, api, ...rest } = this.instance;
     this.instance.onChange?.(rest);
+    console.log("nextStep", this.instance.activeStep);
     this.instance.machine.send({ type: "NEXT" });
+    console.log("getState", this.instance.machine.getState());
   }
 
   /**

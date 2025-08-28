@@ -26,9 +26,9 @@ const createMachine = <S extends string, T extends string, P = any>({
   let initState = structuredClone(init);
 
   const handler = (data: Event<T, P>) => {
-    if (referenceCount === 0) {
-      return;
-    }
+    // if (referenceCount === 0) {
+    //   return;
+    // }
     const next = transition[initState].on[data.type];
     if (!next) {
       console.warn(
@@ -37,6 +37,7 @@ const createMachine = <S extends string, T extends string, P = any>({
       return;
     }
     initState = next;
+    // console.log("referenceCount", referenceCount);
     manager.dispatch({
       scope: MACHINE_SCOPE,
       eventName: MACHINE_EVENT,
@@ -48,6 +49,7 @@ const createMachine = <S extends string, T extends string, P = any>({
     send: handler,
     useMachine() {
       const payloadRef = useRef<P | undefined>(undefined);
+
       const subscribe = (callback: () => void) => {
         return manager.subscribe({
           scope: MACHINE_SCOPE,
@@ -68,7 +70,7 @@ const createMachine = <S extends string, T extends string, P = any>({
             initState = init;
           }
         };
-      }, [initState]);
+      }, []);
 
       return {
         state: state,
