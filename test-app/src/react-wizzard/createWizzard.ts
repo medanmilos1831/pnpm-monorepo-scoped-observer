@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import { Api } from "./Api";
-import { createOnChangeObject } from "./utils";
+import { createOnChangeObject, initWizzard } from "./utils";
 
 import type {
   WizzardHandlerProps,
@@ -55,16 +55,9 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      */
     useWizzard: (name: T[number], config: WizzardConfig) => {
       const [state] = useState(() => {
-        let wizzard = new WizzardInstance(name, { ...config });
-        const api = new Api(wizzard, handlers);
-        items.set(name, {
-          wizzard,
-          api,
-        });
-        return {
-          wizzard,
-          api,
-        };
+        const { wizzard, api } = initWizzard(name, config, handlers);
+        items.set(name, { wizzard, api });
+        return { wizzard, api };
       });
 
       useEffect(() => {

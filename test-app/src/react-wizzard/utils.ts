@@ -1,4 +1,7 @@
 import { createMachine } from "../scoped-observer-state-machine";
+import { WizzardInstance } from "./WizzardInstance";
+import { Api } from "./Api";
+import { Handlers } from "./Handlers";
 import type {
   WizzardInstanceInterface,
   WizzardData,
@@ -176,4 +179,23 @@ export function createWizzardMachine(
     init: currentStep,
     transition: transitions,
   });
+}
+
+/**
+ * Initializes a new wizzard instance with API.
+ * This centralizes wizzard creation logic for consistency and reusability.
+ *
+ * @param name - The wizzard name
+ * @param config - The wizzard configuration
+ * @param handlers - The handlers instance to use
+ * @returns Object containing wizzard instance and API
+ */
+export function initWizzard(
+  name: string,
+  config: WizzardConfig,
+  handlers: Handlers
+) {
+  const wizzard = new WizzardInstance(name, { ...config });
+  const api = new Api(wizzard, handlers);
+  return { wizzard, api };
 }
