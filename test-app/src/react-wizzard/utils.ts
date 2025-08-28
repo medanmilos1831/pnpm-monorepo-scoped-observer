@@ -78,17 +78,17 @@ export function validateWizzardConfig(
     );
   }
 
-  if (!config.initStep || typeof config.initStep !== "string") {
+  if (!config.activeStep || typeof config.activeStep !== "string") {
     throw new Error(
-      "[Wizzard] Configuration must include valid initStep string"
+      "[Wizzard] Configuration must include valid activeStep string"
     );
   }
 
   const availableSteps = Object.keys(config.steps);
-  if (!availableSteps.includes(config.initStep)) {
+  if (!availableSteps.includes(config.activeStep)) {
     throw new Error(
-      `[Wizzard] initStep "${
-        config.initStep
+      `[Wizzard] activeStep "${
+        config.activeStep
       }" not found in steps. Available steps: [${availableSteps.join(", ")}]`
     );
   }
@@ -99,12 +99,12 @@ export function validateWizzardConfig(
  * Each step can transition to any other step directly.
  *
  * @param steps - Array of step names
- * @param initStep - Initial step name
+ * @param activeStep - Active step name
  * @returns Object with transitions for state machine
  */
 export function createStateMachineTransitions(
   steps: string[],
-  initStep: string
+  activeStep: string
 ) {
   const transitions: any = {};
 
@@ -120,7 +120,7 @@ export function createStateMachineTransitions(
         NEXT: index < steps.length - 1 ? steps[index + 1] : steps[0],
         PREV: index > 0 ? steps[index - 1] : steps[steps.length - 1],
         ...directTransitions,
-        RESET: initStep,
+        RESET: activeStep,
       },
     };
   });

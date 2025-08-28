@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import { Api } from "./Api";
-import { useInitialRender } from "./hooks";
+
 import type {
   WizzardHandlerProps,
   WizzardConfig,
@@ -42,7 +42,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * @example
      * ```typescript
      * const wizard = wizzard.useWizzard("wizardOne", {
-     *   initStep: "one",
+     *   activeStep: "one",
      *   steps: {
      *     one: { element: () => <div>Step One</div> },
      *     two: { element: () => <div>Step Two</div> }
@@ -51,8 +51,6 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * ```
      */
     useWizzard: (name: T[number], config: WizzardConfig) => {
-      const isInitialRender = useInitialRender();
-
       const [state] = useState(() => {
         let wizzard = new WizzardInstance(name, { ...config });
         items.set(name, wizzard);
@@ -61,9 +59,10 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       const [api] = useState(() => new Api(state));
 
-      if (!isInitialRender) {
+      // Update state when config changes
+      useEffect(() => {
         state.update(name, config);
-      }
+      }, [name, config, state]);
 
       useEffect(() => {
         return () => {
@@ -95,25 +94,14 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * </wizzard.WizzardHandler>
      * ```
      */
-    WizzardHandler: ({
-      children,
-      name,
-      onChange: onStepChange,
-    }: WizzardHandlerProps) => {
-      const isInitialRender = useInitialRender();
+    WizzardHandler: ({ children, name }: WizzardHandlerProps) => {
       const item = items.get(name);
       if (!item) {
         return null;
       }
 
-      const { state } = item.machine.useMachine();
+      item.machine.useMachine();
 
-      useEffect(() => {
-        if (onStepChange && !isInitialRender) {
-          const { machine, onChange, ...rest } = item;
-          onStepChange?.(rest);
-        }
-      }, [state]);
       const ElementComponent = item.stepsConfig[item.activeStep]?.element;
 
       return children({
@@ -121,8 +109,8 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         currentStep: item.currentStep,
         totalSteps: item.steps.length,
         activeStep: item.activeStep,
-        nextStep: item.nextStepName,
-        prevStep: item.prevStepName,
+        nextStepName: item.nextStepName,
+        prevStepName: item.prevStepName,
         isFirst: item.isFirst,
         isLast: item.isLast,
         nextStepFn: () => item.nextStep(),

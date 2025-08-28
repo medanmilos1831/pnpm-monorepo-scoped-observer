@@ -13,8 +13,8 @@ const WizzardStatus = () => {
       totalSteps: data.steps.length,
       isFirst: data.isFirst,
       isLast: data.isLast,
-      nextStep: data.nextStep,
-      prevStep: data.prevStep,
+      nextStep: data.nextStepName,
+      prevStep: data.prevStepName,
     };
   });
   console.log("useWatch", data);
@@ -24,7 +24,7 @@ const WizzardStatus = () => {
 export function HomePage() {
   const [count, setCount] = useState(1);
   const wizzard = useWizzard("wizzardOne", {
-    initStep: count % 2 === 0 ? "one" : "four",
+    activeStep: count % 2 === 0 ? "one" : "four",
     infinite: true,
     steps:
       count % 2 === 0
@@ -57,9 +57,6 @@ export function HomePage() {
               },
             },
           },
-    onChange(step) {
-      // console.log("ovo je create change", step);
-    },
   });
   return (
     <div>
@@ -72,12 +69,7 @@ export function HomePage() {
       <br />
       <br />
       <br />
-      <WizzardHandler
-        name="wizzardOne"
-        onChange={(data) => {
-          // console.log("ovo je hander change", data);
-        }}
-      >
+      <WizzardHandler name="wizzardOne">
         {({ Element }) => {
           return <Element />;
         }}

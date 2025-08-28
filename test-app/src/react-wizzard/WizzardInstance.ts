@@ -40,8 +40,8 @@ class WizzardInstance {
     this.onChange = config.onChange;
 
     // Initialize step state
-    this.currentStep = config.initStep;
-    this.activeStep = config.initStep;
+    this.currentStep = config.activeStep;
+    this.activeStep = config.activeStep;
     this.currentStepIndex = this.steps.indexOf(this.currentStep);
 
     // Initialize navigation properties
@@ -53,12 +53,12 @@ class WizzardInstance {
     // Use utility function for state machine transitions
     const transitions = createStateMachineTransitions(
       this.steps,
-      config.initStep
+      config.activeStep
     );
 
     // Create and initialize state machine
     this.machine = createMachine({
-      init: config.initStep,
+      init: config.activeStep,
       transition: transitions,
     });
   }
@@ -71,12 +71,12 @@ class WizzardInstance {
     this.onChange = config.onChange;
 
     // Use utility function to update navigation properties
-    updateNavigationProperties(this, this.steps.indexOf(config.initStep));
+    updateNavigationProperties(this, this.steps.indexOf(config.activeStep));
 
     // Use utility function for state machine transitions
     const transitions = createStateMachineTransitions(
       this.steps,
-      config.initStep
+      config.activeStep
     );
 
     // Create and initialize state machine
