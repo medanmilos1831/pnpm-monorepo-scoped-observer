@@ -1,12 +1,8 @@
-import {
-  validateWizzardConfig,
-  updateNavigationProperties,
-  createOnChangeObject,
-  createWizzardMachine,
-} from "./utils";
+import { validateWizzardConfig, createWizzardMachine } from "./utils";
+import { Handlers } from "./Handlers";
 import type { WizzardConfig, WizzardData } from "./types";
 
-class WizzardInstance {
+class WizzardInstance extends Handlers {
   name: string;
   machine;
   steps: string[];
@@ -28,6 +24,9 @@ class WizzardInstance {
    * @throws Error if configuration is invalid
    */
   constructor(name: string, config: WizzardConfig) {
+    // Call parent constructor
+    super();
+
     // Use utility function for validation
     validateWizzardConfig(name, config);
 
@@ -55,94 +54,6 @@ class WizzardInstance {
       config.activeStep,
       config.activeStep
     );
-  }
-
-  update(name: string, config: WizzardConfig) {
-    this.name = name;
-    this.steps = Object.keys(config.steps);
-    this.stepsConfig = config.steps;
-    this.infinite = config.infinite || false;
-    this.onChange = config.onChange;
-
-    // Use utility function to update navigation properties
-    updateNavigationProperties(this, this.steps.indexOf(config.activeStep));
-
-    // Create and initialize state machine using utility function
-    this.machine = createWizzardMachine(
-      this.steps,
-      config.activeStep,
-      this.currentStep
-    );
-  }
-
-  /**
-   * Advances to the next step in the sequence.
-   * Does nothing if already at the last step.
-   */
-  nextStep(): void {
-    let currentIndex = this.steps.indexOf(this.activeStep);
-    if (this.isLast) {
-      this.currentStepIndex = this.infinite ? 0 : currentIndex;
-    } else {
-      this.currentStepIndex = currentIndex + 1;
-    }
-
-    // Use utility function to update navigation properties
-    updateNavigationProperties(this, this.currentStepIndex);
-
-    this.onChange?.(createOnChangeObject(this));
-    this.machine.send({ type: "NEXT" });
-  }
-
-  /**
-   * Goes back to the previous step in the sequence.
-   * Does nothing if already at the first step.
-   */
-  prevStep(): void {
-    let currentIndex = 0;
-    currentIndex = this.steps.indexOf(this.activeStep);
-    if (this.isFirst) {
-      this.currentStepIndex = this.infinite
-        ? this.steps.length - 1
-        : currentIndex;
-    } else {
-      this.currentStepIndex = currentIndex - 1;
-    }
-
-    // Use utility function to update navigation properties
-    updateNavigationProperties(this, this.currentStepIndex);
-
-    this.machine.send({ type: "PREV" });
-    this.onChange?.(createOnChangeObject(this));
-  }
-
-  /**
-   * Navigates directly to a specific step.
-   * Does nothing if the step does not exist.
-   */
-  goToStep(step: string): void {
-    if (!this.steps.includes(step)) {
-      return; // Silent fail - ništa se ne dešava
-    }
-
-    const stepIndex = this.steps.indexOf(step);
-
-    // Use utility function to update navigation properties
-    updateNavigationProperties(this, stepIndex);
-
-    this.machine.send({ type: this.currentStep, payload: step });
-    this.onChange?.(createOnChangeObject(this));
-  }
-
-  /**
-   * Resets the wizzard to its initial state.
-   */
-  reset(): void {
-    // Use utility function to update navigation properties
-    updateNavigationProperties(this, 0);
-
-    this.machine.send({ type: "RESET" });
-    this.onChange?.(createOnChangeObject(this));
   }
 }
 export { WizzardInstance };
