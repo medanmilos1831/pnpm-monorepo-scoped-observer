@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
+import { Api } from "./Api";
 import { useInitialRender } from "./hooks";
 import type {
   WizzardHandlerProps,
@@ -57,6 +58,9 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         items.set(name, wizzard);
         return wizzard;
       });
+
+      const [api] = useState(() => new Api(state));
+
       if (!isInitialRender) {
         state.update(name, config);
       }
@@ -66,7 +70,9 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
           items.delete(name);
         };
       }, []);
-      return state.api;
+
+      // Return stored Api instance
+      return api;
     },
 
     /**
@@ -104,7 +110,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       useEffect(() => {
         if (onStepChange && !isInitialRender) {
-          const { machine, api, onChange, ...rest } = item;
+          const { machine, onChange, ...rest } = item;
           onStepChange?.(rest);
         }
       }, [state]);
@@ -115,14 +121,14 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         currentStep: item.currentStep,
         totalSteps: item.steps.length,
         activeStep: item.activeStep,
-        nextStep: item.nextStep,
-        prevStep: item.prevStep,
+        nextStep: item.nextStepName,
+        prevStep: item.prevStepName,
         isFirst: item.isFirst,
         isLast: item.isLast,
-        nextStepFn: () => item.api.nextStep(),
-        prevStepFn: () => item.api.prevStep(),
-        goToStep: (step: string) => item.api.goToStep(step),
-        reset: () => item.api.reset(),
+        nextStepFn: () => item.nextStep(),
+        prevStepFn: () => item.prevStep(),
+        goToStep: (step: string) => item.goToStep(step),
+        reset: () => item.reset(),
         Element: ElementComponent,
       });
     },
@@ -179,7 +185,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       const { state } = item.machine.useMachine();
 
       // Create the same rest object as onChange
-      const { machine, api, onChange, ...rest } = item;
+      const { machine, onChange, ...rest } = item;
 
       return {
         activeStep: item.activeStep,
@@ -187,10 +193,10 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         totalSteps: item.steps.length,
         isFirst: item.isFirst,
         isLast: item.isLast,
-        nextStep: () => item.api.nextStep(),
-        prevStep: () => item.api.prevStep(),
-        goToStep: (step: string) => item.api.goToStep(step),
-        reset: () => item.api.reset(),
+        nextStep: () => item.nextStep(),
+        prevStep: () => item.prevStep(),
+        goToStep: (step: string) => item.goToStep(step),
+        reset: () => item.reset(),
         callbackValue: callback ? callback(rest) : null,
       } as any;
     },
@@ -205,7 +211,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * @example
      * ```typescript
      * const instance = wizzard.getItem("wizardOne");
-     * instance.api.nextStep();
+     * instance.nextStep();
      * ```
      */
     getItem: (name: T[number]) => {

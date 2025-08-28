@@ -70,8 +70,8 @@ export type WizzardData = {
   stepsConfig: { [key: string]: { element: React.ComponentType<any> } };
   currentStep: string;
   activeStep: string;
-  nextStep: string;
-  prevStep: string;
+  nextStepName: string;
+  prevStepName: string;
   isFirst: boolean;
   isLast: boolean;
   currentStepIndex: number;
