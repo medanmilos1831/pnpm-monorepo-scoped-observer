@@ -11,15 +11,13 @@ export type WizzardConfig = {
   };
 };
 
-export type WizzardHandlerChildrenProps = {
-  name: string;
-  currentStep: string;
+export type WizzardHandlerChildrenProps = Pick<
+  WizzardInstanceInterface,
+  "name" | "currentStep" | "activeStep" | "isFirst" | "isLast"
+> & {
   totalSteps: number;
-  activeStep: string;
   nextStep: string;
   prevStep: string;
-  isFirst: boolean;
-  isLast: boolean;
   nextStepFn: () => void;
   prevStepFn: () => void;
   goToStep: (step: string) => void;
@@ -34,28 +32,21 @@ export type WizzardHandlerProps = {
 };
 
 // useWatch types following react-visibility-state pattern
-type DefaultWizzardReturn = {
-  activeStep: string;
-  currentStep: string;
+type DefaultWizzardReturn = Pick<
+  WizzardInstanceInterface,
+  | "activeStep"
+  | "currentStep"
+  | "isFirst"
+  | "isLast"
+  | "nextStep"
+  | "prevStep"
+  | "goToStep"
+  | "reset"
+> & {
   totalSteps: number;
-  isFirst: boolean;
-  isLast: boolean;
-  nextStep: () => void;
-  prevStep: () => void;
-  goToStep: (step: string) => void;
-  reset: () => void;
 };
 
-type CallbackWizzardReturn<C> = {
-  activeStep: string;
-  currentStep: string;
-  totalSteps: number;
-  isFirst: boolean;
-  isLast: boolean;
-  nextStep: () => void;
-  prevStep: () => void;
-  goToStep: (step: string) => void;
-  reset: () => void;
+type CallbackWizzardReturn<C> = DefaultWizzardReturn & {
   callbackValue: C;
 };
 
