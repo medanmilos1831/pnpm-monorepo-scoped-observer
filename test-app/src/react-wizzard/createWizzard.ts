@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import { Api } from "./Api";
-import { createOnChangeObject, initWizzard } from "./utils";
+import {
+  createOnChangeObject,
+  initWizzard,
+  createWizzardSharedValues,
+} from "./utils";
 
 import type {
   WizzardHandlerProps,
@@ -100,21 +104,12 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       const ElementComponent =
         item.wizzard.stepsConfig[item.wizzard.activeStep]?.element;
-      const api = item.api;
+
+      // Use utility function for shared values
+      const sharedValues = createWizzardSharedValues(item);
 
       return children({
-        name: item.wizzard.name,
-        currentStep: item.wizzard.currentStep,
-        totalSteps: item.wizzard.steps.length,
-        activeStep: item.wizzard.activeStep,
-        nextStepName: item.wizzard.nextStepName,
-        prevStepName: item.wizzard.prevStepName,
-        isFirst: item.wizzard.isFirst,
-        isLast: item.wizzard.isLast,
-        nextStepFn: () => api.nextStep(),
-        prevStepFn: () => api.prevStep(),
-        goToStep: (step: string) => api.goToStep(step),
-        reset: () => api.reset(),
+        ...sharedValues,
         Element: ElementComponent,
       });
     },
@@ -157,17 +152,12 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       // Create the same rest object as onChange using utility function
       const rest = createOnChangeObject(item.wizzard as any);
-      const api = item.api;
+
+      // Use utility function for shared values
+      const sharedValues = createWizzardSharedValues(item);
+
       return {
-        activeStep: item.wizzard.activeStep,
-        currentStep: item.wizzard.currentStep,
-        totalSteps: item.wizzard.steps.length,
-        isFirst: item.wizzard.isFirst,
-        isLast: item.wizzard.isLast,
-        nextStep: () => api.nextStep(),
-        prevStep: () => api.prevStep(),
-        goToStep: (step: string) => api.goToStep(step),
-        reset: () => api.reset(),
+        ...sharedValues,
         callbackValue: callback ? callback(rest) : null,
       } as any;
     },

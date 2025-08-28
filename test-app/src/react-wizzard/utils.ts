@@ -199,3 +199,30 @@ export function initWizzard(
   const api = new Api(wizzard, handlers);
   return { wizzard, api };
 }
+
+/**
+ * Creates shared values object used by both WizzardHandler and useWatch.
+ * This centralizes shared values logic and ensures consistency.
+ *
+ * @param item - Object containing wizzard instance and API
+ * @returns Object with all shared wizzard values and methods
+ */
+export function createWizzardSharedValues(item: {
+  wizzard: WizzardInstance;
+  api: Api;
+}) {
+  return {
+    name: item.wizzard.name,
+    currentStep: item.wizzard.currentStep,
+    totalSteps: item.wizzard.steps.length,
+    activeStep: item.wizzard.activeStep,
+    nextStepName: item.wizzard.nextStepName,
+    prevStepName: item.wizzard.prevStepName,
+    isFirst: item.wizzard.isFirst,
+    isLast: item.wizzard.isLast,
+    nextStepFn: () => item.api.nextStep(),
+    prevStepFn: () => item.api.prevStep(),
+    goToStep: (step: string) => item.api.goToStep(step),
+    reset: () => item.api.reset(),
+  };
+}
