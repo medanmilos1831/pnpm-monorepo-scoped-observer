@@ -29,7 +29,6 @@ const createMachine = <S extends string, T extends string, P = any>({
     if (referenceCount === 0) {
       return;
     }
-
     const next = transition[initState].on[data.type];
     if (!next) {
       console.warn(
@@ -49,7 +48,6 @@ const createMachine = <S extends string, T extends string, P = any>({
     send: handler,
     useMachine() {
       const payloadRef = useRef<P | undefined>(undefined);
-
       const subscribe = (callback: () => void) => {
         return manager.subscribe({
           scope: MACHINE_SCOPE,
@@ -70,7 +68,7 @@ const createMachine = <S extends string, T extends string, P = any>({
             initState = init;
           }
         };
-      }, []);
+      }, [initState]);
 
       return {
         state: state,

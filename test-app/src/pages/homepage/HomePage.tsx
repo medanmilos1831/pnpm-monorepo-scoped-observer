@@ -65,7 +65,11 @@ export function HomePage() {
       </WizzardHandler>
       <button onClick={() => wizzard.prevStep()}>Prev</button>
       <button onClick={() => wizzard.nextStep()}>Next</button>
-      <button onClick={() => wizzard.goToStep("three")}>go to three</button>
+      <button
+        onClick={() => wizzard.goToStep(count % 2 === 0 ? "two" : "five")}
+      >
+        go to three
+      </button>
       <button onClick={() => setCount(count + 1)}>count {count}</button>
     </div>
   );
