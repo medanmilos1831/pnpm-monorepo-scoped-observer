@@ -9,6 +9,7 @@ import type {
   UseWatchReturn,
   WizzardData,
 } from "./types";
+import { Handlers } from "./Handlers";
 
 /**
  * Creates a wizzard manager with predefined keys for type-safe wizzard instances.
@@ -29,8 +30,9 @@ import type {
  * ```
  */
 const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
-  const items: Map<T[number], WizzardInstance> = new Map();
-
+  const items: Map<T[number], { wizzard: WizzardInstance; api: Api }> =
+    new Map();
+  const handlers = new Handlers();
   return {
     /**
      * Creates a wizzard instance for the specified name.
@@ -54,11 +56,16 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
     useWizzard: (name: T[number], config: WizzardConfig) => {
       const [state] = useState(() => {
         let wizzard = new WizzardInstance(name, { ...config });
-        items.set(name, wizzard);
-        return wizzard;
+        const api = new Api(wizzard, handlers);
+        items.set(name, {
+          wizzard,
+          api,
+        });
+        return {
+          wizzard,
+          api,
+        };
       });
-
-      const [api] = useState(() => new Api(state));
 
       useEffect(() => {
         return () => {
@@ -66,8 +73,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         };
       }, []);
 
-      // Return stored Api instance
-      return api;
+      return state.api;
     },
 
     /**
@@ -97,23 +103,25 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       }
 
       // Use machine hook to trigger re-renders when state changes
-      item.machine.useMachine();
+      item.wizzard.machine.useMachine();
 
-      const ElementComponent = item.stepsConfig[item.activeStep]?.element;
+      const ElementComponent =
+        item.wizzard.stepsConfig[item.wizzard.activeStep]?.element;
+      const api = item.api;
 
       return children({
-        name: item.name,
-        currentStep: item.currentStep,
-        totalSteps: item.steps.length,
-        activeStep: item.activeStep,
-        nextStepName: item.nextStepName,
-        prevStepName: item.prevStepName,
-        isFirst: item.isFirst,
-        isLast: item.isLast,
-        nextStepFn: () => item.nextStep(),
-        prevStepFn: () => item.prevStep(),
-        goToStep: (step: string) => item.goToStep(step),
-        reset: () => item.reset(),
+        name: item.wizzard.name,
+        currentStep: item.wizzard.currentStep,
+        totalSteps: item.wizzard.steps.length,
+        activeStep: item.wizzard.activeStep,
+        nextStepName: item.wizzard.nextStepName,
+        prevStepName: item.wizzard.prevStepName,
+        isFirst: item.wizzard.isFirst,
+        isLast: item.wizzard.isLast,
+        nextStepFn: () => api.nextStep(),
+        prevStepFn: () => api.prevStep(),
+        goToStep: (step: string) => api.goToStep(step),
+        reset: () => api.reset(),
         Element: ElementComponent,
       });
     },
@@ -152,21 +160,21 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         return null as any; // Silent fail - returns null instead of an error
       }
 
-      item.machine.useMachine();
+      item.wizzard.machine.useMachine();
 
       // Create the same rest object as onChange using utility function
-      const rest = createOnChangeObject(item);
-
+      const rest = createOnChangeObject(item.wizzard as any);
+      const api = item.api;
       return {
-        activeStep: item.activeStep,
-        currentStep: item.currentStep,
-        totalSteps: item.steps.length,
-        isFirst: item.isFirst,
-        isLast: item.isLast,
-        nextStep: () => item.nextStep(),
-        prevStep: () => item.prevStep(),
-        goToStep: (step: string) => item.goToStep(step),
-        reset: () => item.reset(),
+        activeStep: item.wizzard.activeStep,
+        currentStep: item.wizzard.currentStep,
+        totalSteps: item.wizzard.steps.length,
+        isFirst: item.wizzard.isFirst,
+        isLast: item.wizzard.isLast,
+        nextStep: () => api.nextStep(),
+        prevStep: () => api.prevStep(),
+        goToStep: (step: string) => api.goToStep(step),
+        reset: () => api.reset(),
         callbackValue: callback ? callback(rest) : null,
       } as any;
     },

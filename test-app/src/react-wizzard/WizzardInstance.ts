@@ -1,8 +1,7 @@
-import { validateWizzardConfig, createWizzardMachine } from "./utils";
-import { Handlers } from "./Handlers";
 import type { WizzardConfig, WizzardData } from "./types";
+import { createWizzardMachine, validateWizzardConfig } from "./utils";
 
-class WizzardInstance extends Handlers {
+class WizzardInstance {
   name: string;
   machine;
   steps: string[];
@@ -24,9 +23,6 @@ class WizzardInstance extends Handlers {
    * @throws Error if configuration is invalid
    */
   constructor(name: string, config: WizzardConfig) {
-    // Call parent constructor
-    super();
-
     // Use utility function for validation
     validateWizzardConfig(name, config);
 
