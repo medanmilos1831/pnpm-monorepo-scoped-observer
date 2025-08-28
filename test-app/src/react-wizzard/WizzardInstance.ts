@@ -1,9 +1,8 @@
-import { createMachine } from "../scoped-observer-state-machine";
 import {
   validateWizzardConfig,
-  createStateMachineTransitions,
   updateNavigationProperties,
   createOnChangeObject,
+  createWizzardMachine,
 } from "./utils";
 import type { WizzardConfig, WizzardData } from "./types";
 
@@ -50,17 +49,12 @@ class WizzardInstance {
     this.nextStepName = this.steps.length > 1 ? this.steps[1] : this.steps[0];
     this.prevStepName = this.steps[0];
 
-    // Use utility function for state machine transitions
-    const transitions = createStateMachineTransitions(
+    // Create and initialize state machine using utility function
+    this.machine = createWizzardMachine(
       this.steps,
+      config.activeStep,
       config.activeStep
     );
-
-    // Create and initialize state machine
-    this.machine = createMachine({
-      init: config.activeStep,
-      transition: transitions,
-    });
   }
 
   update(name: string, config: WizzardConfig) {
@@ -73,17 +67,12 @@ class WizzardInstance {
     // Use utility function to update navigation properties
     updateNavigationProperties(this, this.steps.indexOf(config.activeStep));
 
-    // Use utility function for state machine transitions
-    const transitions = createStateMachineTransitions(
+    // Create and initialize state machine using utility function
+    this.machine = createWizzardMachine(
       this.steps,
-      config.activeStep
+      config.activeStep,
+      this.currentStep
     );
-
-    // Create and initialize state machine
-    this.machine = createMachine({
-      init: this.currentStep,
-      transition: transitions,
-    });
   }
 
   /**

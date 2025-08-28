@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import { Api } from "./Api";
+import { createOnChangeObject } from "./utils";
 
 import type {
   WizzardHandlerProps,
@@ -172,8 +173,8 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
 
       const { state } = item.machine.useMachine();
 
-      // Create the same rest object as onChange
-      const { machine, onChange, ...rest } = item;
+      // Create the same rest object as onChange using utility function
+      const rest = createOnChangeObject(item);
 
       return {
         activeStep: item.activeStep,

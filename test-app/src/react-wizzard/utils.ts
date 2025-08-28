@@ -1,3 +1,4 @@
+import { createMachine } from "../scoped-observer-state-machine";
 import type {
   WizzardInstanceInterface,
   WizzardData,
@@ -153,4 +154,26 @@ export function updateNavigationProperties(
   instance.prevStepName = instance.isFirst
     ? instance.activeStep
     : instance.steps[stepIndex - 1];
+}
+
+/**
+ * Creates and initializes a wizzard state machine.
+ * This centralizes machine creation logic for consistency.
+ *
+ * @param steps - Array of step names
+ * @param activeStep - Active step name
+ * @param currentStep - Current step name for machine initialization
+ * @returns Configured state machine instance
+ */
+export function createWizzardMachine(
+  steps: string[],
+  activeStep: string,
+  currentStep: string
+) {
+  const transitions = createStateMachineTransitions(steps, activeStep);
+
+  return createMachine({
+    init: currentStep,
+    transition: transitions,
+  });
 }
