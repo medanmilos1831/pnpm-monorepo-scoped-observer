@@ -2,17 +2,17 @@ import React from "react";
 
 export type WizzardConfig = {
   initStep: string;
-  infinite?: boolean; // ← NOVO: infinite loop mode opcija
-  onChange?: (data: WizzardData) => void; // ← NOVO: onChange callback
+  infinite?: boolean;
+  onChange?: (data: WizzardData) => void;
   steps: {
     [key: string]: {
-      element: React.ComponentType<any>; // ← React komponenta umesto funkcije
+      element: React.ComponentType<any>;
     };
   };
 };
 
 export type WizzardHandlerChildrenProps = {
-  name: string; // ← NOVO: wizzard name
+  name: string;
   currentStep: string;
   totalSteps: number;
   activeStep: string;
@@ -24,7 +24,7 @@ export type WizzardHandlerChildrenProps = {
   prevStepFn: () => void;
   goToStep: (step: string) => void;
   reset: () => void;
-  Element: React.ComponentType<any>; // ← Uvek vraća JSX element, nema null
+  Element: React.ComponentType<any>;
 };
 
 export type WizzardHandlerProps = {
@@ -77,3 +77,30 @@ export type WizzardData = {
   currentStepIndex: number;
   infinite: boolean;
 };
+
+/**
+ * Interface representing a wizzard instance.
+ * Used for typing utility functions and other operations.
+ */
+export interface WizzardInstanceInterface {
+  name: string;
+  machine: any;
+  steps: string[];
+  stepsConfig: { [key: string]: { element: React.ComponentType<any> } };
+  currentStep: string;
+  activeStep: string;
+  nextStepName: string;
+  prevStepName: string;
+  isFirst: boolean;
+  isLast: boolean;
+  currentStepIndex: number;
+  infinite: boolean;
+  onChange?: (data: WizzardData) => void;
+
+  // Methods
+  nextStep(): void;
+  prevStep(): void;
+  goToStep(step: string): void;
+  reset(): void;
+  update(name: string, config: any): void;
+}
