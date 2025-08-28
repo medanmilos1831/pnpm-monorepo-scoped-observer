@@ -3,7 +3,9 @@ import {
   validateWizzardConfig,
   createStateMachineTransitions,
   updateNavigationProperties,
+  createOnChangeObject,
 } from "./utils";
+import type { WizzardConfig, WizzardData } from "./types";
 
 class WizzardInstance {
   name: string;
@@ -18,7 +20,7 @@ class WizzardInstance {
   isLast: boolean;
   currentStepIndex: number;
   infinite: boolean;
-  onChange?: (data: any) => void;
+  onChange?: (data: WizzardData) => void;
 
   /**
    * Creates a new wizzard instance with the specified configuration.
@@ -26,7 +28,7 @@ class WizzardInstance {
    * @param config - Configuration object containing initial step and step definitions
    * @throws Error if configuration is invalid
    */
-  constructor(name: string, config: any) {
+  constructor(name: string, config: WizzardConfig) {
     // Use utility function for validation
     validateWizzardConfig(name, config);
 
@@ -61,7 +63,7 @@ class WizzardInstance {
     });
   }
 
-  update(name: string, config: any) {
+  update(name: string, config: WizzardConfig) {
     this.name = name;
     this.steps = Object.keys(config.steps);
     this.stepsConfig = config.steps;
@@ -99,8 +101,7 @@ class WizzardInstance {
     // Use utility function to update navigation properties
     updateNavigationProperties(this, this.currentStepIndex);
 
-    let { onChange, machine, ...rest } = this;
-    this.onChange?.(rest);
+    this.onChange?.(createOnChangeObject(this));
     this.machine.send({ type: "NEXT" });
   }
 
@@ -123,8 +124,7 @@ class WizzardInstance {
     updateNavigationProperties(this, this.currentStepIndex);
 
     this.machine.send({ type: "PREV" });
-    let { onChange, machine, ...rest } = this;
-    this.onChange?.(rest);
+    this.onChange?.(createOnChangeObject(this));
   }
 
   /**
@@ -142,8 +142,7 @@ class WizzardInstance {
     updateNavigationProperties(this, stepIndex);
 
     this.machine.send({ type: this.currentStep, payload: step });
-    let { onChange, machine, ...rest } = this;
-    this.onChange?.(rest);
+    this.onChange?.(createOnChangeObject(this));
   }
 
   /**
@@ -154,8 +153,7 @@ class WizzardInstance {
     updateNavigationProperties(this, 0);
 
     this.machine.send({ type: "RESET" });
-    let { onChange, machine, ...rest } = this;
-    this.onChange?.(rest);
+    this.onChange?.(createOnChangeObject(this));
   }
 }
 export { WizzardInstance };

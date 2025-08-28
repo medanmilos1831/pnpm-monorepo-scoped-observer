@@ -1,4 +1,8 @@
-import type { WizzardInstanceInterface, WizzardData } from "./types";
+import type {
+  WizzardInstanceInterface,
+  WizzardData,
+  WizzardConfig,
+} from "./types";
 
 /**
  * Utility functions for react-wizzard package.
@@ -52,7 +56,10 @@ export function createWizzardData(
  * @param config - The configuration object
  * @throws Error if configuration is invalid
  */
-export function validateWizzardConfig(name: string, config: any): void {
+export function validateWizzardConfig(
+  name: string,
+  config: WizzardConfig
+): void {
   if (!name || typeof name !== "string") {
     throw new Error("[Wizzard] Name must be a valid string");
   }

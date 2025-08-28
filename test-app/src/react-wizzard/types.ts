@@ -102,5 +102,5 @@ export interface WizzardInstanceInterface {
   prevStep(): void;
   goToStep(step: string): void;
   reset(): void;
-  update(name: string, config: any): void;
+  update(name: string, config: WizzardConfig): void;
 }
