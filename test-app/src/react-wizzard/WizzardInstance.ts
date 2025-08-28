@@ -1,4 +1,5 @@
 import { createMachine } from "../scoped-observer-state-machine";
+import { Api } from "./Api";
 
 class WizzardInstance {
   name: string;
@@ -14,6 +15,12 @@ class WizzardInstance {
   currentStepIndex: number;
   infinite: boolean; // ← NOVO: infinite loop mode opcija
   onChange?: (data: any) => void; // ← NOVO: onChange callback
+
+  /**
+   * API instance containing methods to control the wizzard navigation.
+   * All methods use silent fail behavior - invalid operations do nothing.
+   */
+  api: Api;
 
   /**
    * Creates a new wizzard instance with the specified configuration.
@@ -73,6 +80,9 @@ class WizzardInstance {
     this.nextStep = this.steps.length > 1 ? this.steps[1] : this.steps[0];
     this.prevStep = this.steps[0];
 
+    // Create API instance
+    this.api = new Api(this);
+
     // Create state machine transitions
     const transitions: any = {};
     this.steps.forEach((step, index) => {
@@ -103,113 +113,6 @@ class WizzardInstance {
       transition: transitions,
     });
   }
-
-  /**
-   * API object containing methods to control the wizzard navigation.
-   * All methods use silent fail behavior - invalid operations do nothing.
-   */
-  api = {
-    /**
-     * Advances to the next step in the sequence.
-     * Does nothing if already at the last step.
-     */
-    nextStep: () => {
-      let currentIndex = this.steps.indexOf(this.activeStep);
-      if (this.isLast) {
-        this.currentStepIndex = this.infinite ? 0 : currentIndex;
-      } else {
-        this.currentStepIndex = currentIndex + 1;
-      }
-      this.activeStep = this.steps[this.currentStepIndex];
-      this.currentStep = this.activeStep;
-      this.isFirst = this.currentStepIndex === 0;
-      this.isLast = this.currentStepIndex === this.steps.length - 1;
-      this.nextStep = this.isLast
-        ? this.activeStep
-        : this.steps[this.currentStepIndex + 1];
-      this.prevStep = this.isFirst
-        ? this.activeStep
-        : this.steps[this.currentStepIndex - 1];
-      this.machine.send({ type: "NEXT" });
-      let { onChange, machine, api, ...rest } = this;
-      this.onChange?.(rest);
-    },
-    /**
-     * Goes back to the previous step in the sequence.
-     * Does nothing if already at the first step.
-     */
-    prevStep: () => {
-      let currentIndex = 0;
-      currentIndex = this.steps.indexOf(this.activeStep);
-      if (this.isFirst) {
-        this.currentStepIndex = this.infinite
-          ? this.steps.length - 1
-          : currentIndex;
-      } else {
-        this.currentStepIndex = currentIndex - 1;
-      }
-      this.activeStep = this.steps[this.currentStepIndex];
-      this.currentStep = this.activeStep;
-
-      // Ažuriraj sve properties
-      this.isFirst = this.currentStepIndex === 0;
-      this.isLast = this.currentStepIndex === this.steps.length - 1;
-      this.nextStep = this.isLast
-        ? this.activeStep
-        : this.steps[this.currentStepIndex + 1];
-      this.prevStep = this.isFirst
-        ? this.activeStep
-        : this.steps[this.currentStepIndex - 1];
-      this.machine.send({ type: "PREV" });
-      let { onChange, machine, api, ...rest } = this;
-      this.onChange?.(rest);
-    },
-    /**
-     * Navigates directly to a specific step.
-     * Does nothing if the step does not exist.
-     */
-    goToStep: (step: string) => {
-      if (!this.steps.includes(step)) {
-        return; // Silent fail - ništa se ne dešava
-      }
-
-      const stepIndex = this.steps.indexOf(step);
-      this.currentStepIndex = stepIndex;
-      this.activeStep = step;
-      this.currentStep = step;
-
-      // Ažuriraj sve properties
-      this.isFirst = stepIndex === 0;
-      this.isLast = stepIndex === this.steps.length - 1;
-      this.nextStep =
-        stepIndex < this.steps.length - 1
-          ? this.steps[stepIndex + 1]
-          : this.activeStep;
-      this.prevStep =
-        stepIndex > 0 ? this.steps[stepIndex - 1] : this.activeStep;
-
-      this.machine.send({ type: this.currentStep, payload: step });
-      let { onChange, machine, api, ...rest } = this;
-      this.onChange?.(rest);
-    },
-    /**
-     * Resets the wizzard to its initial state.
-     */
-    reset: () => {
-      this.currentStepIndex = 0;
-      this.activeStep = this.steps[0];
-      this.currentStep = this.steps[0];
-
-      this.isFirst = true;
-      this.isLast = this.steps.length === 1;
-      this.nextStep = this.steps.length > 1 ? this.steps[1] : this.steps[0];
-      this.prevStep = this.steps[0];
-
-      this.machine.send({ type: "RESET" });
-      let { onChange, machine, api, ...rest } = this;
-      this.onChange?.(rest);
-    },
-  };
 
   update(name: string, config: any) {
     this.name = name;
@@ -256,5 +159,4 @@ class WizzardInstance {
     this.onChange = config.onChange;
   }
 }
-
 export { WizzardInstance };

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { WizzardInstance } from "./WizzardInstance";
 import { useInitialRender } from "./hooks";
-import type { WizzardConfig, WizzardHandlerProps } from "./types";
+import type {
+  WizzardHandlerProps,
+  WizzardConfig,
+  UseWatchReturn,
+  WizzardData,
+} from "./types";
 
 /**
  * Creates a wizzard manager with predefined keys for type-safe wizzard instances.
@@ -84,8 +89,11 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * </wizzard.WizzardHandler>
      * ```
      */
-    WizzardHandler: ({ children, name, onChange }: WizzardHandlerProps) => {
-
+    WizzardHandler: ({
+      children,
+      name,
+      onChange: onStepChange,
+    }: WizzardHandlerProps) => {
       const isInitialRender = useInitialRender();
       const item = items.get(name);
       if (!item) {
@@ -95,15 +103,15 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       const { state } = item.machine.useMachine();
 
       useEffect(() => {
-        if (onChange && !isInitialRender) {
-          const { machine, ...rest } = item;
-          onChange?.(rest);
+        if (onStepChange && !isInitialRender) {
+          const { machine, api, onChange, ...rest } = item;
+          onStepChange?.(rest);
         }
       }, [state]);
       const ElementComponent = item.stepsConfig[item.activeStep]?.element;
 
       return children({
-        name: item.name, // ← NOVO: wizzard name
+        name: item.name,
         currentStep: item.currentStep,
         totalSteps: item.steps.length,
         activeStep: item.activeStep,
@@ -143,51 +151,35 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * );
      * ```
      */
+
+    // useWatch: <C = undefined>(
+    //   name: T[number],
+    //   callback?: (state: "open" | "close", payload: any) => C
+    // ): UseWatchReturn<C> => {
+    //   const item = items.get(name)!;
+    //   const { state, payload } = item.machine.useMachine();
+
+    //   return {
+    //     state,
+    //     payload,
+    //     ...item.api,
+    //     callbackValue: callback ? callback(state, payload) : null,
+    //   } as any;
+    // },
+
     useWatch: <C = undefined>(
       name: T[number],
-      callback?: (
-        activeStep: string,
-        currentStep: string,
-        totalSteps: number
-      ) => C
-    ) => {
-      // Validation: Check if name is provided
-      if (!name || typeof name !== "string") {
-        throw new Error("[Wizzard] Wizzard name must be a valid string");
-      }
-
-      // Validation: Check if name is one of the allowed keys
-      if (!config.keys.includes(name)) {
-        throw new Error(
-          `[Wizzard] Invalid wizzard name "${name}". Allowed names: [${Array.from(
-            config.keys
-          ).join(", ")}]`
-        );
-      }
-
+      callback?: (wizzardData: WizzardData) => C
+    ): UseWatchReturn<C> => {
       const item = items.get(name);
       if (!item) {
-        return null; // Silent fail - vraća null umesto error-a
+        return null as any; // Silent fail - returns null instead of an error
       }
 
-      item.machine.useMachine();
+      const { state } = item.machine.useMachine();
 
-      let callbackValue: C | null = null;
-      if (callback) {
-        try {
-          callbackValue = callback(
-            item.activeStep,
-            item.currentStep,
-            item.steps.length
-          );
-        } catch (error) {
-          console.error(
-            `[Wizzard] Error in useWatch callback for "${name}":`,
-            error
-          );
-          callbackValue = null;
-        }
-      }
+      // Create the same rest object as onChange
+      const { machine, api, onChange, ...rest } = item;
 
       return {
         activeStep: item.activeStep,
@@ -195,8 +187,11 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
         totalSteps: item.steps.length,
         isFirst: item.isFirst,
         isLast: item.isLast,
-        ...item.api,
-        callbackValue,
+        nextStep: () => item.api.nextStep(),
+        prevStep: () => item.api.prevStep(),
+        goToStep: (step: string) => item.api.goToStep(step),
+        reset: () => item.api.reset(),
+        callbackValue: callback ? callback(rest) : null,
       } as any;
     },
 

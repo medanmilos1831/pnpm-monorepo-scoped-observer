@@ -5,8 +5,20 @@ import {
   useWatch,
 } from "../../services/wizzardService";
 const WizzardStatus = () => {
-  const { activeStep } = useWatch("wizzardOne");
-  return <span>Active: {activeStep}</span>;
+  const data = useWatch("wizzardOne", (data) => {
+    console.log("data", data);
+    return {
+      activeStep: data.activeStep,
+      currentStep: data.currentStep,
+      totalSteps: data.steps.length,
+      isFirst: data.isFirst,
+      isLast: data.isLast,
+      nextStep: data.nextStep,
+      prevStep: data.prevStep,
+    };
+  });
+  console.log("useWatch", data);
+  return <span>Active: {data.activeStep}</span>;
 };
 
 export function HomePage() {
@@ -46,17 +58,24 @@ export function HomePage() {
             },
           },
     onChange(step) {
-      console.log("ovo je create change", step);
+      // console.log("ovo je create change", step);
     },
   });
   return (
     <div>
       <h1>Home Page</h1>
       <WizzardStatus />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
       <WizzardHandler
         name="wizzardOne"
         onChange={(data) => {
-          console.log("ovo je hander change", data);
+          // console.log("ovo je hander change", data);
         }}
       >
         {({ Element }) => {
