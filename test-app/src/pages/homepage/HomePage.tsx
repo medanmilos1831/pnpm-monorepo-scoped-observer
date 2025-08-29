@@ -2,6 +2,7 @@ import { useWizzard, WizzardHandler } from "../../services/wizzardService";
 import {
   WizzardHeader,
   WizzardContent,
+  WizzardSidebar,
   WizzardStats,
   DemoControls,
   StepOne,
@@ -66,11 +67,18 @@ export function HomePage() {
                   isFirst={wizzardData.isFirst}
                   isLast={wizzardData.isLast}
                 />
-
-                <WizzardStats wizzardName="wizzardOne" />
               </>
             )}
           </WizzardHandler>
+        </div>
+
+        <div className="wizzard-sidebar">
+          <WizzardSidebar
+            wizzardName="wizzardOne"
+            onGoToStep={(step) => wizzard.goToStep(step)}
+          />
+
+          <WizzardStats wizzardName="wizzardOne" />
         </div>
       </div>
 
