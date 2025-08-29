@@ -206,17 +206,17 @@ export function createWizzardSharedValues(item: {
   api: Api;
 }) {
   return {
+    // WizzardData properties
     name: item.wizzard.name,
+    steps: item.wizzard.steps,
+    stepsConfig: item.wizzard.stepsConfig,
     currentStep: item.wizzard.currentStep,
-    totalSteps: item.wizzard.steps.length,
     activeStep: item.wizzard.activeStep,
     nextStepName: item.wizzard.nextStepName,
     prevStepName: item.wizzard.prevStepName,
     isFirst: item.wizzard.isFirst,
     isLast: item.wizzard.isLast,
-    nextStep: () => item.api.nextStep(),
-    prevStep: () => item.api.prevStep(),
-    goToStep: (step: string) => item.api.goToStep(step),
-    reset: () => item.api.reset(),
+    currentStepIndex: item.wizzard.currentStepIndex,
+    infinite: item.wizzard.infinite,
   };
 }

@@ -32,21 +32,7 @@ export type WizzardConfig = Pick<
   "activeStep" | "infinite" | "onChange" | "stepsConfig"
 >;
 
-export type WizzardHandlerChildrenProps = Pick<
-  IWizzardInstance,
-  | "name"
-  | "currentStep"
-  | "activeStep"
-  | "isFirst"
-  | "isLast"
-  | "nextStepName"
-  | "prevStepName"
-  | "nextStep"
-  | "prevStep"
-  | "goToStep"
-  | "reset"
-> & {
-  totalSteps: number;
+export type WizzardHandlerChildrenProps = WizzardData & {
   Element: React.ComponentType<any>;
 };
 

@@ -78,11 +78,10 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * @example
      * ```typescript
      * <wizzard.WizzardHandler name="wizardOne">
-     *   {({ currentStep, totalSteps, nextStepFn, prevStepFn }) => (
+     *   {({ currentStep, steps, Element }) => (
      *     <div>
-     *       <span>Step {currentStep} of {totalSteps}</span>
-     *       <button onClick={nextStepFn}>Next</button>
-     *       <button onClick={prevStepFn}>Previous</button>
+     *       <span>Step {currentStep} of {steps.length}</span>
+     *       <Element />
      *     </div>
      *   )}
      * </wizzard.WizzardHandler>
