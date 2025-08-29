@@ -1,39 +1,32 @@
 import React from "react";
-import { WizzardHandler } from "../../../services/wizzardService";
 
 interface DemoControlsProps {
-  wizzardName: string;
+  onGoToStep: (step: string) => void;
 }
 
-export function DemoControls({ wizzardName }: DemoControlsProps) {
+export function DemoControls({ onGoToStep }: DemoControlsProps) {
   return (
     <div className="demo-controls">
       <h3>Demo Controls</h3>
       <div className="control-buttons">
-        <WizzardHandler name={wizzardName}>
-          {({ goToStep }) => (
-            <>
-              <button
-                onClick={() => goToStep("one")}
-                className="control-btn"
-              >
-                Go to Step 1
-              </button>
-              <button
-                onClick={() => goToStep("three")}
-                className="control-btn"
-              >
-                Go to Step 3
-              </button>
-              <button
-                onClick={() => goToStep("five")}
-                className="control-btn"
-              >
-                Go to Step 5
-              </button>
-            </>
-          )}
-        </WizzardHandler>
+        <button
+          onClick={() => onGoToStep("one")}
+          className="control-btn"
+        >
+          Go to Step 1
+        </button>
+        <button
+          onClick={() => onGoToStep("three")}
+          className="control-btn"
+        >
+          Go to Step 3
+        </button>
+        <button
+          onClick={() => onGoToStep("five")}
+          className="control-btn"
+        >
+          Go to Step 5
+        </button>
       </div>
       <div className="control-info">
         <p>

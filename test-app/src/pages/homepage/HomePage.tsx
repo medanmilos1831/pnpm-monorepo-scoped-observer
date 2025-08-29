@@ -1,7 +1,4 @@
-import {
-  useWizzard,
-  WizzardHandler,
-} from "../../services/wizzardService";
+import { useWizzard, WizzardHandler } from "../../services/wizzardService";
 import {
   WizzardHeader,
   WizzardContent,
@@ -38,8 +35,6 @@ export function HomePage() {
       },
     },
   });
-
-
 
   return (
     <div className="home-page">
@@ -88,7 +83,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <DemoControls wizzardName="wizzardOne" />
+      <DemoControls onGoToStep={(step) => wizzard.goToStep(step)} />
     </div>
   );
 }
