@@ -91,9 +91,6 @@ export class Handlers {
     this.infinite = config.infinite || false;
     this.onChange = config.onChange;
 
-    // Use utility function to update navigation properties
-    updateNavigationProperties(this, this.steps.indexOf(config.activeStep));
-
     // Create and initialize state machine using utility function
     this.machine = createWizzardMachine(
       this.steps,

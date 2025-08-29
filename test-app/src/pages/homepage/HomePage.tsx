@@ -37,7 +37,6 @@ export function HomePage() {
 
   return (
     <div className="home-page">
-      kita
       <div className="page-header">
         <h1>React Wizzard Demo</h1>
         <p>

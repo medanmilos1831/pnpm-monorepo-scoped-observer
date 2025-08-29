@@ -1,4 +1,4 @@
-import { createWizzard } from "react-wizzard";
+import { createWizzard } from "../react-wizzard";
 
 const { useWizzard, WizzardHandler, useWatch } = createWizzard({
   keys: ["wizzardOne", "wizzardTwo"],

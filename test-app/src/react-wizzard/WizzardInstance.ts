@@ -1,7 +1,7 @@
-import type { WizzardConfig, WizzardData } from "./types";
+import type { IWizzardInstance, WizzardConfig, WizzardData } from "./types";
 import { createWizzardMachine, validateWizzardConfig } from "./utils";
 
-class WizzardInstance {
+class WizzardInstance implements IWizzardInstance {
   name: string;
   machine;
   steps: string[];

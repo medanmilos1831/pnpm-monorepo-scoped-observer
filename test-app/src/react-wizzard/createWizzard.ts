@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { WizzardInstance } from "./WizzardInstance";
+
 import { Api } from "./Api";
 import {
   createOnChangeObject,
@@ -7,8 +7,14 @@ import {
   createWizzardSharedValues,
 } from "./utils";
 
-import type { WizzardHandlerProps, WizzardConfig, WizzardData } from "./types";
+import type {
+  WizzardHandlerProps,
+  WizzardConfig,
+  WizzardData,
+  IWizzardInstance,
+} from "./types";
 import { Handlers } from "./Handlers";
+import { useInitialRender } from "./hooks";
 
 /**
  * Creates a wizzard manager with predefined keys for type-safe wizzard instances.
@@ -29,7 +35,7 @@ import { Handlers } from "./Handlers";
  * ```
  */
 const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
-  const items: Map<T[number], { wizzard: WizzardInstance; api: Api }> =
+  const items: Map<T[number], { wizzard: IWizzardInstance; api: Api }> =
     new Map();
   const handlers = new Handlers();
   return {
@@ -53,15 +59,20 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
      * ```
      */
     useWizzard: (name: T[number], config: WizzardConfig) => {
+      const init = useInitialRender();
       const [state] = useState(() => {
         const { wizzard, api } = initWizzard(name, config, handlers);
         items.set(name, { wizzard, api });
         return { wizzard, api };
       });
 
+      if (!init) {
+        handlers.update.call(state.wizzard, name, config);
+      }
+
       useEffect(() => {
         return () => {
-          items.delete(name);
+          items.delete(state.wizzard.name);
         };
       }, []);
 
