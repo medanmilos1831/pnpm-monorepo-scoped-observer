@@ -1,46 +1,59 @@
-import { createMachine } from "@scoped-observer/react-state-machine";
+import type { IVisibilityInstance, VisibilityConfig } from "./types";
+import { createVisibilityMachine, validateVisibilityConfig } from "./utils";
 
-class VisibilityInstance {
+/**
+ * Visibility instance class that manages the state and behavior.
+ * Implements the IVisibilityInstance interface.
+ */
+class VisibilityInstance implements IVisibilityInstance {
   name: string;
-  machine;
-  constructor(name: string, obj: { initState: "open" | "close" }) {
+  machine: any;
+  currentState: "open" | "close";
+  currentPayload: any;
+  initState: "open" | "close";
+
+  /**
+   * Creates a new visibility instance with the specified configuration.
+   * @param name - Unique identifier for this visibility instance
+   * @param config - Configuration object containing initial state
+   * @throws Error if configuration is invalid
+   */
+  constructor(name: string, config: VisibilityConfig) {
+    // Use utility function for validation
+    validateVisibilityConfig(name, config);
+
+    // Initialize basic properties
     this.name = name;
-    this.machine = createMachine({
-      init: obj.initState,
-      transition: {
-        close: {
-          on: {
-            ON_OPEN: "open",
-            RESET: "close",
-          },
-        },
-        open: {
-          on: {
-            ON_CLOSE: "close",
-            RESET: "close",
-          },
-        },
-      },
-    });
+    this.initState = config.initState;
+    this.currentState = config.initState;
+    this.currentPayload = null;
+
+    // Create and initialize state machine using utility function
+    this.machine = createVisibilityMachine(config.initState);
   }
-  api = {
-    open: (payload?: any) => {
-      this.machine.send({
-        type: "ON_OPEN",
-        payload,
-      });
-    },
-    close: () => {
-      this.machine.send({
-        type: "ON_CLOSE",
-      });
-    },
-    reset: () => {
-      this.machine.send({
-        type: "RESET",
-      });
-    },
-  };
+
+  /**
+   * Gets the API object for this instance.
+   */
+  get api() {
+    return {
+      open: (payload?: any) => {
+        this.currentState = "open";
+        this.currentPayload = payload;
+        this.machine.send({ type: "ON_OPEN", payload });
+      },
+      close: () => {
+        this.currentState = "close";
+        this.currentPayload = null;
+        this.machine.send({ type: "ON_CLOSE" });
+      },
+      reset: () => {
+        this.currentState = this.initState;
+        this.currentPayload = null;
+        this.machine.send({ type: "RESET" });
+      },
+    };
+  }
 }
 
 export { VisibilityInstance };
