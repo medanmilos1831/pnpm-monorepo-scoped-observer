@@ -37,13 +37,13 @@ export function HomePage() {
 
   return (
     <div className="home-page">
+      kita
       <div className="page-header">
         <h1>React Wizzard Demo</h1>
         <p>
           A powerful and flexible wizzard system built with React and TypeScript
         </p>
       </div>
-
       <div className="wizzard-container">
         <div className="wizzard-main">
           <WizzardHandler name="wizzardOne">
@@ -75,7 +75,6 @@ export function HomePage() {
           <WizzardStats wizzardName="wizzardOne" />
         </div>
       </div>
-
       <DemoControls onGoToStep={(step) => wizzard.goToStep(step)} />
     </div>
   );

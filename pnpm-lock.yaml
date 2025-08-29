@@ -145,8 +145,8 @@ importers:
         specifier: ^1.0.14
         version: 1.0.14(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1)
       react-wizzard:
-        specifier: ^1.0.6
-        version: 1.0.6(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1)
+        specifier: ^2.0.0
+        version: 2.0.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1)
       xstate:
         specifier: ^5.20.2
         version: 5.20.2
@@ -1506,8 +1506,8 @@ packages:
       '@scoped-observer/react-state-machine': ^3.0.6
       react: ^18.0.0
 
-  react-wizzard@1.0.6:
-    resolution: {integrity: sha512-scfFJxLvEqDMG6B9WkXcJ1coPLtacjwhem0Z7gN5cPtdfA6g/NVJH+0VizHpTCPBVngxbrX0Lzt06P6amuFUyw==}
+  react-wizzard@2.0.0:
+    resolution: {integrity: sha512-3Z80QPL/zEqu92ubWODsFB7sAAq5MZudr3MIDWCAc3fXK7OCgU5DmHXbpnPo+ktuxUltPxbgeXiuCDkwjuIO/w==}
     peerDependencies:
       '@scoped-observer/react-state-machine': ^3.0.7
       react: ^18.0.0
@@ -3128,7 +3128,7 @@ snapshots:
       '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1)
       react: 19.1.1
 
-  react-wizzard@1.0.6(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1):
+  react-wizzard@2.0.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1))(react@19.1.1):
     dependencies:
       '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@19.1.1)
       react: 19.1.1
