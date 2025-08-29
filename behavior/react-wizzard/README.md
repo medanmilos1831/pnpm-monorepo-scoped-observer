@@ -30,6 +30,14 @@ npm install react-wizzard
 npm install react @scoped-observer/react-state-machine
 ```
 
+## 🎮 Demo
+
+Try out **react-wizzard** in action with our interactive demo:
+
+**[🚀 Live Demo on StackBlitz](https://stackblitz.com/~/github.com/medanmilos1831/react-wizzard-demo?file=src/homepage/HomePage.tsx)**
+
+The demo showcases a complete multi-step wizard implementation with navigation controls, step validation, and real-time state management.
+
 ## 🚀 Usage Example
 
 Here's a basic example showing how to create a wizard with multiple steps and navigate between them:
