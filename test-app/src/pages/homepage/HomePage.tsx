@@ -1,123 +1,81 @@
-import { createVisibility } from "../../react-visibility-state";
-import { Modal } from "antd";
+import { useState } from "react";
+import { Modal, Button, Tooltip } from "antd";
 import "./HomePage.css";
 
-// Create visibility manager for demo components
-const visibilityManager = createVisibility({
-  keys: ["modal", "tooltip", "accordion"] as const,
-});
-
 export function HomePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="home-page">
       <div className="page-header">
-        <h1>React Visibility State Demo</h1>
-        <p>
-          A powerful and flexible visibility state management system built with
-          React and TypeScript
-        </p>
+        <h1>Ant Design Demo</h1>
+        <p>A simple example with Modal and Tooltip components</p>
       </div>
 
-      {/* Visibility State Demo Section */}
-      <div className="demo-section">
-        <h2>👁️ Visibility State Demo</h2>
-        <div className="visibility-demos">
-          {/* Modal Demo */}
-          <div className="demo-card">
-            <h3>Modal</h3>
-            {(() => {
-              const modal = visibilityManager.useVisibility("modal");
-              const modalState = visibilityManager.useWatch("modal");
-              return (
-                <>
-                  <button onClick={() => modal.open()} className="demo-btn">
-                    Open Modal
-                  </button>
-                  <Modal
-                    title="Modal Content"
-                    open={modalState.state === "open"}
-                    onCancel={() => modal.close()}
-                    onOk={() => modal.close()}
-                    okText="Close"
-                    cancelButtonProps={{ style: { display: "none" } }}
-                  >
-                    <p>This is a modal that can be opened and closed!</p>
-                    <p>
-                      Using Ant Design Modal component for better UX and
-                      consistency.
-                    </p>
-                  </Modal>
-                </>
-              );
-            })()}
-          </div>
+      <div className="content-container">
+        {/* Left Side - Tooltip Demo */}
+        <div className="left-side">
+          <div className="demo-section">
+            <h2>💡 Tooltip Demo</h2>
+            <div className="demo-content">
+              <Tooltip title="This is a helpful tooltip! 🎯" placement="top">
+                <Button type="default" size="large">
+                  Hover for Tooltip
+                </Button>
+              </Tooltip>
 
-          {/* Tooltip Demo */}
-          <div className="demo-card">
-            <h3>Tooltip</h3>
-            <div className="tooltip-container">
-              {(() => {
-                const tooltip = visibilityManager.useVisibility("tooltip");
-                const tooltipState = visibilityManager.useWatch("tooltip");
-                return (
-                  <>
-                    <button
-                      onMouseEnter={() => tooltip.open()}
-                      onMouseLeave={() => tooltip.close()}
-                      className="demo-btn"
-                    >
-                      Hover for Tooltip
-                    </button>
-                    {tooltipState.state === "open" && (
-                      <div className="tooltip">
-                        This is a helpful tooltip! 🎯
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
+              <div className="tooltip-examples">
+                <Tooltip title="Tooltip on the right" placement="right">
+                  <Button>Right</Button>
+                </Tooltip>
+
+                <Tooltip title="Tooltip on the bottom" placement="bottom">
+                  <Button>Bottom</Button>
+                </Tooltip>
+
+                <Tooltip title="Tooltip on the left" placement="left">
+                  <Button>Left</Button>
+                </Tooltip>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Accordion Demo */}
-          <div className="demo-card">
-            <h3>Accordion</h3>
-            <div className="accordion">
-              {(() => {
-                const accordion = visibilityManager.useVisibility("accordion");
-                const accordionState = visibilityManager.useWatch("accordion");
-                return (
-                  <>
-                    <button
-                      onClick={() => {
-                        accordionState.state === "open"
-                          ? accordion.close()
-                          : accordion.open();
-                      }}
-                      className="accordion-header"
-                    >
-                      Click to{" "}
-                      {accordionState.state === "open" ? "close" : "open"}{" "}
-                      accordion
-                      <span className="accordion-icon">
-                        {accordionState.state === "open" ? "▼" : "▶"}
-                      </span>
-                    </button>
-                    {accordionState.state === "open" && (
-                      <div className="accordion-content">
-                        <p>
-                          This is the accordion content that can be expanded and
-                          collapsed!
-                        </p>
-                        <p>
-                          You can put any content here - forms, lists, images,
-                          etc.
-                        </p>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
+        {/* Right Side - Modal Demo */}
+        <div className="right-side">
+          <div className="demo-section">
+            <h2>📱 Modal Demo</h2>
+            <div className="demo-content">
+              <Button type="primary" onClick={showModal} size="large">
+                Open Modal
+              </Button>
+
+              <Modal
+                title="Basic Modal"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="OK"
+                cancelText="Cancel"
+                width="80%"
+                style={{ top: 20 }}
+              >
+                <p>This is a basic Ant Design Modal example.</p>
+                <p>You can put any content here - forms, lists, images, etc.</p>
+                <p>Click OK or Cancel to close the modal.</p>
+              </Modal>
             </div>
           </div>
         </div>

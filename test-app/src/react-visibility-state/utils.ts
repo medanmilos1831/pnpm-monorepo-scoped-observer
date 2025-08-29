@@ -16,7 +16,6 @@ import type { IVisibilityInstance, VisibilityData } from "./types";
 export function createVisibilityData(
   instance: IVisibilityInstance
 ): VisibilityData {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { machine, ...rest } = instance;
   return rest;
 }
