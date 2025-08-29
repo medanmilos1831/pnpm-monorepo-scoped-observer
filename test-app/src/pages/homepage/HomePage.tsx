@@ -1,4 +1,5 @@
 import { useWizzard, WizzardHandler } from "../../services/wizzardService";
+import type { WizzardData } from "../../react-wizzard/types";
 import {
   WizzardHeader,
   WizzardContent,
@@ -15,7 +16,10 @@ import "./HomePage.css";
 export function HomePage() {
   const wizzard = useWizzard("wizzardOne", {
     activeStep: "one",
-    infinite: true,
+    infinite: false,
+    onFinish: (data: WizzardData) => {
+      console.log("Wizard finished with data:", data);
+    },
     stepsConfig: {
       one: {
         element: () => <StepOne />,

@@ -153,7 +153,7 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       item.wizzard.machine.useMachine();
 
       // Create the same rest object as onChange using utility function
-      const rest = createOnChangeObject(item.wizzard as any);
+      const rest = createOnChangeObject(item.wizzard);
 
       // Return only what callback returns
       return callback(rest);

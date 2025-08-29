@@ -15,6 +15,7 @@ class WizzardInstance implements IWizzardInstance {
   currentStepIndex: number;
   infinite: boolean;
   onChange?: (data: WizzardData) => void;
+  onFinish?: (data: WizzardData) => void;
 
   /**
    * Creates a new wizzard instance with the specified configuration.
@@ -32,6 +33,7 @@ class WizzardInstance implements IWizzardInstance {
     this.stepsConfig = config.stepsConfig;
     this.infinite = config.infinite || false;
     this.onChange = config.onChange;
+    this.onFinish = config.onFinish;
 
     // Initialize step state
     this.currentStep = config.activeStep;

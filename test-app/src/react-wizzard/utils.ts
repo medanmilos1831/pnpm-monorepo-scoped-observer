@@ -18,7 +18,7 @@ import type { IWizzardInstance, WizzardData, WizzardConfig } from "./types";
  */
 export function createOnChangeObject(instance: IWizzardInstance): WizzardData {
   const { machine, onChange, ...rest } = instance;
-  return rest as WizzardData;
+  return rest;
 }
 
 /**

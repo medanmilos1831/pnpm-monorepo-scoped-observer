@@ -15,7 +15,7 @@ export class Handlers {
    * Does nothing if already at the last step.
    */
   nextStep(this: IWizzardInstance): void {
-    let currentIndex = this.steps.indexOf(this.activeStep);
+    const currentIndex = this.steps.indexOf(this.activeStep);
     if (this.isLast) {
       this.currentStepIndex = this.infinite ? 0 : currentIndex;
     } else {
@@ -26,6 +26,12 @@ export class Handlers {
     updateNavigationProperties(this, this.currentStepIndex);
 
     this.onChange?.(createOnChangeObject(this));
+
+    // Call onFinish if we reached the last step and not infinite
+    if (this.isLast && !this.infinite) {
+      this.onFinish?.(createOnChangeObject(this));
+    }
+
     this.machine.send({ type: "NEXT" });
   }
 
@@ -67,6 +73,11 @@ export class Handlers {
 
     this.machine.send({ type: this.currentStep, payload: step });
     this.onChange?.(createOnChangeObject(this));
+
+    // Call onFinish if we navigated to the last step and not infinite
+    if (this.isLast && this.onFinish && !this.infinite) {
+      this.onFinish(createOnChangeObject(this));
+    }
   }
 
   /**
@@ -90,6 +101,7 @@ export class Handlers {
     this.stepsConfig = config.stepsConfig;
     this.infinite = config.infinite || false;
     this.onChange = config.onChange;
+    this.onFinish = config.onFinish;
 
     // Create and initialize state machine using utility function
     this.machine = createWizzardMachine(
