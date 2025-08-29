@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   useWizzard,
   WizzardHandler,
@@ -9,6 +8,7 @@ import {
   WizzardContent,
   WizzardSidebar,
   WizzardStats,
+  DemoControls,
   StepOne,
   StepTwo,
   StepThree,
@@ -18,8 +18,6 @@ import {
 import "./HomePage.css";
 
 export function HomePage() {
-  const [count, setCount] = useState(1);
-
   const wizzard = useWizzard("wizzardOne", {
     activeStep: "one",
     infinite: true,
@@ -103,32 +101,7 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="demo-controls">
-        <h3>Demo Controls</h3>
-        <div className="control-buttons">
-          <button
-            onClick={() => wizzard.goToStep("one")}
-            className="control-btn"
-          >
-            Go to Step 1
-          </button>
-          <button
-            onClick={() => wizzard.goToStep("three")}
-            className="control-btn"
-          >
-            Go to Step 3
-          </button>
-          <button
-            onClick={() => wizzard.goToStep("five")}
-            className="control-btn"
-          >
-            Go to Step 5
-          </button>
-          <button onClick={() => setCount(count + 1)} className="control-btn">
-            Count: {count}
-          </button>
-        </div>
-      </div>
+      <DemoControls wizzardName="wizzardOne" />
     </div>
   );
 }
