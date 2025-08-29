@@ -1,5 +1,3 @@
-import React from "react";
-
 interface WizzardHeaderProps {
   currentStep: string;
   totalSteps: number;
@@ -21,7 +19,9 @@ export function WizzardHeader({
   onPrev,
   onReset,
 }: WizzardHeaderProps) {
-  const progress = Math.round(((totalSteps - (totalSteps - (totalSteps - 1))) / totalSteps) * 100);
+  const progress = Math.round(
+    ((totalSteps - (totalSteps - (totalSteps - 1))) / totalSteps) * 100
+  );
 
   return (
     <div className="wizzard-header">
@@ -36,37 +36,31 @@ export function WizzardHeader({
           Active: <strong>{activeStep}</strong>
         </div>
       </div>
-      
+
       <div className="wizzard-navigation">
-        <button 
-          onClick={onPrev} 
+        <button
+          onClick={onPrev}
           disabled={isFirst}
           className="nav-button prev-button"
         >
           ← Previous
         </button>
-        
-        <button 
-          onClick={onNext} 
+
+        <button
+          onClick={onNext}
           disabled={isLast}
           className="nav-button next-button"
         >
           Next →
         </button>
-        
-        <button 
-          onClick={onReset}
-          className="nav-button reset-button"
-        >
+
+        <button onClick={onReset} className="nav-button reset-button">
           Reset
         </button>
       </div>
-      
+
       <div className="progress-bar">
-        <div 
-          className="progress-fill" 
-          style={{ width: `${progress}%` }}
-        />
+        <div className="progress-fill" style={{ width: `${progress}%` }} />
       </div>
     </div>
   );
