@@ -1,7 +1,6 @@
 import {
   useWizzard,
   WizzardHandler,
-  useWatch,
 } from "../../services/wizzardService";
 import {
   WizzardHeader,
@@ -40,17 +39,7 @@ export function HomePage() {
     },
   });
 
-  // Watch wizzard state for statistics
-  const wizzardStats = useWatch("wizzardOne", (data) => ({
-    name: data.name,
-    currentStep: data.currentStep,
-    activeStep: data.activeStep,
-    totalSteps: data.steps.length,
-    isFirst: data.isFirst,
-    isLast: data.isLast,
-    infinite: data.infinite,
-    steps: data.steps,
-  }));
+
 
   return (
     <div className="home-page">
@@ -91,13 +80,11 @@ export function HomePage() {
 
         <div className="wizzard-sidebar">
           <WizzardSidebar
-            steps={wizzardStats?.steps || []}
-            activeStep={wizzardStats?.activeStep || ""}
-            currentStep={wizzardStats?.currentStep || ""}
+            wizzardName="wizzardOne"
             onGoToStep={(step) => wizzard.goToStep(step)}
           />
 
-          <WizzardStats {...wizzardStats} />
+          <WizzardStats wizzardName="wizzardOne" />
         </div>
       </div>
 

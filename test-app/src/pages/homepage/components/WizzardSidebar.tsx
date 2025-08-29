@@ -1,18 +1,34 @@
 import React from "react";
+import { useWatch } from "../../../services/wizzardService";
 
 interface WizzardSidebarProps {
-  steps: string[];
-  activeStep: string;
-  currentStep: string;
+  wizzardName: string;
   onGoToStep: (step: string) => void;
 }
 
 export function WizzardSidebar({
-  steps,
-  activeStep,
-  currentStep,
+  wizzardName,
   onGoToStep,
 }: WizzardSidebarProps) {
+  const wizzardData = useWatch(wizzardName, (data) => ({
+    steps: data.steps,
+    activeStep: data.activeStep,
+    currentStep: data.currentStep,
+  }));
+
+  if (!wizzardData) {
+    return (
+      <div className="wizzard-sidebar">
+        <div className="sidebar-header">
+          <h3>Step Navigation</h3>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { steps, activeStep, currentStep } = wizzardData;
+
   return (
     <div className="wizzard-sidebar">
       <div className="sidebar-header">

@@ -1,24 +1,34 @@
 import React from "react";
+import { useWatch } from "../../../services/wizzardService";
 
 interface WizzardStatsProps {
-  name: string;
-  currentStep: string;
-  activeStep: string;
-  totalSteps: number;
-  isFirst: boolean;
-  isLast: boolean;
-  infinite: boolean;
+  wizzardName: string;
 }
 
-export function WizzardStats({
-  name,
-  currentStep,
-  activeStep,
-  totalSteps,
-  isFirst,
-  isLast,
-  infinite,
-}: WizzardStatsProps) {
+export function WizzardStats({ wizzardName }: WizzardStatsProps) {
+  const wizzardStats = useWatch(wizzardName, (data) => ({
+    name: data.name,
+    currentStep: data.currentStep,
+    activeStep: data.activeStep,
+    totalSteps: data.steps.length,
+    isFirst: data.isFirst,
+    isLast: data.isLast,
+    infinite: data.infinite,
+    steps: data.steps,
+  }));
+
+  if (!wizzardStats) {
+    return (
+      <div className="wizzard-stats">
+        <div className="stats-header">
+          <h3>Wizzard Statistics</h3>
+        </div>
+        <div className="loading">Loading stats...</div>
+      </div>
+    );
+  }
+
+  const { name, currentStep, activeStep, totalSteps, isFirst, isLast, infinite } = wizzardStats;
   const progressPercentage = Math.round(((totalSteps - (totalSteps - 1)) / totalSteps) * 100);
   
   return (
