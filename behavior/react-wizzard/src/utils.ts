@@ -1,4 +1,4 @@
-import { createMachine } from "../scoped-observer-state-machine";
+import { createMachine } from "@scoped-observer/react-state-machine";
 import { WizzardInstance } from "./WizzardInstance";
 import { Api } from "./Api";
 import { Handlers } from "./Handlers";
@@ -190,7 +190,7 @@ export function initWizzard(
   handlers: Handlers
 ) {
   const wizzard = new WizzardInstance(name, { ...config });
-  const api = new Api(wizzard, handlers);
+  const api = new Api(wizzard as IWizzardInstance, handlers);
   return { wizzard, api };
 }
 
