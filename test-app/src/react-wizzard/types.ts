@@ -55,29 +55,6 @@ export type WizzardHandlerProps = {
   name: string;
 };
 
-// useWatch types following react-visibility-state pattern
-type DefaultWizzardReturn = Pick<
-  IWizzardInstance,
-  | "activeStep"
-  | "currentStep"
-  | "isFirst"
-  | "isLast"
-  | "nextStepName"
-  | "prevStepName"
-  | "goToStep"
-  | "reset"
-> & {
-  totalSteps: number;
-};
-
-type CallbackWizzardReturn<C> = DefaultWizzardReturn & {
-  callbackValue: C;
-};
-
-export type UseWatchReturn<C> = C extends undefined
-  ? DefaultWizzardReturn
-  : CallbackWizzardReturn<C>;
-
 // Wizzard data object type (same as onChange receives)
 export type WizzardData = Pick<
   IWizzardInstance,

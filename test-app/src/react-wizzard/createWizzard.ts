@@ -7,12 +7,7 @@ import {
   createWizzardSharedValues,
 } from "./utils";
 
-import type {
-  WizzardHandlerProps,
-  WizzardConfig,
-  UseWatchReturn,
-  WizzardData,
-} from "./types";
+import type { WizzardHandlerProps, WizzardConfig, WizzardData } from "./types";
 import { Handlers } from "./Handlers";
 
 /**
@@ -115,34 +110,31 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
     },
 
     /**
-     * Hook that watches wizzard state and optionally computes derived values.
-     * Returns current wizzard state and API methods for reactive updates.
+     * Hook that watches wizzard state and returns computed values.
+     * Returns only what the callback function returns.
      *
      * @template C - The type of computed values returned by the callback
      * @param name - The wizzard name to watch
-     * @param callback - Optional function to compute derived values from wizzard state
-     * @returns Object containing wizzard state, computed values, and API methods
+     * @param callback - Function to compute derived values from wizzard state (same type as onChange)
+     * @returns Only the result of the callback function
      * @throws Error if name is invalid
      *
      * @example
      * ```typescript
-     * // Basic usage
-     * const { activeStep, currentStep, totalSteps } = wizzard.useWatch("wizardOne");
-     *
-     * // With computed values
-     * const { activeStep, callbackValue } = wizzard.useWatch("wizardOne",
-     *   (activeStep, currentStep, totalSteps) => ({
-     *     progress: Math.round((currentStep / totalSteps) * 100),
-     *     isLastStep: currentStep === totalSteps
+     * // Returns only what callback returns
+     * const { progress, isLastStep } = wizzard.useWatch("wizardOne",
+     *   (wizzardData) => ({
+     *     progress: Math.round((wizzardData.currentStepIndex / wizzardData.totalSteps) * 100),
+     *     isLastStep: wizzardData.isLast
      *   })
      * );
      * ```
      */
 
-    useWatch: <C = undefined>(
+    useWatch: <C>(
       name: T[number],
-      callback?: (wizzardData: WizzardData) => C
-    ): UseWatchReturn<C> => {
+      callback: (wizzardData: WizzardData) => C
+    ): C => {
       const item = items.get(name);
       if (!item) {
         return null as any; // Silent fail - returns null instead of an error
@@ -153,13 +145,8 @@ const createWizzard = <T extends readonly string[]>(config: { keys: T }) => {
       // Create the same rest object as onChange using utility function
       const rest = createOnChangeObject(item.wizzard as any);
 
-      // Use utility function for shared values
-      const sharedValues = createWizzardSharedValues(item);
-
-      return {
-        ...sharedValues,
-        callbackValue: callback ? callback(rest) : null,
-      } as any;
+      // Return only what callback returns
+      return callback(rest);
     },
 
     /**

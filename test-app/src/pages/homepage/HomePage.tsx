@@ -7,13 +7,8 @@ import {
 const WizzardStatus = () => {
   const data = useWatch("wizzardOne", (data) => {
     return {
-      activeStep: data.activeStep,
-      currentStep: data.currentStep,
       totalSteps: data.steps.length,
-      isFirst: data.isFirst,
-      isLast: data.isLast,
-      nextStep: data.nextStepName,
-      prevStep: data.prevStepName,
+      activeStep: data.activeStep,
     };
   });
   return <span>Active: {data.activeStep}</span>;
