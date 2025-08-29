@@ -18,18 +18,12 @@ export interface IWizzardInstance {
   currentStepIndex: number;
   infinite: boolean;
   onChange?: (data: WizzardData) => void;
-
-  // Methods
-  nextStep(): void;
-  prevStep(): void;
-  goToStep(step: string): void;
-  reset(): void;
-  update(name: string, config: WizzardConfig): void;
+  onFinish?: (data: WizzardData) => void;
 }
 
 export type WizzardConfig = Pick<
   IWizzardInstance,
-  "activeStep" | "infinite" | "onChange" | "stepsConfig"
+  "activeStep" | "infinite" | "onChange" | "onFinish" | "stepsConfig"
 >;
 
 export type WizzardHandlerChildrenProps = WizzardData & {

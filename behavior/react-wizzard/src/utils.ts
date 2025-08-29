@@ -18,7 +18,7 @@ import type { IWizzardInstance, WizzardData, WizzardConfig } from "./types";
  */
 export function createOnChangeObject(instance: IWizzardInstance): WizzardData {
   const { machine, onChange, ...rest } = instance;
-  return rest as WizzardData;
+  return rest;
 }
 
 /**
@@ -190,7 +190,7 @@ export function initWizzard(
   handlers: Handlers
 ) {
   const wizzard = new WizzardInstance(name, { ...config });
-  const api = new Api(wizzard as IWizzardInstance, handlers);
+  const api = new Api(wizzard, handlers);
   return { wizzard, api };
 }
 
