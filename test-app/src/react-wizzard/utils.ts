@@ -2,11 +2,7 @@ import { createMachine } from "../scoped-observer-state-machine";
 import { WizzardInstance } from "./WizzardInstance";
 import { Api } from "./Api";
 import { Handlers } from "./Handlers";
-import type {
-  WizzardInstanceInterface,
-  WizzardData,
-  WizzardConfig,
-} from "./types";
+import type { IWizzardInstance, WizzardData, WizzardConfig } from "./types";
 
 /**
  * Utility functions for react-wizzard package.
@@ -20,9 +16,7 @@ import type {
  * @param instance - The wizzard instance to extract properties from
  * @returns Object containing wizzard data for onChange callbacks
  */
-export function createOnChangeObject(
-  instance: WizzardInstanceInterface
-): WizzardData {
+export function createOnChangeObject(instance: IWizzardInstance): WizzardData {
   const { machine, onChange, ...rest } = instance;
   return rest as WizzardData;
 }
@@ -34,9 +28,7 @@ export function createOnChangeObject(
  * @param instance - The wizzard instance to create data from
  * @returns Formatted wizzard data object
  */
-export function createWizzardData(
-  instance: WizzardInstanceInterface
-): WizzardData {
+export function createWizzardData(instance: IWizzardInstance): WizzardData {
   return {
     name: instance.name,
     steps: instance.steps,
@@ -73,12 +65,12 @@ export function validateWizzardConfig(
   }
 
   if (
-    !config.steps ||
-    typeof config.steps !== "object" ||
-    Object.keys(config.steps).length === 0
+    !config.stepsConfig ||
+    typeof config.stepsConfig !== "object" ||
+    Object.keys(config.stepsConfig).length === 0
   ) {
     throw new Error(
-      "[Wizzard] Configuration must include non-empty steps object"
+      "[Wizzard] Configuration must include non-empty stepsConfig object"
     );
   }
 
@@ -88,12 +80,14 @@ export function validateWizzardConfig(
     );
   }
 
-  const availableSteps = Object.keys(config.steps);
+  const availableSteps = Object.keys(config.stepsConfig);
   if (!availableSteps.includes(config.activeStep)) {
     throw new Error(
       `[Wizzard] activeStep "${
         config.activeStep
-      }" not found in steps. Available steps: [${availableSteps.join(", ")}]`
+      }" not found in stepsConfig. Available steps: [${availableSteps.join(
+        ", "
+      )}]`
     );
   }
 }
@@ -140,7 +134,7 @@ export function createStateMachineTransitions(
  * @param stepIndex - The new step index
  */
 export function updateNavigationProperties(
-  instance: WizzardInstanceInterface,
+  instance: WizzardInstance,
   stepIndex: number
 ): void {
   instance.currentStepIndex = stepIndex;
@@ -220,8 +214,8 @@ export function createWizzardSharedValues(item: {
     prevStepName: item.wizzard.prevStepName,
     isFirst: item.wizzard.isFirst,
     isLast: item.wizzard.isLast,
-    nextStepFn: () => item.api.nextStep(),
-    prevStepFn: () => item.api.prevStep(),
+    nextStep: () => item.api.nextStep(),
+    prevStep: () => item.api.prevStep(),
     goToStep: (step: string) => item.api.goToStep(step),
     reset: () => item.api.reset(),
   };

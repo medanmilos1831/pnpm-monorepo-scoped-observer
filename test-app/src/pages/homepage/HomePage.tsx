@@ -24,7 +24,7 @@ export function HomePage() {
   const wizzard = useWizzard("wizzardOne", {
     activeStep: "one",
     infinite: true,
-    steps: {
+    stepsConfig: {
       one: {
         element: () => {
           return <div>One component</div>;

@@ -3,7 +3,7 @@ import {
   updateNavigationProperties,
   createWizzardMachine,
 } from "./utils";
-import type { WizzardInstanceInterface, WizzardConfig } from "./types";
+import type { IWizzardInstance, WizzardConfig } from "./types";
 
 /**
  * Base class containing handler methods for wizzard navigation.
@@ -14,7 +14,7 @@ export class Handlers {
    * Advances to the next step in the sequence.
    * Does nothing if already at the last step.
    */
-  nextStep(this: WizzardInstanceInterface): void {
+  nextStep(this: IWizzardInstance): void {
     let currentIndex = this.steps.indexOf(this.activeStep);
     if (this.isLast) {
       this.currentStepIndex = this.infinite ? 0 : currentIndex;
@@ -33,7 +33,7 @@ export class Handlers {
    * Goes back to the previous step in the sequence.
    * Does nothing if already at the first step.
    */
-  prevStep(this: WizzardInstanceInterface): void {
+  prevStep(this: IWizzardInstance): void {
     let currentIndex = 0;
     currentIndex = this.steps.indexOf(this.activeStep);
     if (this.isFirst) {
@@ -55,7 +55,7 @@ export class Handlers {
    * Navigates directly to a specific step.
    * Does nothing if the step does not exist.
    */
-  goToStep(this: WizzardInstanceInterface, step: string): void {
+  goToStep(this: IWizzardInstance, step: string): void {
     if (!this.steps.includes(step)) {
       return; // Silent fail - ništa se ne dešava
     }
@@ -72,7 +72,7 @@ export class Handlers {
   /**
    * Resets the wizzard to its initial state.
    */
-  reset(this: WizzardInstanceInterface): void {
+  reset(this: IWizzardInstance): void {
     // Use utility function to update navigation properties
     updateNavigationProperties(this, 0);
 
@@ -84,14 +84,10 @@ export class Handlers {
    * Updates the wizzard configuration and reinitializes the state machine.
    * This method allows dynamic updates to wizzard configuration.
    */
-  update(
-    this: WizzardInstanceInterface,
-    name: string,
-    config: WizzardConfig
-  ): void {
+  update(this: IWizzardInstance, name: string, config: WizzardConfig): void {
     this.name = name;
-    this.steps = Object.keys(config.steps);
-    this.stepsConfig = config.steps;
+    this.steps = Object.keys(config.stepsConfig);
+    this.stepsConfig = config.stepsConfig;
     this.infinite = config.infinite || false;
     this.onChange = config.onChange;
 

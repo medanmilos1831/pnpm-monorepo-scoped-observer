@@ -28,8 +28,8 @@ class WizzardInstance {
 
     // Initialize basic properties
     this.name = name;
-    this.steps = Object.keys(config.steps);
-    this.stepsConfig = config.steps;
+    this.steps = Object.keys(config.stepsConfig);
+    this.stepsConfig = config.stepsConfig;
     this.infinite = config.infinite || false;
     this.onChange = config.onChange;
 

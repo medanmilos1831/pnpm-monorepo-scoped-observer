@@ -4,7 +4,7 @@ import React from "react";
  * Interface representing a wizzard instance.
  * Used for typing utility functions and other operations.
  */
-export interface WizzardInstanceInterface {
+export interface IWizzardInstance {
   name: string;
   machine: any;
   steps: string[];
@@ -27,28 +27,26 @@ export interface WizzardInstanceInterface {
   update(name: string, config: WizzardConfig): void;
 }
 
-export type WizzardConfig = {
-  activeStep: string;
-  infinite?: boolean;
-  onChange?: (data: WizzardData) => void;
-  steps: {
-    [key: string]: {
-      element: React.ComponentType<any>;
-    };
-  };
-};
+export type WizzardConfig = Pick<
+  IWizzardInstance,
+  "activeStep" | "infinite" | "onChange" | "stepsConfig"
+>;
 
 export type WizzardHandlerChildrenProps = Pick<
-  WizzardInstanceInterface,
-  "name" | "currentStep" | "activeStep" | "isFirst" | "isLast"
+  IWizzardInstance,
+  | "name"
+  | "currentStep"
+  | "activeStep"
+  | "isFirst"
+  | "isLast"
+  | "nextStepName"
+  | "prevStepName"
+  | "nextStep"
+  | "prevStep"
+  | "goToStep"
+  | "reset"
 > & {
   totalSteps: number;
-  nextStepName: string;
-  prevStepName: string;
-  nextStepFn: () => void;
-  prevStepFn: () => void;
-  goToStep: (step: string) => void;
-  reset: () => void;
   Element: React.ComponentType<any>;
 };
 
@@ -59,7 +57,7 @@ export type WizzardHandlerProps = {
 
 // useWatch types following react-visibility-state pattern
 type DefaultWizzardReturn = Pick<
-  WizzardInstanceInterface,
+  IWizzardInstance,
   | "activeStep"
   | "currentStep"
   | "isFirst"
@@ -81,16 +79,17 @@ export type UseWatchReturn<C> = C extends undefined
   : CallbackWizzardReturn<C>;
 
 // Wizzard data object type (same as onChange receives)
-export type WizzardData = {
-  name: string;
-  steps: string[];
-  stepsConfig: { [key: string]: { element: React.ComponentType<any> } };
-  currentStep: string;
-  activeStep: string;
-  nextStepName: string;
-  prevStepName: string;
-  isFirst: boolean;
-  isLast: boolean;
-  currentStepIndex: number;
-  infinite: boolean;
-};
+export type WizzardData = Pick<
+  IWizzardInstance,
+  | "name"
+  | "steps"
+  | "stepsConfig"
+  | "currentStep"
+  | "activeStep"
+  | "nextStepName"
+  | "prevStepName"
+  | "isFirst"
+  | "isLast"
+  | "currentStepIndex"
+  | "infinite"
+>;

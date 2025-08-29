@@ -1,19 +1,19 @@
 import type { Handlers } from "./Handlers";
-import type { WizzardInstanceInterface } from "./types";
+import type { IWizzardInstance } from "./types";
 
 /**
  * API class containing methods to control wizzard navigation.
  * All methods use silent fail behavior - invalid operations do nothing.
  */
 export class Api {
-  private instance: WizzardInstanceInterface;
+  private instance: IWizzardInstance;
   handlers: Handlers;
   nextStep: () => void;
   prevStep: () => void;
   goToStep: (step: string) => void;
   reset: () => void;
 
-  constructor(instance: WizzardInstanceInterface, handlers: Handlers) {
+  constructor(instance: IWizzardInstance, handlers: Handlers) {
     this.instance = instance;
     this.handlers = handlers;
     this.nextStep = this.handlers.nextStep.bind(this.instance);
