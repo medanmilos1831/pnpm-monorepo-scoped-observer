@@ -9,30 +9,27 @@ export const HomePage: React.FC = () => {
   return (
     <div
       style={{
-        minHeight: "100vh",
-        padding: "2rem",
+        height: "100%",
+        padding: "0 2rem",
         margin: "0",
         display: "flex",
         flexDirection: "row",
-        backgroundColor: "#1a1a1a",
+        backgroundColor: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+        background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
         color: "#ffffff",
-        alignItems: "flex-start",
+        alignItems: "center",
         gap: "2rem",
         justifyContent: "center",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       <UIDomainWrapper title="UI Domain 1">
         <ModalDomain />
       </UIDomainWrapper>
-      <UIDomainWrapper title="UI Domain 2">
+      {/* <UIDomainWrapper title="UI Domain 2">
         <TooltipDomain />
-      </UIDomainWrapper>
-      <UIDomainWrapper title="UI Domain 3">
-        <DrawerDomain />
-      </UIDomainWrapper>
-      <UIDomainWrapper title="UI Domain 4">
-        <AccordionDomain />
-      </UIDomainWrapper>
+      </UIDomainWrapper> */}
     </div>
   );
 };

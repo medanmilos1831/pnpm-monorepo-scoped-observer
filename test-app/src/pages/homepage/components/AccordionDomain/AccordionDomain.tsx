@@ -37,7 +37,11 @@ export const AccordionDomain: React.FC = () => {
             {[
               { value: "user", label: "User", accordion: userAccordion },
               { value: "city", label: "City", accordion: cityAccordion },
-              { value: "company", label: "Company", accordion: companyAccordion },
+              {
+                value: "company",
+                label: "Company",
+                accordion: companyAccordion,
+              },
             ].map((item, i) => (
               <Light key={item.value} value={item.value} label={item.label} />
             ))}
@@ -53,9 +57,17 @@ export const AccordionDomain: React.FC = () => {
             }}
           >
             {[
-              { value: "product", label: "Product", accordion: productAccordion },
+              {
+                value: "product",
+                label: "Product",
+                accordion: productAccordion,
+              },
               { value: "order", label: "Order", accordion: orderAccordion },
-              { value: "payment", label: "Payment", accordion: paymentAccordion },
+              {
+                value: "payment",
+                label: "Payment",
+                accordion: paymentAccordion,
+              },
             ].map((item, i) => (
               <Light key={item.value} value={item.value} label={item.label} />
             ))}
@@ -78,7 +90,11 @@ export const AccordionDomain: React.FC = () => {
             {[
               { value: "user", label: "User", accordion: userAccordion },
               { value: "city", label: "City", accordion: cityAccordion },
-              { value: "company", label: "Company", accordion: companyAccordion },
+              {
+                value: "company",
+                label: "Company",
+                accordion: companyAccordion,
+              },
             ].map((item, i) => (
               <SwitchButton
                 key={item.value}
@@ -107,9 +123,17 @@ export const AccordionDomain: React.FC = () => {
             }}
           >
             {[
-              { value: "product", label: "Product", accordion: productAccordion },
+              {
+                value: "product",
+                label: "Product",
+                accordion: productAccordion,
+              },
               { value: "order", label: "Order", accordion: orderAccordion },
-              { value: "payment", label: "Payment", accordion: paymentAccordion },
+              {
+                value: "payment",
+                label: "Payment",
+                accordion: paymentAccordion,
+              },
             ].map((item, i) => (
               <SwitchButton
                 key={item.value}

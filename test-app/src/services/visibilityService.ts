@@ -6,7 +6,20 @@ const {
   getItem: getModal,
   useWatch: useModalWatch,
 } = createVisibility({
-  keys: ["user", "city", "company", "product", "order", "payment"] as const,
+  keys: [
+    "user",
+    "city",
+    "company",
+    "product",
+    "order",
+    "payment",
+    "login",
+    "confirm",
+    "settings",
+    "profile",
+    "notification",
+    "help",
+  ] as const,
 });
 
 const {
@@ -15,7 +28,20 @@ const {
   getItem: getTooltip,
   useWatch: useTooltipWatch,
 } = createVisibility({
-  keys: ["user", "city", "company", "product", "order", "payment"] as const,
+  keys: [
+    "user",
+    "city",
+    "company",
+    "product",
+    "order",
+    "payment",
+    "login",
+    "confirm",
+    "settings",
+    "profile",
+    "notification",
+    "help",
+  ] as const,
 });
 
 const {
@@ -24,7 +50,20 @@ const {
   getItem: getDrawer,
   useWatch: useDrawerWatch,
 } = createVisibility({
-  keys: ["user", "city", "company", "product", "order", "payment"] as const,
+  keys: [
+    "user",
+    "city",
+    "company",
+    "product",
+    "order",
+    "payment",
+    "login",
+    "confirm",
+    "settings",
+    "profile",
+    "notification",
+    "help",
+  ] as const,
 });
 
 const {
@@ -33,7 +72,20 @@ const {
   getItem: getAccordion,
   useWatch: useAccordionWatch,
 } = createVisibility({
-  keys: ["user", "city", "company", "product", "order", "payment"] as const,
+  keys: [
+    "user",
+    "city",
+    "company",
+    "product",
+    "order",
+    "payment",
+    "login",
+    "confirm",
+    "settings",
+    "profile",
+    "notification",
+    "help",
+  ] as const,
 });
 
 export {

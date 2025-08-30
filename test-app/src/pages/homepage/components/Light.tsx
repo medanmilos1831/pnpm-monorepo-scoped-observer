@@ -17,8 +17,6 @@ const Light: React.FC<LightProps> = ({
     return state.currentState;
   });
 
-  console.log(`Light ${value}:`, modalWatcher, typeof modalWatcher);
-
   // Check if modal is open
   const isOpen = modalWatcher === "open";
   const lightColor = isOpen ? "#00ff00" : "#ff4444";
