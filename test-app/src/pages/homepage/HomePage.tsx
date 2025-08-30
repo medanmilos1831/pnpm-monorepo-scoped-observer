@@ -1,85 +1,100 @@
-import { useState } from "react";
-import { Modal, Button, Tooltip } from "antd";
-import "./HomePage.css";
+import React, { useState } from 'react';
+import { Button, Modal, Tooltip, Box, Typography, Paper } from '@mui/material';
+import './HomePage.css';
 
-export function HomePage() {
+const HomePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
-    <div className="home-page">
-      <div className="page-header">
-        <h1>Ant Design Demo</h1>
-        <p>A simple example with Modal and Tooltip components</p>
-      </div>
-
+    <div className="homepage">
       <div className="content-container">
-        {/* Left Side - Tooltip Demo */}
         <div className="left-side">
-          <div className="demo-section">
-            <h2>💡 Tooltip Demo</h2>
-            <div className="demo-content">
-              <Tooltip title="This is a helpful tooltip! 🎯" placement="top">
-                <Button type="default" size="large">
-                  Hover for Tooltip
+          <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+            <Typography variant="h5" gutterBottom>
+              Material-UI Tooltip Demo
+            </Typography>
+            <Box sx={{ mt: 3 }}>
+              <Tooltip title="This is a basic tooltip example" placement="top">
+                <Button variant="contained" color="primary">
+                  Hover me for tooltip
                 </Button>
               </Tooltip>
-
-              <div className="tooltip-examples">
-                <Tooltip title="Tooltip on the right" placement="right">
-                  <Button>Right</Button>
-                </Tooltip>
-
-                <Tooltip title="Tooltip on the bottom" placement="bottom">
-                  <Button>Bottom</Button>
-                </Tooltip>
-
-                <Tooltip title="Tooltip on the left" placement="left">
-                  <Button>Left</Button>
-                </Tooltip>
-              </div>
-            </div>
-          </div>
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Tooltip title="Tooltip on the right side" placement="right">
+                <Button variant="outlined" color="secondary">
+                  Right tooltip
+                </Button>
+              </Tooltip>
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Tooltip title="Tooltip on the bottom" placement="bottom">
+                <Button variant="text" color="info">
+                  Bottom tooltip
+                </Button>
+              </Tooltip>
+            </Box>
+          </Paper>
         </div>
-
-        {/* Right Side - Modal Demo */}
+        
         <div className="right-side">
-          <div className="demo-section">
-            <h2>📱 Modal Demo</h2>
-            <div className="demo-content">
-              <Button type="primary" onClick={showModal} size="large">
+          <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+            <Typography variant="h5" gutterBottom>
+              Material-UI Modal Demo
+            </Typography>
+            <Box sx={{ mt: 3 }}>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleOpenModal}
+                size="large"
+              >
                 Open Modal
               </Button>
-
-              <Modal
-                title="Basic Modal"
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                okText="OK"
-                cancelText="Cancel"
-                width="80%"
-                style={{ top: 20 }}
-              >
-                <p>This is a basic Ant Design Modal example.</p>
-                <p>You can put any content here - forms, lists, images, etc.</p>
-                <p>Click OK or Cancel to close the modal.</p>
-              </Modal>
-            </div>
-          </div>
+            </Box>
+            
+            <Modal
+              open={isModalOpen}
+              onClose={handleCloseModal}
+              aria-labelledby="modal-title"
+              aria-describedby="modal-description"
+            >
+              <Box sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '80%',
+                maxWidth: 600,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,
+              }}>
+                <Typography id="modal-title" variant="h4" component="h2" gutterBottom>
+                  Modal Title
+                </Typography>
+                <Typography id="modal-description" variant="body1" sx={{ mt: 2 }}>
+                  This is a Material-UI modal example. It's fully compatible with React 19 and provides a clean, modern look.
+                </Typography>
+                <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                  <Button variant="outlined" onClick={handleCloseModal}>
+                    Cancel
+                  </Button>
+                  <Button variant="contained" onClick={handleCloseModal}>
+                    Confirm
+                  </Button>
+                </Box>
+              </Box>
+            </Modal>
+          </Paper>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default HomePage;
