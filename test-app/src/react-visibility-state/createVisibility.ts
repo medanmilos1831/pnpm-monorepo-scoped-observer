@@ -103,14 +103,9 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
       }
 
       // Use machine hook to trigger re-renders when state changes
-      const { state, payload } = item.visibility.machine.useMachine();
+      item.visibility.machine.useMachine();
 
-      return children({
-        name: item.visibility.name,
-        state,
-        payload,
-        close: item.api.close,
-      });
+      return children(createVisibilityData(item.visibility));
     },
 
     /**
@@ -147,7 +142,6 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
 
       // Create the same data object as onChange using utility function
       const visibilityData = createVisibilityData(item.visibility);
-
       // Return only what callback returns
       return callback(visibilityData);
     },
@@ -162,7 +156,8 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
      * @example
      * ```typescript
      * const instance = visibility.getItem("modal");
-     * instance.open();
+     * instance.open({ message: "Hello!" });
+     * instance.close();
      * ```
      */
     getItem: (name: T[number]) => {
@@ -174,7 +169,12 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
           ).join(", ")}]`
         );
       }
-      return item;
+      console.log("item", item);
+      return {
+        open: item.api.open,
+        close: item.api.close,
+        ...createVisibilityData(item.visibility),
+      };
     },
   };
 };

@@ -24,7 +24,6 @@ export function createVisibilityData(
   instance: IVisibilityInstance
 ): VisibilityData {
   const { machine, onChange, ...rest } = instance;
-  console.log("createVisibilityData", rest);
   return rest;
 }
 
@@ -99,43 +98,4 @@ export function updateVisibilityProperties(
 ): void {
   instance.state = newState;
   instance.payload = payload;
-}
-
-/**
- * Initializes a new visibility instance with API.
- * This centralizes visibility creation logic for consistency and reusability.
- *
- * @param name - The visibility name
- * @param config - The visibility configuration
- * @param handlers - The handlers instance to use
- * @returns Object containing visibility instance and API
- */
-export function initVisibility(
-  name: string,
-  config: VisibilityConfig,
-  handlers: Handlers
-) {
-  const visibility = new VisibilityInstance(name, { ...config });
-  const api = new Api(visibility, handlers);
-  return { visibility, api };
-}
-
-/**
- * Creates shared values object used by both VisibilityHandler and useWatch.
- * This centralizes shared values logic and ensures consistency.
- *
- * @param item - Object containing visibility instance and API
- * @returns Object with all shared visibility values and methods
- */
-export function createVisibilitySharedValues(item: {
-  visibility: VisibilityInstance;
-  api: Api;
-}) {
-  return {
-    // VisibilityData properties
-    name: item.visibility.name,
-    state: item.visibility.state,
-    payload: item.visibility.payload,
-    initState: item.visibility.initState,
-  };
 }

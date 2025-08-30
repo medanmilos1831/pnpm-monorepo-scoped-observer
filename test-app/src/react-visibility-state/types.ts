@@ -1,5 +1,3 @@
-import React from "react";
-
 /**
  * Interface representing a visibility instance.
  * Used for typing utility functions and other operations.
@@ -26,7 +24,7 @@ export type VisibilityHandlerChildrenProps = {
 };
 
 export type VisibilityHandlerProps<T extends readonly string[]> = {
-  children: (props: VisibilityHandlerChildrenProps) => JSX.Element;
+  children: (props: VisibilityData) => JSX.Element;
   name: T[number];
 };
 
