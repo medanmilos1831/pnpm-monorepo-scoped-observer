@@ -15,7 +15,7 @@ export class Handlers {
    * Does nothing if already open.
    */
   open(this: IVisibilityInstance, payload?: any): void {
-    if (this.currentState === "open") {
+    if (this.state === "open") {
       return; // Silent fail - already open
     }
 
@@ -31,7 +31,7 @@ export class Handlers {
    * Does nothing if already closed.
    */
   close(this: IVisibilityInstance): void {
-    if (this.currentState === "close") {
+    if (this.state === "close") {
       return; // Silent fail - already closed
     }
 

@@ -18,4 +18,8 @@ const { useVisibility, VisibilityHandler, getItem, useWatch } =
     ] as const,
   });
 
-export { useVisibility, VisibilityHandler, getItem, useWatch };
+const pera = createVisibility({
+  keys: ["userModal"] as const,
+});
+
+export { useVisibility, VisibilityHandler, getItem, useWatch, pera };

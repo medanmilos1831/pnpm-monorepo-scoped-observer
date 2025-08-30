@@ -8,8 +8,8 @@ import { createVisibilityMachine, validateVisibilityConfig } from "./utils";
 class VisibilityInstance implements IVisibilityInstance {
   name: string;
   machine: any;
-  currentState: "open" | "close";
-  currentPayload: any;
+  state: "open" | "close";
+  payload: any;
   initState: "open" | "close";
   onChange?: (data: any) => void;
 
@@ -26,8 +26,8 @@ class VisibilityInstance implements IVisibilityInstance {
     // Initialize basic properties
     this.name = name;
     this.initState = config.initState;
-    this.currentState = config.initState;
-    this.currentPayload = null;
+    this.state = config.initState;
+    this.payload = null;
     this.onChange = config.onChange;
 
     // Create and initialize state machine using utility function

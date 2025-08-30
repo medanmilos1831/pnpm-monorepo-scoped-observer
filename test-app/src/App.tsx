@@ -1,6 +1,7 @@
 // import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // import { Layout } from "./components";
 
+import { ContactPage } from "./pages";
 import { HomePage } from "./pages/homepage/HomePage";
 
 // Router configuration - commented out
@@ -26,7 +27,7 @@ import { HomePage } from "./pages/homepage/HomePage";
 // ]);
 
 function App() {
-  return <HomePage />;
+  return <ContactPage />;
 }
 
 export default App;

@@ -24,25 +24,8 @@ export function createVisibilityData(
   instance: IVisibilityInstance
 ): VisibilityData {
   const { machine, onChange, ...rest } = instance;
+  console.log("createVisibilityData", rest);
   return rest;
-}
-
-/**
- * Creates a visibility data object with all necessary properties.
- * This ensures consistency across different parts of the system.
- *
- * @param instance - The visibility instance to create data from
- * @returns Formatted visibility data object
- */
-export function createVisibilityObject(
-  instance: IVisibilityInstance
-): VisibilityData {
-  return {
-    name: instance.name,
-    currentState: instance.currentState,
-    currentPayload: instance.currentPayload,
-    initState: instance.initState,
-  };
 }
 
 /**
@@ -114,8 +97,8 @@ export function updateVisibilityProperties(
   newState: "open" | "close",
   payload?: unknown
 ): void {
-  instance.currentState = newState;
-  instance.currentPayload = payload;
+  instance.state = newState;
+  instance.payload = payload;
 }
 
 /**
@@ -151,8 +134,8 @@ export function createVisibilitySharedValues(item: {
   return {
     // VisibilityData properties
     name: item.visibility.name,
-    currentState: item.visibility.currentState,
-    currentPayload: item.visibility.currentPayload,
+    state: item.visibility.state,
+    payload: item.visibility.payload,
     initState: item.visibility.initState,
   };
 }

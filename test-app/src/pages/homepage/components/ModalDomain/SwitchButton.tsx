@@ -14,7 +14,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
   onChange,
 }) => {
   const modalWatcher = useWatch(value as any, (state) => {
-    return state.currentState;
+    return state.state;
   });
   return (
     <div

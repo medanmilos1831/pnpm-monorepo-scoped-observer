@@ -86,9 +86,9 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
      * @example
      * ```typescript
      * <visibility.VisibilityHandler name="modal">
-     *   {({ currentState, currentPayload, open, close }) => (
+     *   {({ state, payload, open, close }) => (
      *     <div>
-     *       <span>State: {currentState}</span>
+     *       <span>State: {state}</span>
      *       <button onClick={open}>Open</button>
      *       <button onClick={close}>Close</button>
      *     </div>
@@ -128,8 +128,8 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
      * // Returns only what callback returns
      * const { isOpen, hasPayload } = visibility.useWatch("modal",
      *   (visibilityData) => ({
-     *     isOpen: visibilityData.currentState === "open",
-     *     hasPayload: !!visibilityData.currentPayload
+     *     isOpen: visibilityData.state === "open",
+     *     hasPayload: !!visibilityData.payload
      *   })
      * );
      * ```

@@ -7,8 +7,8 @@ import React from "react";
 export interface IVisibilityInstance {
   name: string;
   machine: any;
-  currentState: "open" | "close";
-  currentPayload: any;
+  state: "open" | "close";
+  payload: any;
   initState: "open" | "close";
   onChange?: (data: VisibilityData) => void;
 }
@@ -33,5 +33,5 @@ export type VisibilityHandlerProps<T extends readonly string[]> = {
 // Visibility data object type (same as onChange receives)
 export type VisibilityData = Pick<
   IVisibilityInstance,
-  "name" | "currentState" | "currentPayload"
+  "name" | "state" | "payload"
 >;
