@@ -1,56 +1,75 @@
 import { useEffect, useState } from "react";
-import { VisibilityInstance } from "./VisibilityInstance";
+
 import { Api } from "./Api";
+import { createVisibilityData } from "./utils";
+import { VisibilityInstance } from "./VisibilityInstance";
+
+import type {
+  VisibilityHandlerProps,
+  VisibilityConfig,
+  VisibilityData,
+  IVisibilityInstance,
+} from "./types";
 import { Handlers } from "./Handlers";
 import { useInitialRender } from "./hooks";
-import { createVisibilityData } from "./utils";
-import type {
-  VisibilityConfig,
-  VisibilityHandlerProps,
-  VisibilityData,
-} from "./types";
 
 /**
- * Factory function for creating visibility state managers.
- * Returns an object with useVisibility, VisibilityHandler, and useWatch.
+ * Creates a visibility manager with predefined keys for type-safe visibility instances.
+ * Each visibility instance manages its own state and payload.
  *
- * @param config - Configuration object with keys array
- * @returns Object containing visibility management functions
+ * @template T - A readonly array of string keys that define valid visibility names
+ * @param config - Configuration object containing the valid visibility keys
+ * @returns An object with methods to create and manage visibility instances
+ *
+ * @example
+ * ```typescript
+ * const visibility = createVisibility({
+ *   keys: ["modal", "tooltip"] as const
+ * });
+ *
+ * // TypeScript will only allow these names
+ * const instance = visibility.useVisibility("modal", config);
+ * ```
  */
 const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
-  const items: Map<
-    T[number],
-    { instance: VisibilityInstance; api: Api; handlers: Handlers }
-  > = new Map();
-
+  const items: Map<T[number], { visibility: IVisibilityInstance; api: Api }> =
+    new Map();
+  const handlers = new Handlers();
   return {
     /**
-     * Hook for managing visibility state.
-     * @param name - The visibility name
-     * @param visibilityConfig - Configuration object
-     * @returns API object for controlling visibility
+     * Creates a visibility instance for the specified name.
+     * Each call to this hook creates a new visibility instance if it doesn't exist.
+     *
+     * @param name - The visibility name (must be one of the defined keys)
+     * @param config - Configuration object with initial state
+     * @returns API object with visibility methods (open, close, reset)
+     *
+     * @example
+     * ```typescript
+     * const modal = visibility.useVisibility("modal", {
+     *   initState: "close"
+     * });
+     * ```
      */
     useVisibility: (
       name: T[number],
-      visibilityConfig: VisibilityConfig = { initState: "close" }
+      config: VisibilityConfig = { initState: "close" }
     ) => {
-      const isInitialRender = useInitialRender();
+      const init = useInitialRender();
       const [state] = useState(() => {
-        const instance = new VisibilityInstance(name, visibilityConfig);
-        const api = new Api(instance);
-        const handlers = new Handlers();
-
-        items.set(name, { instance, api, handlers });
-        return { instance, api, handlers };
+        const instance = new VisibilityInstance(name, config);
+        const api = new Api(instance, handlers);
+        items.set(name, { visibility: instance, api });
+        return { visibility: instance, api };
       });
 
-      if (!isInitialRender) {
-        state.handlers.update.call(state.instance, name, visibilityConfig);
+      if (!init) {
+        handlers.update.call(state.visibility, name, config);
       }
 
       useEffect(() => {
         return () => {
-          items.delete(name);
+          items.delete(state.visibility.name);
         };
       }, []);
 
@@ -58,32 +77,39 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
     },
 
     /**
-     * Component for handling visibility state changes.
-     * @param props - Component props
-     * @returns JSX element or null
+     * Render prop component that provides visibility state and control functions.
+     * Use this to render UI components that need access to visibility state.
+     *
+     * @param props - Component props including name and children render function
+     * @returns The rendered children with visibility state and functions
+     *
+     * @example
+     * ```typescript
+     * <visibility.VisibilityHandler name="modal">
+     *   {({ currentState, currentPayload, open, close }) => (
+     *     <div>
+     *       <span>State: {currentState}</span>
+     *       <button onClick={open}>Open</button>
+     *       <button onClick={close}>Close</button>
+     *     </div>
+     *   )}
+     * </visibility.VisibilityHandler>
+     * ```
      */
     VisibilityHandler: ({ children, name }: VisibilityHandlerProps<T>) => {
       const item = items.get(name);
-
-      useEffect(() => {
-        return () => {
-          const instance = items.get(name);
-          instance?.api.reset();
-          items.delete(name);
-        };
-      }, []);
-
       if (!item) {
         return null;
       }
 
-      const { state, payload } = item.instance.machine.useMachine();
+      // Use machine hook to trigger re-renders when state changes
+      const { state, payload } = item.visibility.machine.useMachine();
 
       return children({
-        name: item.instance.name,
-        currentState: item.instance.currentState,
-        currentPayload: item.instance.currentPayload,
-        initState: item.instance.initState,
+        name: item.visibility.name,
+        currentState: item.visibility.currentState,
+        currentPayload: item.visibility.currentPayload,
+        initState: item.visibility.initState,
         state,
         payload,
         open: item.api.open,
@@ -122,17 +148,17 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
         return null as C; // Silent fail - returns null instead of an error
       }
 
-      item.instance.machine.useMachine();
+      item.visibility.machine.useMachine();
 
       // Create the same data object as onChange using utility function
-      const visibilityData = createVisibilityData(item.instance);
+      const visibilityData = createVisibilityData(item.visibility);
 
       // Return only what callback returns
       return callback(visibilityData);
     },
 
     /**
-     * Gets a visibility item by name for direct access.
+     * Gets a visibility instance by name for direct access.
      * Useful when you need to access visibility methods outside of React components.
      *
      * @param name - The visibility name to retrieve
@@ -153,7 +179,7 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
           ).join(", ")}]`
         );
       }
-      return item.api;
+      return item;
     },
   };
 };

@@ -1,43 +1,22 @@
+import type { Handlers } from "./Handlers";
+import type { IVisibilityInstance } from "./types";
+
 /**
- * Public API for visibility state management.
- * Provides methods for controlling visibility state.
+ * API class containing methods to control visibility state.
+ * All methods use silent fail behavior - invalid operations do nothing.
  */
 export class Api {
-  constructor(private instance: any) {}
+  private instance: IVisibilityInstance;
+  handlers: Handlers;
+  open: (payload?: any) => void;
+  close: () => void;
+  reset: () => void;
 
-  /**
-   * Opens the visibility state.
-   * @param payload - Optional payload data
-   */
-  open(payload?: any): void {
-    this.instance.api.open(payload);
-  }
-
-  /**
-   * Closes the visibility state.
-   */
-  close(): void {
-    this.instance.api.close();
-  }
-
-  /**
-   * Resets the visibility state to initial state.
-   */
-  reset(): void {
-    this.instance.api.reset();
-  }
-
-  /**
-   * Gets the current state.
-   */
-  get state(): "open" | "close" {
-    return this.instance.machine.useMachine().state;
-  }
-
-  /**
-   * Gets the current payload.
-   */
-  get payload(): any {
-    return this.instance.machine.useMachine().payload;
+  constructor(instance: IVisibilityInstance, handlers: Handlers) {
+    this.instance = instance;
+    this.handlers = handlers;
+    this.open = this.handlers.open.bind(this.instance);
+    this.close = this.handlers.close.bind(this.instance);
+    this.reset = this.handlers.reset.bind(this.instance);
   }
 }

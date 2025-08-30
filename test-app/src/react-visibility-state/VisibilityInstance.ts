@@ -11,6 +11,7 @@ class VisibilityInstance implements IVisibilityInstance {
   currentState: "open" | "close";
   currentPayload: any;
   initState: "open" | "close";
+  onChange?: (data: any) => void;
 
   /**
    * Creates a new visibility instance with the specified configuration.
@@ -27,32 +28,10 @@ class VisibilityInstance implements IVisibilityInstance {
     this.initState = config.initState;
     this.currentState = config.initState;
     this.currentPayload = null;
+    this.onChange = config.onChange;
 
     // Create and initialize state machine using utility function
     this.machine = createVisibilityMachine(config.initState);
-  }
-
-  /**
-   * Gets the API object for this instance.
-   */
-  get api() {
-    return {
-      open: (payload?: any) => {
-        this.currentState = "open";
-        this.currentPayload = payload;
-        this.machine.send({ type: "ON_OPEN", payload });
-      },
-      close: () => {
-        this.currentState = "close";
-        this.currentPayload = null;
-        this.machine.send({ type: "ON_CLOSE" });
-      },
-      reset: () => {
-        this.currentState = this.initState;
-        this.currentPayload = null;
-        this.machine.send({ type: "RESET" });
-      },
-    };
   }
 }
 

@@ -1,5 +1,12 @@
 import { createMachine } from "@scoped-observer/react-state-machine";
-import type { IVisibilityInstance, VisibilityData } from "./types";
+import { VisibilityInstance } from "./VisibilityInstance";
+import { Api } from "./Api";
+import { Handlers } from "./Handlers";
+import type {
+  IVisibilityInstance,
+  VisibilityData,
+  VisibilityConfig,
+} from "./types";
 
 /**
  * Utility functions for react-visibility-state package.
@@ -16,7 +23,7 @@ import type { IVisibilityInstance, VisibilityData } from "./types";
 export function createVisibilityData(
   instance: IVisibilityInstance
 ): VisibilityData {
-  const { machine, ...rest } = instance;
+  const { machine, onChange, ...rest } = instance;
   return rest;
 }
 
@@ -48,7 +55,7 @@ export function createVisibilityObject(
  */
 export function validateVisibilityConfig(
   name: string,
-  config: { initState: "open" | "close" }
+  config: VisibilityConfig
 ): void {
   if (!name || typeof name !== "string") {
     throw new Error("[Visibility] Name must be a valid string");
@@ -109,4 +116,43 @@ export function updateVisibilityProperties(
 ): void {
   instance.currentState = newState;
   instance.currentPayload = payload;
+}
+
+/**
+ * Initializes a new visibility instance with API.
+ * This centralizes visibility creation logic for consistency and reusability.
+ *
+ * @param name - The visibility name
+ * @param config - The visibility configuration
+ * @param handlers - The handlers instance to use
+ * @returns Object containing visibility instance and API
+ */
+export function initVisibility(
+  name: string,
+  config: VisibilityConfig,
+  handlers: Handlers
+) {
+  const visibility = new VisibilityInstance(name, { ...config });
+  const api = new Api(visibility, handlers);
+  return { visibility, api };
+}
+
+/**
+ * Creates shared values object used by both VisibilityHandler and useWatch.
+ * This centralizes shared values logic and ensures consistency.
+ *
+ * @param item - Object containing visibility instance and API
+ * @returns Object with all shared visibility values and methods
+ */
+export function createVisibilitySharedValues(item: {
+  visibility: VisibilityInstance;
+  api: Api;
+}) {
+  return {
+    // VisibilityData properties
+    name: item.visibility.name,
+    currentState: item.visibility.currentState,
+    currentPayload: item.visibility.currentPayload,
+    initState: item.visibility.initState,
+  };
 }
