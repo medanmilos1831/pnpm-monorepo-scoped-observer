@@ -3,22 +3,24 @@ import IndicatorBox from "./IndicatorBox";
 import Light from "./Light";
 import ControllerBox from "./ControllerBox";
 import SwitchButton from "./SwitchButton";
-import { useModal } from "../../../../services/visibilityService";
+import { useVisibility } from "../../../../services/visibilityService";
 
 export const ModalDomain: React.FC = () => {
   // Modal hooks for different entities
-  const userModal = useModal("user", { initState: "open" });
-  const cityModal = useModal("city", { initState: "close" });
-  const companyModal = useModal("company", { initState: "close" });
-  const productModal = useModal("product", { initState: "close" });
-  const orderModal = useModal("order", { initState: "close" });
-  const paymentModal = useModal("payment", { initState: "close" });
-  const loginModal = useModal("login", { initState: "close" });
-  const confirmModal = useModal("confirm", { initState: "open" });
-  const settingsModal = useModal("settings", { initState: "close" });
-  const profileModal = useModal("profile", { initState: "open" });
-  const notificationModal = useModal("notification", { initState: "close" });
-  const helpModal = useModal("help", { initState: "close" });
+  const userModal = useVisibility("user", { initState: "open" });
+  const cityModal = useVisibility("city", { initState: "close" });
+  const companyModal = useVisibility("company", { initState: "close" });
+  const productModal = useVisibility("product", { initState: "close" });
+  const orderModal = useVisibility("order", { initState: "close" });
+  const paymentModal = useVisibility("payment", { initState: "close" });
+  const loginModal = useVisibility("login", { initState: "close" });
+  const confirmModal = useVisibility("confirm", { initState: "open" });
+  const settingsModal = useVisibility("settings", { initState: "close" });
+  const profileModal = useVisibility("profile", { initState: "open" });
+  const notificationModal = useVisibility("notification", {
+    initState: "close",
+  });
+  const helpModal = useVisibility("help", { initState: "close" });
 
   return (
     <>
@@ -99,10 +101,8 @@ export const ModalDomain: React.FC = () => {
                 label={item.label}
                 onChange={(checked) => {
                   if (checked) {
-                    console.log("open");
                     item.modal.open();
                   } else {
-                    console.log("close");
                     item.modal.close();
                   }
                 }}

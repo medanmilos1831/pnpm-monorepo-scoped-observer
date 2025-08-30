@@ -1,5 +1,5 @@
 import React from "react";
-import { useModalWatch } from "../../../../services/visibilityService";
+import { useWatch } from "../../../../services/visibilityService";
 
 interface LightProps {
   value: string;
@@ -13,7 +13,7 @@ const Light: React.FC<LightProps> = ({
   value: any;
   label: string;
 }) => {
-  const modalWatcher = useModalWatch(value, (state) => {
+  const modalWatcher = useWatch(value, (state) => {
     return state.currentState;
   });
 

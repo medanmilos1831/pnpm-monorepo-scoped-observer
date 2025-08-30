@@ -1,5 +1,4 @@
 import React from "react";
-import Light from "./Light";
 
 interface IndicatorBoxProps {
   children: React.ReactNode;

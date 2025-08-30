@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch } from "@mui/material";
-import { useModalWatch } from "../../../../services/visibilityService";
+import { useWatch } from "../../../../services/visibilityService";
 
 interface SwitchButtonProps {
   value: string;
@@ -13,7 +13,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
   label,
   onChange,
 }) => {
-  const modalWatcher = useModalWatch(value as any, (state) => {
+  const modalWatcher = useWatch(value as any, (state) => {
     return state.currentState;
   });
   return (

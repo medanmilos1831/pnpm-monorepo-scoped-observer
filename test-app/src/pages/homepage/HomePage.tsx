@@ -1,8 +1,5 @@
 import React from "react";
 import ModalDomain from "./components/ModalDomain/ModalDomain";
-import TooltipDomain from "./components/TooltipDomain/TooltipDomain";
-import DrawerDomain from "./components/DrawerDomain/DrawerDomain";
-import AccordionDomain from "./components/AccordionDomain/AccordionDomain";
 import UIDomainWrapper from "../../components/UIDomainWrapper";
 
 export const HomePage: React.FC = () => {
@@ -24,12 +21,9 @@ export const HomePage: React.FC = () => {
         overflow: "hidden",
       }}
     >
-      <UIDomainWrapper title="UI Domain 1">
+      <UIDomainWrapper title="Application Domain">
         <ModalDomain />
       </UIDomainWrapper>
-      {/* <UIDomainWrapper title="UI Domain 2">
-        <TooltipDomain />
-      </UIDomainWrapper> */}
     </div>
   );
 };

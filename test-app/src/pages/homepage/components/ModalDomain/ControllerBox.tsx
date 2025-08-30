@@ -1,5 +1,4 @@
 import React from "react";
-import { useModal } from "../../../../services/visibilityService";
 
 interface ControllerBoxProps {
   children: React.ReactNode;
