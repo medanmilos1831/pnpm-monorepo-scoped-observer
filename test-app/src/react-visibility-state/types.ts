@@ -18,19 +18,20 @@ export type VisibilityConfig = Pick<
   "initState" | "onChange"
 >;
 
-export type VisibilityHandlerChildrenProps = VisibilityData & {
-  open: (payload?: any) => void;
+export type VisibilityHandlerChildrenProps = {
+  name: string;
+  state: "open" | "close";
+  payload: any;
   close: () => void;
-  reset: () => void;
 };
 
-export type VisibilityHandlerProps = {
+export type VisibilityHandlerProps<T extends readonly string[]> = {
   children: (props: VisibilityHandlerChildrenProps) => JSX.Element;
-  name: string;
+  name: T[number];
 };
 
 // Visibility data object type (same as onChange receives)
 export type VisibilityData = Pick<
   IVisibilityInstance,
-  "name" | "currentState" | "currentPayload" | "initState"
+  "name" | "currentState" | "currentPayload"
 >;

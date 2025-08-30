@@ -107,14 +107,9 @@ const createVisibility = <T extends readonly string[]>(config: { keys: T }) => {
 
       return children({
         name: item.visibility.name,
-        currentState: item.visibility.currentState,
-        currentPayload: item.visibility.currentPayload,
-        initState: item.visibility.initState,
         state,
         payload,
-        open: item.api.open,
         close: item.api.close,
-        reset: item.api.reset,
       });
     },
 
