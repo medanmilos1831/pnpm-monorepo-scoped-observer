@@ -1,72 +1,37 @@
-import {
-  createVisibilityData,
-  updateVisibilityProperties,
-  createVisibilityMachine,
-} from "./utils";
-import type { IVisibilityInstance, VisibilityConfig } from "./types";
+import type { IVisibilityInstance } from "./types";
+import { api } from "./utils";
 
 /**
- * Base class containing handler methods for visibility state management.
- * This class handles all the action logic while keeping state management separate.
+ * Handlers for visibility state transitions
+ * Provides open/close methods that can be bound to visibility instances
  */
 export class Handlers {
   /**
-   * Opens the visibility state.
-   * Does nothing if already open.
+   * Opens visibility and sets payload
+   * @param payload - Optional data to store with the visibility state
    */
   open(this: IVisibilityInstance, payload?: any): void {
-    if (this.state === "open") {
-      return; // Silent fail - already open
-    }
-
-    // Use utility function to update visibility properties
-    updateVisibilityProperties(this, "open", payload);
-
-    this.machine.send({ type: "ON_OPEN", payload });
-    this.onChange?.(createVisibilityData(this));
+    this.payload = payload;
+    this.machine.send({
+      type: "ON_OPEN",
+    });
+    this.onChange?.({
+      payload: this.payload,
+      state: this.machine.getState(),
+    });
   }
 
   /**
-   * Closes the visibility state.
-   * Does nothing if already closed.
+   * Closes visibility and clears payload
    */
   close(this: IVisibilityInstance): void {
-    if (this.state === "close") {
-      return; // Silent fail - already closed
-    }
-
-    // Use utility function to update visibility properties
-    updateVisibilityProperties(this, "close");
-
-    this.machine.send({ type: "ON_CLOSE" });
-    this.onChange?.(createVisibilityData(this));
-  }
-
-  /**
-   * Resets the visibility state to its initial state.
-   */
-  reset(this: IVisibilityInstance): void {
-    // Use utility function to update visibility properties
-    updateVisibilityProperties(this, this.initState);
-
-    this.machine.send({ type: "RESET" });
-    this.onChange?.(createVisibilityData(this));
-  }
-
-  /**
-   * Updates the visibility configuration and reinitializes the state machine.
-   * This method allows dynamic updates to visibility configuration.
-   */
-  update(
-    this: IVisibilityInstance,
-    name: string,
-    config: VisibilityConfig
-  ): void {
-    this.name = name;
-    this.initState = config.initState;
-    this.onChange = config.onChange;
-
-    // Create and initialize state machine using utility function
-    this.machine = createVisibilityMachine(this.initState);
+    this.payload = null;
+    this.machine.send({
+      type: "ON_CLOSE",
+    });
+    this.onChange?.({
+      payload: this.payload,
+      state: this.machine.getState(),
+    });
   }
 }

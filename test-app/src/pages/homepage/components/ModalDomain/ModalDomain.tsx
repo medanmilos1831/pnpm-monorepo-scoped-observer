@@ -103,6 +103,7 @@ export const ModalDomain: React.FC = () => {
                   if (checked) {
                     item.modal.open();
                   } else {
+                    console.log("close");
                     item.modal.close();
                   }
                 }}

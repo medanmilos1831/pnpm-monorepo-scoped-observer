@@ -1,33 +1,23 @@
-// import { RouterProvider, createBrowserRouter } from "react-router-dom";
-// import { Layout } from "./components";
-
-import { ContactPage } from "./pages";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navigation from "./components/Navigation";
 import { HomePage } from "./pages/homepage/HomePage";
-
-// Router configuration - commented out
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <Layout />,
-//     children: [
-//       {
-//         index: true,
-//         element: <HomePage />,
-//       },
-//       {
-//         path: "about",
-//         element: <AboutPage />,
-//       },
-//       {
-//         path: "contact",
-//         element: <ContactPage />,
-//       },
-//     ],
-//   },
-// ]);
+import AboutPage from "./pages/about/AboutPage";
+import ContactPage from "./pages/contact/ContactPage";
 
 function App() {
-  return <HomePage />;
+  return (
+    <Router>
+      <div style={{ minHeight: "100vh" }}>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;

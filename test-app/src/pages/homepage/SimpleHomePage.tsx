@@ -1,114 +1,80 @@
 import React from "react";
-import { createVisibility } from "../../react-visibility-state";
-import { VISIBILITY_STATE } from "../../react-visibility-state/types";
+import { useToggle, useBoolean } from "../../simple-toggle";
 
-// Create visibility service
-const visibilityService = createVisibility({
-  keys: ["watcher1", "watcher2", "watcher3", "counter", "station"] as const,
-});
-
-// Component that watches visibility state
-const WatcherOne: React.FC = () => {
-  // Watch counter visibility
-  const counterState = visibilityService.useWatch(
-    "counter",
-    (state: VISIBILITY_STATE) => state
-  );
-  console.log("Counter State", counterState);
+// Simple components - no over-engineering!
+const WatcherOne: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
+  if (!isVisible) return null;
 
   return (
     <div
       style={{
         padding: "20px",
-        background: "rgba(255, 255, 255, 0.1)",
+        background: "rgba(255,255,255,0.1)",
         borderRadius: "8px",
         margin: "10px",
-        border: "1px solid rgba(255, 255, 255, 0.2)",
       }}
     >
       <h3>Watcher One</h3>
       <p>Counter deljiv sa 2</p>
-      <p>Counter Visibility: {counterState}</p>
     </div>
   );
 };
 
-// Component that watches visibility state
-const WatcherTwo: React.FC = () => {
-  // Watch counter visibility
-  const counterState = visibilityService.useWatch(
-    "counter",
-    (state: VISIBILITY_STATE) => state
-  );
-  console.log("Counter State", counterState);
+const WatcherTwo: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
+  if (!isVisible) return null;
 
   return (
     <div
       style={{
         padding: "20px",
-        background: "rgba(255, 255, 255, 0.1)",
+        background: "rgba(255,255,255,0.1)",
         borderRadius: "8px",
         margin: "10px",
-        border: "1px solid rgba(255, 255, 255, 0.2)",
       }}
     >
       <h3>Watcher Two</h3>
       <p>Counter deljiv sa 3</p>
-      <p>Counter Visibility: {counterState}</p>
     </div>
   );
 };
 
-// Component that watches visibility state
-const WatcherThree: React.FC = () => {
-  // Watch counter visibility
-  const counterState = visibilityService.useWatch(
-    "counter",
-    (state: VISIBILITY_STATE) => state
-  );
-  console.log("Counter State", counterState);
+const WatcherThree: React.FC<{ isVisible: boolean }> = ({ isVisible }) => {
+  if (!isVisible) return null;
 
   return (
     <div
       style={{
         padding: "20px",
-        background: "rgba(255, 255, 255, 0.1)",
+        background: "rgba(255,255,255,0.1)",
         borderRadius: "8px",
         margin: "10px",
-        border: "1px solid rgba(255, 255, 255, 0.2)",
       }}
     >
       <h3>Watcher Three</h3>
       <p>Counter deljiv sa 5</p>
-      <p>Counter Visibility: {counterState}</p>
     </div>
   );
 };
 
-// Station component with useVisibility
-const Station: React.FC = () => {
-  const counterVisibility = visibilityService.useVisibility("counter", {
-    initState: VISIBILITY_STATE.OPEN,
-    onChange(data: { payload: any; state: VISIBILITY_STATE }) {
-      console.log("Counter visibility changed:", data);
-    },
-  });
-
+const Station: React.FC<{
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+}> = ({ isOpen, onOpen, onClose }) => {
   return (
     <div
       style={{
         padding: "20px",
-        background: "rgba(255, 255, 255, 0.15)",
+        background: "rgba(255,255,255,0.15)",
         borderRadius: "8px",
         margin: "10px",
-        border: "1px solid rgba(255, 255, 255, 0.3)",
       }}
     >
       <h3>Station</h3>
-      <p>State: {counterVisibility.state}</p>
+      <p>State: {isOpen ? "OPEN" : "CLOSE"}</p>
       <div style={{ marginTop: "10px" }}>
         <button
-          onClick={() => counterVisibility.open()}
+          onClick={onOpen}
           style={{
             padding: "6px 12px",
             margin: "0 4px",
@@ -117,13 +83,12 @@ const Station: React.FC = () => {
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
-            fontSize: "12px",
           }}
         >
           Open
         </button>
         <button
-          onClick={() => counterVisibility.close()}
+          onClick={onClose}
           style={{
             padding: "6px 12px",
             margin: "0 4px",
@@ -132,7 +97,6 @@ const Station: React.FC = () => {
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
-            fontSize: "12px",
           }}
         >
           Close
@@ -142,9 +106,10 @@ const Station: React.FC = () => {
   );
 };
 
-export const HomePage: React.FC = () => {
+export const SimpleHomePage: React.FC = () => {
   const [count, setCount] = React.useState(0);
-  const [vis, setVis] = React.useState(true);
+  const [showStation, setShowStation] = useBoolean(true);
+  const stationToggle = useToggle(false);
 
   return (
     <div
@@ -160,7 +125,7 @@ export const HomePage: React.FC = () => {
       }}
     >
       <h1 style={{ marginBottom: "2rem", color: "#00bcd4" }}>
-        Visibility Demo
+        Simple Toggle Demo
       </h1>
 
       <div style={{ marginBottom: "2rem", textAlign: "center" }}>
@@ -210,9 +175,23 @@ export const HomePage: React.FC = () => {
           >
             Reset
           </button>
+          <button
+            onClick={() => setShowStation(!showStation)}
+            style={{
+              padding: "8px 16px",
+              margin: "0 4px",
+              background: "#ff9800",
+              color: "#fff",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
+          >
+            {showStation ? "Hide Station" : "Show Station"}
+          </button>
         </div>
       </div>
-      <button onClick={() => setVis(!vis)}>Toggle Visibility</button>
+
       <div
         style={{
           display: "flex",
@@ -221,13 +200,17 @@ export const HomePage: React.FC = () => {
           gap: "20px",
         }}
       >
-        {count % 2 === 0 ? null : <WatcherOne />}
-        {count % 3 === 0 ? null : <WatcherTwo />}
-        {count % 5 === 0 ? null : <WatcherThree />}
-        {vis ? <Station /> : null}
+        <WatcherOne isVisible={count % 2 !== 0} />
+        <WatcherTwo isVisible={count % 3 !== 0} />
+        <WatcherThree isVisible={count % 5 !== 0} />
+        {showStation && (
+          <Station
+            isOpen={stationToggle.isOpen}
+            onOpen={stationToggle.open}
+            onClose={stationToggle.close}
+          />
+        )}
       </div>
     </div>
   );
 };
-
-export default HomePage;

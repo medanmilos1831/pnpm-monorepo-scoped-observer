@@ -1,6 +1,6 @@
-import { EventEntity } from './EventEntity';
-import { ScopedObserver } from './ScopedObserver';
-import { scopeNodeType } from './types';
+import { EventEntity } from "./EventEntity";
+import { ScopedObserver } from "./ScopedObserver";
+import type { scopeNodeType } from "./types";
 
 export const createScopedObserver = (arr: scopeNodeType[]) => {
   let manager = new ScopedObserver();
@@ -15,7 +15,6 @@ export const createScopedObserver = (arr: scopeNodeType[]) => {
     });
     return obj;
   };
-
   manager.events = buildScopes(arr);
   return {
     dispatch: manager.scopedObserverAction,
@@ -25,4 +24,4 @@ export const createScopedObserver = (arr: scopeNodeType[]) => {
   };
 };
 
-export type { IScopedObserver } from './types';
+export type { IScopedObserver } from "./types";

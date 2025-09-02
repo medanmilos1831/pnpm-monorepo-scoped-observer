@@ -151,8 +151,8 @@ importers:
         specifier: ^7.8.2
         version: 7.8.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-visibility-state:
-        specifier: ^1.0.14
-        version: 1.0.14(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1)
+        specifier: ^1.1.0
+        version: 1.1.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1)
       react-wizzard:
         specifier: ^2.0.0
         version: 2.0.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1)
@@ -965,10 +965,10 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
 
-  react-visibility-state@1.0.14:
-    resolution: {integrity: sha512-DkagRN7UyxKm15Oappyo49FW9mwplIXQFWHGRRX5DOBxKRfU92HjvAQwHY6C7DXgqg3ofFYv9FVD9EHjcKWqbg==}
+  react-visibility-state@1.1.0:
+    resolution: {integrity: sha512-NohIwak+C60nvJklXd11XgQV4CW7g/m6YntUs/fUqmavSkKsRTk2/l/z4CKwkGvF2fnMpOo7IdHCAYGE8FfrVQ==}
     peerDependencies:
-      '@scoped-observer/react-state-machine': ^3.0.6
+      '@scoped-observer/react-state-machine': ^3.0.7
       react: ^18.0.0
 
   react-wizzard@2.0.0:
@@ -1822,7 +1822,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-visibility-state@1.0.14(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1):
+  react-visibility-state@1.1.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1):
     dependencies:
       '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1)
       react: 18.3.1

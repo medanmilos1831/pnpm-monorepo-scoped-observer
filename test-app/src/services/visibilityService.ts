@@ -1,25 +1,8 @@
 import { createVisibility } from "../react-visibility-state";
 
-const { useVisibility, VisibilityHandler, getItem, useWatch } =
+const { useVisibility, getItem, useWatch, VisibilityHandler } =
   createVisibility({
-    keys: [
-      "user",
-      "city",
-      "company",
-      "product",
-      "order",
-      "payment",
-      "login",
-      "confirm",
-      "settings",
-      "profile",
-      "notification",
-      "help",
-    ] as const,
+    keys: ["user", "city"] as const,
   });
 
-const pera = createVisibility({
-  keys: ["userModal"] as const,
-});
-
-export { useVisibility, VisibilityHandler, getItem, useWatch, pera };
+export { useVisibility, getItem, useWatch, VisibilityHandler };

@@ -1,39 +1,11 @@
-import { createWizzard } from "../../react-wizzard";
-import { getState, send } from "../../services/toggleMachine";
-import { pera, VisibilityHandler } from "../../services/visibilityService";
-import { ContactInfo, ContactEmail, ContactPhone } from "./components";
+import React from "react";
 
-const SomeComponent = () => {
-  pera.useWatch("userModal", (data) => {
-    console.log(data);
-    return {
-      isOpen: data.state === "open",
-    };
-  });
+export const ContactPage: React.FC = () => {
   return (
     <div>
-      Some Component
-      <button onClick={() => console.log(pera.getItem("userModal").state)}>
-        pera
-      </button>
-      <pera.VisibilityHandler name="userModal">
-        {(data) => {
-          console.log(data);
-          return <>state: {data.state}</>;
-        }}
-      </pera.VisibilityHandler>
+      <h1>Contact</h1>
     </div>
   );
 };
 
-export function ContactPage() {
-  const modal = pera.useVisibility("userModal", { initState: "close" });
-  return (
-    <div>
-      <h1>Contact Page</h1>
-      <SomeComponent />
-      <button onClick={() => modal.open({ message: "milos" })}>open</button>
-      <button onClick={() => modal.close()}>close</button>
-    </div>
-  );
-}
+export default ContactPage;
