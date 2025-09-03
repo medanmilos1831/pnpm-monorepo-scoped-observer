@@ -18,13 +18,31 @@ npm install @scoped-observer/react-state-machine
 > This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/core`.  
 > Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
 
+## API
+
+### `createMachine(config)`
+
+Creates a state machine with the given configuration.
+
+**Parameters:**
+
+- `config.init` - The initial state
+- `config.transition` - Object defining state transitions
+
+**Returns:**
+
+- `send(event)` - Function to send events to the machine
+- `useMachine()` - React hook that returns `{ state, send }`
+- `getState()` - Function to get current state
+- `setState(state)` - Function to manually set state
+
 ## Example Usage
 
 ```tsx
 import React from "react";
 import { createMachine } from "@scoped-observer/react-state-machine";
 
-const machine = createMachine({
+const { useMachine } = createMachine({
   init: "open",
   transition: {
     close: {
@@ -41,12 +59,14 @@ const machine = createMachine({
 });
 
 const SomeComponent = () => {
-  const { state, payload, send } = machine.useMachine();
+  const { state, send } = useMachine();
 
   return (
     <div>
       <h1>Current State: {state}</h1>
-      <p>Payload: {payload ?? "-"}</p>
+      <button onClick={() => send({ type: "TOGGLE" })}>
+        Toggle from Component
+      </button>
     </div>
   );
 };
@@ -57,9 +77,8 @@ const HomePage = () => {
       <h1>Home Page</h1>
       <button
         onClick={() =>
-          machine.send({
+          send({
             type: "TOGGLE",
-            payload: 1,
           })
         }
       >
