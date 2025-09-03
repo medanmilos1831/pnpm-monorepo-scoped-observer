@@ -129,7 +129,6 @@ Creates a visibility instance for the specified name. Each call creates a new vi
 {
   open(payload?: any): void;    // Opens the visibility with optional payload
   close(): void;                // Closes the visibility
-  reset(): void;                // Resets to initial state
 }
 ```
 
@@ -163,7 +162,7 @@ Hook that watches visibility state and returns computed values.
 **Parameters:**
 
 - `name: string` - The visibility name to watch
-- `callback: (visibilityData: VisibilityData) => C` - Function to compute derived values
+- `callback: (state: "open" | "close") => C` - Function to compute derived values
 
 **Returns:**
 Only the result of the callback function.
@@ -265,29 +264,24 @@ const VisibilityIndicator = () => {
     keys: ["userModal", "settingsDrawer"] as const,
   });
 
-  const modalStatus = useWatch("userModal", (visibilityData) => ({
-    isOpen: visibilityData.state === "open",
-    hasPayload: !!visibilityData.payload,
-    payloadType: visibilityData.payload?.type || "none",
+  const modalStatus = useWatch("userModal", (state) => ({
+    isOpen: state === "open",
   }));
 
-  const drawerStatus = useWatch("settingsDrawer", (visibilityData) => ({
-    isOpen: visibilityData.state === "open",
-    section: visibilityData.payload?.section || "none",
+  const drawerStatus = useWatch("settingsDrawer", (state) => ({
+    isOpen: state === "open",
   }));
 
   return (
     <div className="status-indicator">
       <div className={`modal-status ${modalStatus.isOpen ? "open" : "closed"}`}>
         Modal: {modalStatus.isOpen ? "Open" : "Closed"}
-        {modalStatus.hasPayload && ` (${modalStatus.payloadType})`}
       </div>
 
       <div
         className={`drawer-status ${drawerStatus.isOpen ? "open" : "closed"}`}
       >
         Drawer: {drawerStatus.isOpen ? "Open" : "Closed"}
-        {drawerStatus.section !== "none" && ` (${drawerStatus.section})`}
       </div>
     </div>
   );
