@@ -1,4 +1,4 @@
-import { createMachine } from "../react-state-machine";
+import { createMachine } from "@scoped-observer/react-state-machine";
 
 import type { Handlers } from "./Handlers";
 import type { VisibilityInstance } from "./VisibilityInstance";
