@@ -1,35 +1,34 @@
 /**
- * Interface representing a visibility instance.
- * Used for typing utility functions and other operations.
+ * Interface representing a visibility instance
+ * Defines the contract for visibility objects with state machine and callbacks
  */
 export interface IVisibilityInstance {
+  /** Unique identifier for the visibility instance */
   name: string;
+  /** State machine managing visibility transitions */
   machine: any;
-  state: "open" | "close";
+  /** Optional data associated with visibility state */
   payload: any;
-  initState: "open" | "close";
-  onChange?: (data: VisibilityData) => void;
+  /** Callback function triggered on state changes */
+  onChange?: (data: { payload: any; state: VISIBILITY_STATE }) => void;
 }
 
-export type VisibilityConfig = Pick<
-  IVisibilityInstance,
-  "initState" | "onChange"
->;
+/**
+ * Enumeration of possible visibility states
+ * Defines the two main states: open and close
+ */
+export enum VISIBILITY_STATE {
+  /** Visibility is open/visible */
+  OPEN = "open",
+  /** Visibility is closed/hidden */
+  CLOSE = "close",
+}
 
-export type VisibilityHandlerChildrenProps = {
-  name: string;
-  state: "open" | "close";
-  payload: any;
-  close: () => void;
+/**
+ * Configuration object for visibility instances
+ * Extends IVisibilityInstance with required initial state
+ */
+export type VisibilityConfig = Pick<IVisibilityInstance, "onChange"> & {
+  /** Initial visibility state when instance is created */
+  initState: `${VISIBILITY_STATE}`;
 };
-
-export type VisibilityHandlerProps<T extends readonly string[]> = {
-  children: (props: VisibilityData) => JSX.Element;
-  name: T[number];
-};
-
-// Visibility data object type (same as onChange receives)
-export type VisibilityData = Pick<
-  IVisibilityInstance,
-  "name" | "state" | "payload"
->;

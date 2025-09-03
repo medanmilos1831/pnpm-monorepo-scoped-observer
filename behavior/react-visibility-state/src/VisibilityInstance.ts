@@ -2,35 +2,34 @@ import type { IVisibilityInstance, VisibilityConfig } from "./types";
 import { createVisibilityMachine, validateVisibilityConfig } from "./utils";
 
 /**
- * Visibility instance class that manages the state and behavior.
- * Implements the IVisibilityInstance interface.
+ * Represents a single visibility instance with state machine and configuration
+ * Implements IVisibilityInstance interface for consistent behavior
  */
 class VisibilityInstance implements IVisibilityInstance {
+  /** Unique identifier for this visibility instance */
   name: string;
+  /** State machine managing visibility transitions */
   machine: any;
-  state: "open" | "close";
+  /** Optional data associated with visibility state */
   payload: any;
-  initState: "open" | "close";
+  /** Callback function triggered on state changes */
   onChange?: (data: any) => void;
 
   /**
-   * Creates a new visibility instance with the specified configuration.
-   * @param name - Unique identifier for this visibility instance
-   * @param config - Configuration object containing initial state
-   * @throws Error if configuration is invalid
+   * Creates a new visibility instance
+   * @param name - Unique identifier for the instance
+   * @param config - Configuration object with initial state and callbacks
    */
   constructor(name: string, config: VisibilityConfig) {
-    // Use utility function for validation
+    // Validate configuration parameters
     validateVisibilityConfig(name, config);
 
-    // Initialize basic properties
+    // Initialize instance properties
     this.name = name;
-    this.initState = config.initState;
-    this.state = config.initState;
     this.payload = null;
     this.onChange = config.onChange;
 
-    // Create and initialize state machine using utility function
+    // Create state machine with initial state
     this.machine = createVisibilityMachine(config.initState);
   }
 }

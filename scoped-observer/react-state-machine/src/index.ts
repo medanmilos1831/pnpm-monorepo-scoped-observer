@@ -1,5 +1,5 @@
-import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createScopedObserver } from "@scoped-observer/core";
+import { useSyncExternalStore } from "react";
 import type { TransitionMap } from "./types";
 
 const MACHINE_SCOPE = "machineScope";
@@ -17,7 +17,6 @@ const createMachine = <S extends string, T extends string, P = any>({
   init: S;
   transition: TransitionMap<S, T>;
 }) => {
-  let referenceCount = 0;
   const manager = createScopedObserver([
     {
       scope: MACHINE_SCOPE,
@@ -26,9 +25,6 @@ const createMachine = <S extends string, T extends string, P = any>({
   let initState = structuredClone(init);
 
   const handler = (data: Event<T, P>) => {
-    if (referenceCount === 0) {
-      return;
-    }
     const next = transition[initState].on[data.type];
     if (!next) {
       console.warn(
@@ -47,38 +43,34 @@ const createMachine = <S extends string, T extends string, P = any>({
   return {
     send: handler,
     useMachine() {
-      const payloadRef = useRef<P | undefined>(undefined);
-
-      const subscribe = (callback: () => void) => {
-        return manager.subscribe({
-          scope: MACHINE_SCOPE,
-          eventName: MACHINE_EVENT,
-          callback: ({ payload }: { payload: P }) => {
-            payloadRef.current = payload;
-            callback();
-          },
-        });
-      };
-
-      const state = useSyncExternalStore(subscribe, () => initState);
-      useEffect(() => {
-        referenceCount = referenceCount + 1;
-        return () => {
-          referenceCount = referenceCount - 1;
-          if (referenceCount === 0) {
-            initState = init;
-          }
-        };
-      }, []);
+      const state = useSyncExternalStore(
+        (callback) => {
+          return manager.subscribe({
+            scope: MACHINE_SCOPE,
+            eventName: MACHINE_EVENT,
+            callback,
+          });
+        },
+        () => {
+          return initState;
+        }
+      );
 
       return {
         state: state,
-        payload: payloadRef.current,
         send: handler,
       };
     },
     getState() {
       return initState;
+    },
+    setState(state: S) {
+      // console.log("OVDE SAM USAO", state);
+      initState = state;
+      manager.dispatch({
+        scope: MACHINE_SCOPE,
+        eventName: MACHINE_EVENT,
+      });
     },
   };
 };
