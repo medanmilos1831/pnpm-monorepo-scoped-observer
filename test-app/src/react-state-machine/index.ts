@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { StateMachineInstance } from "./StateMachineInstance";
-import type { CreateMachineConfig, TransitionMap, Event } from "./types";
+import type { GlobalConfig, LocalConfig, TransitionMap, Event } from "./types";
 import { initialize } from "./utils";
 
 const createMachine = <S extends string, T extends string>({
@@ -11,27 +11,30 @@ const createMachine = <S extends string, T extends string>({
     init: S;
     transition: TransitionMap<S, T>;
   };
-  config?: CreateMachineConfig<S>;
+  config?: GlobalConfig<S>;
 }) => {
   const entities = new Map<
     StateMachineInstance<S, T>["handler"],
     StateMachineInstance<S, T>
   >();
+
   const globalConfig = config || {};
 
   return {
     useMachine: (
-      config?: CreateMachineConfig<S>
+      localConfig?: LocalConfig<S>
     ): [S, (event: Event<T>) => void] => {
-      // INITIALIZE THE MACHINE INSTANCE
       const [instance] = useState(
         initialize.bind<any>({
           machineConfig: machine,
-          config: config || globalConfig,
+          config: {
+            ...globalConfig,
+            ...localConfig,
+          },
           entities,
         })
       );
-      // END ::INITIALIZE THE MACHINE INSTANCE
+
       useEffect(() => {
         return () => {
           entities.delete(instance.handler);
@@ -40,6 +43,7 @@ const createMachine = <S extends string, T extends string>({
 
       return [instance.observer(), instance.handler];
     },
+
     useWatch(
       item: [S, (event: Event<T>) => void],
       callback: (state: S) => any
@@ -47,22 +51,36 @@ const createMachine = <S extends string, T extends string>({
       const entity = entities.get(item[1])!;
       return callback(entity.observer());
     },
+
     client: {
-      getEntity: ([state, handler]: [S, (event: Event<T>) => void]) => {
-        if (!entities.has(handler)) {
+      getEntity: (item: [S, (event: Event<T>) => void]) => {
+        const [state, handler] = item;
+        const entity = entities.get(handler);
+        if (!entity) {
           return {
             handler: (props: Event<T>) => {
-              console.warn(
-                `[Machine] Machine with handler "${handler}" not found.`
-              );
+              console.warn(`[Machine] Machine with handler not found.`);
             },
             state: machine.init,
           };
         }
         return {
-          handler: entities.get(handler)!.handler,
-          state: entities.get(handler)!.state,
+          handler: entity.handler,
+          state: entity.state,
         };
+      },
+
+      getEntityByName(name: string) {
+        for (const [handler, instance] of entities.entries()) {
+          if (instance.name === name) {
+            return {
+              handler: instance.handler,
+              state: instance.state,
+              name: instance.name,
+            };
+          }
+        }
+        return null;
       },
     },
   };

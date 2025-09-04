@@ -24,27 +24,34 @@ const { useMachine, useWatch, client } = createMachine({
 });
 
 export const HomePage: React.FC = () => {
-  const instance = useMachine({
+  const arr = useMachine({
+    name: "homepage-modal",
     onChange: (prev, curr) => {
-      // console.log("onChange useMachine", prev, curr);
+      console.log("onChange local config", prev, curr);
     },
     initState: "open",
   });
-  // const state = useWatch(instance, (state) => {
-  //   return state;
-  // });
+
   return (
     <>
-      <button onClick={() => instance[1]({ type: "CLOSE" })}>CLOSE</button>
+      <button onClick={() => arr[1]({ type: "CLOSE" })}>CLOSE</button>
+      <button onClick={() => arr[1]({ type: "OPEN" })}>OPEN</button>
+
+      <div>
+        <p>Raw State: {arr[0]}</p>
+        <p>
+          Is Open:{" "}
+          {useWatch(arr, (state: any) => state === "open") ? "Yes" : "No"}
+        </p>
+      </div>
+
       <button
-        onClick={() => {
-          console.log(client.getEntity(instance).handler({ type: "OPEN" }));
-        }}
+        onClick={() =>
+          client.getEntityByName("homepage-modal")?.handler({ type: "CLOSE" })
+        }
       >
-        OPEN
+        Close via Client
       </button>
-      {instance[0]}
-      {client.getEntity(instance).state}
     </>
     // <div style={{ padding: "20px" }}>
     //   <h1>Home</h1>
