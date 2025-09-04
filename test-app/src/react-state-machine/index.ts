@@ -1,16 +1,15 @@
-import { useEffect, useRef, useSyncExternalStore } from "react";
 import { createScopedObserver } from "@scoped-observer/core";
-import type { TransitionMap } from "./types";
+import { useSyncExternalStore } from "react";
+import type { TransitionMap } from "./types2";
 
 const MACHINE_SCOPE = "machineScope";
 const MACHINE_EVENT = "machineEvent";
 
-type Event<T extends string, P = any> = {
+type Event<T extends string> = {
   type: T;
-  payload?: P;
 };
 
-const createMachine = <S extends string, T extends string, P = any>({
+const createMachine = <S extends string, T extends string>({
   init,
   transition,
 }: {
@@ -24,7 +23,7 @@ const createMachine = <S extends string, T extends string, P = any>({
   ]);
   let initState = structuredClone(init);
 
-  const handler = (data: Event<T, P>) => {
+  const handler = (data: Event<T>) => {
     const next = transition[initState].on[data.type];
     if (!next) {
       console.warn(
@@ -36,7 +35,6 @@ const createMachine = <S extends string, T extends string, P = any>({
     manager.dispatch({
       scope: MACHINE_SCOPE,
       eventName: MACHINE_EVENT,
-      payload: data.payload,
     });
   };
 
@@ -65,7 +63,6 @@ const createMachine = <S extends string, T extends string, P = any>({
       return initState;
     },
     setState(state: S) {
-      // console.log("OVDE SAM USAO", state);
       initState = state;
       manager.dispatch({
         scope: MACHINE_SCOPE,
