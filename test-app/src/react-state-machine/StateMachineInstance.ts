@@ -1,18 +1,18 @@
 import { createScopedObserver } from "@scoped-observer/core";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import {
   MACHINE_EVENT,
   MACHINE_SCOPE,
   type Event,
   type TransitionMap,
   type MachineConfig,
-  type CreateMachineV2Config,
-} from "./types2";
+  type CreateMachineConfig,
+} from "./types";
 
 export class StateMachineInstance<S extends string, T extends string> {
   state: S;
   transition: TransitionMap<S, T>;
-  config: CreateMachineV2Config<S>;
+  config: CreateMachineConfig<S>;
   target = createScopedObserver([
     {
       scope: MACHINE_SCOPE,
@@ -20,7 +20,7 @@ export class StateMachineInstance<S extends string, T extends string> {
   ]);
   constructor(config: {
     machineConfig: MachineConfig<S, T>;
-    config?: CreateMachineV2Config<S>;
+    config?: CreateMachineConfig<S>;
   }) {
     this.state = config.config?.initState || config.machineConfig.init;
     this.transition = config.machineConfig.transition;

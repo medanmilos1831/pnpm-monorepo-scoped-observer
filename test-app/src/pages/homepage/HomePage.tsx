@@ -1,23 +1,6 @@
-import React, { useState } from "react";
-import { createMachine } from "@scoped-observer/react-state-machine";
-import { createMachineV2 } from "../../react-state-machine/indexV2";
-const { useMachine } = createMachine({
-  init: "open",
-  transition: {
-    close: {
-      on: {
-        TOGGLE: "open",
-      },
-    },
-    open: {
-      on: {
-        TOGGLE: "close",
-      },
-    },
-  },
-});
-
-const { useMachineV2, useWatch, client } = createMachineV2({
+import React from "react";
+import { createMachine } from "../../react-state-machine";
+const { useMachine, useWatch, client } = createMachine({
   machine: {
     init: "open",
     transition: {
@@ -40,93 +23,28 @@ const { useMachineV2, useWatch, client } = createMachineV2({
   },
 });
 
-const Box1: React.FC = () => {
-  const { state, send } = useMachine();
-
-  return (
-    <div
-      style={{
-        border: "2px solid #4dabf7",
-        padding: "20px",
-        borderRadius: "8px",
-        margin: "10px 0",
-      }}
-    >
-      <h3>Box 1</h3>
-      <p>
-        State: <strong>{state}</strong>
-      </p>
-      <button
-        onClick={() => send({ type: "TOGGLE" })}
-        style={{
-          padding: "8px 16px",
-          fontSize: "14px",
-          backgroundColor: "#4dabf7",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Toggle from Box 1
-      </button>
-    </div>
-  );
-};
-
-const Box2: React.FC = () => {
-  const { state, send } = useMachine();
-
-  return (
-    <div
-      style={{
-        border: "2px solid #51cf66",
-        padding: "20px",
-        borderRadius: "8px",
-        margin: "10px 0",
-      }}
-    >
-      <h3>Box 2</h3>
-      <p>
-        State: <strong>{state}</strong>
-      </p>
-      <button
-        onClick={() => send({ type: "TOGGLE" })}
-        style={{
-          padding: "8px 16px",
-          fontSize: "14px",
-          backgroundColor: "#51cf66",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Toggle from Box 2
-      </button>
-    </div>
-  );
-};
-
 export const HomePage: React.FC = () => {
-  const instance = useMachineV2({
+  const instance = useMachine({
     onChange: (prev, curr) => {
-      // console.log("onChange useMachineV2", prev, curr);
+      // console.log("onChange useMachine", prev, curr);
     },
     initState: "open",
   });
-  const state = useWatch(instance, (state) => {
-    console.log("state useWatch", state);
-    return state;
-  });
+  // const state = useWatch(instance, (state) => {
+  //   return state;
+  // });
   return (
     <>
-      <button onClick={() => instance[1]({ type: "CLOSE" })}>v2 CLOSE</button>
-      {/* <button onClick={() => client.getEntity()({ type: "OPEN" })}>
-        v2 OPEN
-      </button> */}
+      <button onClick={() => instance[1]({ type: "CLOSE" })}>CLOSE</button>
+      <button
+        onClick={() => {
+          console.log(client.getEntity(instance).handler({ type: "OPEN" }));
+        }}
+      >
+        OPEN
+      </button>
       {instance[0]}
-      {state}
+      {client.getEntity(instance).state}
     </>
     // <div style={{ padding: "20px" }}>
     //   <h1>Home</h1>

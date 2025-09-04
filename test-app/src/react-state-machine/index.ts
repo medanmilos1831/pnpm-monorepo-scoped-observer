@@ -1,73 +1,69 @@
-import { createScopedObserver } from "@scoped-observer/core";
-import { useSyncExternalStore } from "react";
-import type { TransitionMap } from "./types2";
-
-const MACHINE_SCOPE = "machineScope";
-const MACHINE_EVENT = "machineEvent";
-
-type Event<T extends string> = {
-  type: T;
-};
+import { useEffect, useState } from "react";
+import { StateMachineInstance } from "./StateMachineInstance";
+import type { CreateMachineConfig, TransitionMap, Event } from "./types";
+import { initialize } from "./utils";
 
 const createMachine = <S extends string, T extends string>({
-  init,
-  transition,
+  machine,
+  config,
 }: {
-  init: S;
-  transition: TransitionMap<S, T>;
-}) => {
-  const manager = createScopedObserver([
-    {
-      scope: MACHINE_SCOPE,
-    },
-  ]);
-  let initState = structuredClone(init);
-
-  const handler = (data: Event<T>) => {
-    const next = transition[initState].on[data.type];
-    if (!next) {
-      console.warn(
-        `[Machine] Invalid transition from "${initState}" using type "${data.type}"`
-      );
-      return;
-    }
-    initState = next;
-    manager.dispatch({
-      scope: MACHINE_SCOPE,
-      eventName: MACHINE_EVENT,
-    });
+  machine: {
+    init: S;
+    transition: TransitionMap<S, T>;
   };
+  config?: CreateMachineConfig<S>;
+}) => {
+  const entities = new Map<
+    StateMachineInstance<S, T>["handler"],
+    StateMachineInstance<S, T>
+  >();
+  const globalConfig = config || {};
 
   return {
-    send: handler,
-    useMachine() {
-      const state = useSyncExternalStore(
-        (callback) => {
-          return manager.subscribe({
-            scope: MACHINE_SCOPE,
-            eventName: MACHINE_EVENT,
-            callback,
-          });
-        },
-        () => {
-          return initState;
-        }
+    useMachine: (
+      config?: CreateMachineConfig<S>
+    ): [S, (event: Event<T>) => void] => {
+      // INITIALIZE THE MACHINE INSTANCE
+      const [instance] = useState(
+        initialize.bind<any>({
+          machineConfig: machine,
+          config: config || globalConfig,
+          entities,
+        })
       );
+      // END ::INITIALIZE THE MACHINE INSTANCE
+      useEffect(() => {
+        return () => {
+          entities.delete(instance.handler);
+        };
+      }, []);
 
-      return {
-        state: state,
-        send: handler,
-      };
+      return [instance.observer(), instance.handler];
     },
-    getState() {
-      return initState;
+    useWatch(
+      item: [S, (event: Event<T>) => void],
+      callback: (state: S) => any
+    ) {
+      const entity = entities.get(item[1])!;
+      return callback(entity.observer());
     },
-    setState(state: S) {
-      initState = state;
-      manager.dispatch({
-        scope: MACHINE_SCOPE,
-        eventName: MACHINE_EVENT,
-      });
+    client: {
+      getEntity: ([state, handler]: [S, (event: Event<T>) => void]) => {
+        if (!entities.has(handler)) {
+          return {
+            handler: (props: Event<T>) => {
+              console.warn(
+                `[Machine] Machine with handler "${handler}" not found.`
+              );
+            },
+            state: machine.init,
+          };
+        }
+        return {
+          handler: entities.get(handler)!.handler,
+          state: entities.get(handler)!.state,
+        };
+      },
     },
   };
 };
