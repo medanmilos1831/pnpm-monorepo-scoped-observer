@@ -1,12 +1,10 @@
 import { createScopedObserver } from "@scoped-observer/core";
-import { useState, useSyncExternalStore } from "react";
 import {
   MACHINE_EVENT,
   MACHINE_SCOPE,
   type Event,
   type TransitionMap,
   type MachineConfig,
-  type GlobalConfig,
   type LocalConfig,
 } from "./types";
 
@@ -73,23 +71,4 @@ export class StateMachineInstance<S extends string, T extends string> {
       eventName: MACHINE_EVENT,
     });
   };
-
-  /**
-   * React hook that subscribes to state changes
-   * @returns Current state value
-   */
-  observer(): S {
-    return useSyncExternalStore(
-      (callback) => {
-        return this.target.subscribe({
-          scope: MACHINE_SCOPE,
-          eventName: MACHINE_EVENT,
-          callback,
-        });
-      },
-      () => {
-        return this.state as S;
-      }
-    ) as S;
-  }
 }

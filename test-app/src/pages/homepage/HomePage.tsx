@@ -32,6 +32,8 @@ export const HomePage: React.FC = () => {
     initState: "open",
   });
 
+  const isOpen = useWatch(arr, (state: any) => state === "open");
+
   return (
     <>
       <button onClick={() => arr[1]({ type: "CLOSE" })}>CLOSE</button>
@@ -39,10 +41,7 @@ export const HomePage: React.FC = () => {
 
       <div>
         <p>Raw State: {arr[0]}</p>
-        <p>
-          Is Open:{" "}
-          {useWatch(arr, (state: any) => state === "open") ? "Yes" : "No"}
-        </p>
+        <p>Is Open: {isOpen ? "Yes" : "No"}</p>
       </div>
 
       <button

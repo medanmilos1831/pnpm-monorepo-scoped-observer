@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { StateMachineInstance } from "./StateMachineInstance";
-import type { GlobalConfig, LocalConfig, TransitionMap, Event } from "./types";
+import {
+  type GlobalConfig,
+  type LocalConfig,
+  type TransitionMap,
+  type Event,
+  MACHINE_SCOPE,
+  MACHINE_EVENT,
+} from "./types";
 import { initialize } from "./utils";
 
 const createMachine = <S extends string, T extends string>({
@@ -20,37 +27,48 @@ const createMachine = <S extends string, T extends string>({
 
   const globalConfig = config || {};
 
+  const useWatch = (
+    item: [S, (event: Event<T>) => void],
+    callback: (state: S) => any
+  ) => {
+    const entity = entities.get(item[1])!;
+    const state = useSyncExternalStore(
+      (callback) => {
+        return entity.target.subscribe({
+          scope: MACHINE_SCOPE,
+          eventName: MACHINE_EVENT,
+          callback,
+        });
+      },
+      () => {
+        return entity.state as S;
+      }
+    );
+    return callback(state);
+  };
+
+  const useMachine = (localConfig?: LocalConfig<S>): any => {
+    const [instance] = useState(
+      initialize.bind<any>({
+        machineConfig: machine,
+        config: {
+          ...globalConfig,
+          ...localConfig,
+        },
+        entities,
+      })
+    );
+    const state = useWatch(
+      [instance.state, instance.handler],
+      (state) => state
+    );
+    return [state, instance.handler];
+  };
+
   return {
-    useMachine: (
-      localConfig?: LocalConfig<S>
-    ): [S, (event: Event<T>) => void] => {
-      const [instance] = useState(
-        initialize.bind<any>({
-          machineConfig: machine,
-          config: {
-            ...globalConfig,
-            ...localConfig,
-          },
-          entities,
-        })
-      );
+    useMachine,
 
-      useEffect(() => {
-        return () => {
-          entities.delete(instance.handler);
-        };
-      }, []);
-
-      return [instance.observer(), instance.handler];
-    },
-
-    useWatch(
-      item: [S, (event: Event<T>) => void],
-      callback: (state: S) => any
-    ) {
-      const entity = entities.get(item[1])!;
-      return callback(entity.observer());
-    },
+    useWatch,
 
     client: {
       getEntity: (item: [S, (event: Event<T>) => void]) => {
