@@ -1,22 +1,32 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navigation from "./components/Navigation";
-import { HomePage } from "./pages/homepage/HomePage";
-import AboutPage from "./pages/about/AboutPage";
-import ContactPage from "./pages/contact/ContactPage";
-
+import { useEffect, useState } from "react";
+import {
+  createBrowserVisibility,
+  VisibilityProvider,
+} from "./react-visibility-state-new";
+import { HomePage } from "./pages";
+import { visibility } from "./visibilityService";
 function App() {
   return (
-    <Router>
-      <div style={{ minHeight: "100vh" }}>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <>
+      <VisibilityProvider value={visibility}>
+        <HomePage />
+      </VisibilityProvider>
+      {/* <h1>Counter: {counter}</h1>
+      <br />
+      <br />
+      <hr />
+      {counter % 2 === 0 ? (
+        <VisibilityHandler name="modalOne">
+          {({ state }) => {
+            return <div>Hello World {state}</div>;
+          }}
+        </VisibilityHandler>
+      ) : null}
+      <hr />
+      <button onClick={() => open("modalOne")}>open</button>
+      <button onClick={() => close("modalOne")}>close</button>
+      <button onClick={() => setCounter(counter + 1)}>increment</button> */}
+    </>
   );
 }
 
