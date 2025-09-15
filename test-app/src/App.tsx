@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   createBrowserVisibility,
   VisibilityProvider,
-} from "./react-visibility-state-new";
+} from "./react-visibility-state";
 import { HomePage } from "./pages";
 import { visibility } from "./visibilityService";
 function App() {

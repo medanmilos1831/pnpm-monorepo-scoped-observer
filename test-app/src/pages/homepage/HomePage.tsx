@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { VisibilityProvider } from "../../react-visibility-state-new";
-import { useVisibilityHandler } from "../../react-visibility-state-new/Provider/VisibilityProvider";
+import { VisibilityProvider } from "../../react-visibility-state";
+import { useVisibilityHandler } from "../../react-visibility-state/Provider/VisibilityProvider";
 const ModalOne = () => {
   return <div>Hello World</div>;
 };

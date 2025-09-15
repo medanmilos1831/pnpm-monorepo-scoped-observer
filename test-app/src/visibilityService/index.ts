@@ -1,4 +1,4 @@
-import { createBrowserVisibility } from "../react-visibility-state-new";
+import { createBrowserVisibility } from "../react-visibility-state";
 
 const visibility = createBrowserVisibility();
 

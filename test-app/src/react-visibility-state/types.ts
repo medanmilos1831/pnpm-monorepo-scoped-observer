@@ -1,34 +1,34 @@
 /**
- * Interface representing a visibility instance
- * Defines the contract for visibility objects with state machine and callbacks
+ * Engine state enumeration representing the power state of the visibility engine
+ *
+ * This enum defines the two possible states that an engine can be in:
+ * - ON: Engine is active and running
+ * - OFF: Engine is inactive and stopped
  */
-export interface IVisibilityInstance {
-  /** Unique identifier for the visibility instance */
+export enum ENGINE_STATE {
+  /** Engine is active and running */
+  ON = "on",
+  /** Engine is inactive and stopped */
+  OFF = "off",
+}
+
+/**
+ * Configuration object for creating a visibility engine
+ *
+ * This type defines the required parameters when initializing a new
+ * visibility engine instance.
+ *
+ * @example
+ * ```typescript
+ * const config: VisibilityConfig = {
+ *   name: "my-visibility-engine",
+ *   initState: ENGINE_STATE.OFF
+ * };
+ * ```
+ */
+export type VisibilityConfig = {
+  /** Unique identifier for the engine instance */
   name: string;
-  /** State machine managing visibility transitions */
-  machine: any;
-  /** Optional data associated with visibility state */
-  payload: any;
-  /** Callback function triggered on state changes */
-  onChange?: (data: { payload: any; state: VISIBILITY_STATE }) => void;
-}
-
-/**
- * Enumeration of possible visibility states
- * Defines the two main states: open and close
- */
-export enum VISIBILITY_STATE {
-  /** Visibility is open/visible */
-  OPEN = "open",
-  /** Visibility is closed/hidden */
-  CLOSE = "close",
-}
-
-/**
- * Configuration object for visibility instances
- * Extends IVisibilityInstance with required initial state
- */
-export type VisibilityConfig = Pick<IVisibilityInstance, "onChange"> & {
-  /** Initial visibility state when instance is created */
-  initState: `${VISIBILITY_STATE}`;
+  /** Initial state of the engine when created */
+  initState: ENGINE_STATE;
 };
