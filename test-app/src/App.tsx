@@ -1,18 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  createBrowserVisibility,
-  VisibilityProvider,
-} from "./react-visibility-state";
-import { HomePage } from "./pages";
-import { visibility } from "./visibilityService";
 function App() {
-  return (
-    <>
-      <VisibilityProvider value={visibility}>
-        <HomePage />
-      </VisibilityProvider>
-    </>
-  );
+  return <>app</>;
 }
 
 export default App;
