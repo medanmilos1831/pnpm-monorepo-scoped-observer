@@ -1,18 +1,8 @@
 # react-visibility-state
 
-**react-visibility-state** is a lightweight React package designed to manage visibility states (open/close) for UI components like modals, tooltips, drawers, and accordions with predictable state transitions — powered by a finite state machine under the hood.
+**react-visibility-state** is a powerful React package for managing visibility states (ON/OFF) for UI components like modals, tooltips, drawers, and accordions. It provides predictable state management with automatic cleanup and memory optimization.
 
-It allows you to control component visibility, manage payload data, and track state changes in a clean, testable, and decoupled way, making it ideal for any UI component that needs to show/hide functionality.
-
-The package is built on a layered architecture:
-
-- **@scoped-observer/core** — a core event bus system
-- **@scoped-observer/react-state-machine** — a finite state machine built on top of the core
-- **react-visibility-state** — the React behavior layer providing a streamlined API for managing visibility states
-
-This separation of concerns ensures flexibility, extensibility, and ease of maintenance.
-
-Use **react-visibility-state** to simplify your visibility state management logic with a robust, minimal dependency solution that stays consistent across any UI framework or styling approach.
+The package offers a clean API for controlling component visibility, managing payload data, and tracking state changes in a testable and decoupled way.
 
 ## 📦 Installation
 
@@ -23,266 +13,254 @@ npm install react-visibility-state
 ```
 
 > **Note:**  
-> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/react-state-machine`.  
+> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/core`.  
 > Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
 
 ```bash
-npm install react @scoped-observer/react-state-machine
+npm install react @scoped-observer/core
 ```
-
-## 🎮 Demo
-
-Try out **react-visibility-state** in action with our interactive demo:
-
-**[🚀 Live Demo on StackBlitz](https://stackblitz.com/~/github.com/medanmilos1831/react-visibility-state-demo)**
-
-The demo showcases a complete visibility state management implementation with multiple UI components, real-time state tracking, and payload management.
 
 ## 🚀 Quick Start
 
-Here's a basic example showing how to create and manage visibility states for different UI components:
+Here's a basic example showing how to set up and use the visibility engine system:
 
 ```tsx
 import React from "react";
-import { createVisibility } from "react-visibility-state";
+import { createBrowserVisibility } from "react-visibility-state";
+import {
+  VisibilityProvider,
+  useVisibility,
+  useVisibilityHandler,
+} from "react-visibility-state";
 
-const { useVisibility, VisibilityHandler } = createVisibility({
-  keys: ["userModal", "settingsDrawer"] as const,
-});
+// Create the browser visibility implementation
+const browserVisibility = createBrowserVisibility();
 
-const UserModal = () => {
-  const modal = useVisibility("userModal", {
-    initState: "close",
-  });
-
+const App = () => {
   return (
-    <div>
-      <button onClick={() => modal.open({ userId: 123 })}>
-        Open User Modal
-      </button>
-      <button onClick={modal.close}>Close Modal</button>
-    </div>
+    <VisibilityProvider value={browserVisibility}>
+      <MyComponent />
+    </VisibilityProvider>
   );
 };
 
-const SettingsDrawer = () => {
-  const drawer = useVisibility("settingsDrawer", {
-    initState: "close",
-  });
+const MyComponent = () => {
+  // Get visibility state and payload
+  const { state, payload } = useVisibility("my-modal", "off");
+
+  // Get control functions
+  const { on, off } = useVisibilityHandler();
+
+  const handleOpen = () => {
+    on("my-modal", { userId: 123, action: "edit" });
+  };
+
+  const handleClose = () => {
+    off("my-modal");
+  };
 
   return (
     <div>
-      <button onClick={() => drawer.open({ section: "profile" })}>
-        Open Settings
-      </button>
-      <button onClick={drawer.close}>Close Settings</button>
+      <button onClick={handleOpen}>Open Modal</button>
+      <button onClick={handleClose}>Close Modal</button>
+
+      <div style={{ display: state === "on" ? "block" : "none" }}>
+        <h2>Modal is {state}</h2>
+        {payload && <p>User ID: {payload.userId}</p>}
+      </div>
     </div>
   );
 };
+```
 
-const App = () => (
-  <>
-    <UserModal />
-    <SettingsDrawer />
+## 🎮 Render Prop Pattern
 
-    <VisibilityHandler name="userModal">
-      {({ state, payload }) => (
-        <div style={{ display: state === "open" ? "block" : "none" }}>
-          <h2>User Modal</h2>
-          <p>State: {state}</p>
-          {payload && <p>User ID: {payload.userId}</p>}
-          <p>Modal is open!</p>
-        </div>
-      )}
-    </VisibilityHandler>
-  </>
-);
+Use the render prop pattern for cleaner component composition:
+
+```tsx
+import { VisibilityProvider } from "react-visibility-state";
+
+const ModalExample = () => {
+  const { on, off } = useVisibilityHandler();
+
+  return (
+    <div>
+      <button onClick={() => on("modal", { title: "Settings" })}>
+        Open Modal
+      </button>
+
+      <VisibilityProvider.Item name="modal" initState="off">
+        {({ state, payload }) => (
+          <div style={{ display: state === "on" ? "block" : "none" }}>
+            <h2>{payload?.title || "Modal"}</h2>
+            <p>State: {state}</p>
+            <button onClick={() => off("modal")}>Close</button>
+          </div>
+        )}
+      </VisibilityProvider.Item>
+    </div>
+  );
+};
 ```
 
 ## 📚 API Reference
 
-### `createVisibility(config)`
+### `createBrowserVisibility()`
 
-Creates a visibility manager with predefined keys for type-safe visibility instances.
-
-**Parameters:**
-
-- `config.keys: readonly string[]` - Array of valid visibility names for type safety
+Creates a browser visibility implementation with instance management capabilities.
 
 **Returns:**
-An object with methods to create and manage visibility instances.
+An object with methods to manage visibility instances:
 
-### Methods
-
-#### `useVisibility(name, config)`
-
-Creates a visibility instance for the specified name. Each call creates a new visibility instance if it doesn't exist.
-
-**Parameters:**
-
-- `name: string` - The visibility name (must be one of the defined keys)
-- `config: VisibilityConfig` - Configuration object with initial state
-
-**Returns:**
-
-```tsx
+```typescript
 {
-  open(payload?: any): void;    // Opens the visibility with optional payload
-  close(): void;                // Closes the visibility
+  ensureEngine(name: string, initState: "on" | "off"): EngineInterface;
+  start(name: string, payload?: any): void;
+  stop(name: string, payload?: any): void;
+  getEngine(name: string): Engine;
 }
 ```
 
-#### `VisibilityHandler`
+### `VisibilityProvider`
 
-Render prop component that provides visibility state and control functions.
+React context provider that makes visibility functionality available to child components.
 
 **Props:**
 
-```tsx
+```typescript
 {
-  name: string; // Visibility name
-  children: (props: VisibilityHandlerChildrenProps) => JSX.Element; // Render function
+  children: React.ReactNode;
+  value: ReturnType<typeof createBrowserVisibility>;
 }
 ```
 
-**Children Props:**
+### `VisibilityProvider.Item`
 
-```tsx
+Render prop component for accessing visibility state and payload.
+
+**Props:**
+
+```typescript
 {
-  name: string; // Visibility name
-  state: "open" | "close"; // Current visibility state
-  payload: any; // Current payload data
+  name: string;
+  initState?: "on" | "off";
+  children: (props: { state: "on" | "off"; payload: any }) => React.ReactNode;
 }
 ```
 
-#### `useWatch(name, callback)`
+### `useVisibility(name, initState)`
 
-Hook that watches visibility state and returns computed values.
-
-**Parameters:**
-
-- `name: string` - The visibility name to watch
-- `callback: (state: "open" | "close") => C` - Function to compute derived values
-
-**Returns:**
-Only the result of the callback function.
-
-#### `getItem(name)`
-
-Gets a visibility instance by name for direct access.
+Hook for accessing visibility state and payload.
 
 **Parameters:**
 
-- `name: string` - The visibility name to retrieve
+- `name: string` - Instance identifier
+- `initState: "on" | "off"` - Initial state
 
 **Returns:**
-The visibility instance or throws error if not found.
+
+```typescript
+{
+  state: "on" | "off";
+  payload: any;
+}
+```
+
+### `useVisibilityHandler()`
+
+Hook for controlling visibility instance state.
+
+**Returns:**
+
+```typescript
+{
+  on: (name: string, payload?: any) => void;
+  off: (name: string) => void;
+}
+```
 
 ## 🔧 Advanced Usage
 
-### Multiple Visibility Instances
+### Multiple Instance Management
 
-Manage multiple independent visibility states in the same application:
+Manage multiple independent visibility instances:
 
 ```tsx
-const { useVisibility, VisibilityHandler } = createVisibility({
-  keys: ["userModal", "settingsDrawer", "helpTooltip"] as const,
-});
+const MultiInstanceExample = () => {
+  const { on, off } = useVisibilityHandler();
 
-const App = () => {
-  const userModal = useVisibility("userModal", { initState: "close" });
-  const settingsDrawer = useVisibility("settingsDrawer", {
-    initState: "close",
-  });
-  const helpTooltip = useVisibility("helpTooltip", { initState: "close" });
+  // Multiple instances with different states
+  const modal = useVisibility("modal", "off");
+  const drawer = useVisibility("drawer", "off");
+  const tooltip = useVisibility("tooltip", "off");
 
   return (
-    <>
-      <button onClick={() => userModal.open({ userId: 123 })}>
-        Open User Modal
+    <div>
+      <button onClick={() => on("modal", { type: "user" })}>Open Modal</button>
+      <button onClick={() => on("drawer", { section: "settings" })}>
+        Open Drawer
+      </button>
+      <button onClick={() => on("tooltip", { message: "Help text" })}>
+        Show Tooltip
       </button>
 
-      <button onClick={() => settingsDrawer.open({ section: "profile" })}>
-        Open Settings
-      </button>
+      {/* Modal */}
+      <VisibilityProvider.Item name="modal">
+        {({ state, payload }) => (
+          <div style={{ display: state === "on" ? "block" : "none" }}>
+            <h2>Modal: {payload?.type}</h2>
+            <button onClick={() => off("modal")}>Close</button>
+          </div>
+        )}
+      </VisibilityProvider.Item>
 
-      <button onClick={() => helpTooltip.open({ topic: "navigation" })}>
-        Show Help
-      </button>
-    </>
+      {/* Drawer */}
+      <VisibilityProvider.Item name="drawer">
+        {({ state, payload }) => (
+          <div className={`drawer ${state === "on" ? "open" : "closed"}`}>
+            <h3>Drawer: {payload?.section}</h3>
+            <button onClick={() => off("drawer")}>Close</button>
+          </div>
+        )}
+      </VisibilityProvider.Item>
+    </div>
   );
 };
 ```
 
 ### Payload Management
 
-Pass and manage data with your visibility states:
+Pass and manage rich data with visibility states:
 
 ```tsx
-const UserProfile = () => {
-  const profileModal = useVisibility("userModal", { initState: "close" });
+const PayloadExample = () => {
+  const { on, off } = useVisibilityHandler();
 
-  const handleEditProfile = (userId: number) => {
-    profileModal.open({
+  const handleUserAction = (action: string, userId: number) => {
+    on("userModal", {
+      action,
       userId,
-      action: "edit",
       timestamp: Date.now(),
+      metadata: { source: "dashboard" },
     });
   };
 
   return (
     <div>
-      <button onClick={() => handleEditProfile(123)}>Edit Profile</button>
+      <button onClick={() => handleUserAction("edit", 123)}>Edit User</button>
+      <button onClick={() => handleUserAction("view", 456)}>View User</button>
 
-      <VisibilityHandler name="userModal">
+      <VisibilityProvider.Item name="userModal">
         {({ state, payload }) => (
-          <div style={{ display: state === "open" ? "block" : "none" }}>
-            <h2>Edit Profile</h2>
-            {payload && (
-              <div>
-                <p>User ID: {payload.userId}</p>
-                <p>Action: {payload.action}</p>
-                <p>Time: {new Date(payload.timestamp).toLocaleString()}</p>
-              </div>
-            )}
-            <p>Editing profile...</p>
+          <div style={{ display: state === "on" ? "block" : "none" }}>
+            <h2>User Action: {payload?.action}</h2>
+            <p>User ID: {payload?.userId}</p>
+            <p>Time: {new Date(payload?.timestamp).toLocaleString()}</p>
+            <p>Source: {payload?.metadata?.source}</p>
+            <button onClick={() => off("userModal")}>Close</button>
           </div>
         )}
-      </VisibilityHandler>
-    </div>
-  );
-};
-```
-
-### State Watching
-
-Use the `useWatch` hook to react to visibility state changes:
-
-```tsx
-const VisibilityIndicator = () => {
-  const { useWatch } = createVisibility({
-    keys: ["userModal", "settingsDrawer"] as const,
-  });
-
-  const modalStatus = useWatch("userModal", (state) => ({
-    isOpen: state === "open",
-  }));
-
-  const drawerStatus = useWatch("settingsDrawer", (state) => ({
-    isOpen: state === "open",
-  }));
-
-  return (
-    <div className="status-indicator">
-      <div className={`modal-status ${modalStatus.isOpen ? "open" : "closed"}`}>
-        Modal: {modalStatus.isOpen ? "Open" : "Closed"}
-      </div>
-
-      <div
-        className={`drawer-status ${drawerStatus.isOpen ? "open" : "closed"}`}
-      >
-        Drawer: {drawerStatus.isOpen ? "Open" : "Closed"}
-      </div>
+      </VisibilityProvider.Item>
     </div>
   );
 };
@@ -290,113 +268,93 @@ const VisibilityIndicator = () => {
 
 ### Direct Instance Access
 
-Access visibility instances from anywhere in your component tree:
+Access visibility instances directly for advanced control:
 
 ```tsx
-const NavigationMenu = () => {
-  const { getItem } = createVisibility({
-    keys: ["userModal", "settingsDrawer"] as const,
-  });
+const AdvancedExample = () => {
+  const browserVisibility = createBrowserVisibility();
 
-  const handleUserClick = () => {
-    const userModal = getItem("userModal");
-    userModal.open({ action: "view" });
+  const handleAdvancedControl = () => {
+    // Get direct access to instance
+    const instance = browserVisibility.getEngine("myInstance");
+
+    // Direct manipulation
+    instance.dispatch({
+      value: "on",
+      data: { custom: "advanced control" },
+    });
   };
 
-  const handleSettingsClick = () => {
-    const settingsDrawer = getItem("settingsDrawer");
-    settingsDrawer.open({ section: "general" });
-  };
-
-  return (
-    <nav>
-      <button onClick={handleUserClick}>User Profile</button>
-      <button onClick={handleSettingsClick}>Settings</button>
-    </nav>
-  );
+  return <button onClick={handleAdvancedControl}>Advanced Control</button>;
 };
 ```
 
-### Conditional Rendering
+const ConditionalRenderingExample = () => {
+const { on, off } = useVisibilityHandler();
+const sidebar = useVisibility("sidebar", "on");
+const notifications = useVisibility("notifications", "off");
 
-Use visibility states for conditional rendering:
+return (
+<div className="app">
+<header>
+<button onClick={() => on("sidebar")}>Toggle Sidebar</button>
+<button onClick={() => on("notifications", { count: 5 })}>
+Notifications ({notifications.payload?.count || 0})
+</button>
+</header>
 
-```tsx
-const Dashboard = () => {
-  const { useVisibility, VisibilityHandler } = createVisibility({
-    keys: ["sidebar", "notifications"] as const,
-  });
+      <div className="main-layout">
+        <VisibilityProvider.Item name="sidebar">
+          {({ state }) => (
+            <aside className={`sidebar ${state === "on" ? "open" : "closed"}`}>
+              <nav>
+                <ul>
+                  <li>Dashboard</li>
+                  <li>Profile</li>
+                  <li>Settings</li>
+                </ul>
+              </nav>
+            </aside>
+          )}
+        </VisibilityProvider.Item>
 
-  const sidebar = useVisibility("sidebar", { initState: "open" });
-  const notifications = useVisibility("notifications", { initState: "close" });
+        <main className="content">
+          <h1>Main Content</h1>
+          <p>Welcome to your application!</p>
+        </main>
 
-  return (
-    <div className="dashboard">
-      <VisibilityHandler name="sidebar">
-        {({ state }) => (
-          <aside className={`sidebar ${state === "open" ? "open" : "closed"}`}>
-            <nav>
-              <ul>
-                <li>Dashboard</li>
-                <li>Profile</li>
-                <li>Settings</li>
-              </ul>
-            </nav>
-            <p>Sidebar is {state}</p>
-          </aside>
-        )}
-      </VisibilityHandler>
-
-      <main className="main-content">
-        <header>
-          <button onClick={() => sidebar.open()}>☰ Menu</button>
-          <button onClick={() => notifications.open({ type: "all" })}>
-            🔔 Notifications
-          </button>
-        </header>
-
-        <div className="content">
-          <h1>Dashboard Content</h1>
-          <p>Welcome to your dashboard!</p>
-        </div>
-      </main>
-
-      <VisibilityHandler name="notifications">
-        {({ state, payload }) => (
-          <div
-            className={`notifications-panel ${
-              state === "open" ? "open" : "closed"
-            }`}
-          >
-            <div className="notifications-header">
+        <VisibilityProvider.Item name="notifications">
+          {({ state, payload }) => (
+            <div
+              className={`notifications ${
+                state === "on" ? "visible" : "hidden"
+              }`}
+            >
               <h3>Notifications</h3>
-              <p>State: {state}</p>
+              <p>You have {payload?.count || 0} new notifications</p>
+              <button onClick={() => off("notifications")}>Dismiss</button>
             </div>
-            <div className="notifications-content">
-              {payload?.type === "all" && (
-                <div>Showing all notifications...</div>
-              )}
-            </div>
-          </div>
-        )}
-      </VisibilityHandler>
+          )}
+        </VisibilityProvider.Item>
+      </div>
     </div>
-  );
+
+);
 };
+
 ```
 
 ## 🎯 Features
 
-- **🚀 Lightweight** - Minimal bundle size with no unnecessary dependencies
+- **🚀 Lightweight** - Minimal bundle size with optimized performance
 - **🔒 Type Safe** - Full TypeScript support with comprehensive type definitions
-- **🎮 Flexible** - Support for any number of visibility instances and custom payloads
+- **🎮 Flexible** - Support for unlimited visibility instances and custom payloads
 - **🧪 Testable** - Clean separation of concerns makes testing straightforward
-- **♻️ Reusable** - Multiple visibility instances can coexist in the same application
+- **♻️ Reusable** - Multiple visibility instances can coexist independently
 - **⚡ Performant** - Built on efficient state management with minimal re-renders
-- **👀 State Watching** - Reactive state watching with computed values
-- **🎯 Direct Access** - Direct instance access for external control
-- **🔄 State Machine** - Predictable state transitions with finite state machine
-- **📦 Payload Support** - Rich data passing with visibility state changes
+- **👀 State Watching** - Reactive state management with real-time updates
+- **📦 Rich Payloads** - Comprehensive data passing with state changes
+- **🔄 Lifecycle Management** - Automatic cleanup and memory optimization
 
 ## 🤝 Contributing
 
@@ -409,5 +367,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## 🔗 Related Packages
 
 - [@scoped-observer/core](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/core) - Core event bus system
-- [@scoped-observer/react-state-machine](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/react-state-machine) - React state machine implementation
-- [@scoped-observer/react](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/react) - React integration utilities
+```
