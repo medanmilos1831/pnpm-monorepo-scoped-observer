@@ -20,6 +20,14 @@ npm install react-visibility-state
 npm install react @scoped-observer/core
 ```
 
+## 🎮 Demo
+
+Try out **react-visibility-state** in action with our interactive demo:
+
+**[🚀 Live Demo](https://medanmilos1831.github.io/react-visibility-state-demo/)**
+
+The demo showcases a complete visibility state management implementation with multiple UI components, real-time state tracking, and payload management.
+
 ## 🚀 Quick Start
 
 Here's a basic example showing how to set up and use the visibility engine system:
@@ -289,61 +297,6 @@ const AdvancedExample = () => {
 };
 ```
 
-const ConditionalRenderingExample = () => {
-const { on, off } = useVisibilityHandler();
-const sidebar = useVisibility("sidebar", "on");
-const notifications = useVisibility("notifications", "off");
-
-return (
-<div className="app">
-<header>
-<button onClick={() => on("sidebar")}>Toggle Sidebar</button>
-<button onClick={() => on("notifications", { count: 5 })}>
-Notifications ({notifications.payload?.count || 0})
-</button>
-</header>
-
-      <div className="main-layout">
-        <VisibilityProvider.Item name="sidebar">
-          {({ state }) => (
-            <aside className={`sidebar ${state === "on" ? "open" : "closed"}`}>
-              <nav>
-                <ul>
-                  <li>Dashboard</li>
-                  <li>Profile</li>
-                  <li>Settings</li>
-                </ul>
-              </nav>
-            </aside>
-          )}
-        </VisibilityProvider.Item>
-
-        <main className="content">
-          <h1>Main Content</h1>
-          <p>Welcome to your application!</p>
-        </main>
-
-        <VisibilityProvider.Item name="notifications">
-          {({ state, payload }) => (
-            <div
-              className={`notifications ${
-                state === "on" ? "visible" : "hidden"
-              }`}
-            >
-              <h3>Notifications</h3>
-              <p>You have {payload?.count || 0} new notifications</p>
-              <button onClick={() => off("notifications")}>Dismiss</button>
-            </div>
-          )}
-        </VisibilityProvider.Item>
-      </div>
-    </div>
-
-);
-};
-
-```
-
 ## 🎯 Features
 
 - **🚀 Lightweight** - Minimal bundle size with optimized performance
@@ -367,4 +320,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## 🔗 Related Packages
 
 - [@scoped-observer/core](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/core) - Core event bus system
+
+```
+
 ```
