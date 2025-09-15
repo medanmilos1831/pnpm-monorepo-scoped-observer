@@ -84,8 +84,13 @@ class Engine {
 
         // Update internal state
         this._state = value;
-        this._payload = data;
-
+        if (this._state === ENGINE_STATE.ON) {
+          this._payload = data;
+        } else {
+          setTimeout(() => {
+            this._payload = data;
+          }, 0);
+        }
         // Notify subscribers
         notify();
       },
