@@ -1,40 +1,34 @@
 /**
- * Enum representing the possible visibility states for a visibility item.
+ * Engine state enumeration representing the power state of the visibility engine
  *
- * @enum {string}
- * @example
- * ```tsx
- * // Using the enum values
- * const state = VISIBILITY_STATE.OPEN; // "open"
- * const isOpen = state === VISIBILITY_STATE.OPEN; // true
- * ```
+ * This enum defines the two possible states that an engine can be in:
+ * - ON: Engine is active and running
+ * - OFF: Engine is inactive and stopped
  */
-export enum VISIBILITY_STATE {
-  /** Item is visible/open */
-  OPEN = "open",
-  /** Item is hidden/closed */
-  CLOSE = "close",
+export enum ENGINE_STATE {
+  /** Engine is active and running */
+  ON = "on",
+  /** Engine is inactive and stopped */
+  OFF = "off",
 }
 
 /**
- * Configuration object for creating a visibility item.
- * This type defines the required properties when initializing a visibility instance.
+ * Configuration object for creating a visibility engine
  *
- * @typedef {Object} VisibilityConfig
- * @property {string} name - Unique identifier for the visibility item
- * @property {VISIBILITY_STATE} initState - Initial state of the visibility item
+ * This type defines the required parameters when initializing a new
+ * visibility engine instance.
  *
  * @example
- * ```tsx
+ * ```typescript
  * const config: VisibilityConfig = {
- *   name: "modal",
- *   initState: VISIBILITY_STATE.CLOSE
+ *   name: "my-visibility-engine",
+ *   initState: ENGINE_STATE.OFF
  * };
  * ```
  */
 export type VisibilityConfig = {
-  /** Unique identifier for the visibility item */
+  /** Unique identifier for the engine instance */
   name: string;
-  /** Initial state of the visibility item */
-  initState: VISIBILITY_STATE;
+  /** Initial state of the engine when created */
+  initState: ENGINE_STATE;
 };

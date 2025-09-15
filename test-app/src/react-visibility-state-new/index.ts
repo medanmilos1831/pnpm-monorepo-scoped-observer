@@ -1,4 +1,4 @@
-export { createVisibilityEngine } from "./createVisibilityEngine";
+export { createEngine } from "./createEngine";
 export { createBrowserVisibility } from "./createBrowserVisibility";
 export {
   VisibilityProvider,

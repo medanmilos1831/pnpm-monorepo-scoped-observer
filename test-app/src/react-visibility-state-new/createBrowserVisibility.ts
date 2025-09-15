@@ -1,77 +1,96 @@
-import { createVisibilityEngine } from "./createVisibilityEngine";
-import { VisibilityEngine } from "./VisibilityEngine";
-import { VISIBILITY_STATE } from "./types";
+import { createEngine } from "./createEngine";
+import { Engine } from "./Engine";
+import { ENGINE_STATE } from "./types";
 
 /**
- * Creates a browser visibility store that manages multiple visibility instances.
- * This store provides a centralized way to manage visibility states across your application
- * using a scoped observer pattern with reference counting to prevent memory leaks.
+ * Creates a browser visibility implementation with engine management
  *
- * @returns {Object} Browser visibility store with methods to manage visibility instances
+ * This factory function creates a visibility manager that acts as a "garage" for engines.
+ * It provides centralized management of multiple visibility engines with reference counting
+ * and automatic cleanup when engines are no longer needed.
+ *
+ * The implementation includes:
+ * - Engine lifecycle management (create, start, stop, cleanup)
+ * - Reference counting to prevent memory leaks
+ * - Centralized engine storage and retrieval
+ *
+ * @returns Object with engine management methods
  *
  * @example
- * ```tsx
- * const visibilityStore = createBrowserVisibility();
+ * ```typescript
+ * const browserVisibility = createBrowserVisibility();
  *
- * // Start a visibility engine
- * const { disconnect, subscribe, getState, getPayload } = visibilityStore.startEngine("modal", "close");
+ * // Ensure an engine exists and get its interface
+ * const engineInterface = browserVisibility.ensureEngine("my-engine", ENGINE_STATE.OFF);
  *
- * // Open the item
- * visibilityStore.open("modal", { title: "My Modal" });
+ * // Start the engine
+ * browserVisibility.start("my-engine", { reason: "user-action" });
  *
- * // Close the item
- * visibilityStore.close("modal");
+ * // Stop the engine
+ * browserVisibility.stop("my-engine");
+ *
+ * // Get direct access to engine instance
+ * const engine = browserVisibility.getEngine("my-engine");
  * ```
  */
 const createBrowserVisibility = () => {
-  // Internal store to hold visibility instances by name
-  const store = new Map<string, VisibilityEngine>();
-  // Reference counting to track how many components are using each visibility item
+  /** Map storing all active engines by name (the "garage") */
+  const garage = new Map<string, Engine>();
+
+  /** Map tracking reference count for each engine to manage cleanup */
   const refCount = new Map<string, number>();
 
   return {
     /**
-     * Starts a visibility engine with the given name and initial state.
-     * If an engine with the same name already exists, it will be reused and reference count incremented.
-     * This prevents memory leaks when multiple components use the same visibility engine.
+     * Ensures an engine exists and returns its interface
      *
-     * @param {string} name - Unique identifier for the visibility engine
-     * @param {VISIBILITY_STATE} initState - Initial state of the visibility engine
-     * @returns {Object} Object containing methods to interact with the visibility engine
+     * This method either retrieves an existing engine or creates a new one.
+     * It also manages reference counting to ensure proper cleanup when
+     * the engine is no longer needed.
+     *
+     * @param name - Unique identifier for the engine
+     * @param initState - Initial state if creating a new engine
+     * @returns Engine interface with subscribe, getState, getPayload, and disconnect methods
      *
      * @example
-     * ```tsx
-     * const { disconnect, subscribe, getState, getPayload } = visibilityStore.startEngine("modal", "close");
+     * ```typescript
+     * const engineInterface = browserVisibility.ensureEngine("tracker", ENGINE_STATE.OFF);
+     *
+     * // Subscribe to state changes
+     * const unsubscribe = engineInterface.subscribe(() => {
+     *   console.log("State:", engineInterface.getState());
+     * });
+     *
+     * // Cleanup when done
+     * engineInterface.disconnect();
      * ```
      */
-    startEngine: (name: string, initState: VISIBILITY_STATE) => {
-      let instance = store.get(name);
+    ensureEngine: (name: string, initState: ENGINE_STATE) => {
+      let visibilityEngine = garage.get(name);
 
-      // Create new instance only if it doesn't exist
-      if (!instance) {
-        instance = createVisibilityEngine(name, initState);
-        store.set(name, instance);
+      // Create new engine if it doesn't exist
+      if (!visibilityEngine) {
+        visibilityEngine = createEngine(name, initState);
+        garage.set(name, visibilityEngine);
         refCount.set(name, 0);
       }
 
-      // Increment reference count for this visibility item
+      // Increment reference count
       refCount.set(name, (refCount.get(name) || 0) + 1);
 
-      const { subscribe, getState, getPayload } = instance;
+      const { subscribe, getState, getPayload } = visibilityEngine;
+
       return {
         /**
-         * Returns a cleanup function that decrements reference count and removes the visibility item
-         * from the store only when no more components are using it.
-         * This prevents memory leaks and ensures proper cleanup.
-         *
-         * @returns {Function} Cleanup function that should be called on component unmount
+         * Returns a cleanup function that decrements reference count
+         * and removes engine from garage when count reaches zero
          */
         disconnect: () => {
           return () => {
             const currentCount = refCount.get(name) || 0;
             if (currentCount <= 1) {
-              // No more references, safe to delete
-              store.delete(name);
+              // Last reference - remove engine completely
+              garage.delete(name);
               refCount.delete(name);
             } else {
               // Decrement reference count
@@ -79,96 +98,104 @@ const createBrowserVisibility = () => {
             }
           };
         },
-        /**
-         * Subscribe to visibility state changes.
-         * @param {Function} notify - Callback function to be called when state changes
-         * @returns {Function} Unsubscribe function
-         */
         subscribe,
-        /**
-         * Get the current visibility state.
-         * @returns {VISIBILITY_STATE} Current state of the visibility item
-         */
         getState,
-        /**
-         * Get the current payload data associated with the visibility item.
-         * @returns {any} Current payload data
-         */
         getPayload,
       };
     },
+
     /**
-     * Opens a visibility item and optionally sets payload data.
-     * Dispatches a visibility change event to all subscribers.
+     * Starts a visibility engine (turns it ON)
      *
-     * @param {string} name - Name of the visibility item to open
-     * @param {any} [payload] - Optional payload data to associate with the item
-     * @throws {Error} Throws error if visibility item with given name doesn't exist
+     * This method finds the specified engine and dispatches an ON state change
+     * with optional payload data.
+     *
+     * @param name - Engine identifier
+     * @param payload - Optional data to associate with the state change
+     * @throws Error if engine with specified name is not found
      *
      * @example
-     * ```tsx
-     * // Open without payload
-     * visibilityStore.open("modal");
+     * ```typescript
+     * // Start engine with data
+     * browserVisibility.start("my-engine", {
+     *   reason: "user-clicked",
+     *   timestamp: Date.now()
+     * });
      *
-     * // Open with payload
-     * visibilityStore.open("modal", { title: "My Modal", content: "Hello World" });
+     * // Start engine without data
+     * browserVisibility.start("my-engine");
      * ```
      */
-    open(name: string, payload?: any) {
-      const instance = store.get(name);
-      if (!instance) {
-        throw new Error(`Visibility item with name "${name}" not found`);
+    start(name: string, payload?: any) {
+      const visibilityEngine = garage.get(name);
+      if (!visibilityEngine) {
+        throw new Error(
+          `Visibility engine with name "${name}" not found in garage`
+        );
       }
-      const { dispatch } = instance;
+
+      const { dispatch } = visibilityEngine;
       dispatch({
-        value: VISIBILITY_STATE.OPEN,
+        value: ENGINE_STATE.ON,
         data: payload,
       });
     },
 
     /**
-     * Closes a visibility item and optionally sets payload data.
-     * Dispatches a visibility change event to all subscribers.
+     * Stops a visibility engine (turns it OFF)
      *
-     * @param {string} name - Name of the visibility item to close
-     * @param {any} [payload] - Optional payload data to associate with the item
-     * @throws {Error} Throws error if visibility item with given name doesn't exist
+     * This method finds the specified engine and dispatches an OFF state change
+     * with optional payload data.
+     *
+     * @param name - Engine identifier
+     * @param payload - Optional data to associate with the state change
+     * @throws Error if engine with specified name is not found
      *
      * @example
-     * ```tsx
-     * // Close without payload
-     * visibilityStore.close("modal");
+     * ```typescript
+     * // Stop engine with data
+     * browserVisibility.stop("my-engine", {
+     *   reason: "component-unmounted"
+     * });
      *
-     * // Close with payload
-     * visibilityStore.close("modal", { reason: "user_cancelled" });
+     * // Stop engine without data
+     * browserVisibility.stop("my-engine");
      * ```
      */
-    close: (name: string, payload?: any) => {
-      const instance = store.get(name);
-      if (!instance) {
-        throw new Error(`Visibility item with name "${name}" not found`);
+    stop: (name: string, payload?: any) => {
+      const visibilityEngine = garage.get(name);
+      if (!visibilityEngine) {
+        throw new Error(
+          `Visibility engine with name "${name}" not found in garage`
+        );
       }
-      const { dispatch } = instance;
+
+      const { dispatch } = visibilityEngine;
       dispatch({
-        value: VISIBILITY_STATE.CLOSE,
+        value: ENGINE_STATE.OFF,
         data: payload,
       });
     },
 
     /**
-     * Gets the visibility entity by name.
+     * Gets direct access to an engine instance
      *
-     * @param {string} name - Name of the visibility item
-     * @returns {VisibilityEngine} The visibility engine (throws if not found)
+     * This method provides direct access to the engine instance for advanced usage.
+     * Use with caution as it bypasses the reference counting system.
+     *
+     * @param name - Engine identifier
+     * @returns Engine instance (throws if not found)
      *
      * @example
-     * ```tsx
-     * const engine = visibilityStore.getEntity("modal");
-     * console.log(engine.getState()); // "open" or "close"
+     * ```typescript
+     * const engine = browserVisibility.getEngine("my-engine");
+     *
+     * // Direct engine manipulation
+     * engine.dispatch({ value: ENGINE_STATE.ON, data: { custom: true } });
      * ```
      */
-    getEntity: (name: string) => {
-      return store.get(name)!;
+    getEngine: (name: string) => {
+      return garage.get(name)!;
     },
   };
 };

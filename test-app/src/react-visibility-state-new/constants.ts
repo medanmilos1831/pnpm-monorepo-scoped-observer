@@ -1,7 +1,5 @@
-export const VISIBILITY_SCOPE = "visibility";
+export const VISIBILITY_OBSERVER = "engine-observer";
 
-export const VISIBILITY_EVENT_NAME = {
-  OPEN: "open",
-  CLOSE: "close",
-  VISIBILITY_CHANGE: "visibilityChange",
+export const EVENTS = {
+  ENGINE_POWER: "enginePower",
 };

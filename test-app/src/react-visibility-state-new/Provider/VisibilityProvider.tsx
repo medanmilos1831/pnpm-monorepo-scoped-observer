@@ -6,36 +6,32 @@ import {
   useSyncExternalStore,
 } from "react";
 import type { createBrowserVisibility } from "../createBrowserVisibility";
-import { VISIBILITY_STATE } from "../types";
+import { ENGINE_STATE } from "../types";
 
 /**
- * React context for providing visibility store to child components.
- * This context allows components to access the visibility store without prop drilling.
+ * React context for providing visibility engine functionality to components
+ *
+ * This context holds the browser visibility implementation that provides
+ * engine management capabilities throughout the component tree.
  */
-const VisibilityContext = createContext<
+const Context = createContext<
   ReturnType<typeof createBrowserVisibility> | undefined
 >(undefined);
 
 /**
- * Provider component that makes the visibility store available to all child components.
- * This should be placed at the root of your application or at the level where you want
- * to start using visibility state management.
+ * VisibilityProvider component that provides visibility engine functionality to its children
  *
- * @param {Object} props - Component props
- * @param {React.ReactNode} props.children - Child components that will have access to visibility store
- * @param {ReturnType<typeof createBrowserVisibility>} props.value - The visibility store instance
+ * This provider component wraps the application and makes the visibility engine
+ * available to all child components through React context.
+ *
+ * @param children - React components that will have access to visibility functionality
+ * @param value - Browser visibility implementation instance
  *
  * @example
  * ```tsx
- * const visibilityStore = createBrowserVisibility();
- *
- * function App() {
- *   return (
- *     <VisibilityProvider value={visibilityStore}>
- *       <YourComponents />
- *     </VisibilityProvider>
- *   );
- * }
+ * <VisibilityProvider value={browserVisibility}>
+ *   <App />
+ * </VisibilityProvider>
  * ```
  */
 const VisibilityProvider = ({
@@ -45,80 +41,84 @@ const VisibilityProvider = ({
   children: React.ReactNode;
   value: ReturnType<typeof createBrowserVisibility>;
 }) => {
-  return (
-    <VisibilityContext.Provider value={value}>
-      {children}
-    </VisibilityContext.Provider>
-  );
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
 /**
- * Item component that provides visibility state to its children via render prop pattern.
- * This component automatically subscribes to visibility state changes and re-renders
- * when the state changes.
+ * VisibilityProvider.Item - A render prop component for visibility state management
  *
- * @param {Object} props - Component props
- * @param {string} props.name - Unique name for the visibility item
- * @param {VISIBILITY_STATE} [props.initState="close"] - Initial state of the visibility item
- * @param {Function} props.children - Render function that receives visibility state and payload
+ * This component provides a clean way to access visibility state and payload
+ * through a render prop pattern. It automatically manages the engine lifecycle
+ * and provides real-time state updates.
+ *
+ * @param initState - Initial state of the visibility engine (defaults to OFF)
+ * @param children - Render function that receives state and payload
+ * @param name - Unique identifier for the visibility engine
  *
  * @example
  * ```tsx
- * <VisibilityProvider.Item name="modal" initState="close">
- *   {({ state, payload }) => {
- *     if (state === "open") {
- *       return <div>{payload}</div>;
- *     }
- *     return null;
- *   }}
+ * <VisibilityProvider.Item name="my-visibility" initState={ENGINE_STATE.OFF}>
+ *   {({ state, payload }) => (
+ *     <div>
+ *       <p>Visibility: {state}</p>
+ *       <p>Data: {JSON.stringify(payload)}</p>
+ *     </div>
+ *   )}
  * </VisibilityProvider.Item>
  * ```
  */
 VisibilityProvider.Item = ({
-  initState = VISIBILITY_STATE.CLOSE,
+  initState = ENGINE_STATE.OFF,
   children,
   name,
 }: {
-  initState?: `${VISIBILITY_STATE}`;
+  initState?: `${ENGINE_STATE}`;
   children: (props: any) => React.ReactNode;
   name: string;
 }) => {
-  const { state, payload } = useVisibility(name, initState as VISIBILITY_STATE);
+  const { state, payload } = useVisibility(name, initState as ENGINE_STATE);
   return <>{children({ state, payload })}</>;
 };
 
 /**
- * Hook for accessing visibility state and payload for a specific visibility item.
- * This hook automatically subscribes to state changes and re-renders the component
- * when the visibility state changes.
+ * Hook for accessing visibility state and payload
  *
- * @param {string} name - Unique name of the visibility item
- * @param {VISIBILITY_STATE} initState - Initial state of the visibility item
- * @returns {Object} Object containing current state and payload
- * @returns {VISIBILITY_STATE} returns.state - Current visibility state ("open" or "close")
- * @returns {any} returns.payload - Current payload data associated with the visibility item
+ * This hook provides a way to subscribe to visibility state changes for a specific
+ * engine. It automatically manages the engine lifecycle and provides real-time
+ * state updates through React's useSyncExternalStore.
+ *
+ * @param name - Unique identifier for the visibility engine
+ * @param initState - Initial state of the engine
+ * @returns Object containing current state and payload
  *
  * @example
  * ```tsx
- * function MyComponent() {
- *   const { state, payload } = useVisibility("modal", "close");
+ * const MyComponent = () => {
+ *   const { state, payload } = useVisibility("my-engine", ENGINE_STATE.OFF);
  *
  *   return (
  *     <div>
- *       <p>State: {state}</p>
+ *       <p>Engine state: {state}</p>
  *       <p>Payload: {JSON.stringify(payload)}</p>
  *     </div>
  *   );
- * }
+ * };
  * ```
  */
-const useVisibility = (name: string, initState: VISIBILITY_STATE) => {
-  const value = useContext(VisibilityContext)!;
+const useVisibility = (name: string, initState: ENGINE_STATE) => {
+  const { ensureEngine } = useContext(Context)!;
+
+  // Get engine instance and its methods
   const [{ disconnect, subscribe, getState, getPayload }] = useState(() => {
-    return value.startEngine(name, initState as VISIBILITY_STATE);
+    return ensureEngine(name, initState as ENGINE_STATE);
   });
+
+  // Cleanup on unmount
   useEffect(disconnect, []);
+
+  // Subscribe to state changes and get current state
   const state = useSyncExternalStore(subscribe, getState);
+
   return {
     state,
     payload: getPayload(),
@@ -126,49 +126,52 @@ const useVisibility = (name: string, initState: VISIBILITY_STATE) => {
 };
 
 /**
- * Hook for controlling visibility state of items.
- * Provides methods to open and close visibility items programmatically.
+ * Hook for controlling visibility engine state
  *
- * @returns {Object} Object containing control methods
- * @returns {Function} returns.open - Function to open a visibility item
- * @returns {Function} returns.close - Function to close a visibility item
+ * This hook provides methods to start and stop visibility engines.
+ * It's useful for components that need to trigger visibility changes
+ * based on user interactions or other events.
+ *
+ * @returns Object with on/off methods for controlling engines
  *
  * @example
  * ```tsx
- * function MyComponent() {
- *   const { open, close } = useVisibilityHandler();
+ * const MyComponent = () => {
+ *   const { on, off } = useVisibilityHandler();
+ *
+ *   const handleStart = () => {
+ *     on("my-engine", { reason: "user-clicked" });
+ *   };
+ *
+ *   const handleStop = () => {
+ *     off("my-engine");
+ *   };
  *
  *   return (
  *     <div>
- *       <button onClick={() => open("modal", { title: "My Modal" })}>
- *         Open Modal
- *       </button>
- *       <button onClick={() => close("modal")}>
- *         Close Modal
- *       </button>
+ *       <button onClick={handleStart}>Start Engine</button>
+ *       <button onClick={handleStop}>Stop Engine</button>
  *     </div>
  *   );
- * }
+ * };
  * ```
  */
 const useVisibilityHandler = () => {
-  const value = useContext(VisibilityContext)!;
+  const { start, stop } = useContext(Context)!;
+
   return {
     /**
-     * Opens a visibility item with optional payload.
-     * @param {string} name - Name of the visibility item to open
-     * @param {any} [payload] - Optional payload data
+     * Starts a visibility engine with optional payload data
+     * @param name - Engine identifier
+     * @param payload - Optional data to associate with the state change
      */
-    open: (name: string, payload?: any) => {
-      value.open(name, payload);
-    },
+    on: start,
+
     /**
-     * Closes a visibility item.
-     * @param {string} name - Name of the visibility item to close
+     * Stops a visibility engine
+     * @param name - Engine identifier
      */
-    close: (name: string) => {
-      value.close(name);
-    },
+    off: stop,
   };
 };
 
