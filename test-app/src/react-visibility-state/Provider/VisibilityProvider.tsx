@@ -105,7 +105,7 @@ VisibilityProvider.Item = ({
  * };
  * ```
  */
-const useVisibility = (name: string, initState: ENGINE_STATE) => {
+const useVisibility = (name: string, initState: `${ENGINE_STATE}`) => {
   const { ensureEngine } = useContext(Context)!;
 
   // Get engine instance and its methods
