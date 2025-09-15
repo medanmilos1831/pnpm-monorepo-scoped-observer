@@ -1,88 +1,188 @@
-# Test App
+# react-visibility-state-new
 
-Simple React app with React Router v6 and App Router pattern for testing and development.
+A React state management library for handling visibility states using scoped observer pattern.
 
 ## Features
 
-- **React Router v6** - Modern routing with `createBrowserRouter`
-- **App Router Pattern** - Layout with nested routes
-- **Navigation** - Clean navigation between pages
-- **Multiple Pages:**
-  - **Home** - Welcome page with navigation cards
-  - **Counter** - Simple counter with increment/decrement
-  - **Items** - Dynamic list management (add/remove)
-  - **Form** - Contact form with validation
+- State management for visibility states (open/close)
+- Scoped observer pattern for event handling
+- React context provider for global state management
+- TypeScript support
+- Lightweight and performant
 
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── Layout.tsx          # Main layout with navigation
-│   └── index.ts            # Component exports
-├── pages/
-│   ├── HomePage.tsx        # Home page component
-│   ├── CounterPage.tsx     # Counter page component
-│   ├── ItemsPage.tsx       # Items list page component
-│   ├── FormPage.tsx        # Form page component
-│   └── index.ts            # Page exports
-├── App.tsx                 # Main app with router config
-└── main.tsx                # App entry point
-```
-
-## Quick Start
+## Installation
 
 ```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
+npm install react-visibility-state-new
 ```
 
-## Router Structure
+## Usage
 
+### Basic Setup
+
+```tsx
+import {
+  createBrowserVisibility,
+  VisibilityProvider,
+} from "react-visibility-state-new";
+
+const visibilityStore = createBrowserVisibility();
+
+function App() {
+  return (
+    <VisibilityProvider value={visibilityStore}>
+      <YourComponent />
+    </VisibilityProvider>
+  );
+}
 ```
-/ (Layout)
-├── / (HomePage) - Index route
-├── /counter (CounterPage) - Counter functionality
-├── /items (ItemsPage) - Items list management
-└── /form (FormPage) - Contact form
+
+### Using Visibility State with VisibilityProvider.Item
+
+```tsx
+import {
+  VisibilityProvider,
+  useVisibilityHandler,
+} from "react-visibility-state-new";
+
+function MyComponent() {
+  const { open, close } = useVisibilityHandler();
+
+  return (
+    <>
+      <VisibilityProvider.Item name="modal" initState="close">
+        {({ state, payload }) => {
+          if (state === "open") {
+            return payload; // Render the payload as component
+          }
+          return null;
+        }}
+      </VisibilityProvider.Item>
+
+      <button onClick={() => open("modal", <div>Modal Content</div>)}>
+        Open Modal
+      </button>
+      <button onClick={() => close("modal")}>Close Modal</button>
+    </>
+  );
+}
 ```
 
-## Development
+### Using useVisibility Hook
 
-This is a clean Vite + React + TypeScript + React Router v6 app with organized file structure. Perfect for:
+```tsx
+import {
+  useVisibility,
+  useVisibilityHandler,
+} from "react-visibility-state-new";
 
-- Testing React Router v6 concepts
-- Learning App Router pattern
-- Prototyping multi-page applications
-- Development experiments with routing
-- Learning component organization
+function MyComponent() {
+  const { state, payload } = useVisibility("myElement", "close");
+  const { open, close } = useVisibilityHandler();
 
-## Tech Stack
+  return (
+    <div>
+      <p>State: {state}</p>
+      <p>Payload: {JSON.stringify(payload)}</p>
+      <button onClick={() => open("myElement", { data: "some data" })}>
+        Open
+      </button>
+      <button onClick={() => close("myElement")}>Close</button>
+    </div>
+  );
+}
+```
 
-- **Vite** - Build tool
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **React Router v6** - Client-side routing
-- **CSS** - Styling
+### Creating Standalone Visibility Instance
 
-## Navigation
+```tsx
+import { createVisibility } from "react-visibility-state-new";
 
-- **Active Link Highlighting** - Current page is highlighted in navigation
-- **Back Buttons** - Each page has a back button to return home
-- **Responsive Design** - Works on all screen sizes
+const instance = createVisibility("myElement", "close");
 
-## File Organization
+// Use the instance methods
+instance.subscribe(() => {
+  console.log("State changed:", instance.getState());
+  console.log("Payload:", instance.getPayload());
+});
+```
 
-- **`/components`** - Reusable UI components (Layout, etc.)
-- **`/pages`** - Page-specific components
-- **`index.ts` files** - Clean imports and exports
-- **Separation of concerns** - Each component has its own file
+## API
+
+### createBrowserVisibility()
+
+Creates a browser visibility store that manages multiple visibility instances.
+
+**Returns:**
+
+- `initializeItem(name, initState)` - Initialize a new visibility item
+- `open(name, payload?)` - Open a visibility item
+- `close(name, payload?)` - Close a visibility item
+- `getEntity(name)` - Get visibility entity by name
+
+### VisibilityProvider
+
+React context provider for managing visibility state globally.
+
+**Props:**
+
+- `value` - Browser visibility store instance
+- `children` - React children
+
+**Static Methods:**
+
+- `VisibilityProvider.Item` - Component for rendering visibility state
+
+### useVisibility(name, initState)
+
+Hook for accessing visibility state and payload.
+
+**Parameters:**
+
+- `name` - Unique name for the visibility item
+- `initState` - Initial state ("open" or "close")
+
+**Returns:**
+
+- `state` - Current visibility state
+- `payload` - Current payload data
+
+### useVisibilityHandler()
+
+Hook for controlling visibility state.
+
+**Returns:**
+
+- `open(name, payload?)` - Open visibility item
+- `close(name)` - Close visibility item
+
+### createVisibility(name, initState)
+
+Creates a standalone visibility instance.
+
+**Parameters:**
+
+- `name` - Unique name for the visibility instance
+- `initState` - Initial state ("open" or "close")
+
+**Returns:**
+
+- VisibilityInstance with subscribe, getState, getPayload methods
+
+## Types
+
+```tsx
+enum VISIBILITY_STATE {
+  OPEN = "open",
+  CLOSE = "close",
+}
+
+type VisibilityConfig = {
+  name: string;
+  initState: VISIBILITY_STATE;
+};
+```
+
+## License
+
+MIT

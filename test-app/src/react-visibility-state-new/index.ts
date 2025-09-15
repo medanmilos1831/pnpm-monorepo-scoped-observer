@@ -1,3 +1,7 @@
 export { createVisibility } from "./createVisibility";
 export { createBrowserVisibility } from "./createBrowserVisibility";
-export { VisibilityProvider } from "./Provider";
+export {
+  VisibilityProvider,
+  useVisibility,
+  useVisibilityHandler,
+} from "./Provider";

@@ -1,1 +1,5 @@
-export { VisibilityProvider } from "./VisibilityProvider";
+export {
+  VisibilityProvider,
+  useVisibilityHandler,
+  useVisibility,
+} from "./VisibilityProvider";

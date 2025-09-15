@@ -9,17 +9,17 @@ export const HomePage: React.FC = () => {
   const { open, close } = useVisibilityHandler();
   return (
     <>
-      {counter % 2 === 0 && (
-        <VisibilityProvider.Item name="modalOne">
-          {({ state, payload: Element }) => {
-            if (state === "open") {
-              return Element;
-            }
-            return null;
-          }}
-        </VisibilityProvider.Item>
-      )}
-      <button onClick={() => open("modalOne", <ModalOne />)}>open</button>
+      <VisibilityProvider.Item name="modalOne">
+        {({ state, payload: Element }) => {
+          console.log("Element", counter);
+          if (state === "open") {
+            console.log("Element", counter);
+            return <Element />;
+          }
+          return null;
+        }}
+      </VisibilityProvider.Item>
+      <button onClick={() => open("modalOne", () => <ModalOne />)}>open</button>
       <button onClick={() => close("modalOne")}>close</button>
       <button onClick={() => setCounter(counter + 1)}>increment</button>
       <h1>Counter: {counter}</h1>
