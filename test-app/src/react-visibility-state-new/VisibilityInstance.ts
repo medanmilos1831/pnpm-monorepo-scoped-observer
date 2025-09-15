@@ -7,7 +7,7 @@ class VisibilityInstance {
   private name: string;
   private _state: VISIBILITY_STATE;
   private _payload: any;
-  eventManager: IScopedObserver = createScopedObserver([
+  private eventManager: IScopedObserver = createScopedObserver([
     {
       scope: VISIBILITY_SCOPE,
     },
@@ -32,6 +32,14 @@ class VisibilityInstance {
         this._payload = data;
         notify();
       },
+    });
+  };
+
+  dispatch = (payload: { value: VISIBILITY_STATE; data: any }) => {
+    this.eventManager.dispatch({
+      scope: VISIBILITY_SCOPE,
+      eventName: VISIBILITY_EVENT_NAME.VISIBILITY_CHANGE,
+      payload,
     });
   };
 

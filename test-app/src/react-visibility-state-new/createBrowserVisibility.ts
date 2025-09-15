@@ -4,20 +4,33 @@ import { VISIBILITY_STATE } from "./types";
 
 const createBrowserVisibility = () => {
   const store = new Map<string, ReturnType<typeof createVisibility>>();
+  const refCount = new Map<string, number>();
 
   return {
     initializeItem: (name: string, initState: VISIBILITY_STATE) => {
-      const instance = createVisibility(name, initState);
-      store.set(name, instance);
+      let instance = store.get(name);
+      if (!instance) {
+        instance = createVisibility(name, initState);
+        store.set(name, instance);
+        refCount.set(name, 0);
+      }
+      refCount.set(name, (refCount.get(name) || 0) + 1);
+      const { subscribe, getState, getPayload } = instance;
       return {
         disconnect: () => {
           return () => {
-            store.delete(name);
+            const currentCount = refCount.get(name) || 0;
+            if (currentCount <= 1) {
+              store.delete(name);
+              refCount.delete(name);
+            } else {
+              refCount.set(name, currentCount - 1);
+            }
           };
         },
-        subscribe: instance.subscribe,
-        getState: instance.getState,
-        getPayload: instance.getPayload,
+        subscribe,
+        getState,
+        getPayload,
       };
     },
     open(name: string, payload?: any) {
@@ -25,13 +38,10 @@ const createBrowserVisibility = () => {
       if (!instance) {
         throw new Error(`Visibility item with name "${name}" not found`);
       }
-      instance.eventManager.dispatch({
-        scope: VISIBILITY_SCOPE,
-        eventName: VISIBILITY_EVENT_NAME.VISIBILITY_CHANGE,
-        payload: {
-          value: VISIBILITY_STATE.OPEN,
-          data: payload,
-        },
+      const { dispatch } = instance;
+      dispatch({
+        value: VISIBILITY_STATE.OPEN,
+        data: payload,
       });
     },
     close: (name: string, payload?: any) => {
@@ -39,13 +49,10 @@ const createBrowserVisibility = () => {
       if (!instance) {
         throw new Error(`Visibility item with name "${name}" not found`);
       }
-      instance.eventManager.dispatch({
-        scope: VISIBILITY_SCOPE,
-        eventName: VISIBILITY_EVENT_NAME.VISIBILITY_CHANGE,
-        payload: {
-          value: VISIBILITY_STATE.CLOSE,
-          data: payload,
-        },
+      const { dispatch } = instance;
+      dispatch({
+        value: VISIBILITY_STATE.CLOSE,
+        data: payload,
       });
     },
     getEntity: (name: string) => {
