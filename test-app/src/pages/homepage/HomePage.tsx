@@ -1,19 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { VisibilityProvider } from "../../react-visibility-state-new";
-import { visibility } from "../../visibilityService";
+import { useVisibilityHandler } from "../../react-visibility-state-new/Provider/VisibilityProvider";
+const ModalOne = () => {
+  return <div>Hello World</div>;
+};
 export const HomePage: React.FC = () => {
   const [counter, setCounter] = useState(0);
-  // useEffect(() => {
-  //   visibility.open("modalOne");
-  // }, []);
+  const { open, close } = useVisibilityHandler();
   return (
     <>
-      <VisibilityProvider.Item name="modalOne">
-        {({ state }) => {
-          return <div>Hello World {state}</div>;
-        }}
-      </VisibilityProvider.Item>
-      <button onClick={() => visibility.open("modalOne")}>open</button>
+      {counter % 2 === 0 && (
+        <VisibilityProvider.Item name="modalOne">
+          {({ state, payload: Element }) => {
+            if (state === "open") {
+              return Element;
+            }
+            return null;
+          }}
+        </VisibilityProvider.Item>
+      )}
+      <button onClick={() => open("modalOne", <ModalOne />)}>open</button>
+      <button onClick={() => close("modalOne")}>close</button>
+      <button onClick={() => setCounter(counter + 1)}>increment</button>
+      <h1>Counter: {counter}</h1>
     </>
   );
 };

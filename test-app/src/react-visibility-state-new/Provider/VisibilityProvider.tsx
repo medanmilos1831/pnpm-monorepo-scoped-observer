@@ -35,18 +35,33 @@ VisibilityProvider.Item = ({
   children: (props: any) => React.ReactNode;
   name: string;
 }) => {
-  const state = useVisibility(name, initState as VISIBILITY_STATE);
-  return <>{children({ state })}</>;
+  const { state, payload } = useVisibility(name, initState as VISIBILITY_STATE);
+  return <>{children({ state, payload })}</>;
 };
 
 const useVisibility = (name: string, initState: VISIBILITY_STATE) => {
   const value = useContext(VisibilityContext)!;
-  const [{ disconnect, subscribe, getState }] = useState(() => {
+  const [{ disconnect, subscribe, getState, getPayload }] = useState(() => {
     return value.initializeItem(name, initState as VISIBILITY_STATE);
   });
   useEffect(disconnect, []);
   const state = useSyncExternalStore(subscribe, getState);
-  return state;
+  return {
+    state,
+    payload: getPayload(),
+  };
 };
 
-export { VisibilityProvider };
+const useVisibilityHandler = () => {
+  const value = useContext(VisibilityContext)!;
+  return {
+    open: (name: string, payload?: any) => {
+      value.open(name, payload);
+    },
+    close: (name: string) => {
+      value.close(name);
+    },
+  };
+};
+
+export { VisibilityProvider, useVisibilityHandler, useVisibility };

@@ -6,6 +6,7 @@ import { VISIBILITY_STATE } from "./types";
 class VisibilityInstance {
   private name: string;
   private _state: VISIBILITY_STATE;
+  private _payload: any;
   eventManager: IScopedObserver = createScopedObserver([
     {
       scope: VISIBILITY_SCOPE,
@@ -26,8 +27,9 @@ class VisibilityInstance {
       }: {
         payload: { value: VISIBILITY_STATE; data: any };
       }) => {
-        const { value } = payload;
+        const { value, data } = payload;
         this._state = value;
+        this._payload = data;
         notify();
       },
     });
@@ -37,9 +39,9 @@ class VisibilityInstance {
     return this._state;
   };
 
-  // getState = () => {
-  //   return this.state;
-  // };
+  getPayload = () => {
+    return this._payload;
+  };
 }
 
 export { VisibilityInstance };

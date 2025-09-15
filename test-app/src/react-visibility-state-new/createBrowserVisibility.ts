@@ -17,6 +17,7 @@ const createBrowserVisibility = () => {
         },
         subscribe: instance.subscribe,
         getState: instance.getState,
+        getPayload: instance.getPayload,
       };
     },
     open(name: string, payload?: any) {
@@ -46,6 +47,9 @@ const createBrowserVisibility = () => {
           data: payload,
         },
       });
+    },
+    getEntity: (name: string) => {
+      return store.get(name)!;
     },
   };
 };
