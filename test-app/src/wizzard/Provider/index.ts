@@ -1,2 +1,1 @@
-export { createBrowserWizzard } from "./createBrowserWizzard";
 export { Provider, useWizzardClient, Wizzard } from "./Provider";
