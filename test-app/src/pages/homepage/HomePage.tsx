@@ -40,17 +40,15 @@ export const HomePage: React.FC = () => {
       {/* Drawer */}
       <VisibilityProvider.Item name="drawer">
         {({ state, payload }) => (
-          console.log("state", payload),
-          (
-            <Drawer
-              title="Visibility State Drawer"
-              open={state === "on"}
-              onClose={() => off("drawer")}
-              placement="right"
-              width={400}
-            >
-              {payload ? payload.source : "dadasdasdasdsadasdsadas"}
-              {/* {payload && (
+          <Drawer
+            title="Visibility State Drawer"
+            open={state === "on"}
+            onClose={() => off("drawer")}
+            placement="right"
+            width={400}
+          >
+            {payload ? payload.source : "dadasdasdasdsadasdsadas"}
+            {/* {payload && (
                 <div
                   style={{ marginTop: 16, padding: 16, background: "#f5f5f5" }}
                 >
@@ -58,8 +56,7 @@ export const HomePage: React.FC = () => {
                   <pre>{JSON.stringify(payload, null, 2)}</pre>
                 </div>
               )} */}
-            </Drawer>
-          )
+          </Drawer>
         )}
       </VisibilityProvider.Item>
 

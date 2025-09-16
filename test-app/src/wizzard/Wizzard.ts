@@ -16,6 +16,8 @@ class Wizzard {
       scope: "wizzard",
     },
   ]);
+  isLast: boolean = false;
+  isFirst: boolean = false;
   constructor(config: IWizzardConfig) {
     this.__INIT__ = structuredClone(config);
     this.name = config.name;
@@ -34,22 +36,68 @@ class Wizzard {
       };
     });
     this.activeStep = this.visibleSteps[config.activeStep];
+    this.setIsLast();
+    this.setIsFirst();
   }
   subscribe = (notify: () => void) => {
     return this.observer.subscribe({
       scope: "wizzard",
       eventName: "wizzard-event",
       callback: ({ payload }: any) => {
-        console.log("payload", payload);
+        notify();
       },
     });
   };
-  dispatch = (payload: { value: any; data: any }) => {
+  dispatch = ({ payload }: any) => {
+    if (payload === "nextStep") {
+      this.nextStep();
+    }
+    if (payload === "prevStep") {
+      this.prevStep();
+    }
     this.observer.dispatch({
       scope: "wizzard",
       eventName: "wizzard-event",
       payload,
     });
+  };
+
+  nextStep = () => {
+    if (!this.isLast) {
+      const visibleStepKeys = Object.keys(this.visibleSteps);
+      const activeStepKey = this.activeStep.name;
+      const activeStepIndex = visibleStepKeys.indexOf(activeStepKey);
+      const nextStepKey = visibleStepKeys[activeStepIndex + 1];
+      this.activeStep = this.visibleSteps[nextStepKey];
+      this.setIsLast();
+      this.setIsFirst();
+    }
+  };
+
+  prevStep = () => {
+    if (!this.isFirst) {
+      const visibleStepKeys = Object.keys(this.visibleSteps);
+      const activeStepKey = this.activeStep.name;
+      const activeStepIndex = visibleStepKeys.indexOf(activeStepKey);
+      const prevStepKey = visibleStepKeys[activeStepIndex - 1];
+      this.activeStep = this.visibleSteps[prevStepKey];
+      this.setIsLast();
+      this.setIsFirst();
+    }
+  };
+
+  setIsLast = () => {
+    const visibleStepKeys = Object.keys(this.visibleSteps);
+    const activeStepKey = this.activeStep.name;
+    const activeStepIndex = visibleStepKeys.indexOf(activeStepKey);
+    this.isLast = activeStepIndex === visibleStepKeys.length - 1;
+  };
+
+  setIsFirst = () => {
+    const visibleStepKeys = Object.keys(this.visibleSteps);
+    const activeStepKey = this.activeStep.name;
+    const activeStepIndex = visibleStepKeys.indexOf(activeStepKey);
+    this.isFirst = activeStepIndex === 0;
   };
 }
 

@@ -39,6 +39,33 @@ const createBrowserWizzard = () => {
         },
       };
     },
+    setCompleted: (name: string, isCompleted: boolean) => {
+      let wizzard = store.get(name);
+      wizzard.activeStep.isCompleted = isCompleted;
+      wizzard.dispatch({
+        scope: "wizzard",
+        eventName: "wizzard-event",
+        payload: {
+          value: isCompleted,
+        },
+      });
+    },
+    nextStep: (name: string) => {
+      let wizzard = store.get(name);
+      wizzard.dispatch({
+        scope: "wizzard",
+        eventName: "wizzard-event",
+        payload: "nextStep",
+      });
+    },
+    prevStep: (name: string) => {
+      let wizzard = store.get(name);
+      wizzard.dispatch({
+        scope: "wizzard",
+        eventName: "wizzard-event",
+        payload: "prevStep",
+      });
+    },
   };
 };
 

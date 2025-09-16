@@ -1,10 +1,42 @@
 import { createBrowserWizzard, Provider, Wizzard } from "./wizzard";
+import { useStep } from "./wizzard/Provider";
+
+const One = () => {
+  const step = useStep();
+  return (
+    <div>
+      <button onClick={() => step.setCompleted(true)}>answer one</button>
+      <button onClick={() => step.setCompleted(true)}>answer two</button>
+      <button onClick={() => step.setCompleted(true)}>answer three</button>
+    </div>
+  );
+};
+
+const Two = () => {
+  return <div>Two</div>;
+};
+
+const Three = () => {
+  return <div>Three</div>;
+};
+
+const Four = () => {
+  return <div>Four</div>;
+};
+
+const ViewMap: any = {
+  one: () => <One />,
+  two: () => <Two />,
+  three: () => <Three />,
+  four: () => <Four />,
+};
 
 const HomePage = () => {
   return (
     <div>
       <h1>HomePage</h1>
       <Wizzard
+        name="test"
         config={{
           name: "test",
           activeStep: "one",
@@ -18,16 +50,22 @@ const HomePage = () => {
             return <div>Navigation</div>;
           }}
         </Wizzard.Navigation>
+        <br />
         <Wizzard.Body>
           {(props) => {
-            console.log("props", props);
-            return <div>Body</div>;
+            const View = ViewMap[props.activeStep.name];
+            return <View />;
           }}
         </Wizzard.Body>
+        <br />
         <Wizzard.Controls>
           {(props) => {
-            console.log("props", props);
-            return <div>Controls</div>;
+            return (
+              <div>
+                <button onClick={props.prevStep}>prev</button>
+                <button onClick={props.nextStep}>next</button>
+              </div>
+            );
           }}
         </Wizzard.Controls>
       </Wizzard>

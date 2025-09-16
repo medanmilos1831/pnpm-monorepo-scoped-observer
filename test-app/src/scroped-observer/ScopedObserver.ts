@@ -113,7 +113,5 @@ export class ScopedObserver {
     return { payload };
   }
 
-  logging = () => {
-    console.log(this);
-  };
+  logging = () => {};
 }

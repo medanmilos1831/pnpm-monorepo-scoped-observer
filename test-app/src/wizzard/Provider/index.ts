@@ -1,1 +1,1 @@
-export { Provider, useWizzardClient, Wizzard } from "./Provider";
+export { Provider, useWizzardClient, Wizzard, useStep } from "./Provider";
