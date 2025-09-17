@@ -5,6 +5,7 @@ class Step implements IStep {
   state: any = undefined;
   prevState: any = undefined;
   isCompleted: boolean = false;
+  isChanged: boolean = false;
   constructor(params: { name: string }) {
     this.name = params.name;
   }
@@ -13,6 +14,22 @@ class Step implements IStep {
     this.state = undefined;
     this.prevState = undefined;
     this.isCompleted = false;
+  };
+
+  setCompleted = (isCompleted: boolean) => {
+    this.isCompleted = isCompleted;
+  };
+
+  setState = (callback: (state: any) => any) => {
+    this.state = callback(this.state);
+  };
+
+  getState = (callback: (state: any) => any) => {
+    return callback(this.state);
+  };
+
+  setIsChanged = (isChanged: boolean) => {
+    this.isChanged = isChanged;
   };
 }
 

@@ -49,11 +49,16 @@ class Wizzard {
     });
   };
   dispatch = ({ payload }: any) => {
-    if (payload === "nextStep") {
+    const { action } = payload;
+    // console.log("ACTION", action, payload);
+    if (action === "nextStep") {
       this.nextStep();
     }
-    if (payload === "prevStep") {
+    if (action === "prevStep") {
       this.prevStep();
+    }
+    if (action === "stepCompleted") {
+      this.activeStep.setCompleted(payload.value);
     }
     this.observer.dispatch({
       scope: "wizzard",

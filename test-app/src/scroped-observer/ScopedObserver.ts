@@ -105,7 +105,7 @@ export class ScopedObserver {
           // Update the payload with each interceptor’s return value
 
           payload = callback(payload);
-          this.log("interceptor", payload, scope, eventName);
+          // this.log("interceptor", payload, scope, eventName);
         });
     }
 

@@ -8,7 +8,6 @@ import {
 } from "react";
 import type { createBrowserWizzard } from "../createBrowserWizzard";
 import type { IWizzardConfig } from "../types";
-import type { createWizzard } from "../createWizzard";
 
 const WizzardContext = createContext<any>(undefined);
 
@@ -32,14 +31,23 @@ const Wizzard = ({
 }: PropsWithChildren<{ config: IWizzardConfig; name: string }>) => {
   const context = useWizzardClient()!;
 
-  const [{ disconnect, subscribe, getActiveStep, getVisibleSteps }] = useState(
-    context.createWizzard(config)
-  );
+  const [
+    {
+      disconnect,
+      subscribe,
+      getActiveStep,
+      getVisibleSteps,
+      intreceptor,
+      subscribePera,
+    },
+  ] = useState(context.createWizzard(config));
   useEffect(disconnect, []);
   return (
     <WizzardContext.Provider
       value={{
         subscribe,
+        intreceptor,
+        subscribePera,
         getVisibleSteps,
         getActiveStep,
         setCompleted: (value: boolean) => {
@@ -67,6 +75,7 @@ Wizzard.Navigation = ({
   const isCompleted = useSyncExternalStore(wizzard.subscribe, () => {
     return wizzard.getActiveStep().isCompleted;
   });
+  useStep();
   return children({
     visibleSteps: Object.values(wizzard.getVisibleSteps()),
     activeStep: wizzard.getActiveStep(),
@@ -90,6 +99,7 @@ Wizzard.Controls = ({
   children: (props: any) => React.ReactNode;
 }) => {
   const wizzard = useContext(WizzardContext)!;
+  useControls();
   return children({
     section: "controlsSection",
     nextStep: () => {
@@ -102,7 +112,10 @@ Wizzard.Controls = ({
   });
 };
 
-const useStep = () => {
+const useStep = (obj?: {
+  onNextStep?: () => void;
+  onPrevStep?: () => void;
+}) => {
   const context = useContext(WizzardContext);
   const name = useSyncExternalStore(context.subscribe, () => {
     return context.getActiveStep().name;
@@ -112,6 +125,13 @@ const useStep = () => {
     activeStep: context.getActiveStep(),
     setCompleted: (value: boolean) => context.setCompleted(value),
     name,
+    getState: context.getActiveStep().getState,
+    setState: context.getActiveStep().setState,
+    isChanged: context.getActiveStep().isChanged,
+    setIsChanged: context.getActiveStep().setIsChanged,
+    isCompleted: context.getActiveStep().isCompleted,
+    subscribePera: context.subscribePera,
+    intreceptor: context.intreceptor,
   };
 };
 

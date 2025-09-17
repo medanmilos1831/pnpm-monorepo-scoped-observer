@@ -31,6 +31,8 @@ const createBrowserWizzard = () => {
           };
         },
         subscribe,
+        intreceptor: wizzard.observer.eventInterceptor,
+        subscribePera: wizzard.observer.subscribe,
         getActiveStep: () => {
           return wizzard.activeStep;
         },
@@ -41,21 +43,22 @@ const createBrowserWizzard = () => {
     },
     setCompleted: (name: string, isCompleted: boolean) => {
       let wizzard = store.get(name);
-      wizzard.activeStep.isCompleted = isCompleted;
       wizzard.dispatch({
         scope: "wizzard",
         eventName: "wizzard-event",
         payload: {
+          action: "stepCompleted",
           value: isCompleted,
         },
       });
     },
     nextStep: (name: string) => {
       let wizzard = store.get(name);
-      wizzard.dispatch({
+      console.log("nextStep", wizzard);
+      wizzard.observer.dispatch({
         scope: "wizzard",
-        eventName: "wizzard-event",
-        payload: "nextStep",
+        eventName: "onNextStep",
+        payload: undefined,
       });
     },
     prevStep: (name: string) => {
@@ -63,7 +66,10 @@ const createBrowserWizzard = () => {
       wizzard.dispatch({
         scope: "wizzard",
         eventName: "wizzard-event",
-        payload: "prevStep",
+        payload: {
+          action: "prevStep",
+          value: undefined,
+        },
       });
     },
   };
