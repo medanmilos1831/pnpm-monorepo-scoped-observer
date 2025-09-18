@@ -1,2 +1,8 @@
 export { createBrowserWizzard } from "./createBrowserWizzard";
-export { Provider, useWizzardClient, Wizzard } from "./Provider";
+export {
+  Provider,
+  Wizzard,
+  useStepQuery,
+  useStepMutation,
+  useWizzardLogging,
+} from "./Provider";

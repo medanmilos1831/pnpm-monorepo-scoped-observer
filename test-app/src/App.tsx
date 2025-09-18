@@ -1,108 +1,143 @@
-import { useEffect, useState } from "react";
-import { createBrowserWizzard, Provider, Wizzard } from "./wizzard";
-import { useStep } from "./wizzard/Provider";
+import { useState } from "react";
+import {
+  createBrowserWizzard,
+  Provider,
+  useStepMutation,
+  useStepQuery,
+  useWizzardLogging,
+  Wizzard,
+} from "./wizzard";
 
 const One = () => {
-  const {
-    getState,
-    setState: setStepState,
-    setIsChanged,
-    setCompleted,
-    isCompleted,
-    subscribePera,
-    intreceptor,
-  } = useStep();
-  const [state, setState] = useState<any>(getStepState);
-  function getStepState() {
-    return getState((state: any) => {
-      return state;
-    });
-  }
-  useEffect(() => {
-    if (isCompleted && state.id !== getStepState()?.id) {
-      alert("completed");
-    }
-  }, []);
+  const [state, setState] = useState({
+    fname: "John",
+    lname: "Doe",
+  });
+  const { mutate } = useStepMutation({
+    mutation: (params: any, step: any) => {
+      return {
+        ...step,
+        ...params,
+      };
+    },
+  });
+  const selectedStepOne = useStepQuery({
+    selector(step: any) {
+      return step;
+    },
+  });
+  console.log("RENDER ONE", selectedStepOne);
+  const logging = useWizzardLogging();
   return (
     <div>
       <h1>One</h1>
       <button
         onClick={() => {
-          setState((prev: any) => {
-            return {
-              ...prev,
+          mutate({
+            isChanged: true,
+            isCompleted: true,
+            state: {
               id: 1,
-              list: ["test 2 1", "test 2 2"],
-            };
+              list: ["string", "string2"],
+            },
           });
+          // step.updateStep((prev: any) => {
+          //   return {
+          //     ...prev,
+          //     isChanged: true,
+          //     isCompleted: true,
+          //     state: {
+          //       id: 1,
+          //       list: ["string", "string2"],
+          //     },
+          //   };
+          // });
+          // setState((prev: any) => {
+          //   return {
+          //     ...prev,
+          //     id: 1,
+          //     list: ["string", "string2"],
+          //   };
+          // });
+          // step.isChanged = true;
         }}
       >
         answer one
       </button>
       <button
         onClick={() => {
-          setState((prev: any) => {
-            return {
-              ...prev,
+          mutate({
+            isChanged: true,
+            isCompleted: true,
+            state: {
               id: 2,
-              list: ["test 2 3", "test 2 4"],
-            };
+              list: ["string3", "string4"],
+            },
           });
-          setCompleted(true);
+          // setState((prev: any) => {
+          //   return {
+          //     ...prev,
+          //     id: 2,
+          //     list: ["string3", "string4"],
+          //   };
+          // });
         }}
       >
         answer two
       </button>
-      <button
+      {/* <button
         onClick={() => {
-          setCompleted(true);
           setState((prev: any) => {
             return {
               ...prev,
               id: 3,
-              list: ["test 2 5", "test 2 6"],
+              list: ["string5", "string6"],
             };
           });
         }}
       >
         answer three
       </button>
+      <button
+        onClick={() => {
+          logging();
+        }}
+      >
+        log
+      </button> */}
     </div>
   );
 };
 
 const Two = () => {
-  const step = useStep();
   return (
     <div>
       <h1>Two</h1>
-      <button onClick={() => step.setCompleted(true)}>1</button>
+      {/* <button onClick={() => step.setCompleted(true)}>1</button>
       <button onClick={() => step.setCompleted(true)}>2</button>
-      <button onClick={() => step.setCompleted(true)}>all</button>
+      <button onClick={() => step.setCompleted(true)}>all</button> */}
     </div>
   );
 };
 
 const Three = () => {
-  const step = useStep();
   return (
     <div>
       <h1>Three</h1>
-      <button onClick={() => step.setCompleted(true)}>1</button>
+      {/* <button onClick={() => step.setCompleted(true)}>1</button>
       <button onClick={() => step.setCompleted(true)}>2</button>
-      <button onClick={() => step.setCompleted(true)}>all</button>
+      <button onClick={() => step.setCompleted(true)}>all</button> */}
     </div>
   );
 };
 
 const Four = () => {
-  const step = useStep();
   return (
     <div>
       <h1>Four</h1>
-      <button onClick={() => step.setCompleted(true)}>1</button>
+      {/* <button onClick={() => step.setCompleted(true)}>1</button>
       <button onClick={() => step.setCompleted(true)}>2</button>
-      <button onClick={() => step.setCompleted(true)}>all</button>
+      <button onClick={() => step.setCompleted(true)}>all</button> */}
     </div>
   );
 };
@@ -127,48 +162,15 @@ const HomePage = () => {
           defaultSteps: ["one", "two", "three", "four"],
         }}
       >
-        <Wizzard.Navigation>
-          {(props) => {
-            return (
-              <div>
-                {props.visibleSteps.map((step: any) => {
-                  return (
-                    <div
-                      key={step.name}
-                      style={{
-                        backgroundColor:
-                          step.name === props.activeStep.name
-                            ? "yellow"
-                            : "white",
-                        color: step.isCompleted ? "green" : "red",
-                        fontSize: "5rem",
-                        fontWeight: "bold",
-                        margin: "10px",
-                        padding: "10px",
-                        borderRadius: "5px",
-                        border: "1px solid #000",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {step.name}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          }}
-        </Wizzard.Navigation>
-        <br />
         <Wizzard.Body>
           {(props) => {
-            const View = ViewMap[props.activeStep.name];
+            const View = ViewMap[props.name];
             return <View />;
           }}
         </Wizzard.Body>
         <br />
         <Wizzard.Controls>
           {(props) => {
-            console.log("props", props);
             return (
               <div>
                 <button onClick={props.prevStep}>prev</button>
@@ -187,7 +189,36 @@ const HomePage = () => {
   );
 };
 
+let nextId = 0;
+let todos = [{ id: nextId++, text: "Todo #1" }];
+let listeners: any[] = [];
+
+export const todosStore = {
+  addTodo() {
+    todos = [...todos, { id: nextId++, text: "Todo #" + nextId }];
+    emitChange();
+  },
+  subscribe(listener: any) {
+    listeners = [...listeners, listener];
+    return () => {
+      listeners = listeners.filter((l) => l !== listener);
+    };
+  },
+  getSnapshot() {
+    console.log("eeeeee");
+    return todos;
+  },
+};
+
+function emitChange() {
+  for (let listener of listeners) {
+    listener();
+  }
+}
+
 function App() {
+  // const todos = useSyncExternalStore(todosStore.subscribe, todosStore.getSnapshot);
+
   return (
     <Provider value={createBrowserWizzard()}>
       <HomePage />
@@ -196,3 +227,13 @@ function App() {
 }
 
 export default App;
+
+{
+  /* <button onClick={() => todosStore.addTodo()}>Add todo</button>
+      <hr />
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id}>{todo.text}</li>
+        ))}
+      </ul> */
+}

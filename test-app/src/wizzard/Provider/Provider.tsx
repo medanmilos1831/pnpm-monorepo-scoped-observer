@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   useSyncExternalStore,
   type PropsWithChildren,
@@ -29,38 +30,10 @@ const Wizzard = ({
   config,
   name,
 }: PropsWithChildren<{ config: IWizzardConfig; name: string }>) => {
-  const context = useWizzardClient()!;
-
-  const [
-    {
-      disconnect,
-      subscribe,
-      getActiveStep,
-      getVisibleSteps,
-      intreceptor,
-      subscribePera,
-    },
-  ] = useState(context.createWizzard(config));
-  useEffect(disconnect, []);
+  const context = useContext(Context)!;
+  const [wizzard] = useState<any>(() => context.createWizzard(config));
   return (
-    <WizzardContext.Provider
-      value={{
-        subscribe,
-        intreceptor,
-        subscribePera,
-        getVisibleSteps,
-        getActiveStep,
-        setCompleted: (value: boolean) => {
-          context.setCompleted(name, value);
-        },
-        nextStep: () => {
-          context.nextStep(name);
-        },
-        prevStep: () => {
-          context.prevStep(name);
-        },
-      }}
-    >
+    <WizzardContext.Provider value={wizzard}>
       {children}
     </WizzardContext.Provider>
   );
@@ -71,17 +44,7 @@ Wizzard.Navigation = ({
 }: {
   children: (props: any) => React.ReactNode;
 }) => {
-  const wizzard = useContext(WizzardContext)!;
-  const isCompleted = useSyncExternalStore(wizzard.subscribe, () => {
-    return wizzard.getActiveStep().isCompleted;
-  });
-  useStep();
-  return children({
-    visibleSteps: Object.values(wizzard.getVisibleSteps()),
-    activeStep: wizzard.getActiveStep(),
-    setCompleted: wizzard.setCompleted,
-    isCompleted,
-  });
+  return children({});
 };
 
 Wizzard.Body = ({
@@ -89,8 +52,8 @@ Wizzard.Body = ({
 }: {
   children: (props: any) => React.ReactNode;
 }) => {
-  const step = useStep()!;
-  return children(step);
+  const wizzard = useContext(WizzardContext)!;
+  return children(wizzard.getActiveStep());
 };
 
 Wizzard.Controls = ({
@@ -98,65 +61,38 @@ Wizzard.Controls = ({
 }: {
   children: (props: any) => React.ReactNode;
 }) => {
+  return children({});
+};
+
+const useStepQuery = ({ selector }: { selector: any }) => {
   const wizzard = useContext(WizzardContext)!;
-  useControls();
-  return children({
-    section: "controlsSection",
-    nextStep: () => {
-      wizzard.nextStep();
-    },
-    prevStep: () => {
-      wizzard.prevStep();
-    },
-    stepCompleted: wizzard.getActiveStep().isCompleted,
-  });
+
+  const state = useSyncExternalStore(
+    wizzard.stepSubscribe,
+    wizzard.stepSnapshot
+  );
+
+  return selector(state);
 };
 
-const useStep = (obj?: {
-  onNextStep?: () => void;
-  onPrevStep?: () => void;
-}) => {
-  const context = useContext(WizzardContext);
-  const name = useSyncExternalStore(context.subscribe, () => {
-    return context.getActiveStep().name;
-  });
+const useStepMutation = ({ mutation }: { mutation: any }) => {
+  const wizzard = useContext(WizzardContext)!;
   return {
-    section: "bodySection",
-    activeStep: context.getActiveStep(),
-    setCompleted: (value: boolean) => context.setCompleted(value),
-    name,
-    getState: context.getActiveStep().getState,
-    setState: context.getActiveStep().setState,
-    isChanged: context.getActiveStep().isChanged,
-    setIsChanged: context.getActiveStep().setIsChanged,
-    isCompleted: context.getActiveStep().isCompleted,
-    subscribePera: context.subscribePera,
-    intreceptor: context.intreceptor,
-  };
-};
-
-const useControls = () => {
-  const context = useContext(WizzardContext);
-  const isCompleted = useSyncExternalStore(context.subscribe, () => {
-    return context.getActiveStep().isCompleted;
-  });
-  return {
-    isCompleted,
-    nextStep: () => {
-      console.log("nextStep");
-    },
-    prevStep: () => {
-      console.log("prevStep");
+    mutate: (params: any) => {
+      const resut = mutation(params, wizzard.activeStep);
+      wizzard.dispatch({
+        payload: {
+          action: "step-updated",
+          data: resut,
+        },
+      });
     },
   };
 };
 
-const useWizzardClient = () => {
-  const context = useContext(Context)!;
-  if (!context) {
-    throw new Error("useWizzardClient must be used within a Provider");
-  }
-  return context;
+const useWizzardLogging = () => {
+  const wizzard = useContext(WizzardContext)!;
+  return () => console.log(wizzard.getActiveStep());
 };
 
-export { Provider, useWizzardClient, Wizzard, useStep };
+export { Provider, Wizzard, useStepQuery, useStepMutation, useWizzardLogging };

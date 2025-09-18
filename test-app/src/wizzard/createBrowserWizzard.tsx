@@ -15,7 +15,6 @@ const createBrowserWizzard = () => {
         refCount.set(config.name, 0);
       }
       refCount.set(config.name, (refCount.get(config.name) || 0) + 1);
-      const { subscribe, getPayload } = wizzard;
       return {
         disconnect: () => {
           return () => {
@@ -30,47 +29,24 @@ const createBrowserWizzard = () => {
             }
           };
         },
-        subscribe,
-        intreceptor: wizzard.observer.eventInterceptor,
-        subscribePera: wizzard.observer.subscribe,
+        subscribe: wizzard.subscribe,
+        dispatch: wizzard.dispatch,
+        stepSubscribe: wizzard.stepSubscribe,
+        stepSnapshot: wizzard.stepSnapshot,
         getActiveStep: () => {
-          return wizzard.activeStep;
+          return {
+            name: wizzard.activeStep.name,
+            state: wizzard.activeStep.state,
+            isCompleted: wizzard.activeStep.isCompleted,
+            isChanged: wizzard.activeStep.isChanged,
+          };
         },
-        getVisibleSteps: () => {
-          return wizzard.visibleSteps;
-        },
+        activeStep: wizzard.activeStep,
+        stepUpdated: wizzard.activeStep.stepUpdated,
       };
     },
-    setCompleted: (name: string, isCompleted: boolean) => {
-      let wizzard = store.get(name);
-      wizzard.dispatch({
-        scope: "wizzard",
-        eventName: "wizzard-event",
-        payload: {
-          action: "stepCompleted",
-          value: isCompleted,
-        },
-      });
-    },
-    nextStep: (name: string) => {
-      let wizzard = store.get(name);
-      console.log("nextStep", wizzard);
-      wizzard.observer.dispatch({
-        scope: "wizzard",
-        eventName: "onNextStep",
-        payload: undefined,
-      });
-    },
-    prevStep: (name: string) => {
-      let wizzard = store.get(name);
-      wizzard.dispatch({
-        scope: "wizzard",
-        eventName: "wizzard-event",
-        payload: {
-          action: "prevStep",
-          value: undefined,
-        },
-      });
+    logging(name: string) {
+      console.log("wizzard", store.get(name));
     },
   };
 };

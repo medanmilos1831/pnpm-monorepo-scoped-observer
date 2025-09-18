@@ -39,32 +39,32 @@ class Wizzard {
     this.setIsLast();
     this.setIsFirst();
   }
-  subscribe = (notify: () => void) => {
+  subscribe = this.observer.subscribe;
+  stepSubscribe = (notify: any) => {
     return this.observer.subscribe({
       scope: "wizzard",
-      eventName: "wizzard-event",
-      callback: ({ payload }: any) => {
+      eventName: "step-updated",
+      callback: ({ payload }) => {
+        // this.activeStep = payload;
         notify();
       },
     });
   };
+  stepSnapshot = () => {
+    return this.activeStep;
+  };
   dispatch = ({ payload }: any) => {
-    const { action } = payload;
-    // console.log("ACTION", action, payload);
-    if (action === "nextStep") {
-      this.nextStep();
+    const { action, data } = payload;
+    if (action === "step-updated") {
+      this.observer.dispatch({
+        scope: "wizzard",
+        eventName: action,
+        payload: {
+          activeStep: this.activeStep,
+          data: data,
+        },
+      });
     }
-    if (action === "prevStep") {
-      this.prevStep();
-    }
-    if (action === "stepCompleted") {
-      this.activeStep.setCompleted(payload.value);
-    }
-    this.observer.dispatch({
-      scope: "wizzard",
-      eventName: "wizzard-event",
-      payload,
-    });
   };
 
   nextStep = () => {
