@@ -10,5 +10,7 @@ export interface IStep {
   isCompleted: boolean;
   isChanged: boolean;
   state: any;
-  update: (data: any) => void;
+  stepHistory: any;
+  // update: (data: any) => void;
+  // updateHistory: (data: any) => void;
 }

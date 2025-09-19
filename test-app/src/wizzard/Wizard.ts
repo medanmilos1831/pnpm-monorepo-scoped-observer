@@ -39,6 +39,11 @@ class Wizard {
           alert("You are on the first step");
           return;
         }
+        // update step history
+        const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
+        this.activeStepsMap[this.activeStep].stepHistory =
+          structuredClone(rest);
+        // end :: update step history
         this.activeStep = step;
         this.isFirst = this.isFirstStep();
         this.isLast = this.isLastStep();
@@ -81,12 +86,18 @@ class Wizard {
     );
   };
 
-  mutateStep = (callback: (prev: Omit<IStep, "update">) => IStep) => {
-    const { update, ...rest } = this.activeStepsMap[this.activeStep];
+  mutateStep = (
+    callback: (prev: Omit<IStep, "update" | "stepHistory">) => IStep
+  ) => {
+    const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
     this.activeStepsMap = {
       ...this.activeStepsMap,
       [this.activeStep]: callback(rest),
     };
+    // console.log(
+    //   "******MUTATE STEP********",
+    //   this.activeStepsMap[this.activeStep]
+    // );
     this.observer.dispatch({
       scope: "wizard",
       eventName: "stepUpdated",
@@ -116,9 +127,7 @@ class Wizard {
   };
   onStepChangeNotify = () => this.activeStep;
 
-  logging = () => {
-    console.log(this);
-  };
+  logging = () => {};
 }
 
 export { Wizard };

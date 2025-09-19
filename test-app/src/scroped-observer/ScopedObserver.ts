@@ -9,14 +9,7 @@ export class ScopedObserver {
     scope: string,
     eventName: string
   ) {
-    console.group(`[ScopedObserver] ${type.toUpperCase()}`);
-
-    console.table({
-      Scope: scope,
-      Event: eventName,
-      Payload: payload,
-    });
-    console.groupEnd();
+    // Logging disabled
   }
 
   findScope(scope: string) {
@@ -25,7 +18,7 @@ export class ScopedObserver {
     for (let i = 0; i < scopes.length; i++) {
       const key = scopes[i];
       if (!current[key]) {
-        console.warn(`Scope "${key}" not found in hierarchy.`);
+        // Scope not found
         return undefined;
       }
 
