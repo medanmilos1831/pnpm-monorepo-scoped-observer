@@ -1,6 +1,6 @@
 import { createWizzard } from "./wizzard/createWizzard";
-import { Provider } from "./wizzard/Provider";
 import { HomePage } from "./pages";
+import { Provider } from "./wizzard/Provider";
 const wizzard = createWizzard({
   name: "wizard",
   steps: ["stepOne", "stepTwo", "stepThree", "stepFour"],

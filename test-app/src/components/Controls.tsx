@@ -1,7 +1,14 @@
 import React from "react";
+import { useWizzardNavigate } from "../wizzard";
 
 const Controls = () => {
-  return <div>Controls</div>;
+  const { nextStep, prevStep } = useWizzardNavigate();
+  return (
+    <div>
+      <button onClick={prevStep}>Prev</button>
+      <button onClick={nextStep}>Next</button>
+    </div>
+  );
 };
 
 export { Controls };

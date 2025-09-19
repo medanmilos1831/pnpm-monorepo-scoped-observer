@@ -10,44 +10,65 @@ class Wizard {
   steps: string[];
   activeStep: string;
   activeSteps: string[];
+  isFirst: boolean;
+  isLast: boolean;
+  __INIT__: IWizardConfig;
   constructor(config: IWizardConfig) {
     this.name = config.name;
     this.steps = config.steps;
     this.activeStep = config.activeStep;
     this.activeSteps = config.activeSteps;
-
+    this.isFirst = this.isFirstStep();
+    this.isLast = this.isLastStep();
+    this.__INIT__ = structuredClone(config);
     this.observer.subscribe({
       scope: "wizard",
       eventName: "onStepChange",
       callback: ({ payload }) => {
-        console.log("onStepChange", payload);
+        const { command, step } = payload;
+        if (command === "nextStep" && this.isLast) {
+          alert("You are on the last step");
+          return;
+        }
+        if (command === "prevStep" && this.isFirst) {
+          alert("You are on the first step");
+          return;
+        }
+        this.activeStep = step;
+        this.isFirst = this.isFirstStep();
+        this.isLast = this.isLastStep();
       },
     });
-    // this.observer.subscribe({
-    //   scope: "wizard",
-    //   eventName: "stepChange",
-    //   callback: () => {
-    //     this.nextStep();
-    //   },
-    // });
   }
 
-  nextStep() {
-    this.activeStep = this.steps[this.steps.indexOf(this.activeStep) + 1];
+  nextStep = () => {
+    this.onStepChange(
+      "nextStep",
+      this.steps[this.steps.indexOf(this.activeStep) + 1]
+    );
+  };
+
+  prevStep = () => {
+    this.onStepChange(
+      "prevStep",
+      this.steps[this.steps.indexOf(this.activeStep) - 1]
+    );
+  };
+
+  private onStepChange(command: "nextStep" | "prevStep", step: string) {
     this.observer.dispatch({
       scope: "wizard",
       eventName: "onStepChange",
-      payload: this.activeStep,
+      payload: { command, step },
     });
   }
 
-  prevStep() {
-    this.activeStep = this.steps[this.steps.indexOf(this.activeStep) - 1];
-    this.observer.dispatch({
-      scope: "wizard",
-      eventName: "onStepChange",
-      payload: this.activeStep,
-    });
+  private isLastStep() {
+    return this.steps.indexOf(this.activeStep) === this.steps.length - 1;
+  }
+
+  private isFirstStep() {
+    return this.steps.indexOf(this.activeStep) === 0;
   }
 }
 

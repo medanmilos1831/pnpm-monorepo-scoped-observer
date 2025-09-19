@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import type { createWizzard } from "./createWizzard";
 
 const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
@@ -14,4 +14,16 @@ const Provider = ({
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
-export { Provider };
+const useStep = () => {
+  const context = useContext(Context);
+};
+
+const useWizzardNavigate = () => {
+  const context = useContext(Context)!;
+  return {
+    nextStep: context.nextStep,
+    prevStep: context.prevStep,
+  };
+};
+
+export { Provider, useStep, useWizzardNavigate };
