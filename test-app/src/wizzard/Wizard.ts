@@ -39,11 +39,6 @@ class Wizard {
           alert("You are on the first step");
           return;
         }
-        // update step history
-        const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
-        this.activeStepsMap[this.activeStep].stepHistory =
-          structuredClone(rest);
-        // end :: update step history
         this.activeStep = step;
         this.isFirst = this.isFirstStep();
         this.isLast = this.isLastStep();
@@ -73,10 +68,12 @@ class Wizard {
   }
 
   nextStep = () => {
-    this.onStepChange(
-      "nextStep",
-      this.steps[this.steps.indexOf(this.activeStep) + 1]
-    );
+    const r = this.observer.dispatch({
+      scope: "wizard",
+      eventName: "onNextStep",
+      payload: this.activeStep,
+    });
+    console.log("******R********", r);
   };
 
   prevStep = () => {
@@ -86,18 +83,50 @@ class Wizard {
     );
   };
 
+  onNextStepSubscribe = ({
+    onNextStep,
+    onFail,
+  }: {
+    onNextStep: (step: IStep) => boolean;
+    onFail: () => void;
+  }) => {
+    const unsubscribe = this.observer.subscribe({
+      scope: "wizard",
+      eventName: "onNextStep",
+      callback: () => {
+        const result = onNextStep(this.activeStepsMap[this.activeStep]);
+        if (result) {
+          // update step history
+          const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
+          this.activeStepsMap[this.activeStep].stepHistory =
+            structuredClone(rest);
+          // end :: update step history
+          this.onStepChange(
+            "nextStep",
+            this.steps[this.steps.indexOf(this.activeStep) + 1]
+          );
+        }
+        if (!result && onFail) {
+          onFail();
+        }
+      },
+    });
+    return () => {
+      return unsubscribe();
+    };
+  };
+
   mutateStep = (
     callback: (prev: Omit<IStep, "update" | "stepHistory">) => IStep
   ) => {
     const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
     this.activeStepsMap = {
       ...this.activeStepsMap,
-      [this.activeStep]: callback(rest),
+      [this.activeStep]: {
+        ...this.activeStepsMap[this.activeStep],
+        ...callback(rest),
+      },
     };
-    // console.log(
-    //   "******MUTATE STEP********",
-    //   this.activeStepsMap[this.activeStep]
-    // );
     this.observer.dispatch({
       scope: "wizard",
       eventName: "stepUpdated",

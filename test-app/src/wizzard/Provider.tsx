@@ -1,5 +1,11 @@
-import { createContext, useContext, useSyncExternalStore } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useSyncExternalStore,
+} from "react";
 import type { createWizzard } from "./createWizzard";
+import type { IStep } from "./types";
 
 const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
   undefined
@@ -7,10 +13,15 @@ const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
 const Provider = ({
   children,
   value,
-}: {
+}: // onNextStep,
+{
   children: React.ReactNode;
   value: ReturnType<typeof createWizzard>;
+  // onNextStep: (step: IStep) => boolean;
 }) => {
+  // useEffect(() => {
+  //   value.onNextStepSubscribe(onNextStep);
+  // }, []);
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
@@ -45,6 +56,19 @@ const useWizzardNavigate = () => {
   };
 };
 
+const useStepValidation = (obj: {
+  onNextStep: (step: IStep) => boolean;
+  onFail: () => void;
+}) => {
+  const context = useContext(Context)!;
+  useEffect(() => {
+    const unsubscribe = context.onNextStepSubscribe(obj);
+    return () => {
+      unsubscribe();
+    };
+  }, [obj.onNextStep, obj.onFail]);
+};
+
 const useLogging = () => {
   const context = useContext(Context)!;
   return context.logging;
@@ -56,5 +80,6 @@ export {
   useWizzardNavigate,
   useMutateStep,
   useStepParams,
+  useStepValidation,
   useLogging,
 };

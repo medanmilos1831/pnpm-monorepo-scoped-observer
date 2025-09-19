@@ -5,4 +5,5 @@ export {
   useMutateStep,
   useStepParams,
   useLogging,
+  useStepValidation,
 } from "./Provider";
