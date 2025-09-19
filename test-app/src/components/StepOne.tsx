@@ -4,20 +4,20 @@ import { useMutateStep, useStepParams, useStepValidation } from "../wizzard";
 const StepOne = () => {
   const mutateStep = useMutateStep();
   const params = useStepParams();
-  // useStepValidation({
-  //   onNextStep: (step) => {
-  //     if (step.stepHistory === undefined) {
-  //       return true;
-  //     }
-  //     if (step.stepHistory.state.id === step.state.id) {
-  //       return true;
-  //     }
-  //     return false;
-  //   },
-  //   onFail: () => {
-  //     alert("You must select an account type");
-  //   },
-  // });
+  useStepValidation({
+    onNextStep: (step) => {
+      if (step.stepHistory === undefined) {
+        return true;
+      }
+      if (step.stepHistory.state.id === step.state.id) {
+        return true;
+      }
+      return false;
+    },
+    onFail: () => {
+      alert("You must select an account type");
+    },
+  });
   const selectedAccount = params?.state;
 
   return (

@@ -3,6 +3,7 @@ import {
   type IScopedObserver,
 } from "../scroped-observer";
 import { Step } from "./Step";
+import { WizardAnalytics } from "./WizardAnalytics";
 import type { IStep, IWizardConfig } from "./types";
 
 class Wizard {
@@ -14,6 +15,7 @@ class Wizard {
   activeStepsMap: { [key: string]: IStep } = {};
   isFirst: boolean;
   isLast: boolean;
+  private analytics = new WizardAnalytics();
   __INIT__: IWizardConfig;
   constructor(config: IWizardConfig) {
     this.name = config.name;
@@ -68,12 +70,18 @@ class Wizard {
   }
 
   nextStep = () => {
-    const r = this.observer.dispatch({
+    if (!this.analytics.hasValidationFeature()) {
+      this.onStepChange(
+        "nextStep",
+        this.steps[this.steps.indexOf(this.activeStep) + 1]
+      );
+      return;
+    }
+    this.observer.dispatch({
       scope: "wizard",
       eventName: "onNextStep",
       payload: this.activeStep,
     });
-    console.log("******R********", r);
   };
 
   prevStep = () => {
@@ -90,6 +98,9 @@ class Wizard {
     onNextStep: (step: IStep) => boolean;
     onFail: () => void;
   }) => {
+    // Track validation subscription
+    this.analytics.trackValidationSubscription();
+
     const unsubscribe = this.observer.subscribe({
       scope: "wizard",
       eventName: "onNextStep",
@@ -112,6 +123,8 @@ class Wizard {
       },
     });
     return () => {
+      // Track validation unsubscription
+      this.analytics.trackValidationUnsubscription();
       return unsubscribe();
     };
   };
