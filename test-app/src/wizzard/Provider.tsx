@@ -16,12 +16,20 @@ const Provider = ({
 
 const useStep = () => {
   const context = useContext(Context)!;
+  useSyncExternalStore(
+    context.onStepUpdateSubscribe,
+    context.onStepUpdateNotify
+  );
   const step = useSyncExternalStore(
     context.onStepChangeSubscribe,
     context.onStepChangeNotify
   );
-  console.log("step", context);
   return step;
+};
+
+const useMutateStep = () => {
+  const context = useContext(Context)!;
+  return context.mutateStep;
 };
 
 const useWizzardNavigate = () => {
@@ -32,4 +40,4 @@ const useWizzardNavigate = () => {
   };
 };
 
-export { Provider, useStep, useWizzardNavigate };
+export { Provider, useStep, useWizzardNavigate, useMutateStep };

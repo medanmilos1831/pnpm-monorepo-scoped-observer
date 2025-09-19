@@ -81,6 +81,30 @@ class Wizard {
     );
   };
 
+  mutateStep = (callback: (prev: Omit<IStep, "update">) => IStep) => {
+    const { update, ...rest } = this.activeStepsMap[this.activeStep];
+    this.activeStepsMap = {
+      ...this.activeStepsMap,
+      [this.activeStep]: callback(rest),
+    };
+    this.observer.dispatch({
+      scope: "wizard",
+      eventName: "stepUpdated",
+      payload: this.activeStep,
+    });
+  };
+
+  onStepUpdateSubscribe = (notify: () => void) => {
+    return this.observer.subscribe({
+      scope: "wizard",
+      eventName: "stepUpdated",
+      callback: () => {
+        notify();
+      },
+    });
+  };
+  onStepUpdateNotify = () => this.activeStepsMap[this.activeStep];
+
   onStepChangeSubscribe = (notify: () => void) => {
     return this.observer.subscribe({
       scope: "wizard",
@@ -90,7 +114,7 @@ class Wizard {
       },
     });
   };
-  onStepChangeNotify = () => this.activeStep;
+  onStepChangeNotify = () => this.activeStepsMap[this.activeStep];
 }
 
 export { Wizard };

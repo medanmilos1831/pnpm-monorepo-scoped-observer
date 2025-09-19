@@ -1,9 +1,32 @@
 import { useStep } from "../wizzard";
+import { StepOne } from "./StepOne";
+import { StepTwo } from "./StepTwo";
+import { StepThree } from "./StepThree";
+import { StepFour } from "./StepFour";
+
+const stepComponents = {
+  stepOne: StepOne,
+  stepTwo: StepTwo,
+  stepThree: StepThree,
+  stepFour: StepFour,
+};
 
 const WizardBody = () => {
   const step = useStep();
-  console.log("step", step);
-  return <div>WizardBody {step}</div>;
+
+  const StepComponent =
+    stepComponents[step.name as keyof typeof stepComponents];
+
+  return (
+    <div>
+      <h2>Wizard Body - Current Step: {step.name}</h2>
+      {StepComponent ? (
+        <StepComponent />
+      ) : (
+        <div>Step not found: {step.name}</div>
+      )}
+    </div>
+  );
 };
 
 export { WizardBody };

@@ -1,1 +1,6 @@
-export { Provider, useStep, useWizzardNavigate } from "./Provider";
+export {
+  Provider,
+  useStep,
+  useWizzardNavigate,
+  useMutateStep,
+} from "./Provider";

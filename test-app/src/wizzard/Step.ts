@@ -8,6 +8,10 @@ class Step {
     this.isCompleted = false;
     this.isChanged = false;
   }
+
+  update = (data: any) => {
+    Object.assign(this, data);
+  };
 }
 
 export { Step };
