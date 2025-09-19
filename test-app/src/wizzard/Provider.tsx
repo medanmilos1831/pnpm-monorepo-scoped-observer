@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useSyncExternalStore } from "react";
 import type { createWizzard } from "./createWizzard";
 
 const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
@@ -15,7 +15,13 @@ const Provider = ({
 };
 
 const useStep = () => {
-  const context = useContext(Context);
+  const context = useContext(Context)!;
+  const step = useSyncExternalStore(
+    context.onStepChangeSubscribe,
+    context.onStepChangeNotify
+  );
+  console.log("step", context);
+  return step;
 };
 
 const useWizzardNavigate = () => {

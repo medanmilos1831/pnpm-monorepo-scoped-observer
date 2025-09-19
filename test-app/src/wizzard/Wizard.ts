@@ -2,7 +2,8 @@ import {
   createScopedObserver,
   type IScopedObserver,
 } from "../scroped-observer";
-import type { IWizardConfig } from "./types";
+import { Step } from "./Step";
+import type { IStep, IWizardConfig } from "./types";
 
 class Wizard {
   name: string;
@@ -10,6 +11,7 @@ class Wizard {
   steps: string[];
   activeStep: string;
   activeSteps: string[];
+  activeStepsMap: { [key: string]: IStep } = {};
   isFirst: boolean;
   isLast: boolean;
   __INIT__: IWizardConfig;
@@ -18,6 +20,9 @@ class Wizard {
     this.steps = config.steps;
     this.activeStep = config.activeStep;
     this.activeSteps = config.activeSteps;
+    this.activeSteps.forEach((step) => {
+      this.activeStepsMap[step] = new Step(step);
+    });
     this.isFirst = this.isFirstStep();
     this.isLast = this.isLastStep();
     this.__INIT__ = structuredClone(config);
@@ -37,23 +42,14 @@ class Wizard {
         this.activeStep = step;
         this.isFirst = this.isFirstStep();
         this.isLast = this.isLastStep();
+        this.observer.dispatch({
+          scope: "wizard",
+          eventName: "stepChanged",
+          payload: this.activeStep,
+        });
       },
     });
   }
-
-  nextStep = () => {
-    this.onStepChange(
-      "nextStep",
-      this.steps[this.steps.indexOf(this.activeStep) + 1]
-    );
-  };
-
-  prevStep = () => {
-    this.onStepChange(
-      "prevStep",
-      this.steps[this.steps.indexOf(this.activeStep) - 1]
-    );
-  };
 
   private onStepChange(command: "nextStep" | "prevStep", step: string) {
     this.observer.dispatch({
@@ -70,6 +66,31 @@ class Wizard {
   private isFirstStep() {
     return this.steps.indexOf(this.activeStep) === 0;
   }
+
+  nextStep = () => {
+    this.onStepChange(
+      "nextStep",
+      this.steps[this.steps.indexOf(this.activeStep) + 1]
+    );
+  };
+
+  prevStep = () => {
+    this.onStepChange(
+      "prevStep",
+      this.steps[this.steps.indexOf(this.activeStep) - 1]
+    );
+  };
+
+  onStepChangeSubscribe = (notify: () => void) => {
+    return this.observer.subscribe({
+      scope: "wizard",
+      eventName: "stepChanged",
+      callback: () => {
+        notify();
+      },
+    });
+  };
+  onStepChangeNotify = () => this.activeStep;
 }
 
 export { Wizard };

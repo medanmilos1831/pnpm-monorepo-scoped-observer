@@ -4,3 +4,10 @@ export interface IWizardConfig {
   activeStep: string;
   activeSteps: string[];
 }
+
+export interface IStep {
+  name: string;
+  isCompleted: boolean;
+  isChanged: boolean;
+  state: any;
+}
