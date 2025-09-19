@@ -4,11 +4,12 @@ import {
 } from "../scroped-observer";
 import { Step } from "./Step";
 import { WizardAnalytics } from "./WizardAnalytics";
+import { WIZARD_EVENTS, WIZARD_SCOPE, STEP_COMMANDS } from "./constants";
 import type { IStep, IWizardConfig } from "./types";
 
 class Wizard {
   name: string;
-  observer: IScopedObserver = createScopedObserver([{ scope: "wizard" }]);
+  observer: IScopedObserver = createScopedObserver([{ scope: WIZARD_SCOPE }]);
   steps: string[];
   activeStep: string;
   activeSteps: string[];
@@ -29,15 +30,15 @@ class Wizard {
     this.isLast = this.isLastStep();
     this.__INIT__ = structuredClone(config);
     this.observer.subscribe({
-      scope: "wizard",
-      eventName: "onStepChange",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_CHANGE_REQUEST,
       callback: ({ payload }) => {
         const { command, step } = payload;
-        if (command === "nextStep" && this.isLast) {
+        if (command === STEP_COMMANDS.NEXT && this.isLast) {
           alert("You are on the last step");
           return;
         }
-        if (command === "prevStep" && this.isFirst) {
+        if (command === STEP_COMMANDS.PREV && this.isFirst) {
           alert("You are on the first step");
           return;
         }
@@ -45,18 +46,18 @@ class Wizard {
         this.isFirst = this.isFirstStep();
         this.isLast = this.isLastStep();
         this.observer.dispatch({
-          scope: "wizard",
-          eventName: "stepChanged",
+          scope: WIZARD_SCOPE,
+          eventName: WIZARD_EVENTS.STEP_CHANGE,
           payload: this.activeStep,
         });
       },
     });
   }
 
-  private onStepChange(command: "nextStep" | "prevStep", step: string) {
+  private changeStep(command: "nextStep" | "prevStep", step: string) {
     this.observer.dispatch({
-      scope: "wizard",
-      eventName: "onStepChange",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_CHANGE_REQUEST,
       payload: { command, step },
     });
   }
@@ -71,27 +72,27 @@ class Wizard {
 
   nextStep = () => {
     if (!this.analytics.hasValidationFeature()) {
-      this.onStepChange(
-        "nextStep",
+      this.changeStep(
+        STEP_COMMANDS.NEXT,
         this.steps[this.steps.indexOf(this.activeStep) + 1]
       );
       return;
     }
     this.observer.dispatch({
-      scope: "wizard",
-      eventName: "onNextStep",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NEXT_STEP_REQUEST,
       payload: this.activeStep,
     });
   };
 
   prevStep = () => {
-    this.onStepChange(
-      "prevStep",
+    this.changeStep(
+      STEP_COMMANDS.PREV,
       this.steps[this.steps.indexOf(this.activeStep) - 1]
     );
   };
 
-  onNextStepSubscribe = ({
+  subscribeToNextStep = ({
     onNextStep,
     onFail,
   }: {
@@ -102,8 +103,8 @@ class Wizard {
     this.analytics.trackValidationSubscription();
 
     const unsubscribe = this.observer.subscribe({
-      scope: "wizard",
-      eventName: "onNextStep",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NEXT_STEP_REQUEST,
       callback: () => {
         const result = onNextStep(this.activeStepsMap[this.activeStep]);
         if (result) {
@@ -112,8 +113,8 @@ class Wizard {
           this.activeStepsMap[this.activeStep].stepHistory =
             structuredClone(rest);
           // end :: update step history
-          this.onStepChange(
-            "nextStep",
+          this.changeStep(
+            STEP_COMMANDS.NEXT,
             this.steps[this.steps.indexOf(this.activeStep) + 1]
           );
         }
@@ -141,33 +142,33 @@ class Wizard {
       },
     };
     this.observer.dispatch({
-      scope: "wizard",
-      eventName: "stepUpdated",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_UPDATE,
       payload: this.activeStep,
     });
   };
 
-  onStepUpdateSubscribe = (notify: () => void) => {
+  subscribeToStepUpdate = (notify: () => void) => {
     return this.observer.subscribe({
-      scope: "wizard",
-      eventName: "stepUpdated",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_UPDATE,
       callback: () => {
         notify();
       },
     });
   };
-  onStepUpdateNotify = () => this.activeStepsMap[this.activeStep];
+  getCurrentStepData = () => this.activeStepsMap[this.activeStep];
 
-  onStepChangeSubscribe = (notify: () => void) => {
+  subscribeToStepChange = (notify: () => void) => {
     return this.observer.subscribe({
-      scope: "wizard",
-      eventName: "stepChanged",
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_CHANGE,
       callback: () => {
         notify();
       },
     });
   };
-  onStepChangeNotify = () => this.activeStep;
+  getCurrentStep = () => this.activeStep;
 
   logging = () => {};
 }
