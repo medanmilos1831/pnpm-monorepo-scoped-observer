@@ -114,7 +114,11 @@ class Wizard {
       },
     });
   };
-  onStepChangeNotify = () => this.activeStepsMap[this.activeStep];
+  onStepChangeNotify = () => this.activeStep;
+
+  logging = () => {
+    console.log(this);
+  };
 }
 
 export { Wizard };

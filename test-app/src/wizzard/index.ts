@@ -3,4 +3,6 @@ export {
   useStep,
   useWizzardNavigate,
   useMutateStep,
+  useStepParams,
+  useLogging,
 } from "./Provider";

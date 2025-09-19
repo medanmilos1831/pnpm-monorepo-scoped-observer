@@ -16,15 +16,20 @@ const Provider = ({
 
 const useStep = () => {
   const context = useContext(Context)!;
-  useSyncExternalStore(
-    context.onStepUpdateSubscribe,
-    context.onStepUpdateNotify
-  );
   const step = useSyncExternalStore(
     context.onStepChangeSubscribe,
     context.onStepChangeNotify
   );
   return step;
+};
+
+const useStepParams = () => {
+  const context = useContext(Context)!;
+  const params = useSyncExternalStore(
+    context.onStepUpdateSubscribe,
+    context.onStepUpdateNotify
+  );
+  return params;
 };
 
 const useMutateStep = () => {
@@ -40,4 +45,16 @@ const useWizzardNavigate = () => {
   };
 };
 
-export { Provider, useStep, useWizzardNavigate, useMutateStep };
+const useLogging = () => {
+  const context = useContext(Context)!;
+  return context.logging;
+};
+
+export {
+  Provider,
+  useStep,
+  useWizzardNavigate,
+  useMutateStep,
+  useStepParams,
+  useLogging,
+};

@@ -14,17 +14,12 @@ const stepComponents = {
 const WizardBody = () => {
   const step = useStep();
 
-  const StepComponent =
-    stepComponents[step.name as keyof typeof stepComponents];
+  const StepComponent = stepComponents[step as keyof typeof stepComponents];
 
   return (
     <div>
-      <h2>Wizard Body - Current Step: {step.name}</h2>
-      {StepComponent ? (
-        <StepComponent />
-      ) : (
-        <div>Step not found: {step.name}</div>
-      )}
+      <h2>Wizard Body - Current Step: {step}</h2>
+      {StepComponent ? <StepComponent /> : <div>Step not found: {step}</div>}
     </div>
   );
 };
