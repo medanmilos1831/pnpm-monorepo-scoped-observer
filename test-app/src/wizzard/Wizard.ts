@@ -8,6 +8,9 @@ import { WIZARD_EVENTS, WIZARD_SCOPE, STEP_COMMANDS } from "./constants";
 import type { IStep, IWizardConfig } from "./types";
 
 class Wizard {
+  // ===========================================
+  // PROPERTIES
+  // ===========================================
   name: string;
   observer: IScopedObserver = createScopedObserver([{ scope: WIZARD_SCOPE }]);
   steps: string[];
@@ -18,6 +21,10 @@ class Wizard {
   isLast: boolean;
   private analytics = new WizardAnalytics();
   __INIT__: IWizardConfig;
+
+  // ===========================================
+  // CONSTRUCTOR & INITIALIZATION
+  // ===========================================
   constructor(config: IWizardConfig) {
     this.name = config.name;
     this.steps = config.steps;
@@ -29,6 +36,10 @@ class Wizard {
     this.isFirst = this.isFirstStep();
     this.isLast = this.isLastStep();
     this.__INIT__ = structuredClone(config);
+    this.setupStepChangeListener();
+  }
+
+  private setupStepChangeListener() {
     this.observer.subscribe({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_CHANGE_REQUEST,
@@ -54,6 +65,28 @@ class Wizard {
     });
   }
 
+  // ===========================================
+  // NAVIGATION METHODS
+  // ===========================================
+  nextStep = () => {
+    if (!this.analytics.hasValidationFeature()) {
+      this.changeStep(STEP_COMMANDS.NEXT, this.getNextStep());
+      return;
+    }
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NEXT_STEP_REQUEST,
+      payload: this.activeStep,
+    });
+  };
+
+  prevStep = () => {
+    this.changeStep(STEP_COMMANDS.PREV, this.getPrevStep());
+  };
+
+  // ===========================================
+  // PRIVATE HELPER METHODS
+  // ===========================================
   private changeStep(command: "nextStep" | "prevStep", step: string) {
     this.observer.dispatch({
       scope: WIZARD_SCOPE,
@@ -70,28 +103,17 @@ class Wizard {
     return this.steps.indexOf(this.activeStep) === 0;
   }
 
-  nextStep = () => {
-    if (!this.analytics.hasValidationFeature()) {
-      this.changeStep(
-        STEP_COMMANDS.NEXT,
-        this.steps[this.steps.indexOf(this.activeStep) + 1]
-      );
-      return;
-    }
-    this.observer.dispatch({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.NEXT_STEP_REQUEST,
-      payload: this.activeStep,
-    });
-  };
+  private getNextStep() {
+    return this.steps[this.steps.indexOf(this.activeStep) + 1];
+  }
 
-  prevStep = () => {
-    this.changeStep(
-      STEP_COMMANDS.PREV,
-      this.steps[this.steps.indexOf(this.activeStep) - 1]
-    );
-  };
+  private getPrevStep() {
+    return this.steps[this.steps.indexOf(this.activeStep) - 1];
+  }
 
+  // ===========================================
+  // SUBSCRIPTION METHODS
+  // ===========================================
   subscribeToNextStep = ({
     onNextStep,
     onFail,
@@ -113,10 +135,7 @@ class Wizard {
           this.activeStepsMap[this.activeStep].stepHistory =
             structuredClone(rest);
           // end :: update step history
-          this.changeStep(
-            STEP_COMMANDS.NEXT,
-            this.steps[this.steps.indexOf(this.activeStep) + 1]
-          );
+          this.changeStep(STEP_COMMANDS.NEXT, this.getNextStep());
         }
         if (!result && onFail) {
           onFail();
@@ -129,6 +148,33 @@ class Wizard {
       return unsubscribe();
     };
   };
+
+  subscribeToStepUpdate = (notify: () => void) => {
+    return this.observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_UPDATE,
+      callback: () => {
+        notify();
+      },
+    });
+  };
+
+  subscribeToStepChange = (notify: () => void) => {
+    return this.observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_CHANGE,
+      callback: () => {
+        notify();
+      },
+    });
+  };
+
+  // ===========================================
+  // DATA METHODS
+  // ===========================================
+  getCurrentStep = () => this.activeStep;
+
+  getCurrentStepData = () => this.activeStepsMap[this.activeStep];
 
   mutateStep = (
     callback: (prev: Omit<IStep, "update" | "stepHistory">) => IStep
@@ -148,28 +194,9 @@ class Wizard {
     });
   };
 
-  subscribeToStepUpdate = (notify: () => void) => {
-    return this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_UPDATE,
-      callback: () => {
-        notify();
-      },
-    });
-  };
-  getCurrentStepData = () => this.activeStepsMap[this.activeStep];
-
-  subscribeToStepChange = (notify: () => void) => {
-    return this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_CHANGE,
-      callback: () => {
-        notify();
-      },
-    });
-  };
-  getCurrentStep = () => this.activeStep;
-
+  // ===========================================
+  // UTILITY METHODS
+  // ===========================================
   logging = () => {};
 }
 

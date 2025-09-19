@@ -13,15 +13,10 @@ const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
 const Provider = ({
   children,
   value,
-}: // onNextStep,
-{
+}: {
   children: React.ReactNode;
   value: ReturnType<typeof createWizzard>;
-  // onNextStep: (step: IStep) => boolean;
 }) => {
-  // useEffect(() => {
-  //   value.onNextStepSubscribe(onNextStep);
-  // }, []);
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
@@ -62,7 +57,7 @@ const useStepValidation = (obj: {
 }) => {
   const context = useContext(Context)!;
   useEffect(() => {
-    const unsubscribe = context.onNextStepSubscribe(obj);
+    const unsubscribe = context.subscribeToNextStep(obj);
     return () => {
       unsubscribe();
     };
