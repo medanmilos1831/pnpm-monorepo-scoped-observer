@@ -1,11 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useSyncExternalStore,
-} from "react";
+import { createContext, useContext, useSyncExternalStore } from "react";
 import type { createWizzard } from "./createWizzard";
-import type { IStep } from "./types";
+import { WIZARD_COMMANDS } from "./constants";
 
 const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
   undefined
@@ -47,8 +42,8 @@ const useMutateStep = () => {
 const useWizzardNavigate = () => {
   const context = useContext(Context)!;
   return {
-    nextStep: () => context.navigationCommand("next"),
-    prevStep: () => context.navigationCommand("prev"),
+    nextStep: () => context.command(WIZARD_COMMANDS.NEXT),
+    prevStep: () => context.command(WIZARD_COMMANDS.PREV),
   };
 };
 
@@ -58,9 +53,9 @@ const useLogging = () => {
 
 export {
   Provider,
-  useStep,
-  useWizzardNavigate,
-  useMutateStep,
-  useStepParams,
   useLogging,
+  useMutateStep,
+  useStep,
+  useStepParams,
+  useWizzardNavigate,
 };

@@ -4,7 +4,11 @@ import {
 } from "../scroped-observer";
 import { Step } from "./Step";
 import type { IStep, WizzardOptions, WizzardRoute } from "./types";
-import { WIZARD_EVENTS, type WizardCommand } from "./constants";
+import {
+  WIZARD_COMMANDS,
+  WIZARD_EVENTS,
+  type WizardCommand,
+} from "./constants";
 import { CommandCenter } from "./CommandCenter";
 
 class Wizard {
@@ -84,17 +88,17 @@ class Wizard {
     });
   }
 
-  navigationCommand = (command: "next" | "prev") => {
+  command = (command: WizardCommand) => {
     const visibleSteps = this.getVisibleSteps();
     const currentIndex = this.getCurrentIndex();
     const value = this.commandCenter.navigator(command, {
       visibleSteps,
       currentIndex,
     });
-    if (!value) {
+    if (value.stepName === null) {
       return;
     }
-    this.changeStep(value);
+    this.changeStep(value as { command: WizardCommand; stepName: string });
   };
 
   activeStepSyncStore = {
