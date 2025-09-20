@@ -1,4 +1,5 @@
 export const WIZARD_EVENTS = {
+  STEP_CHANGING: "stepChanging",
   STEP_CHANGED: "stepChanged",
 } as const;
 

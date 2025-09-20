@@ -4,11 +4,8 @@ import {
 } from "../scroped-observer";
 import { Step } from "./Step";
 import type { IStep, WizzardOptions, WizzardRoute } from "./types";
-import {
-  WIZARD_EVENTS,
-  WIZARD_COMMANDS,
-  type WizardCommand,
-} from "./constants";
+import { WIZARD_EVENTS, type WizardCommand } from "./constants";
+import { CommandCenter } from "./CommandCenter";
 
 class Wizard {
   private observer: IScopedObserver = createScopedObserver([
@@ -22,6 +19,7 @@ class Wizard {
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
+  commandCenter = new CommandCenter();
 
   private __INTERNAL__: any = [];
   private __INTERNAL_OPTIONS__: any = {};
@@ -41,12 +39,9 @@ class Wizard {
     this.updateNavigationProperties();
     this.observer.subscribe({
       scope: "wizard",
-      eventName: WIZARD_EVENTS.STEP_CHANGED,
-      callback: ({
-        payload,
-      }: {
-        payload: { command: WizardCommand; stepName: string };
-      }) => {
+      eventName: WIZARD_EVENTS.STEP_CHANGING,
+      callback: ({ payload }: { payload: { stepName: string } }) => {
+        console.log("stepChanged", payload);
         // Step changed
       },
     });
@@ -81,55 +76,25 @@ class Wizard {
 
     this.observer.dispatch({
       scope: "wizard",
-      eventName: WIZARD_EVENTS.STEP_CHANGED,
+      eventName: WIZARD_EVENTS.STEP_CHANGING,
       payload: {
-        command,
         stepName,
+        command,
       },
     });
   }
-  private nextStep = (currentIndex: number, visibleSteps: string[]) => {
-    if (currentIndex === -1 || currentIndex === visibleSteps.length - 1) {
-      return null;
-    }
 
-    const nextStepName = visibleSteps[currentIndex + 1];
-    this.changeStep({
-      command: WIZARD_COMMANDS.NEXT,
-      stepName: nextStepName,
-    });
-    return nextStepName;
-  };
-
-  private prevStep = (currentIndex: number, visibleSteps: string[]) => {
-    if (currentIndex === -1 || currentIndex === 0) {
-      return null;
-    }
-
-    const prevStepName = visibleSteps[currentIndex - 1];
-    this.changeStep({
-      command: WIZARD_COMMANDS.PREV,
-      stepName: prevStepName,
-    });
-    return prevStepName;
-  };
-
-  navigationCommand = (command: WizardCommand) => {
+  navigationCommand = (command: "next" | "prev") => {
     const visibleSteps = this.getVisibleSteps();
     const currentIndex = this.getCurrentIndex();
-    let stepName: string | null;
-    if (command === "next") {
-      stepName = this.nextStep(currentIndex, visibleSteps);
-    } else {
-      stepName = this.prevStep(currentIndex, visibleSteps);
-    }
-    if (stepName === null) {
+    const value = this.commandCenter.navigator(command, {
+      visibleSteps,
+      currentIndex,
+    });
+    if (!value) {
       return;
     }
-    this.changeStep({
-      command,
-      stepName,
-    });
+    this.changeStep(value);
   };
 
   activeStepSyncStore = {
@@ -137,11 +102,7 @@ class Wizard {
       return this.observer.subscribe({
         scope: "wizard",
         eventName: WIZARD_EVENTS.STEP_CHANGED,
-        callback: ({
-          payload,
-        }: {
-          payload: { command: WizardCommand; stepName: string };
-        }) => {
+        callback: ({ payload }: { payload: { stepName: string } }) => {
           // Step changed
         },
       });
