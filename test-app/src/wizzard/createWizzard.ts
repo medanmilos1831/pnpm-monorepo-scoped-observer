@@ -1,8 +1,8 @@
 import { Wizard } from "./Wizard";
-import type { IWizardConfig } from "./types";
+import type { WizzardOptions, WizzardRoute } from "./types";
 
-const createWizzard = (config: IWizardConfig) => {
-  return new Wizard(config);
+const createWizzard = (config: WizzardRoute[], opts: WizzardOptions) => {
+  return new Wizard(config, opts);
 };
 
 export { createWizzard };

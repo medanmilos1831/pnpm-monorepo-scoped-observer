@@ -23,50 +23,37 @@ const Provider = ({
 const useStep = () => {
   const context = useContext(Context)!;
   const step = useSyncExternalStore(
-    context.subscribeToStepChange,
-    context.getCurrentStep
+    context.activeStepSyncStore.subscribe,
+    context.activeStepSyncStore.getSnapshot
   );
-  return step;
+  return { step };
 };
 
 const useStepParams = () => {
   const context = useContext(Context)!;
-  const params = useSyncExternalStore(
-    context.subscribeToStepUpdate,
-    context.getCurrentStepData
-  );
-  return params;
+  // const params = useSyncExternalStore(
+  //   context.subscribeToStepUpdate,
+  //   context.getCurrentStepData
+  // );
+  return {};
 };
 
 const useMutateStep = () => {
   const context = useContext(Context)!;
-  return context.mutateStep;
+  // return context.mutateStep;
+  return {};
 };
 
 const useWizzardNavigate = () => {
   const context = useContext(Context)!;
   return {
-    nextStep: context.nextStep,
-    prevStep: context.prevStep,
+    nextStep: () => context.navigationCommand("next"),
+    prevStep: () => context.navigationCommand("prev"),
   };
-};
-
-const useStepValidation = (obj: {
-  onNextStep: (step: IStep) => boolean;
-  onFail: () => void;
-}) => {
-  const context = useContext(Context)!;
-  useEffect(() => {
-    const unsubscribe = context.subscribeToNextStep(obj);
-    return () => {
-      unsubscribe();
-    };
-  }, [obj.onNextStep, obj.onFail]);
 };
 
 const useLogging = () => {
   const context = useContext(Context)!;
-  return context.logging;
 };
 
 export {
@@ -75,6 +62,5 @@ export {
   useWizzardNavigate,
   useMutateStep,
   useStepParams,
-  useStepValidation,
   useLogging,
 };

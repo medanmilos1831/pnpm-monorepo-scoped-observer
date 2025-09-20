@@ -11,6 +11,17 @@ export interface IStep {
   isChanged: boolean;
   state: any;
   stepHistory: any;
-  // update: (data: any) => void;
-  // updateHistory: (data: any) => void;
+}
+
+export interface WizzardRoute {
+  name: string;
+  visible: boolean;
+  validators: {
+    onNext: (step: IStep) => any;
+    onPrev: (step: IStep) => boolean;
+  };
+}
+
+export interface WizzardOptions {
+  activeStep: string;
 }

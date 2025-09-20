@@ -3,201 +3,151 @@ import {
   type IScopedObserver,
 } from "../scroped-observer";
 import { Step } from "./Step";
-import { WizardAnalytics } from "./WizardAnalytics";
-import { WIZARD_EVENTS, WIZARD_SCOPE, STEP_COMMANDS } from "./constants";
-import type { IStep, IWizardConfig } from "./types";
+import type { IStep, WizzardOptions, WizzardRoute } from "./types";
+import {
+  WIZARD_EVENTS,
+  WIZARD_COMMANDS,
+  type WizardCommand,
+} from "./constants";
 
 class Wizard {
-  // ===========================================
-  // PROPERTIES
-  // ===========================================
-  name: string;
-  observer: IScopedObserver = createScopedObserver([{ scope: WIZARD_SCOPE }]);
-  steps: string[];
+  private observer: IScopedObserver = createScopedObserver([
+    {
+      scope: "wizard",
+      subScopes: [],
+      log: false,
+    },
+  ]);
   activeStep: string;
-  activeSteps: string[];
-  activeStepsMap: { [key: string]: IStep } = {};
-  isFirst: boolean;
-  isLast: boolean;
-  private analytics = new WizardAnalytics();
-  __INIT__: IWizardConfig;
+  stepsMap: { [key: string]: IStep } = {};
+  isFirst: boolean = false;
+  isLast: boolean = false;
 
-  // ===========================================
-  // CONSTRUCTOR & INITIALIZATION
-  // ===========================================
-  constructor(config: IWizardConfig) {
-    this.name = config.name;
-    this.steps = config.steps;
-    this.activeStep = config.activeStep;
-    this.activeSteps = config.activeSteps;
-    this.activeSteps.forEach((step) => {
-      this.activeStepsMap[step] = new Step(step);
+  private __INTERNAL__: any = [];
+  private __INTERNAL_OPTIONS__: any = {};
+  private __INTERNAL_HANDLERS__: any = {};
+
+  constructor(config: WizzardRoute[], opts: WizzardOptions) {
+    config.forEach((route) => {
+      const { validators, ...rest } = route;
+      this.__INTERNAL__.push(structuredClone(rest));
+      this.__INTERNAL_HANDLERS__[route.name] = validators;
+      if (route.visible) {
+        this.stepsMap[route.name] = new Step(route.name);
+      }
     });
-    this.isFirst = this.isFirstStep();
-    this.isLast = this.isLastStep();
-    this.__INIT__ = structuredClone(config);
-    this.setupStepChangeListener();
-  }
-
-  private setupStepChangeListener() {
+    this.__INTERNAL_OPTIONS__ = structuredClone(opts);
+    this.activeStep = opts.activeStep;
+    this.updateNavigationProperties();
     this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_CHANGE_REQUEST,
-      callback: ({ payload }) => {
-        const { command, step } = payload;
-        if (command === STEP_COMMANDS.NEXT && this.isLast) {
-          alert("You are on the last step");
-          return;
-        }
-        if (command === STEP_COMMANDS.PREV && this.isFirst) {
-          alert("You are on the first step");
-          return;
-        }
-        this.activeStep = step;
-        this.isFirst = this.isFirstStep();
-        this.isLast = this.isLastStep();
-        this.observer.dispatch({
-          scope: WIZARD_SCOPE,
-          eventName: WIZARD_EVENTS.STEP_CHANGE,
-          payload: this.activeStep,
-        });
+      scope: "wizard",
+      eventName: WIZARD_EVENTS.STEP_CHANGED,
+      callback: ({
+        payload,
+      }: {
+        payload: { command: WizardCommand; stepName: string };
+      }) => {
+        // Step changed
       },
     });
   }
+  private updateNavigationProperties() {
+    const visibleSteps = Object.keys(this.stepsMap);
+    this.isFirst = this.activeStep === visibleSteps[0];
+    this.isLast = this.activeStep === visibleSteps[visibleSteps.length - 1];
+  }
 
-  // ===========================================
-  // NAVIGATION METHODS
-  // ===========================================
-  nextStep = () => {
-    if (!this.analytics.hasValidationFeature()) {
-      this.changeStep(STEP_COMMANDS.NEXT, this.getNextStep());
+  private getVisibleSteps() {
+    return Object.keys(this.stepsMap);
+  }
+
+  private getCurrentIndex() {
+    return this.getVisibleSteps().indexOf(this.activeStep);
+  }
+
+  private changeStep({
+    command,
+    stepName,
+  }: {
+    command: WizardCommand;
+    stepName: string;
+  }) {
+    if (this.__INTERNAL_HANDLERS__[this.activeStep].onNext) {
+      const response = this.__INTERNAL_HANDLERS__[this.activeStep].onNext();
+      if (response === false) {
+        return;
+      }
+    }
+
+    this.observer.dispatch({
+      scope: "wizard",
+      eventName: WIZARD_EVENTS.STEP_CHANGED,
+      payload: {
+        command,
+        stepName,
+      },
+    });
+  }
+  private nextStep = (currentIndex: number, visibleSteps: string[]) => {
+    if (currentIndex === -1 || currentIndex === visibleSteps.length - 1) {
+      return null;
+    }
+
+    const nextStepName = visibleSteps[currentIndex + 1];
+    this.changeStep({
+      command: WIZARD_COMMANDS.NEXT,
+      stepName: nextStepName,
+    });
+    return nextStepName;
+  };
+
+  private prevStep = (currentIndex: number, visibleSteps: string[]) => {
+    if (currentIndex === -1 || currentIndex === 0) {
+      return null;
+    }
+
+    const prevStepName = visibleSteps[currentIndex - 1];
+    this.changeStep({
+      command: WIZARD_COMMANDS.PREV,
+      stepName: prevStepName,
+    });
+    return prevStepName;
+  };
+
+  navigationCommand = (command: WizardCommand) => {
+    const visibleSteps = this.getVisibleSteps();
+    const currentIndex = this.getCurrentIndex();
+    let stepName: string | null;
+    if (command === "next") {
+      stepName = this.nextStep(currentIndex, visibleSteps);
+    } else {
+      stepName = this.prevStep(currentIndex, visibleSteps);
+    }
+    if (stepName === null) {
       return;
     }
-    this.observer.dispatch({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.NEXT_STEP_REQUEST,
-      payload: this.activeStep,
+    this.changeStep({
+      command,
+      stepName,
     });
   };
 
-  prevStep = () => {
-    this.changeStep(STEP_COMMANDS.PREV, this.getPrevStep());
+  activeStepSyncStore = {
+    subscribe: () => {
+      return this.observer.subscribe({
+        scope: "wizard",
+        eventName: WIZARD_EVENTS.STEP_CHANGED,
+        callback: ({
+          payload,
+        }: {
+          payload: { command: WizardCommand; stepName: string };
+        }) => {
+          // Step changed
+        },
+      });
+    },
+    getSnapshot: () => this.activeStep,
   };
-
-  // ===========================================
-  // PRIVATE HELPER METHODS
-  // ===========================================
-  private changeStep(command: "nextStep" | "prevStep", step: string) {
-    this.observer.dispatch({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_CHANGE_REQUEST,
-      payload: { command, step },
-    });
-  }
-
-  private isLastStep() {
-    return this.steps.indexOf(this.activeStep) === this.steps.length - 1;
-  }
-
-  private isFirstStep() {
-    return this.steps.indexOf(this.activeStep) === 0;
-  }
-
-  private getNextStep() {
-    return this.steps[this.steps.indexOf(this.activeStep) + 1];
-  }
-
-  private getPrevStep() {
-    return this.steps[this.steps.indexOf(this.activeStep) - 1];
-  }
-
-  // ===========================================
-  // SUBSCRIPTION METHODS
-  // ===========================================
-  subscribeToNextStep = ({
-    onNextStep,
-    onFail,
-  }: {
-    onNextStep: (step: IStep) => boolean;
-    onFail: () => void;
-  }) => {
-    // Track validation subscription
-    this.analytics.trackValidationSubscription();
-
-    const unsubscribe = this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.NEXT_STEP_REQUEST,
-      callback: () => {
-        const result = onNextStep(this.activeStepsMap[this.activeStep]);
-        if (result) {
-          // update step history
-          const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
-          this.activeStepsMap[this.activeStep].stepHistory =
-            structuredClone(rest);
-          // end :: update step history
-          this.changeStep(STEP_COMMANDS.NEXT, this.getNextStep());
-        }
-        if (!result && onFail) {
-          onFail();
-        }
-      },
-    });
-    return () => {
-      // Track validation unsubscription
-      this.analytics.trackValidationUnsubscription();
-      return unsubscribe();
-    };
-  };
-
-  subscribeToStepUpdate = (notify: () => void) => {
-    return this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_UPDATE,
-      callback: () => {
-        notify();
-      },
-    });
-  };
-
-  subscribeToStepChange = (notify: () => void) => {
-    return this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_CHANGE,
-      callback: () => {
-        notify();
-      },
-    });
-  };
-
-  // ===========================================
-  // DATA METHODS
-  // ===========================================
-  getCurrentStep = () => this.activeStep;
-
-  getCurrentStepData = () => this.activeStepsMap[this.activeStep];
-
-  mutateStep = (
-    callback: (prev: Omit<IStep, "update" | "stepHistory">) => IStep
-  ) => {
-    const { stepHistory, ...rest } = this.activeStepsMap[this.activeStep];
-    this.activeStepsMap = {
-      ...this.activeStepsMap,
-      [this.activeStep]: {
-        ...this.activeStepsMap[this.activeStep],
-        ...callback(rest),
-      },
-    };
-    this.observer.dispatch({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_UPDATE,
-      payload: this.activeStep,
-    });
-  };
-
-  // ===========================================
-  // UTILITY METHODS
-  // ===========================================
-  logging = () => {};
 }
 
 export { Wizard };
