@@ -5,6 +5,7 @@ import {
 import { Step } from "./Step";
 import type { IStep, WizzardOptions, WizzardRoute } from "./types";
 import {
+  WIZARD_SCOPE,
   WIZARD_COMMANDS,
   WIZARD_EVENTS,
   type WizardCommand,
@@ -15,7 +16,7 @@ import { MiddlewareManager } from "./MiddlewareManager";
 class Wizard {
   private observer: IScopedObserver = createScopedObserver([
     {
-      scope: "wizard",
+      scope: WIZARD_SCOPE,
       subScopes: [],
       log: false,
     },
@@ -40,10 +41,23 @@ class Wizard {
     this.activeStep = opts.activeStep;
     this.updateNavigationProperties();
     this.observer.subscribe({
-      scope: "wizard",
+      scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_CHANGING,
-      callback: ({ payload }: { payload: { stepName: string } }) => {
-        // Step changed
+      callback: ({
+        payload,
+      }: {
+        payload: { stepName: string; command: WizardCommand };
+      }) => {
+        this.activeStep = payload.stepName;
+        this.updateNavigationProperties();
+
+        this.observer.dispatch({
+          scope: WIZARD_SCOPE,
+          eventName: WIZARD_EVENTS.STEP_CHANGED,
+          payload: {
+            stepName: payload.stepName,
+          },
+        });
       },
     });
   }
@@ -61,7 +75,7 @@ class Wizard {
     return this.getVisibleSteps().indexOf(this.activeStep);
   }
 
-  private changeStep({
+  private executeStepTransition({
     command,
     stepName,
   }: {
@@ -76,7 +90,7 @@ class Wizard {
       step: this.stepsMap[this.activeStep],
       resolve: () => {
         this.observer.dispatch({
-          scope: "wizard",
+          scope: WIZARD_SCOPE,
           eventName: WIZARD_EVENTS.STEP_CHANGING,
           payload: {
             stepName,
@@ -86,7 +100,7 @@ class Wizard {
       },
       reject: (obj?: { payload?: any }) => {
         this.observer.dispatch({
-          scope: "wizard",
+          scope: WIZARD_SCOPE,
           eventName: WIZARD_EVENTS.STEP_REJECTED,
           payload: obj,
         });
@@ -101,15 +115,17 @@ class Wizard {
       visibleSteps,
       currentIndex,
     });
-    this.changeStep(value);
+    this.executeStepTransition(value);
   };
 
   activeStepSyncStore = {
-    subscribe: () => {
+    subscribe: (notify: () => void) => {
       return this.observer.subscribe({
-        scope: "wizard",
+        scope: WIZARD_SCOPE,
         eventName: WIZARD_EVENTS.STEP_CHANGED,
         callback: ({ payload }: { payload: { stepName: string } }) => {
+          console.log("activeStepSyncStore", payload);
+          notify();
           // Step changed
         },
       });
@@ -119,7 +135,7 @@ class Wizard {
 
   rejectSubscription = (cb: (payload: any) => void) => {
     return this.observer.subscribe({
-      scope: "wizard",
+      scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_REJECTED,
       callback: ({ payload }: any) => {
         cb(payload);

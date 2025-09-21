@@ -1,4 +1,4 @@
-import { WIZARD_COMMANDS, type WizardCommand } from "./constants";
+import { WIZARD_SCOPE, WIZARD_COMMANDS, type WizardCommand } from "./constants";
 import type { IStep, WizzardRoute } from "./types";
 
 class MiddlewareManager {
