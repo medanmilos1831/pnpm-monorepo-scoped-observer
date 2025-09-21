@@ -8,8 +8,10 @@ const wizzard = createWizzard(
       name: "stepOne",
       visible: true,
       validators: {
-        onNext: () => {
-          return true;
+        onNext: (step, resolve, reject) => {
+          resolve();
+          // console.log("params", args);
+          // return false;
         },
         onPrev: () => true,
       },
