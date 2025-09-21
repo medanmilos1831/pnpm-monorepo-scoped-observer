@@ -1,14 +1,17 @@
 import { data } from "../mock";
-import { useWizardReject } from "../wizzard";
+import { useMutateStep, useStepParams, useWizardReject } from "../wizzard";
 
 const StepOne = () => {
   const reject = useWizardReject((payload: any) => {
     console.log("reject", payload);
   });
+  const { mutate } = useMutateStep();
+  const params = useStepParams();
+  console.log("mutate", params);
   return (
     <div>
       <h3>Select Account Type</h3>
-      {/* <div
+      <div
         style={{
           display: "flex",
           flexDirection: "row",
@@ -17,35 +20,44 @@ const StepOne = () => {
         }}
       >
         {data.accountType.map((account) => {
-          const isSelected = selectedAccount?.id === account.id;
+          // const isSelected = selectedAccount?.id === account.id;
 
           return (
             <button
               onClick={() => {
-                mutateStep((prev: any) => {
+                mutate((prev) => {
                   return {
                     ...prev,
                     isCompleted: true,
                     state: account,
                   };
                 });
+                // mutateStep((prev: any) => {
+                //   return {
+                //     ...prev,
+                //     isCompleted: true,
+                //     state: account,
+                //   };
+                // });
               }}
               key={account.id}
-              style={{
-                padding: "10px 20px",
-                border: isSelected ? "2px solid #007bff" : "1px solid #ccc",
-                borderRadius: "5px",
-                backgroundColor: isSelected ? "#e3f2fd" : "#f9f9f9",
-                cursor: "pointer",
-                color: isSelected ? "#007bff" : "#333",
-                transition: "all 0.2s ease",
-              }}
+              style={
+                {
+                  // padding: "10px 20px",
+                  // border: isSelected ? "2px solid #007bff" : "1px solid #ccc",
+                  // borderRadius: "5px",
+                  // backgroundColor: isSelected ? "#e3f2fd" : "#f9f9f9",
+                  // cursor: "pointer",
+                  // color: isSelected ? "#007bff" : "#333",
+                  // transition: "all 0.2s ease",
+                }
+              }
             >
               {account.name}
             </button>
           );
         })}
-      </div> */}
+      </div>
     </div>
   );
 };

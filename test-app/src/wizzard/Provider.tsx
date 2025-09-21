@@ -31,16 +31,30 @@ const useStep = () => {
 
 const useStepParams = () => {
   const context = useContext(Context)!;
-  // const params = useSyncExternalStore(
-  //   context.subscribeToStepUpdate,
-  //   context.getCurrentStepData
-  // );
-  return {};
+  const params = useSyncExternalStore(
+    context.stepParamsSyncStore.subscribe,
+    context.stepParamsSyncStore.getSnapshot
+  );
+  return {
+    isCompleted: params.isCompleted,
+    isChanged: params.isChanged,
+    state: params.state,
+  };
 };
 
 const useMutateStep = () => {
   const context = useContext(Context)!;
-  return {};
+  return {
+    mutate: (
+      cb: (obj: { isCompleted: boolean; isChanged: boolean; state: any }) => {
+        isCompleted: boolean;
+        isChanged: boolean;
+        state: any;
+      }
+    ) => {
+      context.mutateStep(cb);
+    },
+  };
 };
 
 const useWizardReject = (cb: (payload: any) => void) => {

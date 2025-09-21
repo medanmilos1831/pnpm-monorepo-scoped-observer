@@ -133,6 +133,27 @@ class Wizard {
     getSnapshot: () => this.activeStep,
   };
 
+  stepParamsSyncStore = {
+    subscribe: (notify: () => void) => {
+      return this.observer.subscribe({
+        scope: WIZARD_SCOPE,
+        eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+        callback: ({
+          payload,
+        }: {
+          payload: { isCompleted: boolean; isChanged: boolean; state: any };
+        }) => {
+          this.stepsMap[this.activeStep] = {
+            ...this.stepsMap[this.activeStep],
+            ...payload,
+          };
+          notify();
+        },
+      });
+    },
+    getSnapshot: () => this.stepsMap[this.activeStep],
+  };
+
   rejectSubscription = (cb: (payload: any) => void) => {
     return this.observer.subscribe({
       scope: WIZARD_SCOPE,
@@ -140,6 +161,26 @@ class Wizard {
       callback: ({ payload }: any) => {
         cb(payload);
       },
+    });
+  };
+
+  mutateStep = (
+    cb: (step: { isCompleted: boolean; isChanged: boolean; state: any }) => {
+      isCompleted: boolean;
+      isChanged: boolean;
+      state: any;
+    }
+  ) => {
+    const activeStep = this.stepsMap[this.activeStep];
+    let result = cb({
+      isCompleted: activeStep.isCompleted,
+      isChanged: activeStep.isChanged,
+      state: activeStep.state,
+    });
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+      payload: result,
     });
   };
 }

@@ -4,6 +4,7 @@ export const WIZARD_EVENTS = {
   STEP_CHANGING: "stepChanging",
   STEP_CHANGED: "stepChanged",
   STEP_REJECTED: "stepRejected",
+  STEP_PARAMS_CHANGED: "stepParamsChanged",
 } as const;
 
 export const WIZARD_COMMANDS = {
