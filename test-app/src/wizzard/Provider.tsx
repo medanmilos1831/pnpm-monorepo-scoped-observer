@@ -73,13 +73,8 @@ const useWizzardNavigate = () => {
   };
 };
 
-const useLogging = () => {
-  const context = useContext(Context)!;
-};
-
 export {
   Provider,
-  useLogging,
   useMutateStep,
   useStep,
   useStepParams,

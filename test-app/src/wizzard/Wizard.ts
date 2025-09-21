@@ -2,16 +2,11 @@ import {
   createScopedObserver,
   type IScopedObserver,
 } from "../scroped-observer";
+import { CommandCenter } from "./CommandCenter";
+import { WIZARD_EVENTS, WIZARD_SCOPE, type WizardCommand } from "./constants";
+import { MiddlewareManager } from "./MiddlewareManager";
 import { Step } from "./Step";
 import type { IStep, WizzardOptions, WizzardRoute } from "./types";
-import {
-  WIZARD_SCOPE,
-  WIZARD_COMMANDS,
-  WIZARD_EVENTS,
-  type WizardCommand,
-} from "./constants";
-import { CommandCenter } from "./CommandCenter";
-import { MiddlewareManager } from "./MiddlewareManager";
 
 class Wizard {
   private observer: IScopedObserver = createScopedObserver([

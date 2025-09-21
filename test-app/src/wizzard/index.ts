@@ -4,6 +4,5 @@ export {
   useWizzardNavigate,
   useMutateStep,
   useStepParams,
-  useLogging,
   useWizardReject,
 } from "./Provider";
