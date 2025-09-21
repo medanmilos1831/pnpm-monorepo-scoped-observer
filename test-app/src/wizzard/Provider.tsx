@@ -1,4 +1,9 @@
-import { createContext, useContext, useSyncExternalStore } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useSyncExternalStore,
+} from "react";
 import type { createWizzard } from "./createWizzard";
 import { WIZARD_COMMANDS } from "./constants";
 
@@ -35,8 +40,15 @@ const useStepParams = () => {
 
 const useMutateStep = () => {
   const context = useContext(Context)!;
-  // return context.mutateStep;
   return {};
+};
+
+const useWizardReject = (cb: (payload: any) => void) => {
+  const context = useContext(Context)!;
+  useEffect(() => {
+    const unsubscribe = context.rejectSubscription(cb);
+    return () => unsubscribe();
+  }, []);
 };
 
 const useWizzardNavigate = () => {
@@ -58,4 +70,5 @@ export {
   useStep,
   useStepParams,
   useWizzardNavigate,
+  useWizardReject,
 };

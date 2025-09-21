@@ -9,8 +9,9 @@ const wizzard = createWizzard(
       visible: true,
       validators: {
         onNext: (step, resolve, reject) => {
-          resolve();
-          // console.log("params", args);
+          reject({
+            payload: "error",
+          });
           // return false;
         },
         onPrev: () => true,
@@ -26,7 +27,7 @@ const wizzard = createWizzard(
     },
     {
       name: "stepThree",
-      visible: true,
+      visible: false,
       validators: {
         onNext: () => true,
         onPrev: () => true,

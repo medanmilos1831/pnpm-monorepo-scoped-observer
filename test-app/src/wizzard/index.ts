@@ -5,4 +5,5 @@ export {
   useMutateStep,
   useStepParams,
   useLogging,
+  useWizardReject,
 } from "./Provider";

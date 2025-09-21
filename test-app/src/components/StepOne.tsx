@@ -1,6 +1,10 @@
 import { data } from "../mock";
+import { useWizardReject } from "../wizzard";
 
 const StepOne = () => {
+  const reject = useWizardReject((payload: any) => {
+    console.log("reject", payload);
+  });
   return (
     <div>
       <h3>Select Account Type</h3>

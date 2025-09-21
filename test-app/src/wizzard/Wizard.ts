@@ -24,30 +24,25 @@ class Wizard {
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
-  commandCenter = new CommandCenter();
-  middlewareManager = new MiddlewareManager();
+  private commandCenter = new CommandCenter();
+  private middlewareManager = new MiddlewareManager();
 
   private __INTERNAL__: any = [];
-  private __INTERNAL_OPTIONS__: any = {};
-  private __INTERNAL_HANDLERS__: any = {};
 
   constructor(config: WizzardRoute[], opts: WizzardOptions) {
     config.forEach((route) => {
       const { validators, ...rest } = route;
       this.__INTERNAL__.push(structuredClone(rest));
-      this.middlewareManager.add(route.name, validators);
       if (route.visible) {
-        this.stepsMap[route.name] = new Step(route.name);
+        this.stepsMap[route.name] = new Step(route);
       }
     });
-    this.__INTERNAL_OPTIONS__ = structuredClone(opts);
     this.activeStep = opts.activeStep;
     this.updateNavigationProperties();
     this.observer.subscribe({
       scope: "wizard",
       eventName: WIZARD_EVENTS.STEP_CHANGING,
       callback: ({ payload }: { payload: { stepName: string } }) => {
-        console.log("stepChanged", payload);
         // Step changed
       },
     });
@@ -76,25 +71,25 @@ class Wizard {
     if (stepName === null) {
       return;
     }
-    const response = this.middlewareManager.execute({
+    this.middlewareManager.execute({
       command,
       step: this.stepsMap[this.activeStep],
       resolve: () => {
-        console.log("resolve");
+        this.observer.dispatch({
+          scope: "wizard",
+          eventName: WIZARD_EVENTS.STEP_CHANGING,
+          payload: {
+            stepName,
+            command,
+          },
+        });
       },
-      reject: () => {
-        console.log("reject");
-      },
-    });
-    if (response === false) {
-      return;
-    }
-    this.observer.dispatch({
-      scope: "wizard",
-      eventName: WIZARD_EVENTS.STEP_CHANGING,
-      payload: {
-        stepName,
-        command,
+      reject: (obj?: { payload?: any }) => {
+        this.observer.dispatch({
+          scope: "wizard",
+          eventName: WIZARD_EVENTS.STEP_REJECTED,
+          payload: obj,
+        });
       },
     });
   }
@@ -120,6 +115,16 @@ class Wizard {
       });
     },
     getSnapshot: () => this.activeStep,
+  };
+
+  rejectSubscription = (cb: (payload: any) => void) => {
+    return this.observer.subscribe({
+      scope: "wizard",
+      eventName: WIZARD_EVENTS.STEP_REJECTED,
+      callback: ({ payload }: any) => {
+        cb(payload);
+      },
+    });
   };
 }
 
