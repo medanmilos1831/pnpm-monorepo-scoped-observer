@@ -104,15 +104,17 @@ class Wizard {
     }
   ) => {
     const activeStep = this.stepsMap[this.activeStep];
-    let result = cb({
-      isCompleted: activeStep.isCompleted,
-      isChanged: activeStep.isChanged,
-      state: activeStep.state,
-    });
+    this.stepsMap[this.activeStep] = {
+      ...this.stepsMap[this.activeStep],
+      ...cb({
+        isCompleted: activeStep.isCompleted,
+        isChanged: activeStep.isChanged,
+        state: activeStep.state,
+      }),
+    };
     this.observer.dispatch({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
-      payload: result,
     });
   };
 }

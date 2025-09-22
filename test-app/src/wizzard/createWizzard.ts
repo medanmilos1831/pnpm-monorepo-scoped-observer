@@ -44,17 +44,7 @@ const createWizzard = (config: WizzardRoute[], opts: WizzardOptions) => {
           },
         });
     },
-    mutateStep: (cb: (payload: any) => void) => {
-      return (notify: () => void) => {
-        observer.subscribe({
-          scope: WIZARD_SCOPE,
-          eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
-          callback: () => {
-            notify();
-          },
-        });
-      };
-    },
+    mutateStep: wizard.mutateStep,
 
     nextStep: () => {
       observer.dispatch({

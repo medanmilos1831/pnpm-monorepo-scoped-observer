@@ -8,15 +8,15 @@ const wizzard = createWizzard(
       name: "stepOne",
       visible: true,
       validators: {
-        // onNext: (step, resolve, reject) => {
-        //   resolve();
-        //   // return false;
-        //   // reject({
-        //   //   payload: {
-        //   //     message: "StepOne is rejected",
-        //   //   },
-        //   // });
-        // },
+        onNext: (step, resolve, reject) => {
+          // resolve();
+          // return false;
+          reject({
+            payload: {
+              message: "StepOne is rejected",
+            },
+          });
+        },
         onPrev: () => true,
       },
     },
