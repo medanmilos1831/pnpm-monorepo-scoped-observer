@@ -1,27 +1,64 @@
-import { Observer } from "./Observer";
+import { createScopedObserver } from "../scroped-observer";
 import { Wizard } from "./Wizard";
-import { WIZARD_COMMANDS, WIZARD_EVENTS } from "./constants";
+import { WIZARD_COMMANDS, WIZARD_EVENTS, WIZARD_SCOPE } from "./constants";
 import type { WizzardOptions, WizzardRoute } from "./types";
 
 const createWizzard = (config: WizzardRoute[], opts: WizzardOptions) => {
-  const observer = new Observer();
+  const observer = createScopedObserver([
+    {
+      scope: WIZARD_SCOPE,
+    },
+  ]);
   const wizard = new Wizard(config, opts, observer);
 
   return {
-    activeStepSyncStore: observer.subscribeActiveStepSyncStore,
+    activeStepSyncStore: (notify: () => void) => {
+      return observer.subscribe({
+        scope: WIZARD_SCOPE,
+        eventName: WIZARD_EVENTS.STEP_CHANGED,
+        callback: () => {
+          notify();
+        },
+      });
+    },
+    stepParamsSyncStore: (notify: () => void) => {
+      return observer.subscribe({
+        scope: WIZARD_SCOPE,
+        eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+        callback: () => {
+          notify();
+        },
+      });
+    },
     getActiveStepSnapshot: () => wizard.activeStep,
-    stepParamsSyncStore: observer.subscribeStepParamsSyncStore(
-      (payload: any) => {
-        wizard.stepsMap[wizard.activeStep] = {
-          ...wizard.stepsMap[wizard.activeStep],
-          ...payload,
-        };
-      }
-    ),
     getStepParamsSnapshot: () => wizard.stepsMap[wizard.activeStep],
+
+    rejectSubscription: (cb: (payload: any) => void) => {
+      return (notify: () => void) =>
+        observer.subscribe({
+          scope: WIZARD_SCOPE,
+          eventName: WIZARD_EVENTS.STEP_REJECTED,
+          callback: ({ payload }: any) => {
+            cb(payload);
+            notify();
+          },
+        });
+    },
+    mutateStep: (cb: (payload: any) => void) => {
+      return (notify: () => void) => {
+        observer.subscribe({
+          scope: WIZARD_SCOPE,
+          eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+          callback: () => {
+            notify();
+          },
+        });
+      };
+    },
 
     nextStep: () => {
       observer.dispatch({
+        scope: WIZARD_SCOPE,
         eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
         payload: {
           command: WIZARD_COMMANDS.NEXT,
@@ -30,6 +67,7 @@ const createWizzard = (config: WizzardRoute[], opts: WizzardOptions) => {
     },
     prevStep: () => {
       observer.dispatch({
+        scope: WIZARD_SCOPE,
         eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
         payload: {
           command: WIZARD_COMMANDS.PREV,

@@ -6,7 +6,6 @@ import {
   type WizardCommand,
 } from "./constants";
 import { MiddlewareManager } from "./MiddlewareManager";
-import { Observer } from "./Observer";
 import { Step } from "./Step";
 import type { IStep, WizzardOptions, WizzardRoute } from "./types";
 
@@ -15,7 +14,7 @@ class Wizard {
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
-  observer: Observer;
+  observer: IScopedObserver;
   private middlewareManager = new MiddlewareManager();
 
   private __INTERNAL__: any = [];
@@ -23,7 +22,7 @@ class Wizard {
   constructor(
     config: WizzardRoute[],
     opts: WizzardOptions,
-    observer: Observer
+    observer: IScopedObserver
   ) {
     config.forEach((route) => {
       const { validators, ...rest } = route;
@@ -36,31 +35,39 @@ class Wizard {
     this.updateNavigationProperties();
     this.observer = observer;
 
-    this.observer.subscribeNavigation((payload) => {
-      let { stepName, command } = this.handleNavigationRequest(payload.command);
-      if (stepName === null) {
-        return;
-      }
-      this.middlewareManager.execute({
-        command: command,
-        step: this.stepsMap[this.activeStep],
-        resolve: () => {
-          this.activeStep = stepName;
-          this.updateNavigationProperties();
-          this.observer.dispatch({
-            eventName: WIZARD_EVENTS.STEP_CHANGED,
-            payload: {
-              stepName,
-            },
-          });
-        },
-        reject: (error?: any) => {
-          this.observer.dispatch({
-            eventName: WIZARD_EVENTS.STEP_REJECTED,
-            payload: error,
-          });
-        },
-      });
+    this.observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
+      callback: ({ payload }) => {
+        let { stepName, command } = this.handleNavigationRequest(
+          payload.command
+        );
+        if (stepName === null) {
+          return;
+        }
+        this.middlewareManager.execute({
+          command: command,
+          step: this.stepsMap[this.activeStep],
+          resolve: () => {
+            this.activeStep = stepName;
+            this.updateNavigationProperties();
+            this.observer.dispatch({
+              scope: WIZARD_SCOPE,
+              eventName: WIZARD_EVENTS.STEP_CHANGED,
+              payload: {
+                stepName,
+              },
+            });
+          },
+          reject: (error?: any) => {
+            this.observer.dispatch({
+              scope: WIZARD_SCOPE,
+              eventName: WIZARD_EVENTS.STEP_REJECTED,
+              payload: error,
+            });
+          },
+        });
+      },
     });
   }
   private updateNavigationProperties() {
@@ -70,8 +77,8 @@ class Wizard {
   }
 
   private handleNavigationRequest(command: WizardCommand) {
-    const visibleSteps = this.getVisibleSteps();
-    const currentIndex = this.getCurrentIndex();
+    let visibleSteps = Object.keys(this.stepsMap);
+    let currentIndex = visibleSteps.indexOf(this.activeStep);
 
     let stepName: string | null = null;
     if (command === WIZARD_COMMANDS.NEXT) {
@@ -89,19 +96,6 @@ class Wizard {
     };
   }
 
-  private getVisibleSteps() {
-    return Object.keys(this.stepsMap);
-  }
-
-  private getCurrentIndex() {
-    return this.getVisibleSteps().indexOf(this.activeStep);
-  }
-  rejectSubscription = (cb: (payload: any) => void) => {
-    // return this.observer.subscribeStepRejected((payload: any) => {
-    //   cb(payload);
-    // });
-  };
-
   mutateStep = (
     cb: (step: { isCompleted: boolean; isChanged: boolean; state: any }) => {
       isCompleted: boolean;
@@ -109,16 +103,17 @@ class Wizard {
       state: any;
     }
   ) => {
-    // const activeStep = this.stepsMap[this.activeStep];
-    // let result = cb({
-    //   isCompleted: activeStep.isCompleted,
-    //   isChanged: activeStep.isChanged,
-    //   state: activeStep.state,
-    // });
-    // this.observer.dispatch({
-    //   eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
-    //   payload: result,
-    // });
+    const activeStep = this.stepsMap[this.activeStep];
+    let result = cb({
+      isCompleted: activeStep.isCompleted,
+      isChanged: activeStep.isChanged,
+      state: activeStep.state,
+    });
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+      payload: result,
+    });
   };
 }
 

@@ -54,7 +54,7 @@ const useMutateStep = () => {
         state: any;
       }
     ) => {
-      // context.mutateStep(cb);
+      context.mutateStep(cb);
     },
   };
 };

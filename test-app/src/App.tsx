@@ -51,9 +51,18 @@ const wizzard = createWizzard(
 );
 function App() {
   return (
-    <Provider value={wizzard}>
-      <HomePage />
-    </Provider>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        backgroundColor: "black",
+        color: "white",
+      }}
+    >
+      <Provider value={wizzard}>
+        <HomePage />
+      </Provider>
+    </div>
   );
 }
 
