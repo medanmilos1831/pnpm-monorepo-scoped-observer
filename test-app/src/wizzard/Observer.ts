@@ -72,23 +72,6 @@ class Observer {
       },
     });
   }
-
-  /**
-   * Subscribe to step changing events
-   * @param callback - Function to call when step is changing
-   * @returns Unsubscribe function
-   */
-  subscribeStepChanging(
-    callback: (payload: { stepName: string; command: WizardCommand }) => void
-  ) {
-    return this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_CHANGING,
-      callback: ({ payload }) => {
-        callback(payload);
-      },
-    });
-  }
 }
 
 export { Observer };

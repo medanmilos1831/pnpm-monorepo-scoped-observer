@@ -25,21 +25,22 @@ const useStep = () => {
   console.log(context);
   const step = useSyncExternalStore(
     context.activeStepSyncStore,
-    context.activeStepSyncStore.getSnapshot
+    context.getActiveStepSnapshot
   );
-  return { step: "step" };
+  console.log(step);
+  return { step };
 };
 
 const useStepParams = () => {
   const context = useContext(Context)!;
-  // const params = useSyncExternalStore(
-  //   context.stepParamsSyncStore.subscribe,
-  //   context.stepParamsSyncStore.getSnapshot
-  // );
+  const params = useSyncExternalStore(
+    context.stepParamsSyncStore,
+    context.getStepParamsSnapshot
+  );
   return {
-    // isCompleted: params.isCompleted,
-    // isChanged: params.isChanged,
-    // state: params.state,
+    isCompleted: params.isCompleted,
+    isChanged: params.isChanged,
+    state: params.state,
   };
 };
 

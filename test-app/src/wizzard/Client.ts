@@ -9,15 +9,6 @@ class Client {
   stepParamsSyncStore = {};
   constructor(observer: Observer) {
     this.observer = observer.observer;
-    // this.wizard = wizard;
-    this.activeStepSyncStore = {
-      subscribe: this.activeStepSyncStore,
-      getSnapshot: this.activeStepSyncStore,
-    };
-    // this.stepParamsSyncStore = {
-    //   subscribe: this.wizard.stepParamsSyncStore.subscribe,
-    //   getSnapshot: this.wizard.stepParamsSyncStore.getSnapshot,
-    // };
   }
 
   nextStep = () => {

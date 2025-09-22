@@ -96,22 +96,6 @@ class Wizard {
   private getCurrentIndex() {
     return this.getVisibleSteps().indexOf(this.activeStep);
   }
-
-  activeStepSyncStore = {
-    // subscribe: this.observer.subscribeActiveStepSyncStore,
-    // getSnapshot: () => this.activeStep,
-  };
-
-  stepParamsSyncStore = {
-    // subscribe: this.observer.subscribeStepParamsSyncStore((payload: any) => {
-    //   this.stepsMap[this.activeStep] = {
-    //     ...this.stepsMap[this.activeStep],
-    //     ...payload,
-    //   };
-    // }),
-    // getSnapshot: () => this.stepsMap[this.activeStep],
-  };
-
   rejectSubscription = (cb: (payload: any) => void) => {
     // return this.observer.subscribeStepRejected((payload: any) => {
     //   cb(payload);
