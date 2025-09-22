@@ -5,7 +5,7 @@ import {
 import { WIZARD_EVENTS, WIZARD_SCOPE, type WizardCommand } from "./constants";
 
 class Observer {
-  private observer: IScopedObserver = createScopedObserver([
+  observer: IScopedObserver = createScopedObserver([
     {
       scope: WIZARD_SCOPE,
       subScopes: [],
@@ -18,24 +18,6 @@ class Observer {
       eventName: WIZARD_EVENTS.STEP_CHANGED,
       callback: () => {
         notify();
-      },
-    });
-  };
-
-  subscribeStepChanging = (cb: (payload: any) => void) => {
-    this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_CHANGING,
-      callback: ({ payload }: any) => {
-        cb(payload);
-
-        this.observer.dispatch({
-          scope: WIZARD_SCOPE,
-          eventName: WIZARD_EVENTS.STEP_CHANGED,
-          payload: {
-            stepName: payload.stepName,
-          },
-        });
       },
     });
   };
@@ -76,22 +58,36 @@ class Observer {
     });
   };
 
-  resolveDispatch(obj: { stepName: string; command: WizardCommand }) {
-    return () => {
-      this.dispatch({
-        eventName: WIZARD_EVENTS.STEP_CHANGING,
-        payload: obj,
-      });
-    };
+  /**
+   * Subscribe to navigation requests from Client
+   * @param callback - Function to call when navigation is requested
+   * @returns Unsubscribe function
+   */
+  subscribeNavigation(callback: (payload: { command: WizardCommand }) => void) {
+    return this.observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
+      callback: ({ payload }) => {
+        callback(payload);
+      },
+    });
   }
-  rejectDispatch(obj?: { payload?: any }) {
-    console.log("rejectDispatch", obj);
-    return () => {
-      this.dispatch({
-        eventName: WIZARD_EVENTS.STEP_REJECTED,
-        payload: obj,
-      });
-    };
+
+  /**
+   * Subscribe to step changing events
+   * @param callback - Function to call when step is changing
+   * @returns Unsubscribe function
+   */
+  subscribeStepChanging(
+    callback: (payload: { stepName: string; command: WizardCommand }) => void
+  ) {
+    return this.observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_CHANGING,
+      callback: ({ payload }) => {
+        callback(payload);
+      },
+    });
   }
 }
 

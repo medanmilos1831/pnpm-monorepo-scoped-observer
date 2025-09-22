@@ -1,29 +1,44 @@
-import { WIZARD_COMMANDS } from "./constants";
+import type { IScopedObserver } from "../scroped-observer";
+import { WIZARD_COMMANDS, WIZARD_EVENTS, WIZARD_SCOPE } from "./constants";
+import { Observer } from "./Observer";
 import { Wizard } from "./Wizard";
 
 class Client {
-  private wizard: Wizard;
+  private observer: IScopedObserver;
   activeStepSyncStore = {};
   stepParamsSyncStore = {};
-  constructor(wizard: Wizard) {
-    this.wizard = wizard;
+  constructor(observer: Observer) {
+    this.observer = observer.observer;
+    // this.wizard = wizard;
     this.activeStepSyncStore = {
-      subscribe: this.wizard.activeStepSyncStore.subscribe,
-      getSnapshot: this.wizard.activeStepSyncStore.getSnapshot,
+      subscribe: this.activeStepSyncStore,
+      getSnapshot: this.activeStepSyncStore,
     };
-    this.stepParamsSyncStore = {
-      subscribe: this.wizard.stepParamsSyncStore.subscribe,
-      getSnapshot: this.wizard.stepParamsSyncStore.getSnapshot,
-    };
+    // this.stepParamsSyncStore = {
+    //   subscribe: this.wizard.stepParamsSyncStore.subscribe,
+    //   getSnapshot: this.wizard.stepParamsSyncStore.getSnapshot,
+    // };
   }
 
-  nextStep() {
-    this.wizard.navigator(WIZARD_COMMANDS.NEXT);
-  }
+  nextStep = () => {
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
+      payload: {
+        command: WIZARD_COMMANDS.NEXT,
+      },
+    });
+  };
 
-  prevStep() {
-    this.wizard.navigator(WIZARD_COMMANDS.PREV);
-  }
+  prevStep = () => {
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
+      payload: {
+        command: WIZARD_COMMANDS.PREV,
+      },
+    });
+  };
 }
 
 export { Client };

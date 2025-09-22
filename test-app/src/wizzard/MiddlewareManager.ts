@@ -1,5 +1,5 @@
-import { WIZARD_SCOPE, WIZARD_COMMANDS, type WizardCommand } from "./constants";
-import type { IStep, WizzardRoute } from "./types";
+import { WIZARD_COMMANDS, type WizardCommand } from "./constants";
+import type { IStep } from "./types";
 
 class MiddlewareManager {
   private nextValidator = ({

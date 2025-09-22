@@ -22,23 +22,24 @@ const Provider = ({
 
 const useStep = () => {
   const context = useContext(Context)!;
+  console.log(context);
   const step = useSyncExternalStore(
-    context.activeStepSyncStore.subscribe,
+    context.activeStepSyncStore,
     context.activeStepSyncStore.getSnapshot
   );
-  return { step };
+  return { step: "step" };
 };
 
 const useStepParams = () => {
   const context = useContext(Context)!;
-  const params = useSyncExternalStore(
-    context.stepParamsSyncStore.subscribe,
-    context.stepParamsSyncStore.getSnapshot
-  );
+  // const params = useSyncExternalStore(
+  //   context.stepParamsSyncStore.subscribe,
+  //   context.stepParamsSyncStore.getSnapshot
+  // );
   return {
-    isCompleted: params.isCompleted,
-    isChanged: params.isChanged,
-    state: params.state,
+    // isCompleted: params.isCompleted,
+    // isChanged: params.isChanged,
+    // state: params.state,
   };
 };
 
@@ -52,7 +53,7 @@ const useMutateStep = () => {
         state: any;
       }
     ) => {
-      context.mutateStep(cb);
+      // context.mutateStep(cb);
     },
   };
 };

@@ -1,6 +1,8 @@
+import type { IScopedObserver } from "../scroped-observer";
 import {
   WIZARD_COMMANDS,
   WIZARD_EVENTS,
+  WIZARD_SCOPE,
   type WizardCommand,
 } from "./constants";
 import { MiddlewareManager } from "./MiddlewareManager";
@@ -9,16 +11,20 @@ import { Step } from "./Step";
 import type { IStep, WizzardOptions, WizzardRoute } from "./types";
 
 class Wizard {
-  private observer = new Observer();
   activeStep: string;
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
+  observer: Observer;
   private middlewareManager = new MiddlewareManager();
 
   private __INTERNAL__: any = [];
 
-  constructor(config: WizzardRoute[], opts: WizzardOptions) {
+  constructor(
+    config: WizzardRoute[],
+    opts: WizzardOptions,
+    observer: Observer
+  ) {
     config.forEach((route) => {
       const { validators, ...rest } = route;
       this.__INTERNAL__.push(structuredClone(rest));
@@ -28,15 +34,59 @@ class Wizard {
     });
     this.activeStep = opts.activeStep;
     this.updateNavigationProperties();
-    this.observer.subscribeStepChanging((payload) => {
-      this.activeStep = payload.stepName;
-      this.updateNavigationProperties();
+    this.observer = observer;
+
+    this.observer.subscribeNavigation((payload) => {
+      let { stepName, command } = this.handleNavigationRequest(payload.command);
+      if (stepName === null) {
+        return;
+      }
+      this.middlewareManager.execute({
+        command: command,
+        step: this.stepsMap[this.activeStep],
+        resolve: () => {
+          this.activeStep = stepName;
+          this.updateNavigationProperties();
+          this.observer.dispatch({
+            eventName: WIZARD_EVENTS.STEP_CHANGED,
+            payload: {
+              stepName,
+            },
+          });
+        },
+        reject: (error?: any) => {
+          this.observer.dispatch({
+            eventName: WIZARD_EVENTS.STEP_REJECTED,
+            payload: error,
+          });
+        },
+      });
     });
   }
   private updateNavigationProperties() {
     const visibleSteps = Object.keys(this.stepsMap);
     this.isFirst = this.activeStep === visibleSteps[0];
     this.isLast = this.activeStep === visibleSteps[visibleSteps.length - 1];
+  }
+
+  private handleNavigationRequest(command: WizardCommand) {
+    const visibleSteps = this.getVisibleSteps();
+    const currentIndex = this.getCurrentIndex();
+
+    let stepName: string | null = null;
+    if (command === WIZARD_COMMANDS.NEXT) {
+      if (currentIndex < visibleSteps.length - 1) {
+        stepName = visibleSteps[currentIndex + 1];
+      }
+    } else if (command === WIZARD_COMMANDS.PREV) {
+      if (currentIndex > 0) {
+        stepName = visibleSteps[currentIndex - 1];
+      }
+    }
+    return {
+      stepName,
+      command,
+    };
   }
 
   private getVisibleSteps() {
@@ -47,72 +97,25 @@ class Wizard {
     return this.getVisibleSteps().indexOf(this.activeStep);
   }
 
-  private executeStepTransition({
-    command,
-    stepName,
-  }: {
-    command: WizardCommand;
-    stepName: string | null;
-  }) {
-    if (stepName === null) {
-      return;
-    }
-    this.middlewareManager.execute({
-      command,
-      step: this.stepsMap[this.activeStep],
-      resolve: this.observer.resolveDispatch({ stepName, command }),
-      reject: this.observer.rejectDispatch,
-    });
-  }
-
-  private nextStep = (visibleSteps: string[], currentIndex: number) => {
-    if (currentIndex === -1 || currentIndex === visibleSteps.length - 1) {
-      return null;
-    }
-
-    const nextStepName = visibleSteps[currentIndex + 1];
-    return nextStepName;
-  };
-
-  private prevStep = (visibleSteps: string[], currentIndex: number) => {
-    if (currentIndex === -1 || currentIndex === 0) {
-      return null;
-    }
-
-    const prevStepName = visibleSteps[currentIndex - 1];
-    return prevStepName;
-  };
-  navigator = (command: WizardCommand) => {
-    const visibleSteps = this.getVisibleSteps();
-    const currentIndex = this.getCurrentIndex();
-    let stepName: string | null = null;
-    if (command === WIZARD_COMMANDS.NEXT) {
-      stepName = this.nextStep(visibleSteps, currentIndex);
-    } else {
-      stepName = this.prevStep(visibleSteps, currentIndex);
-    }
-    this.executeStepTransition({ command, stepName });
-  };
-
   activeStepSyncStore = {
-    subscribe: this.observer.subscribeActiveStepSyncStore,
-    getSnapshot: () => this.activeStep,
+    // subscribe: this.observer.subscribeActiveStepSyncStore,
+    // getSnapshot: () => this.activeStep,
   };
 
   stepParamsSyncStore = {
-    subscribe: this.observer.subscribeStepParamsSyncStore((payload: any) => {
-      this.stepsMap[this.activeStep] = {
-        ...this.stepsMap[this.activeStep],
-        ...payload,
-      };
-    }),
-    getSnapshot: () => this.stepsMap[this.activeStep],
+    // subscribe: this.observer.subscribeStepParamsSyncStore((payload: any) => {
+    //   this.stepsMap[this.activeStep] = {
+    //     ...this.stepsMap[this.activeStep],
+    //     ...payload,
+    //   };
+    // }),
+    // getSnapshot: () => this.stepsMap[this.activeStep],
   };
 
   rejectSubscription = (cb: (payload: any) => void) => {
-    return this.observer.subscribeStepRejected((payload: any) => {
-      cb(payload);
-    });
+    // return this.observer.subscribeStepRejected((payload: any) => {
+    //   cb(payload);
+    // });
   };
 
   mutateStep = (
@@ -122,16 +125,16 @@ class Wizard {
       state: any;
     }
   ) => {
-    const activeStep = this.stepsMap[this.activeStep];
-    let result = cb({
-      isCompleted: activeStep.isCompleted,
-      isChanged: activeStep.isChanged,
-      state: activeStep.state,
-    });
-    this.observer.dispatch({
-      eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
-      payload: result,
-    });
+    // const activeStep = this.stepsMap[this.activeStep];
+    // let result = cb({
+    //   isCompleted: activeStep.isCompleted,
+    //   isChanged: activeStep.isChanged,
+    //   state: activeStep.state,
+    // });
+    // this.observer.dispatch({
+    //   eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+    //   payload: result,
+    // });
   };
 }
 
