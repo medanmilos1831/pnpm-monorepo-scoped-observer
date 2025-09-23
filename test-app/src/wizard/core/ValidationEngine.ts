@@ -1,5 +1,9 @@
-import { WIZARD_COMMANDS, type WizardCommand } from "./constants";
-import type { IStep, WizardRejectCallback } from "./types";
+import {
+  WIZARD_COMMANDS,
+  type IStep,
+  type WizardCommand,
+  type WizardRejectCallback,
+} from "../types";
 
 class ValidationEngine {
   private nextValidator = ({

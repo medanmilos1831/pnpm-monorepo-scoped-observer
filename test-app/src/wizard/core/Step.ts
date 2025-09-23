@@ -1,4 +1,4 @@
-import type { WizardRoute } from "./types";
+import type { WizardRoute } from "../types";
 
 class Step {
   name: string;

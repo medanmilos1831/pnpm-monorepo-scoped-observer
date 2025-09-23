@@ -1,5 +1,5 @@
 import { type IScopedObserver } from "../../scroped-observer";
-import { WIZARD_SCOPE } from "../constants";
+import { WIZARD_SCOPE } from "../types";
 
 class Events {
   private observer: IScopedObserver;

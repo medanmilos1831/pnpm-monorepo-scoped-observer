@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from "react";
 import { createWizard } from "../createWizard";
 import { Context } from "./useStep";
 

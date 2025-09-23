@@ -1,9 +1,5 @@
-import {
-  WIZARD_COMMANDS,
-  WIZARD_EVENTS,
-  type WizardCommand,
-} from "./constants";
-import { Events } from "./observer/Events";
+import { WIZARD_COMMANDS, WIZARD_EVENTS, type WizardCommand } from "../types";
+import { Events } from "../observer/Events";
 import { ValidationEngine } from "./ValidationEngine";
 import { Step } from "./Step";
 import type {
@@ -11,7 +7,7 @@ import type {
   WizardOptions,
   WizardRoute,
   WizardRouteWithoutValidators,
-} from "./types";
+} from "../types";
 
 class Wizard {
   activeStep: string;

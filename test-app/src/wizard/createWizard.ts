@@ -1,5 +1,5 @@
 import { Observer } from "./observer";
-import { Wizard } from "./Wizard";
+import { Wizard } from "./core";
 import type { WizardOptions, WizardRoute } from "./types";
 
 const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
