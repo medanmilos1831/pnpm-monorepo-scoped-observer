@@ -1,5 +1,5 @@
 import { WIZARD_COMMANDS, type WizardCommand } from "./constants";
-import type { IStep } from "./types";
+import type { IStep, WizardRejectCallback } from "./types";
 
 class MiddlewareManager {
   private nextValidator = ({
@@ -9,7 +9,7 @@ class MiddlewareManager {
   }: {
     step: IStep;
     resolve: () => void;
-    reject: () => void;
+    reject: WizardRejectCallback;
   }) => {
     if (!step.validators.onNext) {
       resolve();
@@ -24,7 +24,7 @@ class MiddlewareManager {
   }: {
     step: IStep;
     resolve: () => void;
-    reject: () => void;
+    reject: WizardRejectCallback;
   }) => {
     if (!step.validators.onPrev) {
       resolve();
@@ -41,7 +41,7 @@ class MiddlewareManager {
     step: IStep;
     command: WizardCommand;
     resolve: () => void;
-    reject: () => void;
+    reject: WizardRejectCallback;
   }) => {
     if (command === WIZARD_COMMANDS.NEXT) {
       this.nextValidator({

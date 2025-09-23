@@ -1,5 +1,5 @@
 import { data } from "../mock";
-import { useMutateStep, useStepParams, useWizardReject } from "../wizzard";
+import { useMutateStep, useStepParams, useWizardReject } from "../wizard";
 
 const StepOne = () => {
   useWizardReject((payload: any) => {

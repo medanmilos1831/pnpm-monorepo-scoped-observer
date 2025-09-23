@@ -1,4 +1,4 @@
-import { useStep } from "../wizzard";
+import { useStep } from "../wizard";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";

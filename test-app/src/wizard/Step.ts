@@ -1,5 +1,4 @@
-import { MiddlewareManager } from "./MiddlewareManager";
-import type { WizzardRoute } from "./types";
+import type { WizardRoute } from "./types";
 
 class Step {
   name: string;
@@ -9,7 +8,7 @@ class Step {
   stepHistory = undefined;
   visible: boolean = true;
   validators;
-  constructor(config: WizzardRoute) {
+  constructor(config: WizardRoute) {
     this.name = config.name;
     this.visible = config.visible ?? true;
     this.isCompleted = false;

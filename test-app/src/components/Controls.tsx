@@ -1,7 +1,7 @@
-import { useWizzardNavigate } from "../wizzard";
+import { useWizardNavigate } from "../wizard";
 
 const Controls = () => {
-  const { nextStep, prevStep } = useWizzardNavigate();
+  const { nextStep, prevStep } = useWizardNavigate();
   return (
     <div>
       <button onClick={prevStep}>Prev</button>

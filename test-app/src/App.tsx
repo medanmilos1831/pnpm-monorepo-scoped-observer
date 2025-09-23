@@ -1,8 +1,8 @@
-import { createWizzard } from "./wizzard/createWizzard";
+import { createWizard } from "./wizard/createWizard";
 
 import { HomePage } from "./pages";
-import { Provider } from "./wizzard/Provider";
-const wizzard = createWizzard(
+import { Provider } from "./wizard/Provider";
+const wizard = createWizard(
   [
     {
       name: "stepOne",
@@ -57,7 +57,7 @@ function App() {
         color: "white",
       }}
     >
-      <Provider value={wizzard}>
+      <Provider value={wizard}>
         <HomePage />
       </Provider>
     </div>

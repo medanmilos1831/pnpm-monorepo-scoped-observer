@@ -1,10 +1,14 @@
+import { type IScopedObserver } from "../scroped-observer";
 import { WIZARD_EVENTS, WIZARD_SCOPE } from "./constants";
-import type { IScopedObserver } from "../scroped-observer";
 
 class Subscribers {
-  constructor(private observer: IScopedObserver) {}
+  private observer: IScopedObserver;
 
-  activeStepSyncStore = (notify: () => void) => {
+  constructor(observer: IScopedObserver) {
+    this.observer = observer;
+  }
+
+  public activeStepSyncStore = (notify: () => void) => {
     return this.observer.subscribe({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_CHANGED,
@@ -14,7 +18,7 @@ class Subscribers {
     });
   };
 
-  stepParamsSyncStore = (notify: () => void) => {
+  public stepParamsSyncStore = (notify: () => void) => {
     return this.observer.subscribe({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
@@ -24,7 +28,7 @@ class Subscribers {
     });
   };
 
-  rejectSubscription = (cb: (payload: any) => void) =>
+  public rejectSubscription = (cb: (payload: any) => void) =>
     this.observer.subscribe({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_REJECTED,
@@ -32,6 +36,16 @@ class Subscribers {
         cb(payload);
       },
     });
+
+  public navigationRequested = (
+    callback: ({ payload }: { payload: { command: any } }) => void
+  ) => {
+    return this.observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
+      callback,
+    });
+  };
 }
 
 export { Subscribers };

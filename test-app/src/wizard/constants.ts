@@ -2,7 +2,6 @@ export const WIZARD_SCOPE = "wizard" as const;
 
 export const WIZARD_EVENTS = {
   NAVIGATION_REQUESTED: "navigationRequested",
-  STEP_CHANGING: "stepChanging",
   STEP_CHANGED: "stepChanged",
   STEP_REJECTED: "stepRejected",
   STEP_PARAMS_CHANGED: "stepParamsChanged",

@@ -5,7 +5,9 @@ export interface IWizardConfig {
   activeSteps: string[];
 }
 
-export interface IStep extends WizzardRoute {
+export type WizardRejectCallback = (obj?: { payload?: any }) => void;
+
+export interface IStep extends WizardRoute {
   name: string;
   isCompleted: boolean;
   isChanged: boolean;
@@ -13,23 +15,25 @@ export interface IStep extends WizzardRoute {
   stepHistory: any;
 }
 
-export interface WizzardRoute {
+export interface WizardRoute {
   name: string;
   visible: boolean;
   validators: {
     onNext?: (
       step: IStep,
       resolve: () => void,
-      reject: (obj?: { payload?: any }) => void
-    ) => any;
+      reject: WizardRejectCallback
+    ) => void;
     onPrev?: (
       step: IStep,
       resolve: () => void,
-      reject: (obj?: { payload?: any }) => void
-    ) => boolean;
+      reject: WizardRejectCallback
+    ) => void;
   };
 }
 
-export interface WizzardOptions {
+export type WizardRouteWithoutValidators = Omit<WizardRoute, "validators">;
+
+export interface WizardOptions {
   activeStep: string;
 }

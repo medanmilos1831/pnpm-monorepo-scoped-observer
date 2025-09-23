@@ -4,10 +4,10 @@ import {
   useEffect,
   useSyncExternalStore,
 } from "react";
-import type { createWizzard } from "./createWizzard";
+import type { createWizard } from "./createWizard";
 import { WIZARD_COMMANDS } from "./constants";
 
-const Context = createContext<ReturnType<typeof createWizzard> | undefined>(
+const Context = createContext<ReturnType<typeof createWizard> | undefined>(
   undefined
 );
 const Provider = ({
@@ -15,7 +15,7 @@ const Provider = ({
   value,
 }: {
   children: React.ReactNode;
-  value: ReturnType<typeof createWizzard>;
+  value: ReturnType<typeof createWizard>;
 }) => {
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
@@ -67,7 +67,7 @@ const useWizardReject = (cb: (payload: any) => void) => {
   }, []);
 };
 
-const useWizzardNavigate = () => {
+const useWizardNavigate = () => {
   const context = useContext(Context)!;
   return {
     nextStep: context.nextStep,
@@ -80,6 +80,6 @@ export {
   useMutateStep,
   useStep,
   useStepParams,
-  useWizzardNavigate,
+  useWizardNavigate,
   useWizardReject,
 };

@@ -1,28 +1,32 @@
-import type { IScopedObserver } from "../scroped-observer";
 import {
   WIZARD_COMMANDS,
   WIZARD_EVENTS,
-  WIZARD_SCOPE,
   type WizardCommand,
 } from "./constants";
 import { MiddlewareManager } from "./MiddlewareManager";
+import type { Observer } from "./Observer";
 import { Step } from "./Step";
-import type { IStep, WizzardOptions, WizzardRoute } from "./types";
+import type {
+  IStep,
+  WizardOptions,
+  WizardRoute,
+  WizardRouteWithoutValidators,
+} from "./types";
 
 class Wizard {
   activeStep: string;
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
-  observer: IScopedObserver;
   private middlewareManager = new MiddlewareManager();
+  private observer: Observer;
 
-  private __INTERNAL__: any = [];
+  private __INTERNAL__: WizardRouteWithoutValidators[] = [];
 
   constructor(
-    config: WizzardRoute[],
-    opts: WizzardOptions,
-    observer: IScopedObserver
+    config: WizardRoute[],
+    opts: WizardOptions,
+    observerInstance: Observer
   ) {
     config.forEach((route) => {
       const { validators, ...rest } = route;
@@ -33,42 +37,7 @@ class Wizard {
     });
     this.activeStep = opts.activeStep;
     this.updateNavigationProperties();
-    this.observer = observer;
-
-    this.observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.NAVIGATION_REQUESTED,
-      callback: ({ payload }) => {
-        let { stepName, command } = this.handleNavigationRequest(
-          payload.command
-        );
-        if (stepName === null) {
-          return;
-        }
-        this.middlewareManager.execute({
-          command: command,
-          step: this.stepsMap[this.activeStep],
-          resolve: () => {
-            this.activeStep = stepName;
-            this.updateNavigationProperties();
-            this.observer.dispatch({
-              scope: WIZARD_SCOPE,
-              eventName: WIZARD_EVENTS.STEP_CHANGED,
-              payload: {
-                stepName,
-              },
-            });
-          },
-          reject: (error?: any) => {
-            this.observer.dispatch({
-              scope: WIZARD_SCOPE,
-              eventName: WIZARD_EVENTS.STEP_REJECTED,
-              payload: error,
-            });
-          },
-        });
-      },
-    });
+    this.observer = observerInstance;
   }
   private updateNavigationProperties() {
     const visibleSteps = Object.keys(this.stepsMap);
@@ -112,10 +81,43 @@ class Wizard {
         state: activeStep.state,
       }),
     };
-    this.observer.dispatch({
-      scope: WIZARD_SCOPE,
-      eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+    this.observer.events.dispatch({
+      event: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
     });
+  };
+
+  private navigateToStep = (command: WizardCommand) => {
+    let { stepName, command: cmd } = this.handleNavigationRequest(command);
+    if (stepName === null) {
+      return;
+    }
+    this.middlewareManager.execute({
+      command: cmd,
+      step: this.stepsMap[this.activeStep],
+      resolve: () => {
+        this.activeStep = stepName;
+        this.updateNavigationProperties();
+        this.observer.events.dispatch({
+          event: WIZARD_EVENTS.STEP_CHANGED,
+          payload: { stepName },
+        });
+      },
+      reject: (error?: any) => {
+        this.observer.events.dispatch({
+          event: WIZARD_EVENTS.STEP_REJECTED,
+          payload: error,
+        });
+      },
+    });
+  };
+
+  // Navigation methods
+  nextStep = () => {
+    this.navigateToStep(WIZARD_COMMANDS.NEXT);
+  };
+
+  prevStep = () => {
+    this.navigateToStep(WIZARD_COMMANDS.PREV);
   };
 }
 

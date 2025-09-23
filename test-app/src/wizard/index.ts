@@ -1,7 +1,7 @@
 export {
   Provider,
   useStep,
-  useWizzardNavigate,
+  useWizardNavigate,
   useMutateStep,
   useStepParams,
   useWizardReject,
