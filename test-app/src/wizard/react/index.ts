@@ -4,4 +4,3 @@ export { useStepParams } from "./useStepParams";
 export { useMutateStep } from "./useMutateStep";
 export { useWizardReject } from "./useWizardReject";
 export { useWizardNavigate } from "./useWizardNavigate";
-export { useWizardLocation } from "./useWizardLocation";
