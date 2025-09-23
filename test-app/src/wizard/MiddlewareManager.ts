@@ -43,19 +43,14 @@ class MiddlewareManager {
     resolve: () => void;
     reject: WizardRejectCallback;
   }) => {
-    if (command === WIZARD_COMMANDS.NEXT) {
-      this.nextValidator({
-        step,
-        resolve,
-        reject,
-      });
-    } else {
-      this.prevValidator({
-        step,
-        resolve,
-        reject,
-      });
-    }
+    const obj = {
+      step,
+      resolve,
+      reject,
+    };
+    command === WIZARD_COMMANDS.NEXT
+      ? this.nextValidator(obj)
+      : this.prevValidator(obj);
   };
 }
 

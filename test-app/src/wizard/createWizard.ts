@@ -4,7 +4,7 @@ import type { WizardOptions, WizardRoute } from "./types";
 
 const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
   const observer = new Observer();
-  const wizard = new Wizard(config, opts, observer);
+  const wizard = new Wizard(config, opts, observer.events);
 
   return {
     activeStepSyncStore: observer.subscribers.activeStepSyncStore,
