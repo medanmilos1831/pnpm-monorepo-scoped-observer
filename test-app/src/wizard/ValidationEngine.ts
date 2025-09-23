@@ -1,7 +1,7 @@
 import { WIZARD_COMMANDS, type WizardCommand } from "./constants";
 import type { IStep, WizardRejectCallback } from "./types";
 
-class MiddlewareManager {
+class ValidationEngine {
   private nextValidator = ({
     step,
     resolve,
@@ -17,6 +17,7 @@ class MiddlewareManager {
     }
     step.validators.onNext?.(step, resolve, reject) ?? true;
   };
+
   private prevValidator = ({
     step,
     resolve,
@@ -32,6 +33,7 @@ class MiddlewareManager {
     }
     step.validators.onPrev?.(step, resolve, reject) ?? true;
   };
+
   execute = ({
     step,
     command,
@@ -54,4 +56,4 @@ class MiddlewareManager {
   };
 }
 
-export { MiddlewareManager };
+export { ValidationEngine };

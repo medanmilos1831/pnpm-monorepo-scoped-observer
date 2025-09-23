@@ -4,7 +4,7 @@ import {
   type WizardCommand,
 } from "./constants";
 import { Events } from "./Events";
-import { MiddlewareManager } from "./MiddlewareManager";
+import { ValidationEngine } from "./ValidationEngine";
 import { Step } from "./Step";
 import type {
   IStep,
@@ -18,7 +18,7 @@ class Wizard {
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
-  private middlewareManager = new MiddlewareManager();
+  private validationEngine = new ValidationEngine();
   private events: Events;
 
   private __INTERNAL__: WizardRouteWithoutValidators[] = [];
@@ -84,7 +84,7 @@ class Wizard {
     if (stepName === null) {
       return;
     }
-    this.middlewareManager.execute({
+    this.validationEngine.execute({
       command: command,
       step: this.stepsMap[this.activeStep],
       resolve: () => this.resolve(stepName),
