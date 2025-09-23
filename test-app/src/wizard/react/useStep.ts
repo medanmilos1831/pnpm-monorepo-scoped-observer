@@ -7,12 +7,12 @@ export const useStep = () => {
   const context = useContext(Context)!;
   const state = useSubscriber(
     { eventName: WIZARD_EVENTS.STEP_CHANGED },
-    context.value.getActiveStep
+    context.getActiveStep
   );
   return {
     step: state,
-    isFirst: context.value.getIsFirst(),
-    isLast: context.value.getIsLast(),
+    isFirst: context.getIsFirst(),
+    isLast: context.getIsLast(),
   };
 };
 

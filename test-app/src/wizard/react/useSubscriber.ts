@@ -6,20 +6,17 @@ const useSubscriber = (
   { eventName }: { eventName: string },
   snapshot: () => any
 ) => {
-  const { value } = useContext(Context)!;
+  const { subscribe } = useContext(Context)!;
   const [state] = useState(() => {
     return (notify: () => void) => {
-      return value.subscribe({
+      return subscribe({
         scope: WIZARD_SCOPE,
         eventName,
-        callback: () => {
-          notify();
-        },
+        callback: notify,
       });
     };
   });
-  const store = useSyncExternalStore(state, snapshot);
-  return store;
+  return useSyncExternalStore(state, snapshot);
 };
 
 export { useSubscriber };

@@ -7,15 +7,15 @@ export const useStepParams = () => {
   const context = useContext(Context)!;
   const isCompleted = useSubscriber(
     { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
-    context.value.getIsStepComplete
+    context.getIsStepComplete
   );
   const isChanged = useSubscriber(
     { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
-    context.value.getIsStepChanged
+    context.getIsStepChanged
   );
   const state = useSubscriber(
     { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
-    context.value.getStepState
+    context.getStepState
   );
   return {
     isCompleted,

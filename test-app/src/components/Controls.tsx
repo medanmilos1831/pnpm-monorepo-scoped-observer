@@ -4,7 +4,6 @@ const Controls = () => {
   const { nextStep, prevStep } = useWizardNavigate();
   const { isCompleted } = useStepParams();
   const { isFirst, isLast } = useStep();
-  console.log("RENDER CONTROLS");
   return (
     <div
       style={{
