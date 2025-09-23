@@ -4,7 +4,7 @@ import {
   useEffect,
   useSyncExternalStore,
 } from "react";
-import type { createWizard } from "./createWizard";
+import { createWizard } from "./createWizard";
 import { WIZARD_COMMANDS } from "./constants";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
