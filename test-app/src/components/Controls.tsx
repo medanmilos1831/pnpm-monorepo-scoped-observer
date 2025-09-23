@@ -5,7 +5,6 @@ const Controls = () => {
   const { nextStep, prevStep } = useWizardNavigate();
   const { isCompleted } = useStepParams();
   const { isFirst, isLast } = useWizardLocation();
-  console.log(isFirst, isLast);
   return (
     <div
       style={{
@@ -19,56 +18,57 @@ const Controls = () => {
         backgroundColor: "#f9fafb",
       }}
     >
-      <button
-        onClick={prevStep}
-        disabled={isFirst}
-        style={{
-          display: isFirst ? "none" : "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          padding: "0.75rem 1.5rem",
-          backgroundColor: "#ffffff",
-          border: "2px solid #e5e7eb",
-          borderRadius: "8px",
-          color: "#374151",
-          fontSize: "0.875rem",
-          fontWeight: "500",
-          cursor: "pointer",
-          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-          boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-          outline: "none",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = "#d1d5db";
-          e.currentTarget.style.backgroundColor = "#f3f4f6";
-          e.currentTarget.style.transform = "translateY(-1px)";
-          e.currentTarget.style.boxShadow =
-            "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "#e5e7eb";
-          e.currentTarget.style.backgroundColor = "#ffffff";
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
-        }}
-        onMouseDown={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-        }}
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      {!isFirst && (
+        <button
+          onClick={prevStep}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.75rem 1.5rem",
+            backgroundColor: "#ffffff",
+            border: "2px solid #e5e7eb",
+            borderRadius: "8px",
+            color: "#374151",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+            cursor: "pointer",
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+            boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            outline: "none",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "#d1d5db";
+            e.currentTarget.style.backgroundColor = "#f3f4f6";
+            e.currentTarget.style.transform = "translateY(-1px)";
+            e.currentTarget.style.boxShadow =
+              "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "#e5e7eb";
+            e.currentTarget.style.backgroundColor = "#ffffff";
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
+          }}
+          onMouseDown={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
         >
-          <path d="m15 18-6-6 6-6" />
-        </svg>
-        Previous
-      </button>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          Previous
+        </button>
+      )}
 
       <button
         onClick={nextStep}
