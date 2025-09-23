@@ -3,16 +3,13 @@ import { Context } from "./useStep";
 
 export const useWizardLocation = () => {
   const context = useContext(Context)!;
-  const isFirst = useSyncExternalStore(
-    context.activeStepSyncStore,
-    context.isFirst
+  const step = useSyncExternalStore(
+    context.value.activeStepSyncStore,
+    context.value.getActiveStepSnapshot
   );
-  const isLast = useSyncExternalStore(
-    context.activeStepSyncStore,
-    context.isLast
-  );
+
   return {
-    isFirst,
-    isLast,
+    isFirst: context.value.isFirst(),
+    isLast: context.value.isLast(),
   };
 };

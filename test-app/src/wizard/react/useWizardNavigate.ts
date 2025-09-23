@@ -4,7 +4,7 @@ import { Context } from "./useStep";
 export const useWizardNavigate = () => {
   const context = useContext(Context)!;
   return {
-    nextStep: context.nextStep,
-    prevStep: context.prevStep,
+    nextStep: context.value.nextStep,
+    prevStep: context.value.prevStep,
   };
 };

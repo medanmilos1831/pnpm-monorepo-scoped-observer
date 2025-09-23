@@ -7,7 +7,7 @@ import { Events } from "./Events";
 import { Subscribers } from "./Subscribers";
 
 class Observer {
-  private observer: IScopedObserver = createScopedObserver([
+  public observer: IScopedObserver = createScopedObserver([
     {
       scope: WIZARD_SCOPE,
     },

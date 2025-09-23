@@ -12,6 +12,8 @@ const StepOne = () => {
     return params.state?.id === accountId;
   };
 
+  console.log("params", params);
+
   return (
     <div
       style={{

@@ -4,8 +4,8 @@ import { Context } from "./useStep";
 export const useStepParams = () => {
   const context = useContext(Context)!;
   const params = useSyncExternalStore(
-    context.stepParamsSyncStore,
-    context.getStepParamsSnapshot
+    context.value.stepParamsSyncStore,
+    context.value.getStepParamsSnapshot
   );
   return {
     isCompleted: params.isCompleted,

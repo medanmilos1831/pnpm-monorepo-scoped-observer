@@ -1,6 +1,11 @@
 import { Observer } from "./observer";
 import { Wizard } from "./core";
-import type { WizardOptions, WizardRoute } from "./types";
+import {
+  WIZARD_EVENTS,
+  WIZARD_SCOPE,
+  type WizardOptions,
+  type WizardRoute,
+} from "./types";
 
 const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
   const observer = new Observer();
@@ -17,6 +22,15 @@ const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
     prevStep: wizard.prevStep,
     isLast: () => wizard.isLast,
     isFirst: () => wizard.isFirst,
+    pera: (callback: any) => {
+      return observer.observer.subscribe({
+        scope: WIZARD_SCOPE,
+        eventName: WIZARD_EVENTS.STEP_CHANGED,
+        callback: () => {
+          callback();
+        },
+      });
+    },
   };
 };
 

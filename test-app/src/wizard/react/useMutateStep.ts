@@ -11,7 +11,7 @@ export const useMutateStep = () => {
         state: any;
       }
     ) => {
-      context.mutateStep(cb);
+      context.value.mutateStep(cb);
     },
   };
 };

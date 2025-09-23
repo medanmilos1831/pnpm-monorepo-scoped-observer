@@ -1,15 +1,15 @@
 import { createContext, useContext, useSyncExternalStore } from "react";
 import { createWizard } from "../createWizard";
 
-const Context = createContext<ReturnType<typeof createWizard> | undefined>(
-  undefined
-);
+const Context = createContext<
+  { value: ReturnType<typeof createWizard>; someState: string } | undefined
+>(undefined);
 
 export const useStep = () => {
   const context = useContext(Context)!;
   const step = useSyncExternalStore(
-    context.activeStepSyncStore,
-    context.getActiveStepSnapshot
+    context.value.activeStepSyncStore,
+    context.value.getActiveStepSnapshot
   );
   return { step };
 };
