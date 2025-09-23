@@ -3,7 +3,7 @@ import {
   WIZARD_EVENTS,
   type WizardCommand,
 } from "./constants";
-import { Events } from "./Events";
+import { Events } from "./observer/Events";
 import { ValidationEngine } from "./ValidationEngine";
 import { Step } from "./Step";
 import type {

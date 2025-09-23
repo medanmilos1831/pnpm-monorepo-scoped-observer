@@ -1,8 +1,8 @@
 export {
   Provider,
   useStep,
-  useWizardNavigate,
-  useMutateStep,
   useStepParams,
+  useMutateStep,
   useWizardReject,
-} from "./Provider";
+  useWizardNavigate,
+} from "./react";

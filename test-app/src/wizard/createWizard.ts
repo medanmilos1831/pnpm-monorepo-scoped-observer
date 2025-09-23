@@ -1,4 +1,4 @@
-import { Observer } from "./Observer";
+import { Observer } from "./observer";
 import { Wizard } from "./Wizard";
 import type { WizardOptions, WizardRoute } from "./types";
 

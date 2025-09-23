@@ -1,7 +1,7 @@
 import { createWizard } from "./wizard/createWizard";
 
 import { HomePage } from "./pages";
-import { Provider } from "./wizard/Provider";
+import { Provider } from "./wizard/react/Provider";
 const wizard = createWizard(
   [
     {

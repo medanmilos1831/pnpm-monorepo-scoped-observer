@@ -1,5 +1,5 @@
-import { type IScopedObserver } from "../scroped-observer";
-import { WIZARD_EVENTS, WIZARD_SCOPE } from "./constants";
+import { type IScopedObserver } from "../../scroped-observer";
+import { WIZARD_EVENTS, WIZARD_SCOPE } from "../constants";
 
 class Subscribers {
   private observer: IScopedObserver;

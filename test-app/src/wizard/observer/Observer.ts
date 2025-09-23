@@ -1,8 +1,8 @@
 import {
   createScopedObserver,
   type IScopedObserver,
-} from "../scroped-observer";
-import { WIZARD_SCOPE } from "./constants";
+} from "../../scroped-observer";
+import { WIZARD_SCOPE } from "../constants";
 import { Events } from "./Events";
 import { Subscribers } from "./Subscribers";
 
