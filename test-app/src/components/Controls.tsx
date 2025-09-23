@@ -1,10 +1,10 @@
-import { useStepParams, useWizardNavigate } from "../wizard";
-import { useWizardLocation } from "../wizard/react";
+import { useStepParams, useWizardNavigate, useStep } from "../wizard";
 
 const Controls = () => {
   const { nextStep, prevStep } = useWizardNavigate();
   const { isCompleted } = useStepParams();
-  const { isFirst, isLast } = useWizardLocation();
+  const { isFirst, isLast } = useStep();
+  console.log("RENDER CONTROLS");
   return (
     <div
       style={{

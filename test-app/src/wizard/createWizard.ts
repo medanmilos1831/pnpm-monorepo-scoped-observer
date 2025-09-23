@@ -17,6 +17,7 @@ const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
     rejectSubscription: observer.subscribers.rejectSubscription,
     getActiveStepSnapshot: () => wizard.activeStep,
     getStepParamsSnapshot: () => wizard.stepsMap[wizard.activeStep],
+    completedStepSnapshot: () => wizard.stepsMap[wizard.activeStep].isCompleted,
     mutateStep: wizard.mutateStep,
     nextStep: wizard.nextStep,
     prevStep: wizard.prevStep,
@@ -31,6 +32,7 @@ const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
         },
       });
     },
+    subscribe: observer.observer.subscribe,
   };
 };
 

@@ -1,7 +1,8 @@
-import { useState, type PropsWithChildren } from "react";
+import { createContext, useState, type PropsWithChildren } from "react";
 import { createWizard } from "../createWizard";
-import { Context } from "./useStep";
-
+const Context = createContext<
+  { value: ReturnType<typeof createWizard>; someState: string } | undefined
+>(undefined);
 const Provider = ({
   children,
   value,
@@ -24,4 +25,4 @@ const Provider = ({
   );
 };
 
-export { Provider };
+export { Provider, Context };
