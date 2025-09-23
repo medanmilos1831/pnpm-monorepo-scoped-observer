@@ -30,20 +30,17 @@ const createWizzard = (config: WizzardRoute[], opts: WizzardOptions) => {
         },
       });
     },
+    rejectSubscription: (cb: (payload: any) => void) =>
+      observer.subscribe({
+        scope: WIZARD_SCOPE,
+        eventName: WIZARD_EVENTS.STEP_REJECTED,
+        callback: ({ payload }: any) => {
+          cb(payload);
+        },
+      }),
     getActiveStepSnapshot: () => wizard.activeStep,
     getStepParamsSnapshot: () => wizard.stepsMap[wizard.activeStep],
 
-    rejectSubscription: (cb: (payload: any) => void) => {
-      return (notify: () => void) =>
-        observer.subscribe({
-          scope: WIZARD_SCOPE,
-          eventName: WIZARD_EVENTS.STEP_REJECTED,
-          callback: ({ payload }: any) => {
-            cb(payload);
-            notify();
-          },
-        });
-    },
     mutateStep: wizard.mutateStep,
 
     nextStep: () => {

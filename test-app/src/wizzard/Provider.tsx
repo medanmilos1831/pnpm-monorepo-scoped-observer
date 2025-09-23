@@ -62,8 +62,8 @@ const useMutateStep = () => {
 const useWizardReject = (cb: (payload: any) => void) => {
   const context = useContext(Context)!;
   useEffect(() => {
-    // const unsubscribe = context.rejectSubscription(cb);
-    // return () => unsubscribe();
+    const unsubscribe = context.rejectSubscription(cb);
+    return () => unsubscribe();
   }, []);
 };
 

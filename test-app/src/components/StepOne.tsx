@@ -2,11 +2,12 @@ import { data } from "../mock";
 import { useMutateStep, useStepParams, useWizardReject } from "../wizzard";
 
 const StepOne = () => {
-  const reject = useWizardReject((payload: any) => {
+  useWizardReject((payload: any) => {
     console.log("reject", payload);
   });
   const { mutate } = useMutateStep();
   const params = useStepParams();
+
   console.log("mutate", params);
   return (
     <div>
