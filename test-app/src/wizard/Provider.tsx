@@ -5,7 +5,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { createWizard } from "./createWizard";
-import { WIZARD_COMMANDS } from "./constants";
+import type { WizardRejectCallback } from "./types";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
   undefined
@@ -59,7 +59,7 @@ const useMutateStep = () => {
   };
 };
 
-const useWizardReject = (cb: (payload: any) => void) => {
+const useWizardReject = (cb: WizardRejectCallback) => {
   const context = useContext(Context)!;
   useEffect(() => {
     const unsubscribe = context.rejectSubscription(cb);

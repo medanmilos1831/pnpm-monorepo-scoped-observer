@@ -8,13 +8,14 @@ const wizard = createWizard(
       name: "stepOne",
       visible: true,
       validators: {
-        // onNext: (step, resolve, reject) => {
-        //   reject({
-        //     payload: {
-        //       message: "StepOne is rejected",
-        //     },
-        //   });
-        // },
+        onNext: (step, resolve, reject) => {
+          resolve();
+          // reject({
+          //   payload: {
+          //     message: "StepOne is rejected",
+          //   },
+          // });
+        },
         onPrev: () => true,
       },
     },
