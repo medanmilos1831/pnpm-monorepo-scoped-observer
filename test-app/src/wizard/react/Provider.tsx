@@ -7,12 +7,6 @@ const Provider = ({
   children,
   value,
 }: PropsWithChildren<{ value: ReturnType<typeof createWizard> }>) => {
-  const [state, setState] = useState(() => {
-    return (notify: () => void) => {
-      value.pera(notify);
-    };
-  });
-  console.log("state", state);
   return (
     <Context.Provider
       value={{

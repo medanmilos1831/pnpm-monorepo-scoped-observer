@@ -5,11 +5,11 @@ export const useWizardLocation = () => {
   const context = useContext(Context)!;
   const isFirst = useSyncExternalStore(
     context.value.activeStepSyncStore,
-    context.value.isFirst
+    context.value.getIsFirst
   );
   const isLast = useSyncExternalStore(
     context.value.activeStepSyncStore,
-    context.value.isLast
+    context.value.getIsLast
   );
 
   return {

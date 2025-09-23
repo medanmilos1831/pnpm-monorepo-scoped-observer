@@ -5,13 +5,21 @@ import { WIZARD_EVENTS } from "../types";
 
 export const useStepParams = () => {
   const context = useContext(Context)!;
-  const params = useSubscriber(
+  const isCompleted = useSubscriber(
     { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
-    context.value.getStepParamsSnapshot
+    context.value.getIsStepComplete
+  );
+  const isChanged = useSubscriber(
+    { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
+    context.value.getIsStepChanged
+  );
+  const state = useSubscriber(
+    { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
+    context.value.getStepState
   );
   return {
-    isCompleted: params.isCompleted,
-    isChanged: params.isChanged,
-    state: params.state,
+    isCompleted,
+    isChanged,
+    state,
   };
 };
