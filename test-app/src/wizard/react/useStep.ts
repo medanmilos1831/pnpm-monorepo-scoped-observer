@@ -7,12 +7,10 @@ const Context = createContext<ReturnType<typeof createWizard> | undefined>(
 
 export const useStep = () => {
   const context = useContext(Context)!;
-  console.log(context);
   const step = useSyncExternalStore(
     context.activeStepSyncStore,
     context.getActiveStepSnapshot
   );
-  console.log(step);
   return { step };
 };
 

@@ -54,8 +54,6 @@ function App() {
       style={{
         height: "100vh",
         width: "100vw",
-        backgroundColor: "black",
-        color: "white",
       }}
     >
       <Provider value={wizard}>

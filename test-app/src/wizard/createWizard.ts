@@ -15,6 +15,8 @@ const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
     mutateStep: wizard.mutateStep,
     nextStep: wizard.nextStep,
     prevStep: wizard.prevStep,
+    isLast: () => wizard.isLast,
+    isFirst: () => wizard.isFirst,
   };
 };
 

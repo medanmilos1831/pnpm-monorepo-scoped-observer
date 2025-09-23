@@ -114,6 +114,6 @@ export class ScopedObserver {
   }
 
   logging = () => {
-    console.log(this);
+    // Logging functionality can be implemented here
   };
 }
