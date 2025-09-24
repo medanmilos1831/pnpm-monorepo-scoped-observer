@@ -22,8 +22,15 @@ const wizard = createWizard(
       name: "stepTwo",
       visible: true,
       validators: {
-        // onNext: () => true,
-        // onPrev: () => true,
+        onNext: (step, resolve, reject) => {
+          // Validate that a plan is selected
+          if (step.stepHistory && step.state.id !== step.stepHistory?.id) {
+            reject();
+          } else {
+            resolve();
+          }
+        },
+        onPrev: () => true,
       },
     },
     {
