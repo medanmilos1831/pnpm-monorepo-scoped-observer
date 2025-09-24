@@ -1,9 +1,14 @@
-import { useStepParams, useWizardNavigate, useStep } from "../wizard";
+import { useStepParams, useWizardNavigate, useOnStepChange } from "../wizard";
 
 const Controls = () => {
   const { nextStep, prevStep } = useWizardNavigate();
   const { isCompleted } = useStepParams();
-  const { isFirst, isLast } = useStep();
+  const { isFirst, isLast } = useOnStepChange((state: any) => {
+    return {
+      isFirst: state.isFirst,
+      isLast: state.isLast,
+    };
+  });
   return (
     <div
       style={{

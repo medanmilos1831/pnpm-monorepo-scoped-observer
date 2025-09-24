@@ -8,6 +8,8 @@ const StepOne = () => {
   const { mutate } = useMutateStep();
   const params = useStepParams();
 
+  console.log("state");
+
   const isSelected = (accountId: number) => {
     return params.state?.id === accountId;
   };

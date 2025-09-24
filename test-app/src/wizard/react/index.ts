@@ -1,5 +1,5 @@
 export { Provider } from "./Provider";
-export { useStep } from "./useStep";
+export { useOnStepChange } from "./useOnStepChange";
 export { useStepParams } from "./useStepParams";
 export { useMutateStep } from "./useMutateStep";
 export { useWizardReject } from "./useWizardReject";

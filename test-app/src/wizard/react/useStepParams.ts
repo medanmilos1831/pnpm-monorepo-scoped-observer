@@ -1,7 +1,7 @@
-import { useContext, useSyncExternalStore } from "react";
-import { Context } from "./useStep";
-import { useSubscriber } from "./useSubscriber";
+import { useContext } from "react";
 import { WIZARD_EVENTS } from "../types";
+import { Context } from "./useOnStepChange";
+import { useSubscriber } from "./useSubscriber";
 
 export const useStepParams = () => {
   const context = useContext(Context)!;

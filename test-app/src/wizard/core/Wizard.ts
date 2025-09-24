@@ -1,5 +1,9 @@
-import { WIZARD_COMMANDS, WIZARD_EVENTS, type WizardCommand } from "../types";
-import { Events } from "../observer/Events";
+import {
+  WIZARD_COMMANDS,
+  WIZARD_EVENTS,
+  WIZARD_SCOPE,
+  type WizardCommand,
+} from "../types";
 import { ValidationEngine } from "./ValidationEngine";
 import { Step } from "./Step";
 import type {
@@ -8,22 +12,24 @@ import type {
   WizardRoute,
   WizardRouteWithoutValidators,
 } from "../types";
+import type { IScopedObserver } from "../../scroped-observer";
+import { createScopedObserver } from "../../scroped-observer";
 
 class Wizard {
+  observer: IScopedObserver = createScopedObserver([
+    {
+      scope: WIZARD_SCOPE,
+    },
+  ]);
   activeStep: string;
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
   private validationEngine = new ValidationEngine();
-  private events: Events;
 
   private __INTERNAL__: WizardRouteWithoutValidators[] = [];
 
-  constructor(
-    config: WizardRoute[],
-    opts: WizardOptions,
-    eventsInstance: Events
-  ) {
+  constructor(config: WizardRoute[], opts: WizardOptions) {
     config.forEach((route) => {
       const { validators, ...rest } = route;
       this.__INTERNAL__.push(structuredClone(rest));
@@ -33,7 +39,6 @@ class Wizard {
     });
     this.activeStep = opts.activeStep;
     this.syncWizardBoundaries();
-    this.events = eventsInstance;
   }
 
   private syncWizardBoundaries() {
@@ -62,15 +67,17 @@ class Wizard {
   private resolve = (stepName: string) => {
     this.activeStep = stepName;
     this.syncWizardBoundaries();
-    this.events.dispatch({
-      event: WIZARD_EVENTS.STEP_CHANGED,
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_CHANGED,
       payload: { stepName },
     });
   };
 
   private reject = (error?: any) => {
-    this.events.dispatch({
-      event: WIZARD_EVENTS.STEP_REJECTED,
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_REJECTED,
       payload: error,
     });
   };
@@ -86,6 +93,16 @@ class Wizard {
       resolve: () => this.resolve(stepName),
       reject: this.reject,
     });
+  };
+
+  getState = () => {
+    const { validators, ...step } = this.stepsMap[this.activeStep!];
+    return {
+      isFirst: this.isFirst,
+      isLast: this.isLast,
+      activeStep: this.activeStep,
+      step,
+    };
   };
 
   mutateStep = (
@@ -104,8 +121,9 @@ class Wizard {
         state: activeStep.state,
       }),
     };
-    this.events.dispatch({
-      event: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
+    this.observer.dispatch({
+      scope: WIZARD_SCOPE,
+      eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED,
     });
   };
 

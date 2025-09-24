@@ -1,6 +1,6 @@
 export {
   Provider,
-  useStep,
+  useOnStepChange,
   useStepParams,
   useMutateStep,
   useWizardReject,

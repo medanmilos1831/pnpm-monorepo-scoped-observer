@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Context } from "./useStep";
+import { Context } from "./useOnStepChange";
 
 export const useWizardNavigate = () => {
   const context = useContext(Context)!;
