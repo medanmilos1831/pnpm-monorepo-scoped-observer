@@ -5,4 +5,5 @@ export {
   useMutateStep,
   useWizardReject,
   useWizardNavigate,
+  useStepState,
 } from "./react";

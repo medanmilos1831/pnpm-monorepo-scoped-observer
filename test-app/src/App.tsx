@@ -9,12 +9,11 @@ const wizard = createWizard(
       visible: true,
       validators: {
         onNext: (step, resolve, reject) => {
-          resolve();
-          // reject({
-          //   payload: {
-          //     message: "StepOne is rejected",
-          //   },
-          // });
+          if (step.stepHistory && step.state.id !== step.stepHistory?.id) {
+            reject();
+          } else {
+            resolve();
+          }
         },
         onPrev: () => true,
       },

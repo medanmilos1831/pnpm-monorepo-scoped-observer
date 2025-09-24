@@ -2,7 +2,7 @@ import { useContext, useState, useSyncExternalStore } from "react";
 import { WIZARD_SCOPE } from "../types";
 import { Context } from "./Provider";
 
-const useSubscriber = (
+const useSubscribe = (
   { eventName }: { eventName: string },
   snapshot: () => any
 ) => {
@@ -19,4 +19,4 @@ const useSubscriber = (
   return useSyncExternalStore(state, snapshot);
 };
 
-export { useSubscriber };
+export { useSubscribe };

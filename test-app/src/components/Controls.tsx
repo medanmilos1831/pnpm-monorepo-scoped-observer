@@ -3,7 +3,13 @@ import { useStepParams, useWizardNavigate, useOnStepChange } from "../wizard";
 const Controls = () => {
   const { nextStep, prevStep } = useWizardNavigate();
   const { isCompleted } = useStepParams();
-  const { isFirst, isLast } = useOnStepChange((state: any) => {
+  const { isFirst, isLast } = useOnStepChange((state) => {
+    return {
+      isFirst: state.isFirst,
+      isLast: state.isLast,
+    };
+  });
+  const pera = useOnStepChange((state) => {
     return {
       isFirst: state.isFirst,
       isLast: state.isLast,

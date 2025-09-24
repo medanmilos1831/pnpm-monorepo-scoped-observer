@@ -1,20 +1,17 @@
 import { useContext } from "react";
 import { WIZARD_EVENTS } from "../types";
+
 import { useSubscribe } from "./useSubscribe";
 import { Context } from "./Provider";
 
-export const useStepParams = () => {
+export const useStepState = () => {
   const context = useContext(Context)!;
-  const isCompleted = useSubscribe(
+
+  const state = useSubscribe(
     { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
-    context.getIsStepComplete
-  );
-  const isChanged = useSubscribe(
-    { eventName: WIZARD_EVENTS.STEP_PARAMS_CHANGED },
-    context.getIsStepChanged
+    context.getStepState
   );
   return {
-    isCompleted,
-    isChanged,
+    state,
   };
 };

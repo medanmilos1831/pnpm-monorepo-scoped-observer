@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { WIZARD_EVENTS } from "../types";
+import { WIZARD_EVENTS, type WizardState } from "../types";
 import { Context } from "./Provider";
-import { useSubscriber } from "./useSubscriber";
+import { useSubscribe } from "./useSubscribe";
 
-export const useOnStepChange = (selector: any) => {
+export const useOnStepChange = <T>(selector: (state: WizardState) => T) => {
   const context = useContext(Context)!;
-  const state = useSubscriber(
+  useSubscribe(
     { eventName: WIZARD_EVENTS.STEP_CHANGED },
     context.getActiveStep
   );

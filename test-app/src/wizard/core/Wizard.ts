@@ -7,10 +7,13 @@ import {
 import { ValidationEngine } from "./ValidationEngine";
 import { Step } from "./Step";
 import type {
+  clientValidationRejectParams,
   IStep,
   WizardOptions,
+  WizardPending,
   WizardRoute,
   WizardRouteWithoutValidators,
+  wizzardRejectParamsType,
 } from "../types";
 import type { IScopedObserver } from "../../scroped-observer";
 import { createScopedObserver } from "../../scroped-observer";
@@ -25,6 +28,10 @@ class Wizard {
   stepsMap: { [key: string]: IStep } = {};
   isFirst: boolean = false;
   isLast: boolean = false;
+  pending: WizardPending = {
+    command: null,
+    stepName: null,
+  };
   private validationEngine = new ValidationEngine();
 
   private __INTERNAL__: WizardRouteWithoutValidators[] = [];
@@ -64,22 +71,48 @@ class Wizard {
     return stepName;
   }
 
-  private resolve = (stepName: string) => {
+  private setStepHistory = (value: any) => {
+    this.stepsMap[this.activeStep].stepHistory = structuredClone(value);
+  };
+
+  private resolve = (stepName: string, command: WizardCommand) => {
     this.activeStep = stepName;
+
+    // ===== STEP HISTORY MANAGEMENT =====
+    // Handle step history based on navigation direction
+    // NEXT: Clear history (moving forward, no need to preserve previous state)
+    // PREV: Save current state to history (for potential rollback)
+    command === WIZARD_COMMANDS.NEXT
+      ? this.setStepHistory(null)
+      : this.setStepHistory(this.stepsMap[this.activeStep].state);
+    // ===== END STEP HISTORY MANAGEMENT =====
     this.syncWizardBoundaries();
     this.observer.dispatch({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_CHANGED,
-      payload: { stepName },
     });
+    this.setPending(null, null);
   };
 
-  private reject = (error?: any) => {
+  private reject = ({
+    errorMessage,
+    command,
+    stepName,
+  }: wizzardRejectParamsType) => {
+    this.setPending(command, stepName);
     this.observer.dispatch({
       scope: WIZARD_SCOPE,
       eventName: WIZARD_EVENTS.STEP_REJECTED,
-      payload: error,
+      payload: errorMessage,
     });
+  };
+
+  private setPending = (
+    command: WizardCommand | null,
+    stepName: string | null
+  ) => {
+    this.pending.command = command;
+    this.pending.stepName = stepName;
   };
 
   private navigate = (command: WizardCommand) => {
@@ -90,8 +123,16 @@ class Wizard {
     this.validationEngine.execute({
       command: command,
       step: this.stepsMap[this.activeStep],
-      resolve: () => this.resolve(stepName),
-      reject: this.reject,
+      resolve: () => {
+        this.resolve(stepName, command);
+      },
+      reject: (error?: clientValidationRejectParams) => {
+        this.reject({
+          errorMessage: error?.message || "Rejected",
+          command,
+          stepName,
+        });
+      },
     });
   };
 
@@ -128,6 +169,10 @@ class Wizard {
   };
 
   nextStep = () => {
+    if (this.pending.command === WIZARD_COMMANDS.NEXT) {
+      this.resolve(this.pending.stepName!, WIZARD_COMMANDS.NEXT);
+      return;
+    }
     this.navigate(WIZARD_COMMANDS.NEXT);
   };
 

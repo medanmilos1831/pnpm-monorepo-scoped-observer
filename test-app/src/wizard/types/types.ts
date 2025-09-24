@@ -1,3 +1,5 @@
+import type { WizardCommand } from "./constants";
+
 export interface IWizardConfig {
   name: string;
   steps: string[];
@@ -5,7 +7,23 @@ export interface IWizardConfig {
   activeSteps: string[];
 }
 
-export type WizardRejectCallback = (obj?: { payload?: any }) => void;
+export type clientValidationReject = (
+  obj?: clientValidationRejectParams
+) => void;
+export type clientValidationRejectParams = {
+  message?: string;
+};
+
+export type WizardPending = {
+  command: WizardCommand | null;
+  stepName: string | null;
+};
+
+export type wizzardRejectParamsType = {
+  errorMessage: string;
+  command: WizardCommand;
+  stepName: string;
+};
 
 export interface IStep extends WizardRoute {
   name: string;
@@ -22,12 +40,14 @@ export interface WizardRoute {
     onNext?: (
       step: IStep,
       resolve: () => void,
-      reject: WizardRejectCallback
+      reject: clientValidationReject,
+      pending: boolean
     ) => void;
     onPrev?: (
       step: IStep,
       resolve: () => void,
-      reject: WizardRejectCallback
+      reject: clientValidationReject,
+      pending: boolean
     ) => void;
   };
 }
@@ -36,4 +56,15 @@ export type WizardRouteWithoutValidators = Omit<WizardRoute, "validators">;
 
 export interface WizardOptions {
   activeStep: string;
+}
+
+export interface WizardState {
+  isFirst: boolean;
+  isLast: boolean;
+  activeStep: string;
+  step: {
+    isCompleted: boolean;
+    isChanged: boolean;
+    state: any;
+  };
 }
