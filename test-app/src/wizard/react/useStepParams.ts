@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { WIZARD_EVENTS } from "../types";
-import { Context } from "./useOnStepChange";
+
 import { useSubscriber } from "./useSubscriber";
+import { Context } from "./Provider";
 
 export const useStepParams = () => {
   const context = useContext(Context)!;

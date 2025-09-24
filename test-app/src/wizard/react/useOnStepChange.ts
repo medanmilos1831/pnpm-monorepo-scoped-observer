@@ -11,5 +11,3 @@ export const useOnStepChange = (selector: any) => {
   );
   return selector(context.getState());
 };
-
-export { Context };

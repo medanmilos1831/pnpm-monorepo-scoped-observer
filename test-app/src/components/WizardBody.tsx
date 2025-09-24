@@ -13,12 +13,10 @@ const stepComponents = {
 
 const WizardBody = () => {
   const { step } = useOnStepChange((state: any) => {
-    console.log("RENDER WIZARD BODY", state);
     return {
       step: state.activeStep,
     };
   });
-  console.log("RENDER WIZARD BODY", step);
   const StepComponent = stepComponents[step as keyof typeof stepComponents];
 
   return (

@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
-import { Context } from "./useOnStepChange";
 import type { WizardRejectCallback } from "../types";
 import { WIZARD_EVENTS, WIZARD_SCOPE } from "../types";
+import { Context } from "./Provider";
 
 export const useWizardReject = (callback: WizardRejectCallback) => {
   const context = useContext(Context)!;
