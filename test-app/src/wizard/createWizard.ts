@@ -8,7 +8,12 @@ const createWizard = (config: WizardRoute[], opts: WizardOptions) => {
     getActiveStep: () => wizard.activeStep,
     getIsStepComplete: () => wizard.stepsMap[wizard.activeStep!].isCompleted,
     getIsStepChanged: () => wizard.stepsMap[wizard.activeStep!].isChanged,
-    getStepState: () => wizard.stepsMap[wizard.activeStep!].state,
+    getStepState: (name?: string) => {
+      if (name) {
+        return wizard.stepsMap[name].state;
+      }
+      return wizard.stepsMap[wizard.activeStep!].state;
+    },
     getIsLast: () => wizard.isLast,
     getIsFirst: () => wizard.isFirst,
     mutateStep: wizard.mutateStep,
