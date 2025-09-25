@@ -1,15 +1,18 @@
 import { WizzardProvider } from "../wizard";
 
-const StepTwo = () => {
+const StepFive = () => {
   return (
     <WizzardProvider.Step
       onNext={() => {
         // Handle next step
       }}
+      // stepValidate={(params) => {
+      //   // Handle step validation
+      // }}
     >
-      <>step two</>
+      <>step five</>
     </WizzardProvider.Step>
   );
 };
 
-export { StepTwo };
+export { StepFive };

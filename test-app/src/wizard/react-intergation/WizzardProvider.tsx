@@ -35,6 +35,7 @@ WizzardProvider.Step = ({
       scope: "wizard:step",
       eventName: "navigate",
       callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
+        console.log("***************WizzardProvider.Step***************");
         stepValidate
           ? (() => {
               let result = stepValidate({
@@ -52,7 +53,7 @@ WizzardProvider.Step = ({
     return () => {
       unsubscribe();
     };
-  }, []);
+  });
   return <>{children}</>;
 };
 

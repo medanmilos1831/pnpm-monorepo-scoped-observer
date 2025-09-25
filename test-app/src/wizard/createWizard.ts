@@ -11,6 +11,7 @@ const createWizard = (
     nextStep: wizard.commands.nextStep,
     prevStep: wizard.commands.prevStep,
     subscribe: wizard.observer.subscribe,
+    getActiveStep: () => wizard.currentStep,
   };
 };
 

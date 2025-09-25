@@ -36,7 +36,10 @@ class Wizard {
       scope: "wizard:commands",
       eventName: "navigate",
       callback: ({ payload: command }: { payload: any }) => {
-        const toStep = this.navigate(command);
+        const toStep = this.findNextStep(command);
+        if (!toStep) {
+          return;
+        }
         this.observer.dispatch({
           scope: "wizard:step",
           eventName: "navigate",
@@ -44,10 +47,11 @@ class Wizard {
             toStep,
             command,
             resolve: () => {
-              console.log("resolve");
+              this.navigate(toStep);
+              // Resolve navigation
             },
             reject: () => {
-              console.log("reject");
+              // Reject navigation
             },
           },
         });
@@ -55,7 +59,7 @@ class Wizard {
     });
   }
 
-  private navigate(command: string) {
+  private findNextStep(command: string) {
     let toStep = undefined;
     const steps = Object.keys(this.stepsMap);
     const currentIndex = steps.indexOf(this.currentStep);
@@ -71,6 +75,15 @@ class Wizard {
       toStep = prevStepName;
     }
     return toStep;
+  }
+
+  private navigate(toStep: string) {
+    this.stepsMap[this.currentStep].isCompleted = true;
+    this.currentStep = toStep;
+    this.observer.dispatch({
+      scope: "wizard",
+      eventName: "changeStep",
+    });
   }
 }
 
