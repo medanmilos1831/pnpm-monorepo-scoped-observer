@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useSubscriber } from "./useSubscribe";
 import { Context } from "./WizzardProvider";
 
-const useOnStepChange = () => {
+const useActiveStep = () => {
   const context = useContext(Context);
   if (!context) {
     throw new Error("WizzardProvider not found");
@@ -11,7 +11,7 @@ const useOnStepChange = () => {
     { eventName: "changeStep" },
     context.getActiveStep
   );
-  return step;
+  return context.getStepEntityByStepName(step);
 };
 
-export { useOnStepChange };
+export { useActiveStep };

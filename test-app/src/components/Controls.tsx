@@ -1,11 +1,10 @@
 import { Button, Space } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { useNavigate, useOnStepChange, useStepParams } from "../wizard";
+import { useNavigate, useActiveStep, useStepParams } from "../wizard";
 
 const Controls = () => {
   const { nextStep, prevStep } = useNavigate();
   const { isCompleted } = useStepParams();
-  console.log("RENDER");
 
   return (
     <div

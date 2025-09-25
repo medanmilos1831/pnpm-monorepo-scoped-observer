@@ -1,14 +1,14 @@
 import { useContext } from "react";
 import { Context } from "./WizzardProvider";
 import { useSubscriber } from "./useSubscribe";
-import { useOnStepChange } from "./useOnStepChange";
+import { useActiveStep } from "./useActiveStep";
 
 const useStepParams = () => {
   const context = useContext(Context);
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-  const step = useOnStepChange();
+  const { name: step } = useActiveStep();
   const isCompleted = useSubscriber(
     {
       eventName: "stepCompletionChanged",

@@ -1,9 +1,9 @@
-import { useOnStepChange, WizzardProvider } from "../wizard";
-import { StepOne } from "./StepOne";
-import { StepTwo } from "./StepTwo";
-import { StepThree } from "./StepThree";
-import { StepFour } from "./StepFour";
+import { useActiveStep } from "../wizard";
 import { StepFive } from "./StepFive";
+import { StepFour } from "./StepFour";
+import { StepOne } from "./StepOne";
+import { StepThree } from "./StepThree";
+import { StepTwo } from "./StepTwo";
 
 const stepComponents = {
   stepOne: StepOne,
@@ -14,7 +14,7 @@ const stepComponents = {
 };
 
 const WizardBody = () => {
-  const currentStep = useOnStepChange();
+  const { name: currentStep } = useActiveStep();
   const StepComponent = stepComponents[
     currentStep as keyof typeof stepComponents
   ] as any;
