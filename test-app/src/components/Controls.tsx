@@ -5,7 +5,6 @@ import { useNavigate, useActiveStep, useStepParams } from "../wizard";
 const Controls = () => {
   const { nextStep, prevStep } = useNavigate();
   const { isCompleted } = useStepParams();
-
   return (
     <div
       style={{

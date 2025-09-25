@@ -7,16 +7,10 @@ const useStepState = () => {
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-  const state = useSubscriber(
+  return useSubscriber(
     { eventName: "mutateStepState", scope: "wizard:step" },
     () => context.getStepEntity().state
   );
-  return {
-    state,
-    getStateByPath: (stepName: string) => {
-      return context.getStepEntityByStepName(stepName).state;
-    },
-  };
 };
 
 export { useStepState };
