@@ -25,7 +25,7 @@ export class ScopedObserver {
     for (let i = 0; i < scopes.length; i++) {
       const key = scopes[i];
       if (!current[key]) {
-        console.warn(`Scope "${key}" not found in hierarchy.`);
+        // Scope not found in hierarchy
         return undefined;
       }
 

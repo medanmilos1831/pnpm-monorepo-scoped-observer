@@ -25,6 +25,8 @@ WizzardProvider.Step = ({
   children,
   onNext,
   stepValidate,
+  onMutateStepState,
+  onEnter,
 }: PropsWithChildren<IStepProps>) => {
   const context = useContext(Context);
   if (!context) {
@@ -35,7 +37,6 @@ WizzardProvider.Step = ({
       scope: "wizard:step",
       eventName: "navigate",
       callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        console.log("***************WizzardProvider.Step***************");
         stepValidate
           ? (() => {
               let result = stepValidate({
@@ -48,6 +49,30 @@ WizzardProvider.Step = ({
               onNext();
               payload.resolve();
             })();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: "wizard:step",
+      eventName: "mutateStepState",
+      callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
+        onMutateStepState && onMutateStepState(payload);
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: "wizard:step",
+      eventName: "mutateStepState",
+      callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
+        onMutateStepState && onMutateStepState(payload);
       },
     });
     return () => {

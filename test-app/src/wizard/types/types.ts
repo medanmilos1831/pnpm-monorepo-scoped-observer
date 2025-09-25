@@ -14,6 +14,8 @@ export interface IStepConfig {
 export interface IStepProps {
   onNext: () => void;
   stepValidate?: (params: any) => boolean;
+  onMutateStepState?: (state: any) => void;
+  onEnter?: () => void;
 }
 
 export interface IWizardStepNavigateParams {

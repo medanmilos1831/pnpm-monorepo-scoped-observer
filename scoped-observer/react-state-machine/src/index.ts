@@ -26,9 +26,7 @@ const createMachine = <S extends string, T extends string>({
   const handler = (data: Event<T>) => {
     const next = transition[initState].on[data.type];
     if (!next) {
-      console.warn(
-        `[Machine] Invalid transition from "${initState}" using type "${data.type}"`
-      );
+      // Invalid transition
       return;
     }
     initState = next;

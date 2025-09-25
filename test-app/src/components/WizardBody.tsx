@@ -1,5 +1,4 @@
-import { WizzardProvider } from "../wizard";
-import { useOnStepChange } from "../wizard/react-intergation";
+import { useOnStepChange, WizzardProvider } from "../wizard";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
@@ -19,7 +18,7 @@ const WizardBody = () => {
   const StepComponent = stepComponents[
     currentStep as keyof typeof stepComponents
   ] as any;
-  console.log("StepComponent", currentStep);
+  // Render current step component
   return (
     <div>
       <h2>Wizard Body - Current Step: {currentStep}</h2>

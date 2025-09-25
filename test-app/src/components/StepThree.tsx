@@ -3,9 +3,9 @@ import { WizzardProvider } from "../wizard";
 const StepThree = () => {
   return (
     <WizzardProvider.Step
-        onNext={() => {
-          // Handle next step
-        }}
+      onNext={() => {
+        // Handle next step
+      }}
       // stepValidate={(params) => {
       //   // Handle step validation
       // }}

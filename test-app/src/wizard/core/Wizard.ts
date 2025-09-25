@@ -85,6 +85,21 @@ class Wizard {
       eventName: "changeStep",
     });
   }
+
+  mutateStepState = (callback: (step: Step) => void) => {
+    this.stepsMap[this.currentStep].state = callback(
+      this.stepsMap[this.currentStep].state
+    );
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: "mutateStepState",
+      payload: {
+        completed: () => {
+          this.stepsMap[this.currentStep].isCompleted = true;
+        },
+      },
+    });
+  };
 }
 
 export { Wizard };
