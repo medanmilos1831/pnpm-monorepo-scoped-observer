@@ -1,6 +1,10 @@
 import type { IScopedObserver } from "../../scroped-observer";
 import { createScopedObserver } from "../../scroped-observer";
-import type { IWizardConfig, IWizardStepsConfig } from "../types";
+import {
+  WizardStepLifecycle,
+  type IWizardConfig,
+  type IWizardStepsConfig,
+} from "../types";
 import { Commands } from "./Commands";
 import { Step } from "./Step";
 
@@ -57,6 +61,18 @@ class Wizard {
         });
       },
     });
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: `onEnter:${this.currentStep}`,
+      payload: {
+        completed: () => {
+          this.setStepCompleted(true);
+        },
+        uncompleted: () => {
+          this.setStepCompleted(false);
+        },
+      },
+    });
   }
 
   private setStepCompleted(value: boolean) {
@@ -87,6 +103,19 @@ class Wizard {
 
   private navigate(toStep: string) {
     this.stepsMap[this.currentStep].isCompleted = true;
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: `onStepTransition:${this.currentStep}`,
+      payload: {
+        lifecycle: WizardStepLifecycle.LEAVE,
+        completed: () => {
+          this.setStepCompleted(true);
+        },
+        uncompleted: () => {
+          this.setStepCompleted(false);
+        },
+      },
+    });
     this.currentStep = toStep;
     this.observer.dispatch({
       scope: "wizard",
@@ -94,8 +123,9 @@ class Wizard {
     });
     this.observer.dispatch({
       scope: "wizard:step",
-      eventName: "onEnter",
+      eventName: `onStepTransition:${toStep}`,
       payload: {
+        lifecycle: WizardStepLifecycle.ENTER,
         completed: () => {
           this.setStepCompleted(true);
         },

@@ -5,10 +5,12 @@ import {
   useEffect,
 } from "react";
 import { createWizard } from "../createWizard";
-import type {
-  IStepProps,
-  IWizardStepMutateStepStateParams,
-  IWizardStepNavigateParams,
+import {
+  type IStepProps,
+  WizardStepLifecycle,
+  type IWizardStepLifecycleParams,
+  type IWizardStepMutateStepStateParams,
+  type IWizardStepNavigateParams,
 } from "../types";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
@@ -31,6 +33,7 @@ WizzardProvider.Step = ({
   stepValidate,
   onMutateStepState,
   onEnter,
+  onLeave,
 }: PropsWithChildren<IStepProps>) => {
   const context = useContext(Context);
   if (!context) {
@@ -77,17 +80,23 @@ WizzardProvider.Step = ({
       unsubscribe();
     };
   });
+
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: "wizard:step",
-      eventName: "onEnter",
-      callback: ({
-        payload,
-      }: {
-        payload: IWizardStepMutateStepStateParams;
-      }) => {
-        onEnter && onEnter();
-        // onMutateStepState && onMutateStepState(payload);
+      eventName: `onStepTransition:${context.getActiveStep()}`,
+      callback: ({ payload }: { payload: IWizardStepLifecycleParams }) => {
+        const { completed, uncompleted, lifecycle } = payload;
+        const obj = {
+          completed,
+          uncompleted,
+        };
+        if (lifecycle === WizardStepLifecycle.ENTER && onEnter) {
+          onEnter(obj);
+        }
+        if (lifecycle === WizardStepLifecycle.LEAVE && onLeave) {
+          onLeave(obj);
+        }
       },
     });
     return () => {

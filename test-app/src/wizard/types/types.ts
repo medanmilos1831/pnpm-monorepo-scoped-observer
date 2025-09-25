@@ -1,3 +1,8 @@
+export enum WizardStepLifecycle {
+  ENTER = "enter",
+  LEAVE = "leave",
+}
+
 export interface IWizardConfig {
   activeStep: string;
 }
@@ -15,7 +20,8 @@ export interface IStepProps {
   onNext: () => void;
   stepValidate?: (params: any) => boolean;
   onMutateStepState?: (state: any) => void;
-  onEnter?: () => void;
+  onEnter?: (params: Omit<IWizardStepLifecycleParams, "lifecycle">) => void;
+  onLeave?: (params: Omit<IWizardStepLifecycleParams, "lifecycle">) => void;
 }
 
 export interface IWizardStepNavigateParams {
@@ -26,6 +32,12 @@ export interface IWizardStepNavigateParams {
 }
 
 export interface IWizardStepMutateStepStateParams {
+  completed: () => void;
+  uncompleted: () => void;
+}
+
+export interface IWizardStepLifecycleParams {
+  lifecycle: WizardStepLifecycle;
   completed: () => void;
   uncompleted: () => void;
 }
