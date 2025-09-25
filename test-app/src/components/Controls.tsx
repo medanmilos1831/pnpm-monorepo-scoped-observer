@@ -1,11 +1,35 @@
-import { useNavigate } from "../wizard";
+import { Button, Space } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { useNavigate, useOnStepChange, useStepParams } from "../wizard";
 
 const Controls = () => {
   const { nextStep, prevStep } = useNavigate();
+  const { isCompleted } = useStepParams();
+  console.log("RENDER");
+
   return (
-    <div style={{ display: "flex", gap: "1rem" }}>
-      <button onClick={prevStep}>Prev</button>
-      <button onClick={nextStep}>Next</button>
+    <div
+      style={{
+        padding: "16px",
+        textAlign: "center",
+        borderTop: "1px solid #f0f0f0",
+        marginTop: "20px",
+        backgroundColor: "#fafafa",
+      }}
+    >
+      <Space size="middle">
+        <Button icon={<LeftOutlined />} onClick={prevStep}>
+          Previous
+        </Button>
+        <Button
+          type="primary"
+          icon={<RightOutlined />}
+          onClick={nextStep}
+          disabled={!isCompleted}
+        >
+          Next
+        </Button>
+      </Space>
     </div>
   );
 };

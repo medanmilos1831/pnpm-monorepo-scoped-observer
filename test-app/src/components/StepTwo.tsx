@@ -9,9 +9,7 @@ const StepTwo = () => {
       onNext={() => {
         // Handle next step
       }}
-      onEnter={() => {
-        // Handle step enter
-      }}
+      onEnter={({ completed, uncompleted }) => {}}
     >
       <>step two {pera()}</>
     </WizzardProvider.Step>

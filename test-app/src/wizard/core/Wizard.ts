@@ -77,6 +77,13 @@ class Wizard {
 
   private setStepCompleted(value: boolean) {
     this.stepsMap[this.currentStep].isCompleted = value;
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: "stepCompletionChanged",
+      payload: {
+        value,
+      },
+    });
   }
 
   private findNextStep(command: string) {

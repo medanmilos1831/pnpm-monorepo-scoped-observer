@@ -7,11 +7,11 @@ const useOnStepChange = () => {
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-  const onStepChange = useSubscriber(
+  const step = useSubscriber(
     { eventName: "changeStep" },
     context.getActiveStep
   );
-  return onStepChange;
+  return step;
 };
 
 export { useOnStepChange };

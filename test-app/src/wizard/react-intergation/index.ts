@@ -3,3 +3,4 @@ export { useNavigate } from "./useNavigate";
 export { useOnStepChange } from "./useOnStepChange";
 export { useMutateStepState } from "./useMutateStepState";
 export { useStepState } from "./useStepState";
+export { useStepParams } from "./useStepParams";
