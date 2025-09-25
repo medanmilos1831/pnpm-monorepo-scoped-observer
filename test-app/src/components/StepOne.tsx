@@ -3,7 +3,7 @@ import { useMutateStepState, WizzardProvider } from "../wizard";
 const StepOne = () => {
   const mutateStepState = useMutateStepState();
   const pera = () => {
-    console.log("RENDER JSX");
+    // Render logic
   };
   return (
     <WizzardProvider.Step
@@ -14,13 +14,13 @@ const StepOne = () => {
       //   // Handle step validation
       // }}
       onMutateStepState={({ completed, uncompleted }) => {
-        // Handle step state mutation
+        completed();
       }}
       onEnter={() => {
-        console.log("onEnter CALLBACK");
+        // Handle step enter
       }}
       onLeave={() => {
-        console.log("onLeave CALLBACK");
+        // Handle step leave
       }}
     >
       <>

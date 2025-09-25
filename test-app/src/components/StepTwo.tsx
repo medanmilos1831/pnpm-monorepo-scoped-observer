@@ -2,7 +2,7 @@ import { WizzardProvider } from "../wizard";
 
 const StepTwo = () => {
   const pera = () => {
-    console.log("pera");
+    // Render logic
   };
   return (
     <WizzardProvider.Step
@@ -10,7 +10,7 @@ const StepTwo = () => {
         // Handle next step
       }}
       onEnter={() => {
-        console.log("onEnter");
+        // Handle step enter
       }}
     >
       <>step two {pera()}</>

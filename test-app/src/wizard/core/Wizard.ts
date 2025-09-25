@@ -77,10 +77,6 @@ class Wizard {
 
   private setStepCompleted(value: boolean) {
     this.stepsMap[this.currentStep].isCompleted = value;
-    console.log(
-      "setStepCompleted",
-      this.stepsMap[this.currentStep].isCompleted
-    );
   }
 
   private findNextStep(command: string) {
@@ -102,7 +98,6 @@ class Wizard {
   }
 
   private navigate(toStep: string) {
-    this.stepsMap[this.currentStep].isCompleted = true;
     this.observer.dispatch({
       scope: "wizard:step",
       eventName: `onStepTransition:${this.currentStep}`,
