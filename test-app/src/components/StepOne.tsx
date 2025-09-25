@@ -3,7 +3,6 @@ import { useMutateStepState, useStepState, WizzardProvider } from "../wizard";
 const StepOne = () => {
   const mutateStepState = useMutateStepState();
   const stepState = useStepState();
-  console.log("stepState", stepState);
   return (
     <WizzardProvider.Step
       onNext={() => {

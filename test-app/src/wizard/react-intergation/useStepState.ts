@@ -9,7 +9,7 @@ const useStepState = () => {
   }
   return useSubscriber(
     { eventName: "mutateStepState", scope: "wizard:step" },
-    context.getStepState
+    () => context.getStepEntity().state
   );
 };
 

@@ -12,7 +12,7 @@ const createWizard = (
     prevStep: wizard.commands.prevStep,
     subscribe: wizard.observer.subscribe,
     getActiveStep: () => wizard.currentStep,
-    getStepState: () => wizard.stepsMap[wizard.currentStep].state,
+    getStepEntity: () => wizard.stepsMap[wizard.currentStep],
     mutateStepState: wizard.mutateStepState,
   };
 };
