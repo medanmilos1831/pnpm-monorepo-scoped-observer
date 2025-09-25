@@ -59,6 +59,10 @@ class Wizard {
     });
   }
 
+  private setStepCompleted(value: boolean) {
+    this.stepsMap[this.currentStep].isCompleted = value;
+  }
+
   private findNextStep(command: string) {
     let toStep = undefined;
     const steps = Object.keys(this.stepsMap);
