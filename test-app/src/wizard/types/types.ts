@@ -24,3 +24,8 @@ export interface IWizardStepNavigateParams {
   resolve: () => void;
   reject: () => void;
 }
+
+export interface IWizardStepMutateStepStateParams {
+  completed: () => void;
+  uncompleted: () => void;
+}

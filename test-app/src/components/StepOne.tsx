@@ -2,6 +2,9 @@ import { useMutateStepState, WizzardProvider } from "../wizard";
 
 const StepOne = () => {
   const mutateStepState = useMutateStepState();
+  const pera = () => {
+    console.log("pera");
+  };
   return (
     <WizzardProvider.Step
       onNext={() => {
@@ -10,12 +13,16 @@ const StepOne = () => {
       // stepValidate={(params) => {
       //   // Handle step validation
       // }}
-      onMutateStepState={({ completed }) => {
+      onMutateStepState={({ completed, uncompleted }) => {
         // Handle step state mutation
+      }}
+      onEnter={() => {
+        console.log("onEnter");
       }}
     >
       <>
         step one
+        {pera()}
         <button
           onClick={() => {
             mutateStepState((state) => {

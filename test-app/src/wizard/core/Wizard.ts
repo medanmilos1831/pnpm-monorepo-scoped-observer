@@ -61,6 +61,10 @@ class Wizard {
 
   private setStepCompleted(value: boolean) {
     this.stepsMap[this.currentStep].isCompleted = value;
+    console.log(
+      "setStepCompleted",
+      this.stepsMap[this.currentStep].isCompleted
+    );
   }
 
   private findNextStep(command: string) {
@@ -88,6 +92,18 @@ class Wizard {
       scope: "wizard",
       eventName: "changeStep",
     });
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: "onEnter",
+      payload: {
+        completed: () => {
+          this.setStepCompleted(true);
+        },
+        uncompleted: () => {
+          this.setStepCompleted(false);
+        },
+      },
+    });
   }
 
   mutateStepState = (callback: (step: Step) => void) => {
@@ -99,7 +115,10 @@ class Wizard {
       eventName: "mutateStepState",
       payload: {
         completed: () => {
-          this.stepsMap[this.currentStep].isCompleted = true;
+          this.setStepCompleted(true);
+        },
+        uncompleted: () => {
+          this.setStepCompleted(false);
         },
       },
     });

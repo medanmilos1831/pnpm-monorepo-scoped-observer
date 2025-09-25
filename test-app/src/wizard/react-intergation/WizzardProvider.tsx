@@ -5,7 +5,11 @@ import {
   useEffect,
 } from "react";
 import { createWizard } from "../createWizard";
-import type { IStepProps, IWizardStepNavigateParams } from "../types";
+import type {
+  IStepProps,
+  IWizardStepMutateStepStateParams,
+  IWizardStepNavigateParams,
+} from "../types";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
   undefined
@@ -59,8 +63,14 @@ WizzardProvider.Step = ({
     const unsubscribe = context.subscribe({
       scope: "wizard:step",
       eventName: "mutateStepState",
-      callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        onMutateStepState && onMutateStepState(payload);
+      callback: ({
+        payload,
+      }: {
+        payload: IWizardStepMutateStepStateParams;
+      }) => {
+        if (onMutateStepState) {
+          onMutateStepState(payload);
+        }
       },
     });
     return () => {
@@ -70,9 +80,14 @@ WizzardProvider.Step = ({
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: "wizard:step",
-      eventName: "mutateStepState",
-      callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        onMutateStepState && onMutateStepState(payload);
+      eventName: "onEnter",
+      callback: ({
+        payload,
+      }: {
+        payload: IWizardStepMutateStepStateParams;
+      }) => {
+        onEnter && onEnter();
+        // onMutateStepState && onMutateStepState(payload);
       },
     });
     return () => {
