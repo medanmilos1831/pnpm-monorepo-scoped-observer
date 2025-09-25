@@ -3,10 +3,10 @@ import { useNavigate } from "../wizard";
 const Controls = () => {
   const { nextStep, prevStep } = useNavigate();
   return (
-    <>
-      <button onClick={nextStep}>Next</button>
+    <div style={{ display: "flex", gap: "1rem" }}>
       <button onClick={prevStep}>Prev</button>
-    </>
+      <button onClick={nextStep}>Next</button>
+    </div>
   );
 };
 

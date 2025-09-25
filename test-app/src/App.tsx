@@ -3,9 +3,15 @@ import { Form } from "antd";
 
 import { HomePage } from "./pages";
 import { WizzardProvider } from "./wizard/react-intergation";
-const wizard = createWizard({
-  activeStep: "stepOne",
-});
+const wizard = createWizard(
+  {
+    activeStep: "stepOne",
+  },
+  {
+    steps: ["stepOne", "stepTwo", "stepThree"],
+    activeSteps: ["stepOne", "stepTwo"],
+  }
+);
 console.log("wizard", wizard);
 function App() {
   return (
