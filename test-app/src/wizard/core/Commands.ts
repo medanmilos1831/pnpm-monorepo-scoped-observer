@@ -6,10 +6,18 @@ class Commands {
     this.observer = observer;
   }
   nextStep = () => {
-    console.log("nextStep");
+    this.observer.dispatch({
+      scope: "wizard:commands",
+      eventName: "navigate",
+      payload: "next",
+    });
   };
   prevStep = () => {
-    console.log("prevStep");
+    this.observer.dispatch({
+      scope: "wizard:commands",
+      eventName: "navigate",
+      payload: "prev",
+    });
   };
 }
 

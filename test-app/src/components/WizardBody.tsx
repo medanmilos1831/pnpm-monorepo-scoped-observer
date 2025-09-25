@@ -14,6 +14,9 @@ const WizardBody = () => {
         onNext={() => {
           console.log("onNext");
         }}
+        // stepValidate={(params) => {
+        //   console.log("stepValidate", params);
+        // }}
       >
         <>step one</>
       </WizzardProvider.Step>
