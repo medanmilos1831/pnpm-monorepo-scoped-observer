@@ -1,3 +1,4 @@
+import { WizzardProvider } from "../wizard";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 
@@ -7,7 +8,17 @@ const stepComponents = {
 };
 
 const WizardBody = () => {
-  return <div></div>;
+  return (
+    <div>
+      <WizzardProvider.Step
+        onNext={() => {
+          console.log("onNext");
+        }}
+      >
+        <>step one</>
+      </WizzardProvider.Step>
+    </div>
+  );
 };
 
 export { WizardBody };

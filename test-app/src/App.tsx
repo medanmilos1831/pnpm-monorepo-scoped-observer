@@ -2,21 +2,11 @@ import { createWizard } from "./wizard/createWizard";
 import { Form } from "antd";
 
 import { HomePage } from "./pages";
-const wizard = createWizard(
-  [
-    {
-      name: "stepOne",
-      visible: true,
-    },
-    {
-      name: "stepTwo",
-      visible: true,
-    },
-  ],
-  {
-    activeStep: "stepOne",
-  }
-);
+import { WizzardProvider } from "./wizard/react-intergation";
+const wizard = createWizard({
+  activeStep: "stepOne",
+});
+console.log("wizard", wizard);
 function App() {
   return (
     <div
@@ -25,9 +15,9 @@ function App() {
         width: "100vw",
       }}
     >
-      <Form.Item name="wizard">
+      <WizzardProvider value={wizard}>
         <HomePage />
-      </Form.Item>
+      </WizzardProvider>
     </div>
   );
 }

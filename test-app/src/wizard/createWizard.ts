@@ -1,9 +1,14 @@
 import { Wizard } from "./core";
+import type { IWizardConfig } from "./types";
 
-const createWizard = (obj: any, opts: any) => {
-  const wizard = new Wizard();
+const createWizard = (config: IWizardConfig) => {
+  const wizard = new Wizard(config);
 
-  return {};
+  return {
+    nextStep: wizard.commands.nextStep,
+    prevStep: wizard.commands.prevStep,
+    subscribe: wizard.observer.subscribe,
+  };
 };
 
 export { createWizard };
