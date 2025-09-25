@@ -7,47 +7,10 @@ const wizard = createWizard(
     {
       name: "stepOne",
       visible: true,
-      validators: {
-        onNext: (step, resolve, reject) => {
-          if (step.stepHistory && step.state.id !== step.stepHistory?.id) {
-            reject();
-          } else {
-            resolve();
-          }
-        },
-        onPrev: () => true,
-      },
     },
     {
       name: "stepTwo",
       visible: true,
-      validators: {
-        onNext: (step, resolve, reject) => {
-          // Validate that a plan is selected
-          if (step.stepHistory && step.state.id !== step.stepHistory?.id) {
-            reject();
-          } else {
-            resolve();
-          }
-        },
-        onPrev: () => true,
-      },
-    },
-    {
-      name: "stepThree",
-      visible: true,
-      validators: {
-        // onNext: () => true,
-        // onPrev: () => true,
-      },
-    },
-    {
-      name: "stepFour",
-      visible: true,
-      validators: {
-        // onNext: () => true,
-        // onPrev: () => true,
-      },
     },
   ],
   {
