@@ -1,4 +1,3 @@
-import { useOnStepChange } from "../wizard";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 

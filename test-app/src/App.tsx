@@ -1,7 +1,7 @@
 import { createWizard } from "./wizard/createWizard";
+import { Form } from "antd";
 
 import { HomePage } from "./pages";
-import { Provider } from "./wizard/react/Provider";
 const wizard = createWizard(
   [
     {
@@ -25,9 +25,9 @@ function App() {
         width: "100vw",
       }}
     >
-      <Provider value={wizard}>
+      <Form.Item name="wizard">
         <HomePage />
-      </Provider>
+      </Form.Item>
     </div>
   );
 }
