@@ -1,10 +1,9 @@
-import { useMutateStepState, WizzardProvider } from "../wizard";
+import { useMutateStepState, useStepState, WizzardProvider } from "../wizard";
 
 const StepOne = () => {
   const mutateStepState = useMutateStepState();
-  const pera = () => {
-    // Render logic
-  };
+  const stepState = useStepState();
+  console.log("stepState", stepState);
   return (
     <WizzardProvider.Step
       onNext={() => {
@@ -25,7 +24,6 @@ const StepOne = () => {
     >
       <>
         step one
-        {pera()}
         <button
           onClick={() => {
             mutateStepState((state) => {
