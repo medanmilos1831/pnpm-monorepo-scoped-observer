@@ -28,8 +28,7 @@ const WizzardProvider = ({
 
 WizzardProvider.Step = ({
   children,
-  onFailed,
-  onNext,
+  onStepChange,
   guardRule,
   complitionRule,
 }: PropsWithChildren<IStepProps>) => {
@@ -42,9 +41,12 @@ WizzardProvider.Step = ({
       scope: "wizard",
       eventName: "onNavigate",
       callback: ({ payload }: { payload: IOnNavigateEventPayload }) => {
-        payload.collector(
-          payload.status === StepValidationStatus.INVALID ? onFailed : onNext
-        );
+        payload.collector([
+          {
+            name: "onStepChange",
+            value: onStepChange,
+          },
+        ]);
       },
     });
     return () => {

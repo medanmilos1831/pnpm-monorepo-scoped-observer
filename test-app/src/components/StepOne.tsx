@@ -42,11 +42,13 @@ const StepOne = () => {
         <p>Modal content here</p>
       </Modal>
       <WizzardProvider.Step
-        onNext={() => {
-          console.log("NEXT");
-        }}
-        onFailed={() => {
-          // setOpen(true);
+        onStepChange={(params) => {
+          if (params.status === StepValidationStatus.INVALID) {
+            params.needsApproval();
+            setOpen(true);
+          } else {
+            params.resolve();
+          }
         }}
         guardRule={({ currentState, prevState }) =>
           prevState && prevState?.id !== currentState?.id ? false : true

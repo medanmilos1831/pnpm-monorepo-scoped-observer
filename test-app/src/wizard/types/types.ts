@@ -27,10 +27,21 @@ export interface IStepConfig {
 }
 
 export interface IStepProps {
-  onNext?: (params: any) => void;
-  onFailed?: (params: any) => void;
+  onStepChange: (params: IOnNavigateParams) => void;
   guardRule?: (params: IRuleParams) => boolean;
   complitionRule?: (params: IRuleParams) => boolean;
+}
+
+export interface IOnNavigateParams {
+  currentState: any;
+  prevState: any;
+  toStep: string;
+  fromStep: string;
+  status: StepValidationStatus;
+  isCompleted: boolean;
+  resolve: () => void;
+  command: WizardCommands;
+  needsApproval: () => void;
 }
 
 export interface IRuleParams {
@@ -48,6 +59,7 @@ export interface IMutateStepStateEventPayload {
 }
 
 export interface IOnNavigateEventPayload {
-  status: StepValidationStatus;
-  collector: (fn: any) => void;
+  collector: (
+    fn: Array<{ name: string; value: IStepProps["onStepChange"] }>
+  ) => void;
 }

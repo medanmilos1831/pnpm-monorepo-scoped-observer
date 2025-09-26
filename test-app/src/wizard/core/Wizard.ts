@@ -3,7 +3,6 @@ import { createScopedObserver } from "../../scroped-observer";
 import {
   StepValidationStatus,
   WizardCommands,
-  type IMutateStepStateEventPayload,
   type IStepProps,
   type IWizardConfig,
   type IWizardStepsConfig,
@@ -31,6 +30,7 @@ class Wizard {
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
+  navigateCommandsCapabilitiesType = "regular";
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -49,19 +49,36 @@ class Wizard {
           return;
         }
         this.setStepPrevState(command, toStep);
+        if (this.navigateCommandsCapabilitiesType === "needsApproval") {
+          return this.navigate(toStep);
+        }
         this.observer.dispatch({
           scope: "wizard",
           eventName: "onNavigate",
           payload: {
-            status: this.stepsMap[this.currentStep].status,
-            collector: (callback: () => void) => {
-              if (callback) {
-                callback();
-              }
-              this.stepsMap[this.currentStep].status ===
-              StepValidationStatus.INVALID
-                ? alert("FAILED")
-                : this.navigate(toStep);
+            collector: (
+              callbacks: Array<{
+                name: string;
+                value: IStepProps["onStepChange"];
+              }>
+            ) => {
+              callbacks.forEach(({ name, value }) => {
+                value({
+                  command,
+                  currentState: this.stepsMap[this.currentStep].state,
+                  prevState: this.stepsMap[this.currentStep].prevState,
+                  toStep,
+                  fromStep: this.currentStep,
+                  status: this.stepsMap[this.currentStep].status,
+                  isCompleted: this.stepsMap[this.currentStep].isCompleted,
+                  resolve: () => {
+                    this.navigate(toStep);
+                  },
+                  needsApproval: () => {
+                    this.navigateCommandsCapabilitiesType = "needsApproval";
+                  },
+                });
+              });
             },
           },
         });

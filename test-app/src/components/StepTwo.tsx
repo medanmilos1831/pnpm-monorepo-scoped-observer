@@ -21,8 +21,8 @@ const StepTwo = () => {
 
   return (
     <WizzardProvider.Step
-      onMutateStepState={({ completed, uncompleted }) => {
-        completed();
+      onStepChange={(params) => {
+        params.resolve();
       }}
     >
       <div style={{ padding: "20px" }}>

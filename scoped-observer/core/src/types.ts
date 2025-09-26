@@ -4,6 +4,8 @@ export type actionType = {
   payload?: any;
 };
 
+export type navigateCommandsCapabilitiesType = "regular" | "needsApproval";
+
 export type subscribeType = {
   scope: string;
   eventName: string;
