@@ -30,7 +30,7 @@ class Wizard {
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
-  lastEvent: any = null;
+  verfiedStep: any = null;
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -49,23 +49,41 @@ class Wizard {
           return;
         }
         this.setStepPrevState(command, toStep);
+        if (this.verfiedStep) {
+          this.verfiedStep();
+          return;
+        }
         this.observer.dispatch({
           scope: "wizard",
-          eventName: (() => {
-            let event =
-              this.stepsMap[this.currentStep].status ===
-              StepValidationStatus.INVALID
-                ? "onFailed"
-                : "onChange";
-            this.lastEvent = event;
-            return event;
-          })(),
+          eventName: "onNavigate",
           payload: {
             toStep,
             command,
+            currentState: this.stepsMap[this.currentStep].state,
+            prevState: this.stepsMap[this.currentStep].prevState,
+            status: this.stepsMap[this.currentStep].status,
+            callback: () => {
+              let value =
+                this.stepsMap[this.currentStep].status ===
+                StepValidationStatus.INVALID;
+              if (value) {
+                this.verfiedStep = () => {
+                  this.resetStepsAheadOfCurrentStep();
+                  this.setStepStatus(StepValidationStatus.VALID);
+                  this.navigate(toStep);
+                  this.verfiedStep = null;
+                };
+              } else {
+                this.navigate(toStep);
+              }
+            },
+            action:
+              this.stepsMap[this.currentStep].status ===
+              StepValidationStatus.INVALID
+                ? "onFailed"
+                : "onChange",
           },
         });
-        this.navigate(toStep);
       },
     });
     this.observer.dispatch({

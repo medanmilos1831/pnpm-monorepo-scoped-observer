@@ -40,16 +40,19 @@ export interface IStepValidateParams {
   command: WizardCommands;
   currentState: any;
   prevState: any;
-  // resolve: () => void;
-  // reject: () => void;
   status: StepValidationStatus;
 }
 
 export interface IWizardStepNavigateParams {
   toStep: string;
   command: WizardCommands;
-  resolve: () => void;
-  reject: () => void;
+  action: "onFailed" | "onChange";
+  currentState: any;
+  prevState: any;
+  status: StepValidationStatus;
+  navigate: () => void;
+  failed: () => void;
+  callback: () => void;
 }
 
 export interface IWizardStepMutateStepStateParams {

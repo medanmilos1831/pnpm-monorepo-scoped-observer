@@ -42,45 +42,16 @@ WizzardProvider.Step = ({
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: "wizard",
-      eventName: "onChange",
+      eventName: "onNavigate",
       callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        if (onStepChange) {
-          onStepChange({
-            toStep: payload.toStep,
-            command: payload.command,
-            currentState: context.getStepEntityByStepName(
-              context.getActiveStep()
-            ).state,
-            prevState: context.getStepEntityByStepName(context.getActiveStep())
-              .prevState,
-            status: context.getStepEntityByStepName(context.getActiveStep())
-              .status,
-          });
+        const { action, navigate, failed, callback, ...rest } = payload;
+        if (action === "onFailed" && onFailed) {
+          onFailed(rest);
         }
-      },
-    });
-    return () => {
-      unsubscribe();
-    };
-  });
-  useEffect(() => {
-    const unsubscribe = context.subscribe({
-      scope: "wizard",
-      eventName: "onFailed",
-      callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        if (onFailed) {
-          onFailed({
-            toStep: payload.toStep,
-            command: payload.command,
-            currentState: context.getStepEntityByStepName(
-              context.getActiveStep()
-            ).state,
-            prevState: context.getStepEntityByStepName(context.getActiveStep())
-              .prevState,
-            status: context.getStepEntityByStepName(context.getActiveStep())
-              .status,
-          });
+        if (action === "onChange" && onStepChange) {
+          onStepChange(rest);
         }
+        callback();
       },
     });
     return () => {

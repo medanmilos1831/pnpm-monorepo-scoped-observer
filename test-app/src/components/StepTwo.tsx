@@ -22,8 +22,6 @@ const StepTwo = () => {
   return (
     <WizzardProvider.Step
       onStepChange={(params) => {
-        console.log("ON CHANGE");
-        params.resolve();
         // Handle next step
       }}
       onEnter={({ completed, uncompleted }) => {}}
