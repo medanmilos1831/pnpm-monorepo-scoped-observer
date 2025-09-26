@@ -31,6 +31,7 @@ class Wizard {
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
   pendingStep: (() => void) | null = null;
+  stepLifecycleParams: any = {};
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -89,12 +90,22 @@ class Wizard {
     this.stepTransition(this.currentStep, WizardStepLifecycle.ENTER);
   }
 
+  private updateSteps = (steps: string[]) => {
+    console.log("UPDATE STEPS", steps);
+  };
+
   private stepTransition(stepName: string, lifecycle: WizardStepLifecycle) {
     this.observer.dispatch({
       scope: "wizard:step",
       eventName: `onStepTransition:${stepName}`,
       payload: {
         lifecycle,
+        params: {
+          stepName,
+          currentState: this.stepsMap[stepName].state,
+          prevState: this.stepsMap[stepName].prevState,
+          status: this.stepsMap[stepName].status,
+        },
       },
     });
   }
@@ -103,12 +114,10 @@ class Wizard {
     const steps = Object.keys(this.stepsMap);
     const currentIndex = steps.indexOf(this.currentStep);
 
-    // Reset only steps AFTER current step (not including current step)
     for (let i = currentIndex + 1; i < steps.length; i++) {
       const stepName = steps[i];
       const step = this.stepsMap[stepName];
 
-      // Only reset if step is visible and completed
       if (step.visible && step.isCompleted) {
         step.isCompleted = false;
         step.state = undefined;

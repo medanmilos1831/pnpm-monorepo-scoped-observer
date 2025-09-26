@@ -29,10 +29,9 @@ export interface IStepConfig {
 export interface IStepProps {
   onStepChange?: (params: IStepValidateParams) => void;
   onFailed?: (params: IStepValidateParams) => void;
-  stepValidate?: (params: IStepValidateParams) => boolean;
   onMutateStepState?: (params: IWizardStepMutateStepStateParams) => void;
-  onEnter?: () => void;
-  onLeave?: () => void;
+  onEnter?: (params: IStepValidateParams) => void;
+  onLeave?: (params: IStepValidateParams) => void;
 }
 
 export interface IStepValidateParams {
@@ -66,10 +65,5 @@ export interface IWizardStepMutateStepStateParams {
 
 export interface IWizardStepLifecycleParams {
   lifecycle: WizardStepLifecycle;
-  completed: () => void;
-  uncompleted: () => void;
-  invalidated: () => void;
-  validate: () => void;
-  currentState: any;
-  prevState: any;
+  params: IStepValidateParams;
 }
