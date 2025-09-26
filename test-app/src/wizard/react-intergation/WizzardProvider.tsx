@@ -1,95 +1,80 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Wizard } from "../core/Wizard";
-import { WizardStepLifecycle, type IWizardStepLifecycleParams } from "../types";
+import {
+  createContext,
+  type PropsWithChildren,
+  useContext,
+  useEffect,
+} from "react";
+import { createWizard } from "../createWizard";
+import {
+  type IRuleParams,
+  type IStepProps,
+  type IMutateStepStateEventPayload,
+} from "../types";
 
-interface IWizardContext {
-  wizard: Wizard;
-  getActiveStep: () => string;
-  subscribe: (config: any) => () => void;
-}
+const Context = createContext<ReturnType<typeof createWizard> | undefined>(
+  undefined
+);
 
-const WizardContext = createContext<IWizardContext | null>(null);
-
-export const WizzardProvider = ({ children }: { children: React.ReactNode }) => {
-  const [wizard] = useState(() => new Wizard({ activeStep: "stepOne" }, { steps: ["stepOne", "stepTwo", "stepThree", "stepFour", "stepFive"], activeSteps: ["stepOne", "stepTwo", "stepThree", "stepFour", "stepFive"] }));
-
-  const getActiveStep = () => wizard.currentStep;
-
-  const subscribe = (config: any) => wizard.observer.subscribe(config);
-
-  return (
-    <WizardContext.Provider value={{ wizard, getActiveStep, subscribe }}>
-      {children}
-    </WizardContext.Provider>
-  );
+const WizzardProvider = ({
+  children,
+  value,
+}: {
+  children: React.ReactNode;
+  value: ReturnType<typeof createWizard>;
+}) => {
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
 WizzardProvider.Step = ({
-  onNext,
-  onFailed,
-  onMutateStepState,
-  guardRule,
-  onEnter,
-  onLeave,
   children,
-}: {
-  onNext?: (params: any) => void;
-  onFailed?: (params: any) => void;
-  onMutateStepState?: (params: any) => void;
-  guardRule?: (params: { currentState: any; prevState: any }) => boolean;
-  onEnter?: () => void;
-  onLeave?: () => void;
-  children: React.ReactNode;
-}) => {
-  const context = useContext(WizardContext);
-  if (!context) throw new Error("WizzardProvider.Step must be used within WizzardProvider");
-
+  onFailed,
+  onNext,
+  guardRule,
+  complitionRule,
+}: PropsWithChildren<IStepProps>) => {
+  const context = useContext(Context);
+  if (!context) {
+    throw new Error("WizzardProvider not found");
+  }
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: "wizard",
       eventName: "onNavigate",
       callback: ({ payload }: { payload: any }) => {
+        console.log("NAVIGATE", payload);
       },
     });
     return () => {
       unsubscribe();
     };
-  }, [context, onNext, onFailed]);
-
-  useEffect(() => {
-    const unsubscribe = context.subscribe({
-      scope: "wizard:step",
-      eventName: `onStepTransition:${context.getActiveStep()}`,
-      callback: ({ payload }: { payload: IWizardStepLifecycleParams }) => {
-        const { lifecycle } = payload;
-
-        if (lifecycle === WizardStepLifecycle.ENTER && onEnter) {
-          onEnter();
-        }
-        if (lifecycle === WizardStepLifecycle.LEAVE && onLeave) {
-          onLeave();
-        }
-      },
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [context, onEnter, onLeave]);
-
+  });
+  // MUTATE STEP STATE
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: "wizard:step",
       eventName: "mutateStepState",
-      callback: ({ payload }: { payload: any }) => {
-        if (onMutateStepState) {
-          onMutateStepState(payload);
+      callback: ({ payload }: { payload: IMutateStepStateEventPayload }) => {
+        if (guardRule) {
+          const value = guardRule({
+            currentState: payload.currentState,
+            prevState: payload.prevState,
+          });
+          payload.ruleCallback({ rule: "status", value });
+        }
+        if (complitionRule) {
+          const value = complitionRule({
+            currentState: payload.currentState,
+            prevState: payload.prevState,
+          });
+          payload.ruleCallback({ rule: "isCompleted", value });
         }
       },
     });
     return () => {
       unsubscribe();
     };
-  }, [context, onMutateStepState]);
-
+  });
   return <>{children}</>;
 };
+
+export { WizzardProvider, Context };

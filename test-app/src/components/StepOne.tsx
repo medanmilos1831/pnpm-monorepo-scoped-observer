@@ -1,25 +1,29 @@
-import { WizzardProvider } from "../wizard";
-import { useMutateStepState, useStepState } from "../wizard/react-intergation";
-import { Card, Row, Col, Typography, Modal, Button } from "antd";
+import { Card, Row, Col, Typography, Modal } from "antd";
 import { useState } from "react";
-import { accountTypes } from "../mock";
+import {
+  StepValidationStatus,
+  useMutateStepState,
+  useNavigate,
+  useStepState,
+  WizzardProvider,
+} from "../wizard";
+import { data } from "../mock";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const StepOne = () => {
   const mutateStepState = useMutateStepState();
-  const stepState = useStepState();
+  const { nextStep } = useNavigate();
+  const { state: stepState } = useStepState();
   const [open, setOpen] = useState(false);
-  const [selectedAccountType, setSelectedAccountType] = useState<string | null>(
-    stepState?.accountType || null
-  );
 
-  const handleAccountTypeSelect = (accountType: string) => {
-    setSelectedAccountType(accountType);
-    mutateStepState((prevState) => ({
-      ...prevState,
-      accountType,
-    }));
+  const handleAccountTypeSelect = (accountType: any) => {
+    mutateStepState((state) => {
+      return {
+        ...state,
+        ...accountType,
+      };
+    });
   };
 
   return (
@@ -28,6 +32,7 @@ const StepOne = () => {
         title="Account Type Selection"
         open={open}
         onOk={() => {
+          nextStep();
           setOpen(false);
         }}
         onCancel={() => {
@@ -38,59 +43,71 @@ const StepOne = () => {
       </Modal>
       <WizzardProvider.Step
         onNext={(params) => {
+          console.log("NEXT", params);
         }}
         onFailed={(params) => {
+          console.log("FAILED", params);
           // setOpen(true);
         }}
         guardRule={({ currentState, prevState }) =>
           prevState && prevState?.id !== currentState?.id ? true : true
         }
-        onMutateStepState={({ completed }) => {
-          completed();
-        }}
-        onEnter={() => {
-          // params.completed();
-        }}
-        onLeave={() => {
-        }}
+        complitionRule={({ currentState, prevState }) =>
+          currentState !== undefined ? true : false
+        }
       >
         <div style={{ padding: "20px" }}>
           <Title
             level={2}
             style={{ textAlign: "center", marginBottom: "30px" }}
           >
-            Choose Account Type
+            Choose Your Account Type
           </Title>
 
-          <Row gutter={[16, 16]} justify="center">
-            {accountTypes.map((type) => (
-              <Col key={type.id} xs={24} sm={12} md={8} lg={6}>
+          <Row gutter={[16, 16]}>
+            {data.accountType.map((accountType) => (
+              <Col xs={24} sm={12} lg={6} key={accountType.id}>
                 <Card
                   hoverable
                   style={{
-                    textAlign: "center",
+                    height: "200px",
+                    cursor: "pointer",
                     border:
-                      selectedAccountType === type.id
+                      stepState?.id === accountType.id
                         ? "2px solid #1890ff"
                         : "1px solid #d9d9d9",
                     backgroundColor:
-                      selectedAccountType === type.id ? "#f0f8ff" : "white",
+                      stepState?.id === accountType.id ? "#f0f8ff" : "#fff",
                   }}
-                  onClick={() => handleAccountTypeSelect(type.id)}
+                  onClick={() => handleAccountTypeSelect(accountType)}
                 >
-                  <div style={{ fontSize: "24px", marginBottom: "8px" }}>
-                    {type.icon}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Title level={4} style={{ margin: "0 0 10px 0" }}>
+                      {accountType.name}
+                    </Title>
+                    <Text type="secondary">
+                      {accountType.plan.length} plan
+                      {accountType.plan.length > 1 ? "s" : ""} available
+                    </Text>
                   </div>
-                  <Title level={4} style={{ margin: 0 }}>
-                    {type.name}
-                  </Title>
-                  <p style={{ color: "#666", margin: "8px 0 0 0" }}>
-                    {type.description}
-                  </p>
                 </Card>
               </Col>
             ))}
           </Row>
+
+          {stepState && (
+            <div style={{ marginTop: "20px", textAlign: "center" }}>
+              <Text strong>Selected: {stepState?.name}</Text>
+            </div>
+          )}
         </div>
       </WizzardProvider.Step>
     </>
