@@ -24,7 +24,7 @@ const StepTwo = () => {
       onStepChange={(params) => {
         // Handle next step
       }}
-      onEnter={({ completed, uncompleted }) => {}}
+      onEnter={() => {}}
       onMutateStepState={({ completed, uncompleted }) => {
         completed();
       }}
