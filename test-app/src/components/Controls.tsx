@@ -14,7 +14,6 @@ const Controls = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
           padding: "20px",
           borderTop: "1px solid #d9d9d9",

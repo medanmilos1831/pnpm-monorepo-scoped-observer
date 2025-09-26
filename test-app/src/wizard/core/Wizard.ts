@@ -52,16 +52,16 @@ class Wizard {
           scope: "wizard",
           eventName: "onNavigate",
           payload: {
-            toStep,
-            command,
-            currentState: this.stepsMap[this.currentStep].state,
-            prevState: this.stepsMap[this.currentStep].prevState,
             status: this.stepsMap[this.currentStep].status,
-            action:
+            collector: (callback: () => void) => {
+              if (callback) {
+                callback();
+              }
               this.stepsMap[this.currentStep].status ===
               StepValidationStatus.INVALID
-                ? "onFailed"
-                : "onChange",
+                ? alert("FAILED")
+                : this.navigate(toStep);
+            },
           },
         });
       },

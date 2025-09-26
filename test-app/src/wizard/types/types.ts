@@ -43,3 +43,8 @@ export interface IMutateStepStateEventPayload {
   prevState: any;
   ruleCallback: ({ rule, value }: { rule: string; value: boolean }) => void;
 }
+
+export interface IOnNavigateEventPayload {
+  status: StepValidationStatus;
+  collector: (fn: any) => void;
+}

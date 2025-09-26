@@ -42,15 +42,14 @@ const StepOne = () => {
         <p>Modal content here</p>
       </Modal>
       <WizzardProvider.Step
-        onNext={(params) => {
-          console.log("NEXT", params);
+        onNext={() => {
+          console.log("NEXT");
         }}
-        onFailed={(params) => {
-          console.log("FAILED", params);
+        onFailed={() => {
           // setOpen(true);
         }}
         guardRule={({ currentState, prevState }) =>
-          prevState && prevState?.id !== currentState?.id ? true : true
+          prevState && prevState?.id !== currentState?.id ? false : true
         }
         complitionRule={({ currentState, prevState }) =>
           currentState !== undefined ? true : false

@@ -9,6 +9,8 @@ import {
   type IRuleParams,
   type IStepProps,
   type IMutateStepStateEventPayload,
+  type IOnNavigateEventPayload,
+  StepValidationStatus,
 } from "../types";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
@@ -40,14 +42,17 @@ WizzardProvider.Step = ({
     const unsubscribe = context.subscribe({
       scope: "wizard",
       eventName: "onNavigate",
-      callback: ({ payload }: { payload: any }) => {
-        console.log("NAVIGATE", payload);
+      callback: ({ payload }: { payload: IOnNavigateEventPayload }) => {
+        payload.collector(
+          payload.status === StepValidationStatus.INVALID ? onFailed : onNext
+        );
       },
     });
     return () => {
       unsubscribe();
     };
   });
+
   // MUTATE STEP STATE
   useEffect(() => {
     const unsubscribe = context.subscribe({
