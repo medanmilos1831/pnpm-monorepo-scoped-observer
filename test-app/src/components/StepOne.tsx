@@ -42,7 +42,7 @@ const StepOne = () => {
         <p>Modal content here</p>
       </Modal>
       <WizzardProvider.Step
-        onNext={(params) => {
+        onStepChange={(params) => {
           console.log("onNext", params);
           params.resolve();
           // Handle next step

@@ -21,7 +21,7 @@ const StepTwo = () => {
 
   return (
     <WizzardProvider.Step
-      onNext={(params) => {
+      onStepChange={(params) => {
         params.resolve();
         // Handle next step
       }}

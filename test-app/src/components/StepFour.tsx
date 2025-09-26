@@ -3,7 +3,7 @@ import { WizzardProvider } from "../wizard";
 const StepFour = () => {
   return (
     <WizzardProvider.Step
-      onNext={(params) => {
+      onStepChange={(params) => {
         params.resolve();
         // Handle next step
       }}
