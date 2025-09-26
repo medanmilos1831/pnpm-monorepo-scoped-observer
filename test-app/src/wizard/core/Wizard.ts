@@ -25,10 +25,12 @@ class Wizard {
       ],
     },
   ]);
+  valid: any = true;
   commands: Commands = new Commands(this.observer);
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
+  lastEvent: any = null;
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -46,34 +48,47 @@ class Wizard {
         if (!toStep) {
           return;
         }
+        this.setStepPrevState(command, toStep);
         // if (
+        //   this.valid &&
         //   this.stepsMap[this.currentStep].status ===
-        //   StepValidationStatus.INVALID
+        //     StepValidationStatus.INVALID
         // ) {
-        //   alert("INVALID");
-        //   // this.setStepStatus(StepValidationStatus.VALID);
-        //   // this.resetStepsAheadOfCurrentStep();
-        //   // this.setStepPrevState(command, toStep);
-        //   // this.navigate(toStep);
-        //   // this.setStepStatus(StepValidationStatus.VALID);
+        //   this.valid = false;
+        //   this.observer.dispatch({
+        //     scope: "wizard",
+        //     eventName: "onFailed",
+        //     payload: {
+        //       toStep,
+        //       command,
+        //     },
+        //   });
         //   return;
         // }
+        console.log("last event", this.lastEvent);
         // Handle navigation command
         this.observer.dispatch({
           scope: "wizard",
-          eventName: "onChange",
+          eventName: (() => {
+            let event =
+              this.stepsMap[this.currentStep].status ===
+              StepValidationStatus.INVALID
+                ? "onFailed"
+                : "onChange";
+            return "onChange";
+          })(),
           payload: {
             toStep,
             command,
-            resolve: () => {
-              this.setStepPrevState(command, toStep);
-              this.navigate(toStep);
-              // Resolve navigation
-            },
-            reject: () => {
-              this.setStepStatus(StepValidationStatus.INVALID);
-              // Reject navigation
-            },
+            // resolve: () => {
+            //   this.setStepPrevState(command, toStep);
+            //   this.navigate(toStep);
+            //   // Resolve navigation
+            // },
+            // reject: () => {
+            //   this.setStepStatus(StepValidationStatus.INVALID);
+            //   // Reject navigation
+            // },
           },
         });
       },
@@ -134,6 +149,11 @@ class Wizard {
 
   private setStepStatus(status: StepValidationStatus) {
     this.stepsMap[this.currentStep].status = status;
+    if (status === StepValidationStatus.INVALID) {
+      this.valid = false;
+    } else {
+      this.valid = true;
+    }
     this.observer.dispatch({
       scope: "wizard:step",
       eventName: "stepStatusChanged",
@@ -200,9 +220,11 @@ class Wizard {
           this.setStepCompleted(false);
         },
         invalidated: () => {
+          console.log("INVALIDATED");
           this.setStepStatus(StepValidationStatus.INVALID);
         },
         validate: () => {
+          console.log("INVALIDATED");
           this.setStepStatus(StepValidationStatus.VALID);
         },
         currentState: this.stepsMap[this.currentStep].state,

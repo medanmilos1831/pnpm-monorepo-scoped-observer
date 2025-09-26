@@ -30,6 +30,7 @@ const WizzardProvider = ({
 WizzardProvider.Step = ({
   children,
   onStepChange,
+  onFailed,
   onMutateStepState,
   onEnter,
   onLeave,
@@ -54,11 +55,30 @@ WizzardProvider.Step = ({
               .prevState,
             status: context.getStepEntityByStepName(context.getActiveStep())
               .status,
-            resolve: () => payload.resolve(),
-            reject: () => {
-              console.log("reject");
-              payload.reject();
-            },
+          });
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: "wizard",
+      eventName: "onFailed",
+      callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
+        if (onFailed) {
+          onFailed({
+            toStep: payload.toStep,
+            command: payload.command,
+            currentState: context.getStepEntityByStepName(
+              context.getActiveStep()
+            ).state,
+            prevState: context.getStepEntityByStepName(context.getActiveStep())
+              .prevState,
+            status: context.getStepEntityByStepName(context.getActiveStep())
+              .status,
           });
         }
       },
