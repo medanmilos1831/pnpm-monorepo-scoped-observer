@@ -5,6 +5,7 @@ import {
   WizardCommands,
   type IWizardConfig,
   type IWizardStepsConfig,
+  StepValidationStatus,
 } from "../types";
 import { Commands } from "./Commands";
 import { Step } from "./Step";
@@ -41,6 +42,7 @@ class Wizard {
       scope: "wizard:commands",
       eventName: "navigate",
       callback: ({ payload: command }: { payload: any }) => {
+        // Handle navigation command
         const toStep = this.findNextStep(command);
         if (!toStep) {
           return;
@@ -53,11 +55,12 @@ class Wizard {
             command,
             resolve: () => {
               this.setStepPrevState(command, toStep);
-
+              this.setStepStatus(StepValidationStatus.VALID);
               this.navigate(toStep);
               // Resolve navigation
             },
             reject: () => {
+              this.setStepStatus(StepValidationStatus.INVALID);
               // Reject navigation
             },
           },
@@ -97,6 +100,10 @@ class Wizard {
         value,
       },
     });
+  }
+
+  private setStepStatus(status: StepValidationStatus) {
+    this.stepsMap[this.currentStep].status = status;
   }
 
   private findNextStep(command: WizardCommands) {

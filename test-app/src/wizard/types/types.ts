@@ -8,6 +8,12 @@ export enum WizardCommands {
   PREV = "prev",
 }
 
+export enum StepValidationStatus {
+  VALID = "valid",
+  INVALID = "invalid",
+  PENDING = "pending",
+}
+
 export interface IWizardConfig {
   activeStep: string;
 }
