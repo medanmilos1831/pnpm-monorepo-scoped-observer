@@ -40,10 +40,10 @@ WizzardProvider.Step = ({
   }
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: "wizard:step",
-      eventName: "navigate",
+      scope: "wizard",
+      eventName: "onChange",
       callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        console.log("onNext", payload);
+        console.log("ON CHANGE SUBSCIBER");
         if (onStepChange) {
           onStepChange({
             toStep: payload.toStep,
@@ -54,7 +54,10 @@ WizzardProvider.Step = ({
             prevState: context.getStepEntityByStepName(context.getActiveStep())
               .prevState,
             resolve: () => payload.resolve(),
-            reject: () => payload.reject(),
+            reject: () => {
+              console.log("reject");
+              payload.reject();
+            },
           });
         }
       },

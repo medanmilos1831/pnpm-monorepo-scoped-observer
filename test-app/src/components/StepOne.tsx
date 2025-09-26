@@ -43,22 +43,17 @@ const StepOne = () => {
       </Modal>
       <WizzardProvider.Step
         onStepChange={(params) => {
-          console.log("onNext", params);
-          params.resolve();
-          // Handle next step
+          // console.log("ON CHANGE STEP ONE");
+          if (
+            params.prevState &&
+            params.prevState?.id != params.currentState?.id
+          ) {
+            params.reject();
+            // return false;
+          } else {
+            params.resolve();
+          }
         }}
-        // stepValidate={(params) => {
-        //   console.log("stepValidate");
-        //   // Validate step parameters
-        //   if (
-        //     params.prevState &&
-        //     params.prevState?.id != params.currentState?.id
-        //   ) {
-        //     setOpen(true);
-        //     return false;
-        //   }
-        //   return true;
-        // }}
         onMutateStepState={({
           completed,
           uncompleted,
@@ -70,7 +65,6 @@ const StepOne = () => {
           completed();
           if (prevState && prevState?.id != currentState?.id) {
             invalidated();
-            // return false;
           } else {
             validate();
           }

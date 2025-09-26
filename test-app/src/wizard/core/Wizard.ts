@@ -46,20 +46,10 @@ class Wizard {
         if (!toStep) {
           return;
         }
-        if (
-          this.stepsMap[this.currentStep].status ===
-          StepValidationStatus.INVALID
-        ) {
-          this.setStepStatus(StepValidationStatus.VALID);
-          this.resetStepsAheadOfCurrentStep();
-          this.setStepPrevState(command, toStep);
-          this.navigate(toStep);
-          return;
-        }
         // Handle navigation command
         this.observer.dispatch({
-          scope: "wizard:step",
-          eventName: "navigate",
+          scope: "wizard",
+          eventName: "onChange",
           payload: {
             toStep,
             command,
