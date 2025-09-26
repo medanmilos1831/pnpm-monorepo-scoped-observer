@@ -31,8 +31,8 @@ export interface IStepProps {
   onFailed?: (params: IStepValidateParams) => void;
   stepValidate?: (params: IStepValidateParams) => boolean;
   onMutateStepState?: (params: IWizardStepMutateStepStateParams) => void;
-  onEnter?: (params: Omit<IWizardStepLifecycleParams, "lifecycle">) => void;
-  onLeave?: (params: Omit<IWizardStepLifecycleParams, "lifecycle">) => void;
+  onEnter?: () => void;
+  onLeave?: () => void;
 }
 
 export interface IStepValidateParams {

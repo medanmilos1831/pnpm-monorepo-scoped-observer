@@ -82,13 +82,13 @@ WizzardProvider.Step = ({
       scope: "wizard:step",
       eventName: `onStepTransition:${context.getActiveStep()}`,
       callback: ({ payload }: { payload: IWizardStepLifecycleParams }) => {
-        const { lifecycle, ...rest } = payload;
+        const { lifecycle } = payload;
 
         if (lifecycle === WizardStepLifecycle.ENTER && onEnter) {
-          onEnter(rest);
+          onEnter();
         }
         if (lifecycle === WizardStepLifecycle.LEAVE && onLeave) {
-          onLeave(rest);
+          onLeave();
         }
       },
     });

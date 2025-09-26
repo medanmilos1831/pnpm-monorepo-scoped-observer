@@ -42,9 +42,7 @@ const StepOne = () => {
         <p>Modal content here</p>
       </Modal>
       <WizzardProvider.Step
-        onStepChange={(params) => {
-          console.log("ON STEP CHANGE", params);
-        }}
+        onStepChange={(params) => {}}
         onFailed={(params) => {
           setOpen(true);
         }}
@@ -63,8 +61,10 @@ const StepOne = () => {
             validate();
           }
         }}
-        onEnter={(params) => {}}
-        onLeave={() => {}}
+        onEnter={(params) => {
+          // params.completed();
+        }}
+        onLeave={(params) => {}}
       >
         <div style={{ padding: "20px" }}>
           <Title
