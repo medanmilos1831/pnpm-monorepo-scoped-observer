@@ -1,11 +1,12 @@
 import type { IScopedObserver } from "../../scroped-observer";
 import { createScopedObserver } from "../../scroped-observer";
 import {
-  WizardStepLifecycle,
+  StepValidationStatus,
   WizardCommands,
+  type IMutateStepStateEventPayload,
+  type IStepProps,
   type IWizardConfig,
   type IWizardStepsConfig,
-  StepValidationStatus,
 } from "../types";
 import { Commands } from "./Commands";
 import { Step } from "./Step";
@@ -111,22 +112,33 @@ class Wizard {
       scope: "wizard:step",
       eventName: "mutateStepState",
       payload: {
-        currentState: this.stepsMap[this.currentStep].state,
-        prevState: this.stepsMap[this.currentStep].prevState,
-        ruleCallback: ({ rule, value }: { rule: string; value: boolean }) => {
-          this.stepsMap[this.currentStep][rule] = (() => {
-            if (rule === "status") {
-              return value
-                ? StepValidationStatus.VALID
-                : StepValidationStatus.INVALID;
-            } else {
-              return value;
+        collector: (
+          rules: Array<{
+            rule: string;
+            value: IStepProps["guardRule"] | IStepProps["complitionRule"];
+          }>
+        ) => {
+          rules.forEach(({ rule, value }) => {
+            if (value) {
+              const result = value({
+                currentState: this.stepsMap[this.currentStep].state,
+                prevState: this.stepsMap[this.currentStep].prevState,
+              });
+              if (rule === "guardRule") {
+                this.stepsMap[this.currentStep].status = result
+                  ? StepValidationStatus.VALID
+                  : StepValidationStatus.INVALID;
+              } else {
+                this.stepsMap[this.currentStep].isCompleted = result;
+              }
+              this.observer.dispatch({
+                scope: "wizard:step",
+                eventName:
+                  rule === "guardRule"
+                    ? "stepStatusChanged"
+                    : "stepCompletionChanged",
+              });
             }
-          })();
-          this.observer.dispatch({
-            scope: "wizard:step",
-            eventName:
-              rule === "status" ? "stepStatusChanged" : "stepCompletionChanged",
           });
         },
       },

@@ -39,9 +39,12 @@ export interface IRuleParams {
 }
 
 export interface IMutateStepStateEventPayload {
-  currentState: any;
-  prevState: any;
-  ruleCallback: ({ rule, value }: { rule: string; value: boolean }) => void;
+  collector: (
+    rules: Array<{
+      rule: string;
+      value: ((params: IRuleParams) => boolean) | undefined;
+    }>
+  ) => void;
 }
 
 export interface IOnNavigateEventPayload {
