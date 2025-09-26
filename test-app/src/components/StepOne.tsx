@@ -16,7 +16,6 @@ const StepOne = () => {
   const { nextStep } = useNavigate();
   const { state: stepState } = useStepState();
   const [open, setOpen] = useState(false);
-  console.log(stepState);
 
   const handleAccountTypeSelect = (accountType: any) => {
     mutateStepState((state) => {
@@ -48,7 +47,8 @@ const StepOne = () => {
             params.resolve();
           }
           if (params.status === StepValidationStatus.INVALID) {
-            params.reject();
+            // params.reject();
+            setOpen(true);
           }
         }}
         onMutateStepState={({
@@ -66,12 +66,8 @@ const StepOne = () => {
             validate();
           }
         }}
-        onEnter={() => {
-          // Handle step enter
-        }}
-        onLeave={() => {
-          // Handle step leave
-        }}
+        onEnter={(params) => {}}
+        onLeave={() => {}}
       >
         <div style={{ padding: "20px" }}>
           <Title

@@ -46,6 +46,18 @@ class Wizard {
         if (!toStep) {
           return;
         }
+        // if (
+        //   this.stepsMap[this.currentStep].status ===
+        //   StepValidationStatus.INVALID
+        // ) {
+        //   alert("INVALID");
+        //   // this.setStepStatus(StepValidationStatus.VALID);
+        //   // this.resetStepsAheadOfCurrentStep();
+        //   // this.setStepPrevState(command, toStep);
+        //   // this.navigate(toStep);
+        //   // this.setStepStatus(StepValidationStatus.VALID);
+        //   return;
+        // }
         // Handle navigation command
         this.observer.dispatch({
           scope: "wizard",
@@ -161,6 +173,14 @@ class Wizard {
         uncompleted: () => {
           this.setStepCompleted(false);
         },
+        invalidated: () => {
+          this.setStepStatus(StepValidationStatus.INVALID);
+        },
+        validate: () => {
+          this.setStepStatus(StepValidationStatus.VALID);
+        },
+        currentState: this.stepsMap[this.currentStep].state,
+        prevState: this.stepsMap[this.currentStep].prevState,
       },
     });
     this.currentStep = toStep;
@@ -179,6 +199,14 @@ class Wizard {
         uncompleted: () => {
           this.setStepCompleted(false);
         },
+        invalidated: () => {
+          this.setStepStatus(StepValidationStatus.INVALID);
+        },
+        validate: () => {
+          this.setStepStatus(StepValidationStatus.VALID);
+        },
+        currentState: this.stepsMap[this.currentStep].state,
+        prevState: this.stepsMap[this.currentStep].prevState,
       },
     });
   }

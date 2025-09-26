@@ -64,4 +64,8 @@ export interface IWizardStepLifecycleParams {
   lifecycle: WizardStepLifecycle;
   completed: () => void;
   uncompleted: () => void;
+  invalidated: () => void;
+  validate: () => void;
+  currentState: any;
+  prevState: any;
 }

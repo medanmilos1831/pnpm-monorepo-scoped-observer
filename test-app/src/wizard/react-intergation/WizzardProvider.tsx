@@ -43,7 +43,6 @@ WizzardProvider.Step = ({
       scope: "wizard",
       eventName: "onChange",
       callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        console.log("ON CHANGE SUBSCIBER");
         if (onStepChange) {
           onStepChange({
             toStep: payload.toStep,
@@ -92,16 +91,13 @@ WizzardProvider.Step = ({
       scope: "wizard:step",
       eventName: `onStepTransition:${context.getActiveStep()}`,
       callback: ({ payload }: { payload: IWizardStepLifecycleParams }) => {
-        const { completed, uncompleted, lifecycle } = payload;
-        const obj = {
-          completed,
-          uncompleted,
-        };
+        const { lifecycle, ...rest } = payload;
+
         if (lifecycle === WizardStepLifecycle.ENTER && onEnter) {
-          onEnter(obj);
+          onEnter(rest);
         }
         if (lifecycle === WizardStepLifecycle.LEAVE && onLeave) {
-          onLeave(obj);
+          onLeave(rest);
         }
       },
     });
