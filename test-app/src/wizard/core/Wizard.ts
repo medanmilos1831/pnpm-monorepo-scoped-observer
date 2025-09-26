@@ -132,6 +132,13 @@ class Wizard {
 
   private setStepStatus(status: StepValidationStatus) {
     this.stepsMap[this.currentStep].status = status;
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: "stepStatusChanged",
+      payload: {
+        status,
+      },
+    });
   }
 
   private findNextStep(command: WizardCommands) {
@@ -187,7 +194,6 @@ class Wizard {
   }
 
   mutateStepState = (callback: (step: Step) => void) => {
-    let prevState = structuredClone(this.stepsMap[this.currentStep].state);
     this.stepsMap[this.currentStep].state = callback(
       this.stepsMap[this.currentStep].state
     );
@@ -201,8 +207,14 @@ class Wizard {
         uncompleted: () => {
           this.setStepCompleted(false);
         },
+        invalidated: () => {
+          this.setStepStatus(StepValidationStatus.INVALID);
+        },
+        validate: () => {
+          this.setStepStatus(StepValidationStatus.VALID);
+        },
         currentState: this.stepsMap[this.currentStep].state,
-        prevState,
+        prevState: this.stepsMap[this.currentStep].prevState,
       },
     });
   };

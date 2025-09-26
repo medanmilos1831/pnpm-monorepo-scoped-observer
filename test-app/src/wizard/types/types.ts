@@ -11,7 +11,6 @@ export enum WizardCommands {
 export enum StepValidationStatus {
   VALID = "valid",
   INVALID = "invalid",
-  PENDING = "pending",
 }
 
 export interface IWizardConfig {
@@ -28,9 +27,9 @@ export interface IStepConfig {
 }
 
 export interface IStepProps {
-  onNext?: () => void;
+  onNext?: (params: IStepValidateParams) => void;
   stepValidate?: (params: IStepValidateParams) => boolean;
-  onMutateStepState?: (state: any, prevState: any) => void;
+  onMutateStepState?: (params: IWizardStepMutateStepStateParams) => void;
   onEnter?: (params: Omit<IWizardStepLifecycleParams, "lifecycle">) => void;
   onLeave?: (params: Omit<IWizardStepLifecycleParams, "lifecycle">) => void;
 }
@@ -40,6 +39,8 @@ export interface IStepValidateParams {
   command: WizardCommands;
   currentState: any;
   prevState: any;
+  resolve: () => void;
+  reject: () => void;
 }
 
 export interface IWizardStepNavigateParams {
@@ -52,6 +53,10 @@ export interface IWizardStepNavigateParams {
 export interface IWizardStepMutateStepStateParams {
   completed: () => void;
   uncompleted: () => void;
+  currentState: any;
+  prevState: any;
+  invalidated: () => void;
+  validate: () => void;
 }
 
 export interface IWizardStepLifecycleParams {

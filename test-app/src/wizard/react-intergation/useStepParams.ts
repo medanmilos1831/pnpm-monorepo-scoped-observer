@@ -16,8 +16,16 @@ const useStepParams = () => {
     },
     () => context.getStepEntityByStepName(step).isCompleted
   );
+  const status = useSubscriber(
+    {
+      eventName: "stepStatusChanged",
+      scope: "wizard:step",
+    },
+    () => context.getStepEntityByStepName(step).status
+  );
   return {
     isCompleted,
+    status,
   };
 };
 

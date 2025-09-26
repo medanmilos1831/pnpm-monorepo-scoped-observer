@@ -44,24 +44,37 @@ WizzardProvider.Step = ({
       scope: "wizard:step",
       eventName: "navigate",
       callback: ({ payload }: { payload: IWizardStepNavigateParams }) => {
-        stepValidate
-          ? (() => {
-              let result = stepValidate({
-                toStep: payload.toStep,
-                command: payload.command,
-                currentState: context.getStepEntityByStepName(
-                  context.getActiveStep()
-                ).state,
-                prevState: context.getStepEntityByStepName(
-                  context.getActiveStep()
-                ).prevState,
-              });
-              result ? payload.resolve() : payload.reject();
-            })()
-          : (() => {
-              onNext && onNext();
-              payload.resolve();
-            })();
+        if (onNext) {
+          onNext({
+            toStep: payload.toStep,
+            command: payload.command,
+            currentState: context.getStepEntityByStepName(
+              context.getActiveStep()
+            ).state,
+            prevState: context.getStepEntityByStepName(context.getActiveStep())
+              .prevState,
+            resolve: () => payload.resolve(),
+            reject: () => payload.reject(),
+          });
+        }
+        // stepValidate
+        //   ? (() => {
+        //       let result = stepValidate({
+        //         toStep: payload.toStep,
+        //         command: payload.command,
+        //         currentState: context.getStepEntityByStepName(
+        //           context.getActiveStep()
+        //         ).state,
+        //         prevState: context.getStepEntityByStepName(
+        //           context.getActiveStep()
+        //         ).prevState,
+        //       });
+        //       result ? payload.resolve() : payload.reject();
+        //     })()
+        //   : (() => {
+        //       onNext && onNext();
+        //       payload.resolve();
+        //     })();
       },
     });
     return () => {

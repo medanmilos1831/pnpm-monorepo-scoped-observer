@@ -15,6 +15,7 @@ const StepOne = () => {
   const { nextStep } = useNavigate();
   const { state: stepState } = useStepState();
   const [open, setOpen] = useState(false);
+  console.log(stepState);
 
   const handleAccountTypeSelect = (accountType: any) => {
     mutateStepState((state) => {
@@ -41,31 +42,38 @@ const StepOne = () => {
         <p>Modal content here</p>
       </Modal>
       <WizzardProvider.Step
-        onNext={() => {
+        onNext={(params) => {
+          console.log("onNext", params);
+          params.resolve();
           // Handle next step
         }}
-        stepValidate={(params) => {
-          // Validate step parameters
-          if (
-            params.prevState &&
-            params.prevState?.id != params.currentState?.id
-          ) {
-            setOpen(true);
-            return false;
-          }
-          return true;
-        }}
+        // stepValidate={(params) => {
+        //   console.log("stepValidate");
+        //   // Validate step parameters
+        //   if (
+        //     params.prevState &&
+        //     params.prevState?.id != params.currentState?.id
+        //   ) {
+        //     setOpen(true);
+        //     return false;
+        //   }
+        //   return true;
+        // }}
         onMutateStepState={({
           completed,
           uncompleted,
+          invalidated,
+          validate,
           prevState,
           currentState,
         }) => {
-          if (prevState && prevState?.id != currentState?.id) {
-            setOpen(true);
-            return false;
-          }
           completed();
+          if (prevState && prevState?.id != currentState?.id) {
+            invalidated();
+            // return false;
+          } else {
+            validate();
+          }
         }}
         onEnter={() => {
           // Handle step enter
