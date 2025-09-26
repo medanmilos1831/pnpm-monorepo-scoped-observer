@@ -42,11 +42,21 @@ class Wizard {
       scope: "wizard:commands",
       eventName: "navigate",
       callback: ({ payload: command }: { payload: any }) => {
-        // Handle navigation command
         const toStep = this.findNextStep(command);
         if (!toStep) {
           return;
         }
+        if (
+          this.stepsMap[this.currentStep].status ===
+          StepValidationStatus.INVALID
+        ) {
+          this.setStepStatus(StepValidationStatus.VALID);
+          this.resetStepsAheadOfCurrentStep();
+          this.setStepPrevState(command, toStep);
+          this.navigate(toStep);
+          return;
+        }
+        // Handle navigation command
         this.observer.dispatch({
           scope: "wizard:step",
           eventName: "navigate",
@@ -55,7 +65,6 @@ class Wizard {
             command,
             resolve: () => {
               this.setStepPrevState(command, toStep);
-              this.setStepStatus(StepValidationStatus.VALID);
               this.navigate(toStep);
               // Resolve navigation
             },
@@ -79,6 +88,25 @@ class Wizard {
         },
       },
     });
+  }
+
+  private resetStepsAheadOfCurrentStep() {
+    const steps = Object.keys(this.stepsMap);
+    const currentIndex = steps.indexOf(this.currentStep);
+
+    // Reset only steps AFTER current step (not including current step)
+    for (let i = currentIndex + 1; i < steps.length; i++) {
+      const stepName = steps[i];
+      const step = this.stepsMap[stepName];
+
+      // Only reset if step is visible and completed
+      if (step.visible && step.isCompleted) {
+        step.isCompleted = false;
+        step.state = undefined;
+        step.prevState = undefined;
+        step.status = StepValidationStatus.VALID;
+      }
+    }
   }
 
   private setStepPrevState(command: string, toStep: string) {
@@ -159,6 +187,7 @@ class Wizard {
   }
 
   mutateStepState = (callback: (step: Step) => void) => {
+    let prevState = structuredClone(this.stepsMap[this.currentStep].state);
     this.stepsMap[this.currentStep].state = callback(
       this.stepsMap[this.currentStep].state
     );
@@ -172,6 +201,8 @@ class Wizard {
         uncompleted: () => {
           this.setStepCompleted(false);
         },
+        currentState: this.stepsMap[this.currentStep].state,
+        prevState,
       },
     });
   };

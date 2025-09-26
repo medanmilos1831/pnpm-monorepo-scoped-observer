@@ -34,7 +34,9 @@ const StepOne = () => {
           nextStep();
           setOpen(false);
         }}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+        }}
       >
         <p>Modal content here</p>
       </Modal>
@@ -53,7 +55,16 @@ const StepOne = () => {
           }
           return true;
         }}
-        onMutateStepState={({ completed, uncompleted }) => {
+        onMutateStepState={({
+          completed,
+          uncompleted,
+          prevState,
+          currentState,
+        }) => {
+          if (prevState && prevState?.id != currentState?.id) {
+            setOpen(true);
+            return false;
+          }
           completed();
         }}
         onEnter={() => {
@@ -116,15 +127,6 @@ const StepOne = () => {
             </div>
           )}
         </div>
-
-        <Modal
-          title="Account Type Selection"
-          open={open}
-          onOk={() => setOpen(false)}
-          onCancel={() => setOpen(false)}
-        >
-          <p>Modal content here</p>
-        </Modal>
       </WizzardProvider.Step>
     </>
   );
