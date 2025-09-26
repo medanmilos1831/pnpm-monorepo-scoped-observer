@@ -2,6 +2,7 @@ import type { IScopedObserver } from "../../scroped-observer";
 import { createScopedObserver } from "../../scroped-observer";
 import {
   WizardStepLifecycle,
+  WizardCommands,
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
@@ -51,6 +52,8 @@ class Wizard {
             toStep,
             command,
             resolve: () => {
+              this.setStepPrevState(command, toStep);
+
               this.navigate(toStep);
               // Resolve navigation
             },
@@ -75,6 +78,16 @@ class Wizard {
     });
   }
 
+  private setStepPrevState(command: string, toStep: string) {
+    const key = command === "next" ? this.currentStep : toStep;
+    const value =
+      command === "next"
+        ? undefined
+        : structuredClone(this.stepsMap[key].state);
+    this.stepsMap[key].prevState = value;
+    this.stepsMap[this.currentStep].prevState = value;
+  }
+
   private setStepCompleted(value: boolean) {
     this.stepsMap[this.currentStep].isCompleted = value;
     this.observer.dispatch({
@@ -86,17 +99,17 @@ class Wizard {
     });
   }
 
-  private findNextStep(command: string) {
+  private findNextStep(command: WizardCommands) {
     let toStep = undefined;
     const steps = Object.keys(this.stepsMap);
     const currentIndex = steps.indexOf(this.currentStep);
 
-    if (command === "next") {
+    if (command === WizardCommands.NEXT) {
       const nextIndex = currentIndex + 1;
       const nextStepName =
         nextIndex < steps.length ? steps[nextIndex] : undefined;
       toStep = nextStepName;
-    } else if (command === "prev") {
+    } else if (command === WizardCommands.PREV) {
       const prevIndex = currentIndex - 1;
       const prevStepName = prevIndex >= 0 ? steps[prevIndex] : undefined;
       toStep = prevStepName;

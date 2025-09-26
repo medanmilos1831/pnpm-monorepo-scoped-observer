@@ -12,7 +12,7 @@ const StepTwo = () => {
     mutateStepState((state) => {
       return {
         ...state,
-        selectedPlan: plan,
+        ...plan,
       };
     });
   };
@@ -25,6 +25,9 @@ const StepTwo = () => {
         // Handle next step
       }}
       onEnter={({ completed, uncompleted }) => {}}
+      onMutateStepState={({ completed, uncompleted }) => {
+        completed();
+      }}
     >
       <div style={{ padding: "20px" }}>
         <Title level={2} style={{ textAlign: "center", marginBottom: "30px" }}>
@@ -46,11 +49,10 @@ const StepTwo = () => {
                   height: "180px",
                   cursor: "pointer",
                   border:
-                    state?.selectedPlan?.id === plan.id
+                    state?.id === plan.id
                       ? "2px solid #1890ff"
                       : "1px solid #d9d9d9",
-                  backgroundColor:
-                    state?.selectedPlan?.id === plan.id ? "#f0f8ff" : "#fff",
+                  backgroundColor: state?.id === plan.id ? "#f0f8ff" : "#fff",
                 }}
                 onClick={() => handlePlanSelect(plan)}
               >
@@ -83,10 +85,10 @@ const StepTwo = () => {
           ))}
         </Row>
 
-        {state?.selectedPlan && (
+        {state && (
           <div style={{ marginTop: "20px", textAlign: "center" }}>
-            <Text strong>Selected: {state.selectedPlan.name}</Text>
-            {state.selectedPlan.isExtraInfoRequired && (
+            <Text strong>Selected: {state.name}</Text>
+            {state.isExtraInfoRequired && (
               <div style={{ marginTop: "5px" }}>
                 <Tag color="orange">
                   Additional information will be required

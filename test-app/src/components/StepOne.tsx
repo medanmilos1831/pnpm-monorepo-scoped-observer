@@ -22,9 +22,20 @@ const StepOne = () => {
       onNext={() => {
         // Handle next step
       }}
-      // stepValidate={(params) => {
-      //   // Handle step validation
-      // }}
+      stepValidate={(params) => {
+        console.log(
+          "PARAMS ON STEP ONE",
+          params.prevState,
+          params.currentState
+        );
+        if (
+          params.prevState &&
+          params.prevState?.id != params.currentState?.id
+        ) {
+          return false;
+        }
+        return true;
+      }}
       onMutateStepState={({ completed, uncompleted }) => {
         completed();
       }}

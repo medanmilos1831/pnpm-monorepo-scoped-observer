@@ -1,4 +1,5 @@
 import type { IScopedObserver } from "../../scroped-observer";
+import { WizardCommands } from "../types";
 
 class Commands {
   observer: IScopedObserver;
@@ -9,14 +10,14 @@ class Commands {
     this.observer.dispatch({
       scope: "wizard:commands",
       eventName: "navigate",
-      payload: "next",
+      payload: WizardCommands.NEXT,
     });
   };
   prevStep = () => {
     this.observer.dispatch({
       scope: "wizard:commands",
       eventName: "navigate",
-      payload: "prev",
+      payload: WizardCommands.PREV,
     });
   };
 }

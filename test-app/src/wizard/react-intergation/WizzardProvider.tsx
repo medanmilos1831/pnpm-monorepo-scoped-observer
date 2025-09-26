@@ -49,11 +49,17 @@ WizzardProvider.Step = ({
               let result = stepValidate({
                 toStep: payload.toStep,
                 command: payload.command,
+                currentState: context.getStepEntityByStepName(
+                  context.getActiveStep()
+                ).state,
+                prevState: context.getStepEntityByStepName(
+                  context.getActiveStep()
+                ).prevState,
               });
               result ? payload.resolve() : payload.reject();
             })()
           : (() => {
-              onNext();
+              onNext && onNext();
               payload.resolve();
             })();
       },
