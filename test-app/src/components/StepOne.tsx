@@ -1,6 +1,7 @@
 import { Card, Row, Col, Typography, Modal } from "antd";
 import { useState } from "react";
 import {
+  StepValidationStatus,
   useMutateStepState,
   useNavigate,
   useStepState,
@@ -43,15 +44,11 @@ const StepOne = () => {
       </Modal>
       <WizzardProvider.Step
         onStepChange={(params) => {
-          // console.log("ON CHANGE STEP ONE");
-          if (
-            params.prevState &&
-            params.prevState?.id != params.currentState?.id
-          ) {
-            params.reject();
-            // return false;
-          } else {
+          if (params.status === StepValidationStatus.VALID) {
             params.resolve();
+          }
+          if (params.status === StepValidationStatus.INVALID) {
+            params.reject();
           }
         }}
         onMutateStepState={({

@@ -41,6 +41,7 @@ export interface IStepValidateParams {
   prevState: any;
   resolve: () => void;
   reject: () => void;
+  status: StepValidationStatus;
 }
 
 export interface IWizardStepNavigateParams {

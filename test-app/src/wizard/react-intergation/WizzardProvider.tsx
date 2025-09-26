@@ -53,6 +53,8 @@ WizzardProvider.Step = ({
             ).state,
             prevState: context.getStepEntityByStepName(context.getActiveStep())
               .prevState,
+            status: context.getStepEntityByStepName(context.getActiveStep())
+              .status,
             resolve: () => payload.resolve(),
             reject: () => {
               console.log("reject");
