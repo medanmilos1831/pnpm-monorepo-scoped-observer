@@ -49,24 +49,6 @@ class Wizard {
           return;
         }
         this.setStepPrevState(command, toStep);
-        // if (
-        //   this.valid &&
-        //   this.stepsMap[this.currentStep].status ===
-        //     StepValidationStatus.INVALID
-        // ) {
-        //   this.valid = false;
-        //   this.observer.dispatch({
-        //     scope: "wizard",
-        //     eventName: "onFailed",
-        //     payload: {
-        //       toStep,
-        //       command,
-        //     },
-        //   });
-        //   return;
-        // }
-        console.log("last event", this.lastEvent);
-        // Handle navigation command
         this.observer.dispatch({
           scope: "wizard",
           eventName: (() => {
@@ -75,22 +57,15 @@ class Wizard {
               StepValidationStatus.INVALID
                 ? "onFailed"
                 : "onChange";
-            return "onChange";
+            this.lastEvent = event;
+            return event;
           })(),
           payload: {
             toStep,
             command,
-            // resolve: () => {
-            //   this.setStepPrevState(command, toStep);
-            //   this.navigate(toStep);
-            //   // Resolve navigation
-            // },
-            // reject: () => {
-            //   this.setStepStatus(StepValidationStatus.INVALID);
-            //   // Reject navigation
-            // },
           },
         });
+        this.navigate(toStep);
       },
     });
     this.observer.dispatch({
