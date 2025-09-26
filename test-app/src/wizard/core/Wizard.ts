@@ -30,8 +30,6 @@ class Wizard {
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
-  pendingStep: (() => void) | null = null;
-  stepLifecycleParams: any = {};
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -50,10 +48,6 @@ class Wizard {
           return;
         }
         this.setStepPrevState(command, toStep);
-        if (this.pendingStep) {
-          this.pendingStep();
-          return;
-        }
         this.observer.dispatch({
           scope: "wizard",
           eventName: "onNavigate",
@@ -63,21 +57,6 @@ class Wizard {
             currentState: this.stepsMap[this.currentStep].state,
             prevState: this.stepsMap[this.currentStep].prevState,
             status: this.stepsMap[this.currentStep].status,
-            callback: () => {
-              let value =
-                this.stepsMap[this.currentStep].status ===
-                StepValidationStatus.INVALID;
-              if (value) {
-                this.pendingStep = () => {
-                  this.resetStepsAheadOfCurrentStep();
-                  this.setStepStatus(StepValidationStatus.VALID);
-                  this.navigate(toStep);
-                  this.pendingStep = null;
-                };
-              } else {
-                this.navigate(toStep);
-              }
-            },
             action:
               this.stepsMap[this.currentStep].status ===
               StepValidationStatus.INVALID
@@ -87,44 +66,6 @@ class Wizard {
         });
       },
     });
-    this.stepTransition(this.currentStep, WizardStepLifecycle.ENTER);
-  }
-
-  private updateSteps = (steps: string[]) => {
-    console.log("UPDATE STEPS", steps);
-  };
-
-  private stepTransition(stepName: string, lifecycle: WizardStepLifecycle) {
-    this.observer.dispatch({
-      scope: "wizard:step",
-      eventName: `onStepTransition:${stepName}`,
-      payload: {
-        lifecycle,
-        params: {
-          stepName,
-          currentState: this.stepsMap[stepName].state,
-          prevState: this.stepsMap[stepName].prevState,
-          status: this.stepsMap[stepName].status,
-        },
-      },
-    });
-  }
-
-  private resetStepsAheadOfCurrentStep() {
-    const steps = Object.keys(this.stepsMap);
-    const currentIndex = steps.indexOf(this.currentStep);
-
-    for (let i = currentIndex + 1; i < steps.length; i++) {
-      const stepName = steps[i];
-      const step = this.stepsMap[stepName];
-
-      if (step.visible && step.isCompleted) {
-        step.isCompleted = false;
-        step.state = undefined;
-        step.prevState = undefined;
-        step.status = StepValidationStatus.VALID;
-      }
-    }
   }
 
   private setStepPrevState(command: string, toStep: string) {
@@ -134,34 +75,6 @@ class Wizard {
         ? undefined
         : structuredClone(this.stepsMap[key].state);
     this.stepsMap[key].prevState = value;
-    this.stepsMap[this.currentStep].prevState = value;
-  }
-
-  private setStepCompleted(value: boolean) {
-    this.stepsMap[this.currentStep].isCompleted = value;
-    this.observer.dispatch({
-      scope: "wizard:step",
-      eventName: "stepCompletionChanged",
-      payload: {
-        value,
-      },
-    });
-  }
-
-  private setStepStatus(status: StepValidationStatus) {
-    this.stepsMap[this.currentStep].status = status;
-    if (status === StepValidationStatus.INVALID) {
-      this.valid = false;
-    } else {
-      this.valid = true;
-    }
-    this.observer.dispatch({
-      scope: "wizard:step",
-      eventName: "stepStatusChanged",
-      payload: {
-        status,
-      },
-    });
   }
 
   private findNextStep(command: WizardCommands) {
@@ -183,13 +96,11 @@ class Wizard {
   }
 
   private navigate(toStep: string) {
-    this.stepTransition(this.currentStep, WizardStepLifecycle.LEAVE);
     this.currentStep = toStep;
     this.observer.dispatch({
       scope: "wizard",
       eventName: "changeStep",
     });
-    this.stepTransition(toStep, WizardStepLifecycle.ENTER);
   }
 
   mutateStepState = (callback: (step: Step) => void) => {
@@ -200,20 +111,24 @@ class Wizard {
       scope: "wizard:step",
       eventName: "mutateStepState",
       payload: {
-        completed: () => {
-          this.setStepCompleted(true);
-        },
-        uncompleted: () => {
-          this.setStepCompleted(false);
-        },
-        invalidated: () => {
-          this.setStepStatus(StepValidationStatus.INVALID);
-        },
-        validate: () => {
-          this.setStepStatus(StepValidationStatus.VALID);
-        },
         currentState: this.stepsMap[this.currentStep].state,
         prevState: this.stepsMap[this.currentStep].prevState,
+        ruleCallback: ({ rule, value }: { rule: string; value: boolean }) => {
+          this.stepsMap[this.currentStep][rule] = (() => {
+            if (rule === "status") {
+              return value
+                ? StepValidationStatus.VALID
+                : StepValidationStatus.INVALID;
+            } else {
+              return value;
+            }
+          })();
+          this.observer.dispatch({
+            scope: "wizard:step",
+            eventName:
+              rule === "status" ? "stepStatusChanged" : "stepCompletionChanged",
+          });
+        },
       },
     });
   };

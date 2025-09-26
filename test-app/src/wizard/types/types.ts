@@ -27,43 +27,19 @@ export interface IStepConfig {
 }
 
 export interface IStepProps {
-  onStepChange?: (params: IStepValidateParams) => void;
-  onFailed?: (params: IStepValidateParams) => void;
-  onMutateStepState?: (params: IWizardStepMutateStepStateParams) => void;
-  onEnter?: (params: IStepValidateParams) => void;
-  onLeave?: (params: IStepValidateParams) => void;
+  onNext?: (params: any) => void;
+  onFailed?: (params: any) => void;
+  guardRule?: (params: IRuleParams) => boolean;
+  complitionRule?: (params: IRuleParams) => boolean;
 }
 
-export interface IStepValidateParams {
-  toStep: string;
-  command: WizardCommands;
+export interface IRuleParams {
   currentState: any;
   prevState: any;
-  status: StepValidationStatus;
 }
 
-export interface IWizardStepNavigateParams {
-  toStep: string;
-  command: WizardCommands;
-  action: "onFailed" | "onChange";
+export interface IMutateStepStateEventPayload {
   currentState: any;
   prevState: any;
-  status: StepValidationStatus;
-  navigate: () => void;
-  failed: () => void;
-  callback: () => void;
-}
-
-export interface IWizardStepMutateStepStateParams {
-  completed: () => void;
-  uncompleted: () => void;
-  currentState: any;
-  prevState: any;
-  invalidated: () => void;
-  validate: () => void;
-}
-
-export interface IWizardStepLifecycleParams {
-  lifecycle: WizardStepLifecycle;
-  params: IStepValidateParams;
+  ruleCallback: ({ rule, value }: { rule: string; value: boolean }) => void;
 }

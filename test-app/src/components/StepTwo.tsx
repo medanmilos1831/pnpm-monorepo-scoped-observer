@@ -21,10 +21,6 @@ const StepTwo = () => {
 
   return (
     <WizzardProvider.Step
-      onStepChange={(params) => {
-        // Handle next step
-      }}
-      onEnter={() => {}}
       onMutateStepState={({ completed, uncompleted }) => {
         completed();
       }}

@@ -32,7 +32,7 @@ const StepThree = () => {
             form={form}
             layout="vertical"
             onFinish={handleSubmit}
-            initialValues={stepState?.personalInfo || {}}
+            initialValues={stepState.state?.personalInfo || {}}
           >
             <Form.Item
               label="First Name"

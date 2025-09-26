@@ -1,6 +1,7 @@
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { useNavigate } from "../wizard/react-intergation";
+import { useStepParams } from "../wizard/react-intergation";
 import { Button, Space } from "antd";
-import { useNavigate, useStepParams } from "../wizard";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const Controls = () => {
   const { nextStep, prevStep } = useNavigate();
@@ -12,22 +13,37 @@ const Controls = () => {
       </div>
       <div
         style={{
-          padding: "16px",
-          textAlign: "center",
-          borderTop: "1px solid #f0f0f0",
-          marginTop: "20px",
-          backgroundColor: "#fafafa",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "20px",
+          borderTop: "1px solid #d9d9d9",
         }}
       >
-        <Space size="middle">
-          <Button icon={<LeftOutlined />} onClick={prevStep}>
-            Previous
-          </Button>
+        <Button
+          icon={<LeftOutlined />}
+          onClick={prevStep}
+          disabled={false}
+          style={{
+            backgroundColor: "#f5f5f5",
+            borderColor: "#d9d9d9",
+            color: "#000",
+          }}
+        >
+          Previous
+        </Button>
+
+        <Space>
           <Button
             type="primary"
             icon={<RightOutlined />}
             onClick={nextStep}
             disabled={!isCompleted}
+            style={{
+              backgroundColor: isCompleted ? "#1890ff" : "#f5f5f5",
+              borderColor: isCompleted ? "#1890ff" : "#d9d9d9",
+              color: isCompleted ? "#fff" : "#000",
+            }}
           >
             Next
           </Button>
