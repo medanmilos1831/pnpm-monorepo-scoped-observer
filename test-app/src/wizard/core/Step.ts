@@ -1,4 +1,4 @@
-import { StepValidationStatus, type IStepConfig } from "../types";
+import { StepStatus, type IStepConfig } from "../types";
 
 class Step {
   name: string;
@@ -6,7 +6,7 @@ class Step {
   visible = false;
   state: any = undefined;
   prevState: any = undefined;
-  status: StepValidationStatus = StepValidationStatus.VALID;
+  status = StepStatus.REGULAR;
   constructor(stepName: string, config: IStepConfig) {
     this.name = stepName;
     this.isCompleted = false;

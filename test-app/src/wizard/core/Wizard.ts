@@ -1,8 +1,9 @@
 import type { IScopedObserver } from "../../scroped-observer";
 import { createScopedObserver } from "../../scroped-observer";
 import {
-  StepValidationStatus,
+  StepStatus,
   WizardCommands,
+  type IHandlerParams,
   type IStepProps,
   type IWizardConfig,
   type IWizardStepsConfig,
@@ -30,7 +31,7 @@ class Wizard {
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
-  navigateCommandsCapabilitiesType = "regular";
+  navigateCommandsCapabilitiesType = StepStatus.REGULAR;
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -49,9 +50,16 @@ class Wizard {
           return;
         }
         this.setStepPrevState(command, toStep);
-        if (this.navigateCommandsCapabilitiesType === "needsApproval") {
-          return this.navigate(toStep);
+
+        if (
+          this.navigateCommandsCapabilitiesType === StepStatus.NEEDS_APPROVAL
+        ) {
+          this.navigateCommandsCapabilitiesType = StepStatus.REGULAR;
+          this.stepsMap[this.currentStep].status = StepStatus.REGULAR;
+          this.navigate(toStep);
+          return;
         }
+        // UI CALLBACK
         this.observer.dispatch({
           scope: "wizard",
           eventName: "onNavigate",
@@ -75,13 +83,15 @@ class Wizard {
                     this.navigate(toStep);
                   },
                   needsApproval: () => {
-                    this.navigateCommandsCapabilitiesType = "needsApproval";
+                    this.navigateCommandsCapabilitiesType =
+                      this.stepsMap[this.currentStep].status;
                   },
                 });
               });
             },
           },
         });
+        // END :: UI CALLBACK
       },
     });
   }
@@ -129,33 +139,23 @@ class Wizard {
       scope: "wizard:step",
       eventName: "mutateStepState",
       payload: {
-        collector: (
-          rules: Array<{
-            rule: string;
-            value: IStepProps["guardRule"] | IStepProps["complitionRule"];
-          }>
-        ) => {
-          rules.forEach(({ rule, value }) => {
-            if (value) {
-              const result = value({
-                currentState: this.stepsMap[this.currentStep].state,
-                prevState: this.stepsMap[this.currentStep].prevState,
-              });
-              if (rule === "guardRule") {
-                this.stepsMap[this.currentStep].status = result
-                  ? StepValidationStatus.VALID
-                  : StepValidationStatus.INVALID;
-              } else {
-                this.stepsMap[this.currentStep].isCompleted = result;
-              }
-              this.observer.dispatch({
-                scope: "wizard:step",
-                eventName:
-                  rule === "guardRule"
-                    ? "stepStatusChanged"
-                    : "stepCompletionChanged",
-              });
-            }
+        collector: (rules: {
+          [key: string]: (params: IHandlerParams) => any;
+        }) => {
+          Object.entries(rules).forEach(([key, value]) => {
+            const result = value({
+              currentState: this.stepsMap[this.currentStep].state,
+              prevState: this.stepsMap[this.currentStep].prevState,
+            });
+            console.log("key", key, result);
+            this.stepsMap[this.currentStep][key] = result;
+            this.observer.dispatch({
+              scope: "wizard:step",
+              eventName:
+                key === "status"
+                  ? "stepStatusChanged"
+                  : "stepCompletionChanged",
+            });
           });
         },
       },

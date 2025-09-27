@@ -1,13 +1,13 @@
 import { Card, Row, Col, Typography, Modal } from "antd";
 import { useState } from "react";
 import {
-  StepValidationStatus,
   useMutateStepState,
   useNavigate,
   useStepState,
   WizzardProvider,
 } from "../wizard";
 import { data } from "../mock";
+import { StepStatus } from "../wizard/types/types";
 
 const { Title, Text } = Typography;
 
@@ -43,19 +43,22 @@ const StepOne = () => {
       </Modal>
       <WizzardProvider.Step
         onStepChange={(params) => {
-          if (params.status === StepValidationStatus.INVALID) {
+          if (params.status === StepStatus.NEEDS_APPROVAL) {
             params.needsApproval();
             setOpen(true);
           } else {
             params.resolve();
           }
         }}
-        guardRule={({ currentState, prevState }) =>
-          prevState && prevState?.id !== currentState?.id ? false : true
-        }
-        complitionRule={({ currentState, prevState }) =>
-          currentState !== undefined ? true : false
-        }
+        statusHandler={({ currentState, prevState }) => {
+          if (prevState && prevState?.id !== currentState?.id) {
+            return StepStatus.NEEDS_APPROVAL;
+          }
+          return StepStatus.REGULAR;
+        }}
+        completionHandler={({ currentState, prevState }) => {
+          return currentState !== undefined ? true : false;
+        }}
       >
         <div style={{ padding: "20px" }}>
           <Title

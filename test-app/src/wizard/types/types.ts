@@ -1,6 +1,13 @@
+import type { Step } from "../core";
+
 export enum WizardStepLifecycle {
   ENTER = "enter",
   LEAVE = "leave",
+}
+
+export enum NavigationCapabilitiesType {
+  REGULAR = "regular",
+  NEEDS_APPROVAL = "needsApproval",
 }
 
 export enum WizardCommands {
@@ -8,9 +15,9 @@ export enum WizardCommands {
   PREV = "prev",
 }
 
-export enum StepValidationStatus {
-  VALID = "valid",
-  INVALID = "invalid",
+export enum StepStatus {
+  REGULAR = "regular",
+  NEEDS_APPROVAL = "needsApproval",
 }
 
 export interface IWizardConfig {
@@ -28,8 +35,8 @@ export interface IStepConfig {
 
 export interface IStepProps {
   onStepChange: (params: IOnNavigateParams) => void;
-  guardRule?: (params: IRuleParams) => boolean;
-  complitionRule?: (params: IRuleParams) => boolean;
+  statusHandler?: (params: IHandlerParams) => StepStatus;
+  completionHandler?: (params: IHandlerParams) => boolean;
 }
 
 export interface IOnNavigateParams {
@@ -37,25 +44,23 @@ export interface IOnNavigateParams {
   prevState: any;
   toStep: string;
   fromStep: string;
-  status: StepValidationStatus;
+  status: StepStatus;
   isCompleted: boolean;
   resolve: () => void;
-  command: WizardCommands;
   needsApproval: () => void;
+  command: WizardCommands;
 }
 
-export interface IRuleParams {
+export interface IHandlerParams {
   currentState: any;
   prevState: any;
 }
 
 export interface IMutateStepStateEventPayload {
-  collector: (
-    rules: Array<{
-      rule: string;
-      value: ((params: IRuleParams) => boolean) | undefined;
-    }>
-  ) => void;
+  collector: (handlers: {
+    status: IStepProps["statusHandler"];
+    isCompleted: IStepProps["completionHandler"];
+  }) => void;
 }
 
 export interface IOnNavigateEventPayload {

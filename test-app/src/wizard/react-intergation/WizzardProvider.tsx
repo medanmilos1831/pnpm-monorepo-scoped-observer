@@ -9,7 +9,6 @@ import {
   type IMutateStepStateEventPayload,
   type IOnNavigateEventPayload,
   type IStepProps,
-  StepValidationStatus,
 } from "../types";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
@@ -29,8 +28,8 @@ const WizzardProvider = ({
 WizzardProvider.Step = ({
   children,
   onStepChange,
-  guardRule,
-  complitionRule,
+  statusHandler,
+  completionHandler,
 }: PropsWithChildren<IStepProps>) => {
   const context = useContext(Context);
   if (!context) {
@@ -60,10 +59,10 @@ WizzardProvider.Step = ({
       scope: "wizard:step",
       eventName: "mutateStepState",
       callback: ({ payload }: { payload: IMutateStepStateEventPayload }) => {
-        payload.collector([
-          { rule: "guardRule", value: guardRule },
-          { rule: "complitionRule", value: complitionRule },
-        ]);
+        payload.collector({
+          status: statusHandler,
+          isCompleted: completionHandler,
+        });
       },
     });
     return () => {

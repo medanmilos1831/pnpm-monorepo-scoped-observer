@@ -23,6 +23,8 @@ const useStepParams = () => {
     },
     () => context.getStepEntityByStepName(step).status
   );
+  console.log("isCompleted", isCompleted);
+  console.log("status", status);
   return {
     isCompleted,
     status,
