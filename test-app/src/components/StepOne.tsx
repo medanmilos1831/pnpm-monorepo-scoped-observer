@@ -11,7 +11,8 @@ const StepOne = () => {
     <>
       <WizzardProvider.Step
         onAction={(params: any) => {
-          setOpen(true);
+          console.log("step one action", params);
+          // setOpen(true);
         }}
       >
         <div>Step One</div>

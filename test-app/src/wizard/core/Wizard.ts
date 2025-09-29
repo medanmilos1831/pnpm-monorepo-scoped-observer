@@ -31,7 +31,6 @@ class Wizard {
   stepsMap: { [key: string]: any } = {};
   wizardStepsConfig: IWizardStepsConfig;
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
-    console.log("wizard constructor", config, wizardStepsConfig);
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
     this.wizardStepsConfig = wizardStepsConfig;
@@ -45,6 +44,7 @@ class Wizard {
       scope: "wizard:commands",
       eventName: WizardEvents.STEP_INTERCEPT,
       callback: ({ payload }: { payload: WizardCommands }) => {
+        console.log("step intercept", payload);
         this.observer.dispatch({
           scope: "wizard:commands",
           eventName: WizardEvents.ACTION,
@@ -61,7 +61,6 @@ class Wizard {
         const value = this.findStep({
           command,
         });
-        console.log("navigate", command, value);
         if (!value) {
           return;
         }
@@ -79,18 +78,28 @@ class Wizard {
     });
   }
   private findStep({ command }: { command: WizardCommands }): string | null {
+    return command === WizardCommands.NEXT
+      ? this.findNextStep()
+      : this.findPrevStep();
+  }
+
+  private getCurrentIndex(): number {
     const activeSteps = this.wizardStepsConfig.activeSteps;
-    const currentIndex = activeSteps.indexOf(this.currentStep);
+    return activeSteps.indexOf(this.currentStep);
+  }
 
-    if (command === WizardCommands.NEXT) {
-      const nextIndex = currentIndex + 1;
-      return nextIndex < activeSteps.length ? activeSteps[nextIndex] : null;
-    } else if (command === WizardCommands.PREV) {
-      const prevIndex = currentIndex - 1;
-      return prevIndex >= 0 ? activeSteps[prevIndex] : null;
-    }
+  private findNextStep(): string | null {
+    const activeSteps = this.wizardStepsConfig.activeSteps;
+    const currentIndex = this.getCurrentIndex();
+    const nextIndex = currentIndex + 1;
+    return nextIndex < activeSteps.length ? activeSteps[nextIndex] : null;
+  }
 
-    return null;
+  private findPrevStep(): string | null {
+    const activeSteps = this.wizardStepsConfig.activeSteps;
+    const currentIndex = this.getCurrentIndex();
+    const prevIndex = currentIndex - 1;
+    return prevIndex >= 0 ? activeSteps[prevIndex] : null;
   }
 
   private navigate({ stepName }: { stepName: string }) {

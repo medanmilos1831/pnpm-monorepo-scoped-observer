@@ -30,6 +30,7 @@ WizzardProvider.Step = ({ children, onAction }: PropsWithChildren<any>) => {
       scope: "wizard:commands",
       eventName: "action",
       callback: ({ payload: command }: { payload: any }) => {
+        console.log("action", command);
         if (onAction) {
           onAction(command);
         }
