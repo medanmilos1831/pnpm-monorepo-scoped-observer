@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Modal } from "antd";
 import { useNavigate, useStep, WizzardProvider } from "../wizard";
+import { WizardEvents } from "../wizard/types";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
-  const { nextStep } = useNavigate();
+  const { nextStepIntercept, nextStepNavigate } = useNavigate();
 
   return (
     <>
@@ -20,9 +21,7 @@ const StepOne = () => {
           onCancel={() => setOpen(false)}
           onOk={() => {
             setOpen(false);
-            nextStep({
-              type: "navigate",
-            });
+            nextStepNavigate();
           }}
         >
           <p>This is a modal from Step One</p>

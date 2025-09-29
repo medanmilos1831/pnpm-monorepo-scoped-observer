@@ -6,21 +6,34 @@ class Commands {
   constructor(observer: IScopedObserver) {
     this.observer = observer;
   }
-  nextStep = (obj: {
-    event: typeof WizardEvents.STEP_INTERCEPT | typeof WizardEvents.NAVIGATE;
-  }) => {
+  nextStepIntercept = () => {
     this.observer.dispatch({
       scope: "wizard:commands",
-      eventName: obj.event,
+      eventName: WizardEvents.STEP_INTERCEPT,
       payload: WizardCommands.NEXT,
     });
   };
-  prevStep = (obj: {
-    event: typeof WizardEvents.STEP_INTERCEPT | typeof WizardEvents.NAVIGATE;
-  }) => {
+
+  nextStepNavigate = () => {
     this.observer.dispatch({
       scope: "wizard:commands",
-      eventName: obj.event,
+      eventName: WizardEvents.NAVIGATE,
+      payload: WizardCommands.NEXT,
+    });
+  };
+
+  prevStepIntercept = () => {
+    this.observer.dispatch({
+      scope: "wizard:commands",
+      eventName: WizardEvents.STEP_INTERCEPT,
+      payload: WizardCommands.PREV,
+    });
+  };
+
+  prevStepNavigate = () => {
+    this.observer.dispatch({
+      scope: "wizard:commands",
+      eventName: WizardEvents.NAVIGATE,
       payload: WizardCommands.PREV,
     });
   };

@@ -2,6 +2,7 @@ import type { IScopedObserver } from "../../scroped-observer";
 import { createScopedObserver } from "../../scroped-observer";
 import {
   WizardCommands,
+  WizardEvents,
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
@@ -42,11 +43,11 @@ class Wizard {
     });
     this.observer.subscribe({
       scope: "wizard:commands",
-      eventName: "stepIntercept",
+      eventName: WizardEvents.STEP_INTERCEPT,
       callback: ({ payload }: { payload: WizardCommands }) => {
         this.observer.dispatch({
           scope: "wizard:commands",
-          eventName: "action",
+          eventName: WizardEvents.ACTION,
           payload: {
             command: payload,
           },
@@ -55,11 +56,12 @@ class Wizard {
     });
     this.observer.subscribe({
       scope: "wizard:commands",
-      eventName: "navigate",
+      eventName: WizardEvents.NAVIGATE,
       callback: ({ payload: command }: { payload: WizardCommands }) => {
         const value = this.findStep({
           command,
         });
+        console.log("navigate", command, value);
         if (!value) {
           return;
         }
@@ -67,7 +69,7 @@ class Wizard {
           this.navigate({ stepName: value });
           this.observer.dispatch({
             scope: "wizard:commands",
-            eventName: "changeStep",
+            eventName: WizardEvents.CHANGE_STEP,
             payload: {
               command,
             },

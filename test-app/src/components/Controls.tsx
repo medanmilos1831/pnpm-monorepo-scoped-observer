@@ -3,28 +3,10 @@ const Controls = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <button
-        onClick={() => {
-          navigate.prevStep({
-            event: "stepIntercept",
-          });
-          // navigate.prevStep({
-          //   type: "step",
-          // })
-        }}
-      >
-        Prev
-      </button>
-      <button
-        onClick={() => {
-          // navigate.nextStep();
-          navigate.nextStep({
-            event: "stepIntercept",
-          });
-        }}
-      >
-        Next
-      </button>
+      <button onClick={navigate.prevStepIntercept}>Prev</button>
+      <button onClick={navigate.nextStepIntercept}>Next</button>
+      {/* <button onClick={navigate.prevStepNavigate}>Prev</button>
+      <button onClick={navigate.nextStepNavigate}>Next</button> */}
     </div>
   );
 };
