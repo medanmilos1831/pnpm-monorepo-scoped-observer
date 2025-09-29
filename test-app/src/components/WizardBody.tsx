@@ -1,4 +1,3 @@
-import { useActiveStep } from "../wizard";
 import { StepFive } from "./StepFive";
 import { StepFour } from "./StepFour";
 import { StepOne } from "./StepOne";
@@ -14,19 +13,10 @@ const stepComponents = {
 };
 
 const WizardBody = () => {
-  const { name: currentStep } = useActiveStep();
-  const StepComponent = stepComponents[
-    currentStep as keyof typeof stepComponents
-  ] as any;
   // Render current step component
   return (
     <div>
-      <h2>Wizard Body - Current Step: {currentStep}</h2>
-      {StepComponent ? (
-        <StepComponent />
-      ) : (
-        <div>Step not found: {currentStep}</div>
-      )}
+      <>Wizard Body</>
     </div>
   );
 };

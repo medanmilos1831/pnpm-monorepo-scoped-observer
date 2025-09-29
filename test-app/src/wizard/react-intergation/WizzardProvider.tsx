@@ -5,11 +5,6 @@ import {
   useEffect,
 } from "react";
 import { createWizard } from "../createWizard";
-import {
-  type IMutateStepStateEventPayload,
-  type IOnNavigateEventPayload,
-  type IStepProps,
-} from "../types";
 
 const Context = createContext<ReturnType<typeof createWizard> | undefined>(
   undefined
@@ -25,50 +20,12 @@ const WizzardProvider = ({
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
-WizzardProvider.Step = ({
-  children,
-  onStepChange,
-  statusHandler,
-  completionHandler,
-}: PropsWithChildren<IStepProps>) => {
+WizzardProvider.Step = ({ children }: PropsWithChildren<any>) => {
   const context = useContext(Context);
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-  useEffect(() => {
-    const unsubscribe = context.subscribe({
-      scope: "wizard",
-      eventName: "onNavigate",
-      callback: ({ payload }: { payload: IOnNavigateEventPayload }) => {
-        payload.collector([
-          {
-            name: "onStepChange",
-            value: onStepChange,
-          },
-        ]);
-      },
-    });
-    return () => {
-      unsubscribe();
-    };
-  });
-
-  // MUTATE STEP STATE
-  useEffect(() => {
-    const unsubscribe = context.subscribe({
-      scope: "wizard:step",
-      eventName: "mutateStepState",
-      callback: ({ payload }: { payload: IMutateStepStateEventPayload }) => {
-        payload.collector({
-          status: statusHandler,
-          isCompleted: completionHandler,
-        });
-      },
-    });
-    return () => {
-      unsubscribe();
-    };
-  });
+  useEffect(() => {});
   return <>{children}</>;
 };
 
