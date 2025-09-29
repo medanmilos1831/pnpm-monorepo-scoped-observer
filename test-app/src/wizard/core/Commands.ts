@@ -1,22 +1,26 @@
 import type { IScopedObserver } from "../../scroped-observer";
-import { WizardCommands } from "../types";
+import { WizardCommands, type WizardEvent, WizardEvents } from "../types";
 
 class Commands {
   observer: IScopedObserver;
   constructor(observer: IScopedObserver) {
     this.observer = observer;
   }
-  nextStep = () => {
+  nextStep = (obj: {
+    event: typeof WizardEvents.STEP_INTERCEPT | typeof WizardEvents.NAVIGATE;
+  }) => {
     this.observer.dispatch({
       scope: "wizard:commands",
-      eventName: "navigate",
+      eventName: obj.event,
       payload: WizardCommands.NEXT,
     });
   };
-  prevStep = () => {
+  prevStep = (obj: {
+    event: typeof WizardEvents.STEP_INTERCEPT | typeof WizardEvents.NAVIGATE;
+  }) => {
     this.observer.dispatch({
       scope: "wizard:commands",
-      eventName: "navigate",
+      eventName: obj.event,
       payload: WizardCommands.PREV,
     });
   };

@@ -20,12 +20,25 @@ const WizzardProvider = ({
   return <Context.Provider value={value}>{children}</Context.Provider>;
 };
 
-WizzardProvider.Step = ({ children }: PropsWithChildren<any>) => {
+WizzardProvider.Step = ({ children, onAction }: PropsWithChildren<any>) => {
   const context = useContext(Context);
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-  useEffect(() => {});
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: "wizard:commands",
+      eventName: "action",
+      callback: ({ payload: command }: { payload: any }) => {
+        if (onAction) {
+          onAction(command);
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   return <>{children}</>;
 };
 

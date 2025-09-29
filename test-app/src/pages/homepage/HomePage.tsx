@@ -1,6 +1,7 @@
 import { Controls } from "../../components/Controls";
 import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
+import { useStep } from "../../wizard";
 
 const HomePage = () => {
   return (
