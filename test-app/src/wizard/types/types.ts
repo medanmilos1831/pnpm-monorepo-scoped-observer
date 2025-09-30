@@ -9,12 +9,14 @@ export const WizardEvents = {
   CHANGE_STEP: "changeStep",
   STEP_STATE_STATE: "stepStateState",
   FAIL_CHANGE_STEP: "failChangeStep",
+  LEAVE_STEP: "leaveStep",
 };
 
 export interface IStepProps {
   onNext?: (obj: INavigationValidationParams) => void;
   onPrev?: (obj: INavigationValidationParams) => void;
   onFail?: (obj: IFailChangeStepEventPayload) => void;
+  onLeave?: (obj: ILeaveStepEventPayload) => void;
 }
 
 export interface INavigationValidationParams {
@@ -36,8 +38,12 @@ export interface IChangeStepEventPayload extends INavigationValidationParams {
 export interface IFailChangeStepEventPayload
   extends Pick<INavigationValidationParams, "params"> {
   command: WizardCommands;
-  stepName: string;
   message: string;
+}
+
+export interface ILeaveStepEventPayload
+  extends Pick<INavigationValidationParams, "params"> {
+  command: WizardCommands;
 }
 
 export interface IWizardConfig {

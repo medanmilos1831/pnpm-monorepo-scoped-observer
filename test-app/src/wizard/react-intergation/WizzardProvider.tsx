@@ -9,6 +9,7 @@ import {
   WizardEvents,
   type IChangeStepEventPayload,
   type IFailChangeStepEventPayload,
+  type ILeaveStepEventPayload,
   type IStepProps,
 } from "../types";
 
@@ -31,6 +32,7 @@ WizzardProvider.Step = ({
   onNext,
   onPrev,
   onFail,
+  onLeave,
 }: PropsWithChildren<IStepProps>) => {
   const context = useContext(Context);
   if (!context) {
@@ -63,6 +65,21 @@ WizzardProvider.Step = ({
           },
         };
         obj[command]();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: "wizard:commands",
+      eventName: WizardEvents.LEAVE_STEP,
+      callback: ({ payload }: { payload: ILeaveStepEventPayload }) => {
+        if (onLeave) {
+          onLeave(payload);
+        }
       },
     });
     return () => {

@@ -1,6 +1,7 @@
 import { WizzardProvider } from "../wizard";
 
 const StepTwo = () => {
+  console.log("StepTwo");
   return (
     <WizzardProvider.Step>
       <>step two</>

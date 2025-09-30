@@ -64,16 +64,7 @@ class Wizard {
             eventName: WizardEvents.BEFORE_CHANGE_STEP,
             payload: {
               command,
-              resolve: () => {
-                this.navigate({ stepName });
-                this.observer.dispatch({
-                  scope: "wizard:commands",
-                  eventName: WizardEvents.CHANGE_STEP,
-                  payload: {
-                    stepName,
-                  },
-                });
-              },
+              resolve: () => this.resolveChangeStep(stepName, command),
               reject: (params: { message: string; isError: boolean }) => {
                 this.observer.dispatch({
                   scope: "wizard:commands",
@@ -90,6 +81,30 @@ class Wizard {
             },
           });
         }
+      },
+    });
+  }
+  private resolveChangeStep(stepName: string, command: WizardCommands) {
+    this.observer.dispatch({
+      scope: "wizard:commands",
+      eventName: WizardEvents.LEAVE_STEP,
+      payload: {
+        command: command,
+        params: {
+          state: this.stepsMap[this.currentStep].state,
+          prevState: this.stepsMap[this.currentStep].prevState,
+          isCompleted: this.stepsMap[this.currentStep].isCompleted,
+          transitionForm: this.currentStep,
+          transitionTo: stepName,
+        },
+      },
+    });
+    this.navigate({ stepName });
+    this.observer.dispatch({
+      scope: "wizard:commands",
+      eventName: WizardEvents.CHANGE_STEP,
+      payload: {
+        stepName: this.currentStep,
       },
     });
   }

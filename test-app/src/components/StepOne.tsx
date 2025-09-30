@@ -1,6 +1,6 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { useNavigate, WizzardProvider } from "../wizard";
+import { WizzardProvider } from "../wizard";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
@@ -9,9 +9,10 @@ const StepOne = () => {
     <>
       <WizzardProvider.Step
         onNext={(params) => {
-          params.reject({
-            message: "Step One is not valid",
-          });
+          params.resolve();
+          // params.reject({
+          //   message: "Step One is not valid",
+          // });
           // return false;
         }}
         onPrev={(params) => {
@@ -22,6 +23,9 @@ const StepOne = () => {
           // params.reject({
           //   message: "Step One is not valid",
           // });
+        }}
+        onLeave={(params) => {
+          console.log("params", params);
         }}
       >
         <div>Step One</div>
