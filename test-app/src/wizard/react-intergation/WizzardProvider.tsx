@@ -7,7 +7,7 @@ import {
 import { createWizard } from "../createWizard";
 import {
   WizardEvents,
-  type IChangeStepEventPayload,
+  type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
   type ILeaveStepEventPayload,
   type IStepProps,
@@ -42,29 +42,16 @@ WizzardProvider.Step = ({
     const unsubscribe = context.subscribe({
       scope: "wizard:commands",
       eventName: WizardEvents.BEFORE_CHANGE_STEP,
-      callback: ({ payload }: { payload: IChangeStepEventPayload }) => {
-        const { command, resolve, reject, params } = payload;
+      callback: ({ payload }: { payload: IBeforeChangeEventPayload }) => {
         const obj = {
           next: () => {
-            onNext
-              ? onNext({
-                  params,
-                  resolve,
-                  reject,
-                })
-              : resolve();
+            onNext ? onNext(payload) : payload.resolve();
           },
           prev: () => {
-            onPrev
-              ? onPrev({
-                  params,
-                  resolve,
-                  reject,
-                })
-              : resolve();
+            onPrev ? onPrev(payload) : payload.resolve();
           },
         };
-        obj[command]();
+        obj[payload.command]();
       },
     });
     return () => {
@@ -77,6 +64,7 @@ WizzardProvider.Step = ({
       scope: "wizard:commands",
       eventName: WizardEvents.LEAVE_STEP,
       callback: ({ payload }: { payload: ILeaveStepEventPayload }) => {
+        console.log("leave step", payload);
         if (onLeave) {
           onLeave(payload);
         }
@@ -92,6 +80,7 @@ WizzardProvider.Step = ({
       scope: "wizard:commands",
       eventName: WizardEvents.FAIL_CHANGE_STEP,
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
+        console.log("fail change step", payload);
         if (onFail) {
           onFail(payload);
         }

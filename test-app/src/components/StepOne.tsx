@@ -9,20 +9,13 @@ const StepOne = () => {
     <>
       <WizzardProvider.Step
         onNext={(params) => {
-          params.resolve();
-          // params.reject({
-          //   message: "Step One is not valid",
-          // });
-          // return false;
+          params.reject({
+            message: "Step One",
+          });
         }}
-        onPrev={(params) => {
-          // return true;
-        }}
+        onPrev={(params) => {}}
         onFail={(params) => {
           console.log("params", params);
-          // params.reject({
-          //   message: "Step One is not valid",
-          // });
         }}
         onLeave={(params) => {
           console.log("params", params);

@@ -3,7 +3,7 @@ import { createScopedObserver } from "../../scroped-observer";
 import {
   WizardCommands,
   WizardEvents,
-  type INavigationValidationParams,
+  type IRejectParams,
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
@@ -53,61 +53,43 @@ class Wizard {
           return;
         }
         if (stepName) {
-          const params = {
-            isCompleted: this.stepsMap[this.currentStep].isCompleted,
-            state: this.stepsMap[this.currentStep].state,
-            prevState: this.stepsMap[this.currentStep].prevState,
-            transitionForm: this.currentStep,
-            transitionTo: stepName,
-          };
-          this.observer.dispatch({
-            scope: "wizard:commands",
-            eventName: WizardEvents.BEFORE_CHANGE_STEP,
-            payload: {
-              command,
-              resolve: () => this.resolveChangeStep(stepName, command),
-              reject: (params: { message: string; isError: boolean }) => {
-                this.observer.dispatch({
-                  scope: "wizard:commands",
-                  eventName: WizardEvents.FAIL_CHANGE_STEP,
-                  payload: {
-                    command,
-                    stepName,
-                    message: params.message,
-                    params,
-                  },
-                });
-              },
-              params,
-            },
+          this.commands.beforeChangeStep({
+            command,
+            resolve: this.resolve(stepName, command),
+            reject: this.reject(stepName, command),
+            params: this.transitionParams(stepName),
           });
         }
       },
     });
   }
-  private resolveChangeStep(stepName: string, command: WizardCommands) {
-    this.observer.dispatch({
-      scope: "wizard:commands",
-      eventName: WizardEvents.LEAVE_STEP,
-      payload: {
+  private resolve(stepName: string, command: WizardCommands) {
+    return () => {
+      this.commands.leave({
         command: command,
-        params: {
-          state: this.stepsMap[this.currentStep].state,
-          prevState: this.stepsMap[this.currentStep].prevState,
-          isCompleted: this.stepsMap[this.currentStep].isCompleted,
-          transitionForm: this.currentStep,
-          transitionTo: stepName,
-        },
-      },
-    });
-    this.navigate({ stepName });
-    this.observer.dispatch({
-      scope: "wizard:commands",
-      eventName: WizardEvents.CHANGE_STEP,
-      payload: {
-        stepName: this.currentStep,
-      },
-    });
+        params: this.transitionParams(stepName),
+      });
+      this.navigate({ stepName });
+      this.commands.changeStep();
+    };
+  }
+  private reject(stepName: string, command: WizardCommands) {
+    return (error: IRejectParams) => {
+      this.commands.failChangeStep({
+        command,
+        message: error.message,
+        params: this.transitionParams(stepName),
+      });
+    };
+  }
+  private transitionParams(stepName: string) {
+    return {
+      state: this.stepsMap[this.currentStep].state,
+      prevState: this.stepsMap[this.currentStep].prevState,
+      isCompleted: this.stepsMap[this.currentStep].isCompleted,
+      transitionForm: this.currentStep,
+      transitionTo: stepName,
+    };
   }
   private findStep({ command }: { command: WizardCommands }): string | null {
     return command === WizardCommands.NEXT

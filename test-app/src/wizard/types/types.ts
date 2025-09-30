@@ -13,37 +13,43 @@ export const WizardEvents = {
 };
 
 export interface IStepProps {
-  onNext?: (obj: INavigationValidationParams) => void;
-  onPrev?: (obj: INavigationValidationParams) => void;
+  onNext?: (obj: IBeforeChangeEventPayload) => void;
+  onPrev?: (obj: IBeforeChangeEventPayload) => void;
   onFail?: (obj: IFailChangeStepEventPayload) => void;
   onLeave?: (obj: ILeaveStepEventPayload) => void;
 }
 
-export interface INavigationValidationParams {
-  params: {
-    state: any;
-    prevState: any;
-    isCompleted: boolean;
-    transitionForm: string;
-    transitionTo: string;
-  };
+// EVENTS PAYLOAD
+export interface IBeforeChangeEventPayload {
+  command: WizardCommands;
+  params: ITransitionParams;
   resolve: () => void;
-  reject: (params: { message: string }) => void;
+  reject: (params: IRejectParams) => void;
 }
 
-export interface IChangeStepEventPayload extends INavigationValidationParams {
+export interface IFailChangeStepEventPayload {
   command: WizardCommands;
-}
-
-export interface IFailChangeStepEventPayload
-  extends Pick<INavigationValidationParams, "params"> {
-  command: WizardCommands;
+  params: ITransitionParams;
   message: string;
 }
 
-export interface ILeaveStepEventPayload
-  extends Pick<INavigationValidationParams, "params"> {
+export interface ILeaveStepEventPayload {
   command: WizardCommands;
+  params: ITransitionParams;
+}
+
+// END :: EVENTS PAYLOAD
+
+export interface IRejectParams {
+  message: string;
+}
+
+export interface ITransitionParams {
+  state: any;
+  prevState: any;
+  isCompleted: boolean;
+  transitionForm: string;
+  transitionTo: string;
 }
 
 export interface IWizardConfig {
