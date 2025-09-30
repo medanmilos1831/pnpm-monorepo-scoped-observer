@@ -1,12 +1,11 @@
 import { useNavigate } from "../wizard";
+
 const Controls = () => {
-  const navigate = useNavigate();
+  const { prev, next } = useNavigate();
   return (
     <div>
-      <button onClick={navigate.prevStepNavigate}>Prev</button>
-      <button onClick={navigate.nextStepNavigate}>Next</button>
-      {/* <button onClick={navigate.prevStepNavigate}>Prev</button>
-      <button onClick={navigate.nextStepNavigate}>Next</button> */}
+      <button onClick={prev}>Prev</button>
+      <button onClick={next}>Next</button>
     </div>
   );
 };

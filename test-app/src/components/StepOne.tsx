@@ -1,18 +1,27 @@
-import { useState } from "react";
 import { Modal } from "antd";
-import { useNavigate, useStep, WizzardProvider } from "../wizard";
-import { WizardEvents } from "../wizard/types";
+import { useState } from "react";
+import { useNavigate, WizzardProvider } from "../wizard";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
-  const { nextStepIntercept, nextStepNavigate } = useNavigate();
 
   return (
     <>
       <WizzardProvider.Step
-        onAction={(params: any) => {
-          console.log("step one action", params);
-          // setOpen(true);
+        onNext={(params) => {
+          params.reject({
+            message: "Step One is not valid",
+          });
+          // return false;
+        }}
+        onPrev={(params) => {
+          // return true;
+        }}
+        onFail={(params) => {
+          console.log("params", params);
+          // params.reject({
+          //   message: "Step One is not valid",
+          // });
         }}
       >
         <div>Step One</div>
@@ -22,7 +31,6 @@ const StepOne = () => {
           onCancel={() => setOpen(false)}
           onOk={() => {
             setOpen(false);
-            nextStepNavigate();
           }}
         >
           <p>This is a modal from Step One</p>

@@ -8,11 +8,13 @@ const createWizard = (
   const wizard = new Wizard(config, wizardStepsConfig);
 
   return {
-    commands: wizard.commands,
+    next: wizard.commands.next,
+    prev: wizard.commands.prev,
     subscribe: wizard.observer.subscribe,
     getActiveStep: () => wizard.currentStep,
     getStepEntity: () => wizard.stepsMap[wizard.currentStep],
     getStepEntityByStepName: (stepName: string) => wizard.stepsMap[stepName],
+    setStepState: wizard.setStepState,
   };
 };
 

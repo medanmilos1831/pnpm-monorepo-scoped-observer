@@ -3,18 +3,42 @@ export enum WizardCommands {
   PREV = "prev",
 }
 
-export enum StepCommands {
-  SUBMIT = "submit",
+export const WizardEvents = {
+  NAVIGATE: "navigate",
+  BEFORE_CHANGE_STEP: "beforeChangeStep",
+  CHANGE_STEP: "changeStep",
+  STEP_STATE_STATE: "stepStateState",
+  FAIL_CHANGE_STEP: "failChangeStep",
+};
+
+export interface IStepProps {
+  onNext?: (obj: INavigationValidationParams) => void;
+  onPrev?: (obj: INavigationValidationParams) => void;
+  onFail?: (obj: IFailChangeStepEventPayload) => void;
 }
 
-export const WizardEvents = {
-  STEP_INTERCEPT: "stepIntercept",
-  NAVIGATE: "navigate",
-  ACTION: "action",
-  CHANGE_STEP: "changeStep",
-} as const;
+export interface INavigationValidationParams {
+  params: {
+    state: any;
+    prevState: any;
+    isCompleted: boolean;
+    transitionForm: string;
+    transitionTo: string;
+  };
+  resolve: () => void;
+  reject: (params: { message: string }) => void;
+}
 
-export type WizardEvent = (typeof WizardEvents)[keyof typeof WizardEvents];
+export interface IChangeStepEventPayload extends INavigationValidationParams {
+  command: WizardCommands;
+}
+
+export interface IFailChangeStepEventPayload
+  extends Pick<INavigationValidationParams, "params"> {
+  command: WizardCommands;
+  stepName: string;
+  message: string;
+}
 
 export interface IWizardConfig {
   activeStep: string;

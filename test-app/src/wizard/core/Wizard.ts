@@ -24,12 +24,13 @@ class Wizard {
       ],
     },
   ]);
-  valid: any = true;
+
   commands: Commands = new Commands(this.observer);
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
   wizardStepsConfig: IWizardStepsConfig;
+
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
@@ -42,35 +43,50 @@ class Wizard {
     });
     this.observer.subscribe({
       scope: "wizard:commands",
-      eventName: WizardEvents.STEP_INTERCEPT,
-      callback: ({ payload }: { payload: WizardCommands }) => {
-        console.log("step intercept", payload);
-        this.observer.dispatch({
-          scope: "wizard:commands",
-          eventName: WizardEvents.ACTION,
-          payload: {
-            command: payload,
-          },
-        });
-      },
-    });
-    this.observer.subscribe({
-      scope: "wizard:commands",
       eventName: WizardEvents.NAVIGATE,
       callback: ({ payload: command }: { payload: WizardCommands }) => {
-        const value = this.findStep({
+        const stepName = this.findStep({
           command,
         });
-        if (!value) {
+        if (!stepName) {
           return;
         }
-        if (value) {
-          this.navigate({ stepName: value });
+        if (stepName) {
+          const params = {
+            isCompleted: this.stepsMap[this.currentStep].isCompleted,
+            state: this.stepsMap[this.currentStep].state,
+            prevState: this.stepsMap[this.currentStep].prevState,
+            transitionForm: this.currentStep,
+            transitionTo: stepName,
+          };
           this.observer.dispatch({
             scope: "wizard:commands",
-            eventName: WizardEvents.CHANGE_STEP,
+            eventName: WizardEvents.BEFORE_CHANGE_STEP,
             payload: {
               command,
+              resolve: () => {
+                this.navigate({ stepName });
+                this.observer.dispatch({
+                  scope: "wizard:commands",
+                  eventName: WizardEvents.CHANGE_STEP,
+                  payload: {
+                    stepName,
+                  },
+                });
+              },
+              reject: (params: { message: string; isError: boolean }) => {
+                this.observer.dispatch({
+                  scope: "wizard:commands",
+                  eventName: WizardEvents.FAIL_CHANGE_STEP,
+                  payload: {
+                    command,
+                    stepName,
+                    message: params.message,
+                    params,
+                  },
+                });
+              },
+              params,
             },
           });
         }
@@ -104,6 +120,20 @@ class Wizard {
 
   private navigate({ stepName }: { stepName: string }) {
     this.currentStep = stepName;
+  }
+
+  setStepState(cb: (state: any) => any) {
+    this.stepsMap[this.currentStep].state = {
+      ...this.stepsMap[this.currentStep].state,
+      ...cb(this.stepsMap[this.currentStep].state),
+    };
+    this.observer.dispatch({
+      scope: "wizard:step",
+      eventName: WizardEvents.STEP_STATE_STATE,
+      payload: {
+        stepName: this.currentStep,
+      },
+    });
   }
 }
 

@@ -8,10 +8,8 @@ const useNavigate = () => {
   }
 
   return {
-    nextStepIntercept: context.commands.nextStepIntercept,
-    nextStepNavigate: context.commands.nextStepNavigate,
-    prevStepIntercept: context.commands.prevStepIntercept,
-    prevStepNavigate: context.commands.prevStepNavigate,
+    next: context.next,
+    prev: context.prev,
   };
 };
 

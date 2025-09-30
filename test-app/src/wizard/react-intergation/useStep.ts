@@ -12,7 +12,9 @@ const useStep = () => {
       eventName: "changeStep",
       scope: "wizard:commands",
     },
-    () => context.getStepEntity().name
+    () => {
+      return context.getStepEntity().name;
+    }
   );
   return {
     stepName,
