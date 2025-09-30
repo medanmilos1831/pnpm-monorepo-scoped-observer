@@ -7,7 +7,7 @@ import {
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
-import { Commands } from "./Commands";
+import { Events } from "./Events";
 import { Step } from "./Step";
 
 class Wizard {
@@ -26,7 +26,7 @@ class Wizard {
     },
   ]);
 
-  commands: Commands = new Commands(this.observer);
+  events: Events = new Events(this.observer);
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
@@ -45,37 +45,45 @@ class Wizard {
     this.observer.subscribe({
       scope: "wizard:commands",
       eventName: WizardEvents.NAVIGATE,
-      callback: ({ payload: command }: { payload: WizardCommands }) => {
+      callback: ({
+        payload,
+      }: {
+        payload: { command: WizardCommands; force: boolean };
+      }) => {
+        const { command, force } = payload;
         const stepName = this.findStep({
           command,
         });
         if (!stepName) {
           return;
         }
-        if (stepName) {
-          this.commands.beforeChangeStep({
+        if (stepName && !force) {
+          this.events.beforeChangeStep({
             command,
             resolve: this.resolve(stepName, command),
             reject: this.reject(stepName, command),
             params: this.transitionParams(stepName),
           });
         }
+        if (stepName && force) {
+          this.resolve(stepName, command)();
+        }
       },
     });
   }
   private resolve(stepName: string, command: WizardCommands) {
     return () => {
-      this.commands.leave({
+      this.events.leave({
         command: command,
         params: this.transitionParams(stepName),
       });
       this.navigate({ stepName });
-      this.commands.changeStep();
+      this.events.changeStep();
     };
   }
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
-      this.commands.failChangeStep({
+      this.events.failChangeStep({
         command,
         message: error.message,
         params: this.transitionParams(stepName),

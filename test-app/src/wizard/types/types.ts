@@ -12,6 +12,11 @@ export const WizardEvents = {
   LEAVE_STEP: "leaveStep",
 };
 
+export const WizardScopes = {
+  COMMANDS: "wizard:commands",
+  STEP: "wizard:step",
+} as const;
+
 export interface IStepProps {
   onNext?: (obj: IBeforeChangeEventPayload) => void;
   onPrev?: (obj: IBeforeChangeEventPayload) => void;

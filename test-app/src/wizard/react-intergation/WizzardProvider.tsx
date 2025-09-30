@@ -64,7 +64,6 @@ WizzardProvider.Step = ({
       scope: "wizard:commands",
       eventName: WizardEvents.LEAVE_STEP,
       callback: ({ payload }: { payload: ILeaveStepEventPayload }) => {
-        console.log("leave step", payload);
         if (onLeave) {
           onLeave(payload);
         }
@@ -80,7 +79,6 @@ WizzardProvider.Step = ({
       scope: "wizard:commands",
       eventName: WizardEvents.FAIL_CHANGE_STEP,
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
-        console.log("fail change step", payload);
         if (onFail) {
           onFail(payload);
         }

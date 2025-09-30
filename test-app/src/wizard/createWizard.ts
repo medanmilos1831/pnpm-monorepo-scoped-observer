@@ -8,8 +8,8 @@ const createWizard = (
   const wizard = new Wizard(config, wizardStepsConfig);
 
   return {
-    next: wizard.commands.next,
-    prev: wizard.commands.prev,
+    next: wizard.events.next,
+    prev: wizard.events.prev,
     subscribe: wizard.observer.subscribe,
     getActiveStep: () => wizard.currentStep,
     getStepEntity: () => wizard.stepsMap[wizard.currentStep],
