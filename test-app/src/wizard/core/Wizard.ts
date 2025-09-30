@@ -3,6 +3,7 @@ import { createScopedObserver } from "../../scroped-observer";
 import {
   WizardCommands,
   WizardEvents,
+  type INavigationValidationParams,
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
