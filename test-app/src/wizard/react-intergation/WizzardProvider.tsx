@@ -7,6 +7,7 @@ import {
 import { createWizard } from "../createWizard";
 import {
   WizardEvents,
+  WizardScopes,
   type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
   type ILeaveStepEventPayload,
@@ -40,7 +41,7 @@ WizzardProvider.Step = ({
   }
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: "wizard:commands",
+      scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.BEFORE_CHANGE_STEP,
       callback: ({ payload }: { payload: IBeforeChangeEventPayload }) => {
         const obj = {
@@ -61,7 +62,7 @@ WizzardProvider.Step = ({
 
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: "wizard:commands",
+      scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.LEAVE_STEP,
       callback: ({ payload }: { payload: ILeaveStepEventPayload }) => {
         if (onLeave) {
@@ -76,7 +77,7 @@ WizzardProvider.Step = ({
 
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: "wizard:commands",
+      scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.FAIL_CHANGE_STEP,
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
         if (onFail) {

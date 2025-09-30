@@ -3,6 +3,7 @@ import { createScopedObserver } from "../../scroped-observer";
 import {
   WizardCommands,
   WizardEvents,
+  WizardScopes,
   type IRejectParams,
   type IWizardConfig,
   type IWizardStepsConfig,
@@ -43,7 +44,7 @@ class Wizard {
       });
     });
     this.observer.subscribe({
-      scope: "wizard:commands",
+      scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
       callback: ({
         payload,
@@ -134,7 +135,7 @@ class Wizard {
       ...cb(this.stepsMap[this.currentStep].state),
     };
     this.observer.dispatch({
-      scope: "wizard:step",
+      scope: WizardScopes.STEP,
       eventName: WizardEvents.STEP_STATE_STATE,
       payload: {
         stepName: this.currentStep,

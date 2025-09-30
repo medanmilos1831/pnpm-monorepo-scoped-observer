@@ -7,7 +7,7 @@ const StepOne = () => {
   const { next } = useNavigate();
   return (
     <>
-      {/* <WizzardProvider.Step
+      <WizzardProvider.Step
         onNext={(params) => {
           params.reject({
             message: "Step One",
@@ -20,20 +20,20 @@ const StepOne = () => {
         onLeave={(params) => {
           console.log("params", params);
         }}
-      > */}
-      <div>Step One</div>
-      <Modal
-        title="Step One Modal"
-        open={open}
-        onCancel={() => setOpen(false)}
-        onOk={() => {
-          next({ force: true });
-          setOpen(false);
-        }}
       >
-        <p>This is a modal from Step One</p>
-      </Modal>
-      {/* </WizzardProvider.Step> */}
+        <div>Step One</div>
+        <Modal
+          title="Step One Modal"
+          open={open}
+          onCancel={() => setOpen(false)}
+          onOk={() => {
+            next({ force: true });
+            setOpen(false);
+          }}
+        >
+          <p>This is a modal from Step One</p>
+        </Modal>
+      </WizzardProvider.Step>
     </>
   );
 };
