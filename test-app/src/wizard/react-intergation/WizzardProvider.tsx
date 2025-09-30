@@ -1,12 +1,11 @@
 import {
   createContext,
-  type PropsWithChildren,
   useContext,
   useEffect,
+  type PropsWithChildren,
 } from "react";
 import { createWizard } from "../createWizard";
 import {
-  WizardCommands,
   WizardEvents,
   type IChangeStepEventPayload,
   type IFailChangeStepEventPayload,
@@ -43,24 +42,27 @@ WizzardProvider.Step = ({
       eventName: WizardEvents.BEFORE_CHANGE_STEP,
       callback: ({ payload }: { payload: IChangeStepEventPayload }) => {
         const { command, resolve, reject, params } = payload;
-        if (command === WizardCommands.NEXT) {
-          onNext
-            ? onNext({
-                params,
-                resolve,
-                reject,
-              })
-            : resolve();
-        }
-        if (command === WizardCommands.PREV) {
-          onPrev
-            ? onPrev({
-                params,
-                resolve,
-                reject,
-              })
-            : resolve();
-        }
+        const obj = {
+          next: () => {
+            onNext
+              ? onNext({
+                  params,
+                  resolve,
+                  reject,
+                })
+              : resolve();
+          },
+          prev: () => {
+            onPrev
+              ? onPrev({
+                  params,
+                  resolve,
+                  reject,
+                })
+              : resolve();
+          },
+        };
+        obj[command]();
       },
     });
     return () => {
