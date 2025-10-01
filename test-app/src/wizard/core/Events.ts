@@ -77,6 +77,13 @@ class Events {
       eventName: WizardEvents.ON_UPDATE_STEPS,
     });
   };
+
+  reset = () => {
+    this.observer.dispatch({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.RESET,
+    });
+  };
 }
 
 export { Events };

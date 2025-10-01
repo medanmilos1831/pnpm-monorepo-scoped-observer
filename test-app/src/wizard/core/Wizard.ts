@@ -45,9 +45,7 @@ class Wizard {
     this.currentStep = config.activeStep;
 
     wizardStepsConfig.activeSteps.forEach((step) => {
-      this.stepsMap[step] = new Step(step, {
-        visible: wizardStepsConfig.activeSteps.includes(step),
-      });
+      this.stepsMap[step] = new Step(step);
     });
     this.updateNavigationProperties();
     this.observer.subscribe({
@@ -104,9 +102,7 @@ class Wizard {
     return () => {
       this.wizardStepsConfig.activeSteps = value;
       this.wizardStepsConfig.activeSteps.forEach((step) => {
-        this.stepsMap[step] = new Step(step, {
-          visible: this.wizardStepsConfig.activeSteps.includes(step),
-        });
+        this.stepsMap[step] = new Step(step);
       });
       this.events.updateSteps();
 
@@ -116,9 +112,17 @@ class Wizard {
     };
   };
 
-  private reset() {
-    console.log("RESET", this);
-  }
+  private reset = () => {
+    this.wizardStepsConfig.activeSteps = [
+      ...this.__INIT_WIZZARD_STEPS_CONFIG__.activeSteps,
+    ];
+    this.stepsMap = {};
+    this.wizardStepsConfig.activeSteps.forEach((step) => {
+      this.stepsMap[step] = new Step(step);
+    });
+    this.currentStep = this.__INIT_CONFIG__.activeStep;
+    this.resolve(this.currentStep)();
+  };
   private resolve(stepName: string) {
     return () => {
       this.navigate({ stepName });

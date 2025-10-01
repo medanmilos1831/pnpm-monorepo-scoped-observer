@@ -12,6 +12,7 @@ export const WizardEvents = {
   LEAVE_STEP: "onLeave",
   ON_FINISH: "onFinish",
   ON_UPDATE_STEPS: "onUpdateSteps",
+  RESET: "reset",
 };
 
 export const WizardScopes = {
