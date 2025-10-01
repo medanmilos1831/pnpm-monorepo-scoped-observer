@@ -15,6 +15,11 @@ import {
 import { Events } from "./Events";
 import { Step } from "./Step";
 
+// **************************************************************************************
+// napraviti navigation jump tj da moze direknto da ide na neki step
+// napraviti intersecpotre sa observerom
+// napraviti on enter za step
+// **************************************************************************************
 class Wizard {
   currentStep: string;
   observer: IScopedObserver = createScopedObserver([
