@@ -27,10 +27,6 @@ const StepOne = () => {
         onFail={(params) => {
           setOpen(true);
         }}
-        // onLeave={(params) => {
-        //   console.log("On Leave", params);
-        //   // console.log("On Leave", params);
-        // }}
       >
         <div>Step One</div>
         <Modal
