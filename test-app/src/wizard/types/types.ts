@@ -21,7 +21,6 @@ export interface IStepProps {
   onNext?: (obj: IBeforeChangeEventPayload) => void;
   onPrev?: (obj: IBeforeChangeEventPayload) => void;
   onFail?: (obj: IFailChangeStepEventPayload) => void;
-  onLeave?: (obj: ILeaveStepEventPayload) => void;
 }
 
 // EVENTS PAYLOAD
@@ -37,12 +36,6 @@ export interface IFailChangeStepEventPayload {
   command: WizardCommands;
   params: ITransitionParams;
   message: string;
-}
-
-export interface ILeaveStepEventPayload {
-  command: WizardCommands;
-  params: ITransitionParams;
-  comamndDescription: INextParams;
 }
 
 // END :: EVENTS PAYLOAD

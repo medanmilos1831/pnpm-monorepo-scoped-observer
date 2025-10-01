@@ -5,7 +5,6 @@ import {
   WizardScopes,
   type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
-  type ILeaveStepEventPayload,
 } from "../types";
 
 class Events {
@@ -14,24 +13,28 @@ class Events {
     this.observer = observer;
   }
 
-  next = (params: { actionType: string }) => {
+  next = (params?: { actionType: string }) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.NEXT,
-        comamndDescription: params,
+        comamndDescription: params || {
+          actionType: "default",
+        },
       },
     });
   };
 
-  prev = () => {
+  prev = (params?: { actionType: string }) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.PREV,
-        comamndDescription: undefined,
+        comamndDescription: params || {
+          actionType: "default",
+        },
       },
     });
   };
@@ -48,14 +51,6 @@ class Events {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.CHANGE_STEP,
-    });
-  };
-
-  leave = (payload: ILeaveStepEventPayload) => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.LEAVE_STEP,
-      payload,
     });
   };
 

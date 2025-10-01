@@ -5,15 +5,7 @@ const Controls = () => {
   return (
     <div>
       <button onClick={() => prev()}>Prev</button>
-      <button
-        onClick={() =>
-          next({
-            actionType: "validation",
-          })
-        }
-      >
-        Next
-      </button>
+      <button onClick={() => next()}>Next</button>
     </div>
   );
 };

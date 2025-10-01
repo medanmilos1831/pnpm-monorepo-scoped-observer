@@ -10,7 +10,6 @@ import {
   WizardScopes,
   type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
-  type ILeaveStepEventPayload,
   type IStepProps,
 } from "../types";
 
@@ -33,7 +32,6 @@ WizzardProvider.Step = ({
   onNext,
   onPrev,
   onFail,
-  onLeave,
 }: PropsWithChildren<IStepProps>) => {
   const context = useContext(Context);
   if (!context) {
@@ -44,32 +42,16 @@ WizzardProvider.Step = ({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.BEFORE_CHANGE_STEP,
       callback: ({ payload }: { payload: IBeforeChangeEventPayload }) => {
+        console.log("On Before Change Step", onPrev);
         const obj = {
           next: () => {
             onNext ? onNext(payload) : payload.resolve();
           },
           prev: () => {
-            console.log("On Prev", payload);
             onPrev ? onPrev(payload) : payload.resolve();
           },
         };
         obj[payload.command]();
-      },
-    });
-    return () => {
-      unsubscribe();
-    };
-  });
-
-  // Subscribe to LEAVE_STEP event based on onLeave prop passed to Step component
-  useEffect(() => {
-    const unsubscribe = context.subscribe({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.LEAVE_STEP,
-      callback: ({ payload }: { payload: ILeaveStepEventPayload }) => {
-        if (onLeave) {
-          onLeave(payload);
-        }
       },
     });
     return () => {

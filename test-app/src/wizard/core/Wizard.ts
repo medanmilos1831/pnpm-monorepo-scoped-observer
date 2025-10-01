@@ -65,7 +65,7 @@ class Wizard {
         if (stepName) {
           this.events.beforeChangeStep({
             command,
-            resolve: this.resolve(stepName, command, comamndDescription),
+            resolve: this.resolve(stepName),
             reject: this.reject(stepName, command),
             params: this.transitionParams(stepName),
             comamndDescription,
@@ -74,17 +74,8 @@ class Wizard {
       },
     });
   }
-  private resolve(
-    stepName: string,
-    command: WizardCommands,
-    comamndDescription: INextParams
-  ) {
+  private resolve(stepName: string) {
     return () => {
-      this.events.leave({
-        command,
-        params: this.transitionParams(stepName),
-        comamndDescription,
-      });
       this.navigate({ stepName });
       this.events.changeStep();
     };
