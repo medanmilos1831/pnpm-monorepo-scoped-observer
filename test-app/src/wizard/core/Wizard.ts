@@ -86,7 +86,7 @@ class Wizard {
     });
   }
 
-  setStatus = (status: WizardStatus) => {
+  private setStatus = (status: WizardStatus) => {
     this.status = status;
     this.events.setStatus();
   };

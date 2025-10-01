@@ -11,7 +11,6 @@ const createWizard = (
     next: wizard.events.next,
     prev: wizard.events.prev,
     reset: wizard.reset,
-    setStatus: wizard.setStatus,
     subscribe: wizard.observer.subscribe,
     getActiveStep: () => wizard.currentStep,
     getStepEntity: () => wizard.stepsMap[wizard.currentStep],

@@ -9,16 +9,13 @@ const useOnStatusChange = () => {
     throw new Error("WizzardProvider not found");
   }
 
-  const status = useSubscriber(
+  return useSubscriber(
     {
       eventName: WizardEvents.SET_STATUS,
       scope: WizardScopes.COMMANDS,
     },
-    () => {
-      return context.getStatus();
-    }
+    context.getStatus
   );
-  return status;
 };
 
 export { useOnStatusChange };
