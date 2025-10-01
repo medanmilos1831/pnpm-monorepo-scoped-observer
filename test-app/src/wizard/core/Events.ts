@@ -19,7 +19,7 @@ class Events {
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.NEXT,
-        comamndDescription: params || {
+        actionMeta: params || {
           actionType: "default",
         },
       },
@@ -32,7 +32,7 @@ class Events {
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.PREV,
-        comamndDescription: params || {
+        actionMeta: params || {
           actionType: "default",
         },
       },

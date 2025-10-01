@@ -52,10 +52,10 @@ class Wizard {
       }: {
         payload: {
           command: WizardCommands;
-          comamndDescription: INextParams;
+          actionMeta: INextParams;
         };
       }) => {
-        const { command, comamndDescription } = payload;
+        const { command, actionMeta } = payload;
         const stepName = this.findStep({
           command,
         });
@@ -68,7 +68,7 @@ class Wizard {
             resolve: this.resolve(stepName),
             reject: this.reject(stepName, command),
             params: this.transitionParams(stepName),
-            comamndDescription,
+            actionMeta,
           });
         }
       },

@@ -9,20 +9,20 @@ const StepOne = () => {
     <>
       <WizzardProvider.Step
         onNext={(params) => {
-          if (params.comamndDescription.actionType === "validation") {
+          if (params.actionMeta.actionType === "validation") {
             params.reject({
               message: "Step One",
             });
             return;
           }
-          if (params.comamndDescription?.actionType === "validated") {
+          if (params.actionMeta?.actionType === "validated") {
             params.resolve();
             return;
           }
           params.resolve();
         }}
         onPrev={() => {
-          console.log("On Prev CALLED");
+          // onPrev handler
         }}
         onFail={(params) => {
           setOpen(true);

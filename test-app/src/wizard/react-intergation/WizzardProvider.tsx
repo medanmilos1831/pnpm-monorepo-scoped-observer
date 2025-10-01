@@ -42,7 +42,6 @@ WizzardProvider.Step = ({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.BEFORE_CHANGE_STEP,
       callback: ({ payload }: { payload: IBeforeChangeEventPayload }) => {
-        console.log("On Before Change Step", onPrev);
         const obj = {
           next: () => {
             onNext ? onNext(payload) : payload.resolve();

@@ -27,7 +27,7 @@ export interface IStepProps {
 export interface IBeforeChangeEventPayload {
   command: WizardCommands;
   params: ITransitionParams;
-  comamndDescription: INextParams;
+  actionMeta: INextParams;
   resolve: () => void;
   reject: (params: IRejectParams) => void;
 }
