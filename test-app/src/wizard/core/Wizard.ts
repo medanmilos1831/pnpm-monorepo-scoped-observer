@@ -4,8 +4,10 @@ import {
   WizardCommands,
   WizardEvents,
   WizardScopes,
-  type INextParams,
+  type IMeta,
+  type INavigateEventPayload,
   type IRejectParams,
+  type ITransitionParams,
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
@@ -47,19 +49,24 @@ class Wizard {
     this.observer.subscribe({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
-      callback: ({
-        payload,
-      }: {
-        payload: {
-          command: WizardCommands;
-          actionMeta: INextParams;
-        };
-      }) => {
+      callback: ({ payload }: { payload: INavigateEventPayload }) => {
         const { command, actionMeta } = payload;
         const stepName = this.findStep({
           command,
         });
         if (!stepName) {
+          this.events.onFinish({
+            command,
+            actionMeta,
+            params: this.transitionParams(this.currentStep),
+            reset: this.reset,
+            updateSteps: (callback: any) =>
+              this.updateSteps(callback, {
+                command,
+                actionMeta,
+                params: this.transitionParams(this.currentStep),
+              }),
+          });
           return;
         }
         if (stepName) {
@@ -73,6 +80,27 @@ class Wizard {
         }
       },
     });
+  }
+
+  private updateSteps = (
+    callback: () => string[],
+    {
+      command,
+      actionMeta,
+      params,
+    }: { command: WizardCommands; actionMeta: IMeta; params: ITransitionParams }
+  ) => {
+    return () => {
+      this.wizardStepsConfig.activeSteps = [...callback()];
+      this.events.updateSteps();
+      command === WizardCommands.NEXT
+        ? this.events.next(actionMeta)
+        : this.events.prev(actionMeta);
+    };
+  };
+
+  private reset() {
+    console.log("RESET", this);
   }
   private resolve(stepName: string) {
     return () => {
@@ -91,9 +119,6 @@ class Wizard {
   }
   private transitionParams(stepName: string) {
     return {
-      state: this.stepsMap[this.currentStep].state,
-      prevState: this.stepsMap[this.currentStep].prevState,
-      isCompleted: this.stepsMap[this.currentStep].isCompleted,
       transitionForm: this.currentStep,
       transitionTo: stepName,
     };
@@ -125,20 +150,6 @@ class Wizard {
 
   private navigate({ stepName }: { stepName: string }) {
     this.currentStep = stepName;
-  }
-
-  setStepState(cb: (state: any) => any) {
-    this.stepsMap[this.currentStep].state = {
-      ...this.stepsMap[this.currentStep].state,
-      ...cb(this.stepsMap[this.currentStep].state),
-    };
-    this.observer.dispatch({
-      scope: WizardScopes.STEP,
-      eventName: WizardEvents.STEP_STATE_STATE,
-      payload: {
-        stepName: this.currentStep,
-      },
-    });
   }
 }
 

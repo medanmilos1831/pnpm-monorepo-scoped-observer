@@ -32,6 +32,7 @@ WizzardProvider.Step = ({
   onNext,
   onPrev,
   onFail,
+  onFinish,
 }: PropsWithChildren<IStepProps>) => {
   const context = useContext(Context);
   if (!context) {
@@ -66,6 +67,21 @@ WizzardProvider.Step = ({
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
         if (onFail) {
           onFail(payload);
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.ON_FINISH,
+      callback: ({ payload }: { payload: any }) => {
+        if (onFinish) {
+          onFinish(payload);
         }
       },
     });

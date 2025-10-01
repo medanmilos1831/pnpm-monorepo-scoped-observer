@@ -14,7 +14,7 @@ const createWizard = (
     getActiveStep: () => wizard.currentStep,
     getStepEntity: () => wizard.stepsMap[wizard.currentStep],
     getStepEntityByStepName: (stepName: string) => wizard.stepsMap[stepName],
-    setStepState: wizard.setStepState,
+    activeSteps: wizard.wizardStepsConfig.activeSteps,
   };
 };
 

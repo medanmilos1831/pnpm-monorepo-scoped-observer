@@ -10,6 +10,8 @@ export const WizardEvents = {
   STEP_STATE_STATE: "stepStateState",
   FAIL_CHANGE_STEP: "onFail",
   LEAVE_STEP: "onLeave",
+  ON_FINISH: "onFinish",
+  ON_UPDATE_STEPS: "onUpdateSteps",
 };
 
 export const WizardScopes = {
@@ -21,15 +23,21 @@ export interface IStepProps {
   onNext?: (obj: IBeforeChangeEventPayload) => void;
   onPrev?: (obj: IBeforeChangeEventPayload) => void;
   onFail?: (obj: IFailChangeStepEventPayload) => void;
+  onFinish?: (obj: any) => void;
 }
 
 // EVENTS PAYLOAD
 export interface IBeforeChangeEventPayload {
   command: WizardCommands;
   params: ITransitionParams;
-  actionMeta: INextParams;
+  actionMeta: IMeta;
   resolve: () => void;
   reject: (params: IRejectParams) => void;
+}
+
+export interface INavigateEventPayload {
+  command: WizardCommands;
+  actionMeta: IMeta;
 }
 
 export interface IFailChangeStepEventPayload {
@@ -45,9 +53,6 @@ export interface IRejectParams {
 }
 
 export interface ITransitionParams {
-  state: any;
-  prevState: any;
-  isCompleted: boolean;
   transitionForm: string;
   transitionTo: string;
 }
@@ -61,6 +66,6 @@ export interface IWizardStepsConfig {
   activeSteps: string[];
 }
 
-export interface INextParams {
+export interface IMeta {
   actionType: string | undefined;
 }

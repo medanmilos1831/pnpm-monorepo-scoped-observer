@@ -5,6 +5,7 @@ import {
   WizardScopes,
   type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
+  type IMeta,
 } from "../types";
 
 class Events {
@@ -13,7 +14,7 @@ class Events {
     this.observer = observer;
   }
 
-  next = (params?: { actionType: string }) => {
+  next = (params?: IMeta) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
@@ -26,7 +27,7 @@ class Events {
     });
   };
 
-  prev = (params?: { actionType: string }) => {
+  prev = (params?: IMeta) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
@@ -36,6 +37,14 @@ class Events {
           actionType: "default",
         },
       },
+    });
+  };
+
+  onFinish = (payload: any) => {
+    this.observer.dispatch({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.ON_FINISH,
+      payload,
     });
   };
 
@@ -59,6 +68,13 @@ class Events {
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.FAIL_CHANGE_STEP,
       payload,
+    });
+  };
+
+  updateSteps = () => {
+    this.observer.dispatch({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.ON_UPDATE_STEPS,
     });
   };
 }

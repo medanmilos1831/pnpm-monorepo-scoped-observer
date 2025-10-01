@@ -9,7 +9,7 @@ const wizard = createWizard(
   },
   {
     steps: ["stepOne", "stepTwo", "stepThree", "stepFour", "stepFive"],
-    activeSteps: ["stepOne", "stepTwo", "stepThree"],
+    activeSteps: ["stepOne", "stepTwo"],
   }
 );
 
