@@ -9,7 +9,7 @@ const StepOne = () => {
     <>
       <WizzardProvider.Step
         onNext={(params) => {
-          if (params.comamndDescription?.actionType === "validation") {
+          if (params.comamndDescription.actionType === "validation") {
             params.reject({
               message: "Step One",
             });
