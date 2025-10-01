@@ -1,7 +1,7 @@
-import { useNavigate, useStep } from "../wizard";
+import { useWizzard, useStep } from "../wizard";
 
 const Controls = () => {
-  const { prev, next } = useNavigate();
+  const { prev, next, reset } = useWizzard();
   const { isLast, isFirst } = useStep();
 
   return (
@@ -15,6 +15,7 @@ const Controls = () => {
         borderTop: "1px solid #e9ecef",
       }}
     >
+      <button onClick={() => reset()}>Reset</button>
       {!isFirst && (
         <button
           onClick={() => prev()}

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Context } from "./WizzardProvider";
 
-const useNavigate = () => {
+const useWizzard = () => {
   const context = useContext(Context);
   if (!context) {
     throw new Error("WizzardProvider not found");
@@ -10,7 +10,8 @@ const useNavigate = () => {
   return {
     next: context.next,
     prev: context.prev,
+    reset: context.reset,
   };
 };
 
-export { useNavigate };
+export { useWizzard };

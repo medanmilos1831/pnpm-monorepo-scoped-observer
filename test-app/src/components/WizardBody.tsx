@@ -14,7 +14,6 @@ const stepComponents: any = {
 };
 
 const WizardBody = () => {
-  // Render current step component
   const { stepName } = useStep() as any;
   const StepComponent = stepComponents[stepName] as any;
   return (

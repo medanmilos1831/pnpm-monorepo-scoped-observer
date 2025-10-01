@@ -3,6 +3,11 @@ export enum WizardCommands {
   PREV = "prev",
 }
 
+export enum WizardStatus {
+  ACTIVE = "active",
+  SUCCESS = "success",
+}
+
 export const WizardEvents = {
   NAVIGATE: "navigate",
   BEFORE_CHANGE_STEP: "beforeChangeStep",
@@ -13,6 +18,7 @@ export const WizardEvents = {
   ON_FINISH: "onFinish",
   ON_UPDATE_STEPS: "onUpdateSteps",
   RESET: "reset",
+  SET_STATUS: "setStatus",
 };
 
 export const WizardScopes = {

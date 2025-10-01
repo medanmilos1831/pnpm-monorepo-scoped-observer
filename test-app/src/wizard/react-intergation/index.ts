@@ -1,3 +1,4 @@
 export { WizzardProvider } from "./WizzardProvider";
 export { useStep } from "./useStep";
-export { useNavigate } from "./useNavigate";
+export { useWizzard } from "./useWizzard";
+export { useOnStatusChange } from "./useOnStatusChange";

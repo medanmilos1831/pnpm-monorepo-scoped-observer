@@ -4,6 +4,7 @@ import {
   WizardCommands,
   WizardEvents,
   WizardScopes,
+  WizardStatus,
   type IMeta,
   type INavigateEventPayload,
   type IRejectParams,
@@ -23,9 +24,6 @@ class Wizard {
         {
           scope: "commands",
         },
-        {
-          scope: "step",
-        },
       ],
     },
   ]);
@@ -37,6 +35,7 @@ class Wizard {
   wizardStepsConfig: IWizardStepsConfig;
   isLast = false;
   isFirst = false;
+  status = WizardStatus.ACTIVE;
 
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
@@ -68,6 +67,9 @@ class Wizard {
                 actionMeta,
                 params: this.transitionParams(this.currentStep),
               }),
+            success: () => {
+              this.setStatus(WizardStatus.SUCCESS);
+            },
           });
           return;
         }
@@ -83,6 +85,24 @@ class Wizard {
       },
     });
   }
+
+  setStatus = (status: WizardStatus) => {
+    this.status = status;
+    this.events.setStatus();
+  };
+
+  reset = () => {
+    this.wizardStepsConfig.activeSteps = [
+      ...this.__INIT_WIZZARD_STEPS_CONFIG__.activeSteps,
+    ];
+    this.stepsMap = {};
+    this.wizardStepsConfig.activeSteps.forEach((step) => {
+      this.stepsMap[step] = new Step(step);
+    });
+    this.currentStep = this.__INIT_CONFIG__.activeStep;
+    this.resolve(this.currentStep)();
+    this.setStatus(WizardStatus.ACTIVE);
+  };
 
   private updateNavigationProperties() {
     this.isLast =
@@ -110,18 +130,6 @@ class Wizard {
         ? this.events.next(actionMeta)
         : this.events.prev(actionMeta);
     };
-  };
-
-  private reset = () => {
-    this.wizardStepsConfig.activeSteps = [
-      ...this.__INIT_WIZZARD_STEPS_CONFIG__.activeSteps,
-    ];
-    this.stepsMap = {};
-    this.wizardStepsConfig.activeSteps.forEach((step) => {
-      this.stepsMap[step] = new Step(step);
-    });
-    this.currentStep = this.__INIT_CONFIG__.activeStep;
-    this.resolve(this.currentStep)();
   };
   private resolve(stepName: string) {
     return () => {

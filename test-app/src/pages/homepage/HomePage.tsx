@@ -1,9 +1,11 @@
 import { Controls } from "../../components/Controls";
 import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
-import { useStep } from "../../wizard";
+import { useOnStatusChange, useWizzard } from "../../wizard";
 
 const HomePage = () => {
+  const status = useOnStatusChange();
+  const { reset } = useWizzard();
   return (
     <div
       style={{
@@ -11,9 +13,17 @@ const HomePage = () => {
         flexDirection: "column",
       }}
     >
-      <Navigation />
-      <WizardBody />
-      <Controls />
+      {status === "success" ? (
+        <>
+          <button onClick={() => reset()}>Reset</button>
+        </>
+      ) : (
+        <>
+          <Navigation />
+          <WizardBody />
+          <Controls />
+        </>
+      )}
     </div>
   );
 };

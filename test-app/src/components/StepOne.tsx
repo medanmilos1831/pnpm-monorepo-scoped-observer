@@ -1,10 +1,10 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { useNavigate, WizzardProvider } from "../wizard";
+import { useWizzard, WizzardProvider } from "../wizard";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
-  const { next } = useNavigate();
+  const { next } = useWizzard();
   return (
     <>
       <WizzardProvider.Step

@@ -5,9 +5,6 @@ const StepTwo = () => {
     <WizzardProvider.Step
       onPrev={(params) => {
         params.resolve();
-        // params.reject({
-        //   message: "Step Two",
-        // });
       }}
       onFinish={(params) => {
         const resolve = params.updateSteps((steps: any) => {

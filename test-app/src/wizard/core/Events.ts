@@ -3,6 +3,7 @@ import {
   WizardCommands,
   WizardEvents,
   WizardScopes,
+  WizardStatus,
   type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
   type IMeta,
@@ -82,6 +83,13 @@ class Events {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.RESET,
+    });
+  };
+
+  setStatus = () => {
+    this.observer.dispatch({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.SET_STATUS,
     });
   };
 }

@@ -1,5 +1,4 @@
 import { createWizard } from "./wizard/createWizard";
-import { Form } from "antd";
 
 import { HomePage } from "./pages";
 import { WizzardProvider } from "./wizard/react-intergation";

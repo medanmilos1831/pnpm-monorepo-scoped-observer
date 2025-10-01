@@ -4,7 +4,7 @@ const StepThree = () => {
   return (
     <WizzardProvider.Step
       onFinish={(params) => {
-        params.reset();
+        params.success();
       }}
     >
       <>step three</>

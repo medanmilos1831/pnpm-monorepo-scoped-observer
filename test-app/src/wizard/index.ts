@@ -1,3 +1,4 @@
 export { WizzardProvider } from "./react-intergation";
 export { useStep } from "./react-intergation";
-export { useNavigate } from "./react-intergation";
+export { useWizzard } from "./react-intergation";
+export { useOnStatusChange } from "./react-intergation";

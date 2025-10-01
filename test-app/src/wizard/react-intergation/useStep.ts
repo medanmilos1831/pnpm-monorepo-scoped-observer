@@ -18,24 +18,15 @@ const useStep = () => {
     context.getActiveStep
   );
 
-  // Active steps list (reactive)
-  const activeSteps = useSubscriber(
-    {
-      eventName: WizardEvents.ON_UPDATE_STEPS,
-      scope: WizardScopes.COMMANDS,
-    },
-    context.getActiveSteps
-  );
-
   return {
     // Step info
     stepName,
     activeStep: context.getActiveStep(),
-    
+
     // Steps list
-    activeSteps,
-    activeStepsLength: activeSteps.length,
-    
+    activeSteps: context.getActiveSteps(),
+    activeStepsLength: context.getActiveSteps().length,
+
     // Step position
     isLast: context.getIsLast(),
     isFirst: context.getIsFirst(),
