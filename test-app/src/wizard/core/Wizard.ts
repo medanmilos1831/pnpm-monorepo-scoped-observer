@@ -35,6 +35,8 @@ class Wizard {
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
   stepsMap: { [key: string]: any } = {};
   wizardStepsConfig: IWizardStepsConfig;
+  isLast = false;
+  isFirst = false;
 
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
@@ -47,6 +49,7 @@ class Wizard {
         visible: wizardStepsConfig.activeSteps.includes(step),
       });
     });
+    this.updateNavigationProperties();
     this.observer.subscribe({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
@@ -83,6 +86,12 @@ class Wizard {
     });
   }
 
+  private updateNavigationProperties() {
+    this.isLast =
+      this.getCurrentIndex() === this.wizardStepsConfig.activeSteps.length - 1;
+    this.isFirst = this.getCurrentIndex() === 0;
+  }
+
   private updateSteps = (
     callback: () => string[],
     {
@@ -113,6 +122,7 @@ class Wizard {
   private resolve(stepName: string) {
     return () => {
       this.navigate({ stepName });
+      this.updateNavigationProperties();
       this.events.changeStep();
     };
   }

@@ -17,6 +17,8 @@ const useStep = () => {
   );
   return {
     stepName,
+    isLast: context.getIsLast(),
+    isFirst: context.getIsFirst(),
   };
 };
 
