@@ -90,8 +90,9 @@ class Wizard {
       params,
     }: { command: WizardCommands; actionMeta: IMeta; params: ITransitionParams }
   ) => {
+    const value = [...callback()];
     return () => {
-      this.wizardStepsConfig.activeSteps = [...callback()];
+      this.wizardStepsConfig.activeSteps = value;
       this.events.updateSteps();
       command === WizardCommands.NEXT
         ? this.events.next(actionMeta)
