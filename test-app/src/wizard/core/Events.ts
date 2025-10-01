@@ -14,15 +14,13 @@ class Events {
     this.observer = observer;
   }
 
-  next = (params?: { force: boolean }) => {
-    const force = params?.force ?? false;
-
+  next = (params: { actionType: string }) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.NEXT,
-        force,
+        comamndDescription: params,
       },
     });
   };
@@ -33,7 +31,7 @@ class Events {
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.PREV,
-        force: false,
+        comamndDescription: undefined,
       },
     });
   };

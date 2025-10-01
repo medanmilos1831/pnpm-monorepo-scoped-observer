@@ -49,6 +49,7 @@ WizzardProvider.Step = ({
             onNext ? onNext(payload) : payload.resolve();
           },
           prev: () => {
+            console.log("On Prev", payload);
             onPrev ? onPrev(payload) : payload.resolve();
           },
         };

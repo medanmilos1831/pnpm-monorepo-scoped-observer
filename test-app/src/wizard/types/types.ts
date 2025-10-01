@@ -28,6 +28,7 @@ export interface IStepProps {
 export interface IBeforeChangeEventPayload {
   command: WizardCommands;
   params: ITransitionParams;
+  comamndDescription: INextParams;
   resolve: () => void;
   reject: (params: IRejectParams) => void;
 }
@@ -41,6 +42,7 @@ export interface IFailChangeStepEventPayload {
 export interface ILeaveStepEventPayload {
   command: WizardCommands;
   params: ITransitionParams;
+  comamndDescription: INextParams;
 }
 
 // END :: EVENTS PAYLOAD
@@ -64,4 +66,8 @@ export interface IWizardConfig {
 export interface IWizardStepsConfig {
   steps: string[];
   activeSteps: string[];
+}
+
+export interface INextParams {
+  actionType: string | undefined;
 }

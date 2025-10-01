@@ -4,6 +4,7 @@ import {
   WizardCommands,
   WizardEvents,
   WizardScopes,
+  type INextParams,
   type IRejectParams,
   type IWizardConfig,
   type IWizardStepsConfig,
@@ -49,34 +50,40 @@ class Wizard {
       callback: ({
         payload,
       }: {
-        payload: { command: WizardCommands; force: boolean };
+        payload: {
+          command: WizardCommands;
+          comamndDescription: INextParams;
+        };
       }) => {
-        const { command, force } = payload;
+        const { command, comamndDescription } = payload;
         const stepName = this.findStep({
           command,
         });
         if (!stepName) {
           return;
         }
-        if (stepName && !force) {
+        if (stepName) {
           this.events.beforeChangeStep({
             command,
-            resolve: this.resolve(stepName, command),
+            resolve: this.resolve(stepName, command, comamndDescription),
             reject: this.reject(stepName, command),
             params: this.transitionParams(stepName),
+            comamndDescription,
           });
-        }
-        if (stepName && force) {
-          this.resolve(stepName, command)();
         }
       },
     });
   }
-  private resolve(stepName: string, command: WizardCommands) {
+  private resolve(
+    stepName: string,
+    command: WizardCommands,
+    comamndDescription: INextParams
+  ) {
     return () => {
       this.events.leave({
-        command: command,
+        command,
         params: this.transitionParams(stepName),
+        comamndDescription,
       });
       this.navigate({ stepName });
       this.events.changeStep();
