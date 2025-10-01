@@ -60,6 +60,7 @@ WizzardProvider.Step = ({
     };
   });
 
+  // Subscribe to LEAVE_STEP event based on onLeave prop passed to Step component
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: WizardScopes.COMMANDS,
@@ -75,6 +76,7 @@ WizzardProvider.Step = ({
     };
   });
 
+  // Subscribe to FAIL_CHANGE_STEP event based on onFail prop passed to Step component
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: WizardScopes.COMMANDS,
