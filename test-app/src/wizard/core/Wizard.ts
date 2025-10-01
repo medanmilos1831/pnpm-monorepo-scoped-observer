@@ -41,7 +41,8 @@ class Wizard {
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
     this.wizardStepsConfig = wizardStepsConfig;
     this.currentStep = config.activeStep;
-    wizardStepsConfig.steps.forEach((step) => {
+
+    wizardStepsConfig.activeSteps.forEach((step) => {
       this.stepsMap[step] = new Step(step, {
         visible: wizardStepsConfig.activeSteps.includes(step),
       });
@@ -93,7 +94,13 @@ class Wizard {
     const value = [...callback()];
     return () => {
       this.wizardStepsConfig.activeSteps = value;
+      this.wizardStepsConfig.activeSteps.forEach((step) => {
+        this.stepsMap[step] = new Step(step, {
+          visible: this.wizardStepsConfig.activeSteps.includes(step),
+        });
+      });
       this.events.updateSteps();
+
       command === WizardCommands.NEXT
         ? this.events.next(actionMeta)
         : this.events.prev(actionMeta);

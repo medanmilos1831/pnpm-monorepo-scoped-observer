@@ -2,7 +2,11 @@ import { WizzardProvider } from "../wizard";
 
 const StepThree = () => {
   return (
-    <WizzardProvider.Step>
+    <WizzardProvider.Step
+      onFinish={(params) => {
+        console.log("ON FINISH", params);
+      }}
+    >
       <>step three</>
     </WizzardProvider.Step>
   );

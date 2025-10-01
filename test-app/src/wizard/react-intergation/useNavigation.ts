@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { Context } from "./WizzardProvider";
 import { useSubscriber } from "./useSubscribe";
-import { WizardScopes } from "../types";
+import { WizardEvents, WizardScopes } from "../types";
+import { useStep } from "./useStep";
 
 const useNavigation = () => {
   const context = useContext(Context);
@@ -11,16 +12,16 @@ const useNavigation = () => {
 
   const activeSteps = useSubscriber(
     {
-      eventName: "onUpdateSteps",
+      eventName: WizardEvents.ON_UPDATE_STEPS,
       scope: WizardScopes.COMMANDS,
     },
-    () => {
-      console.log("ACTIVE STEPS", context.activeSteps);
-      return context.activeSteps;
-    }
+    context.getActiveSteps
   );
+  useStep();
   return {
     activeSteps,
+    activeStepsLength: activeSteps.length,
+    activeStep: context.getActiveStep(),
   };
 };
 

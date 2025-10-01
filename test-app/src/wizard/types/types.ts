@@ -62,7 +62,6 @@ export interface IWizardConfig {
 }
 
 export interface IWizardStepsConfig {
-  steps: string[];
   activeSteps: string[];
 }
 

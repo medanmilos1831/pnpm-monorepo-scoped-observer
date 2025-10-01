@@ -13,8 +13,7 @@ const createWizard = (
     subscribe: wizard.observer.subscribe,
     getActiveStep: () => wizard.currentStep,
     getStepEntity: () => wizard.stepsMap[wizard.currentStep],
-    getStepEntityByStepName: (stepName: string) => wizard.stepsMap[stepName],
-    activeSteps: wizard.wizardStepsConfig.activeSteps,
+    getActiveSteps: () => wizard.wizardStepsConfig.activeSteps,
   };
 };
 
