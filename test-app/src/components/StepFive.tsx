@@ -2,14 +2,7 @@ import { WizzardProvider } from "../wizard";
 
 const StepFive = () => {
   return (
-    <WizzardProvider.Step
-      onStepChange={() => {
-        // Handle next step
-      }}
-      // stepValidate={(params) => {
-      //   // Handle step validation
-      // }}
-    >
+    <WizzardProvider.Step>
       <>step five</>
     </WizzardProvider.Step>
   );

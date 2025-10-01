@@ -1,8 +1,8 @@
 import React from "react";
-import { useNavigation } from "../wizard";
+import { useStep } from "../wizard";
 
 const Navigation = () => {
-  const { activeSteps, activeStep, activeStepsLength } = useNavigation();
+  const { activeSteps, activeStep, activeStepsLength } = useStep();
 
   const getCurrentStepIndex = () => {
     return activeSteps.findIndex((step: string) => step === activeStep);
