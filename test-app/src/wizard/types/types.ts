@@ -8,8 +8,8 @@ export const WizardEvents = {
   BEFORE_CHANGE_STEP: "beforeChangeStep",
   CHANGE_STEP: "changeStep",
   STEP_STATE_STATE: "stepStateState",
-  FAIL_CHANGE_STEP: "failChangeStep",
-  LEAVE_STEP: "leaveStep",
+  FAIL_CHANGE_STEP: "onFail",
+  LEAVE_STEP: "onLeave",
 };
 
 export const WizardScopes = {

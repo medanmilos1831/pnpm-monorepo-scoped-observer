@@ -18,7 +18,7 @@ const StepOne = () => {
           setOpen(true);
         }}
         onLeave={(params) => {
-          console.log("params", params);
+          console.log("On Leave", params);
         }}
       >
         <div>Step One</div>
