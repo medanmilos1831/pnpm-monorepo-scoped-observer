@@ -67,28 +67,16 @@ class Events {
       });
     },
 
-    onNext: (payload: IOnNextOnPrevEventPayload) => {
-      this.observer.dispatch({
-        scope: WIZARD_SCOPE,
-        eventName: WizardEvents.ON_NEXT,
-        payload,
-      });
-    },
-
-    onPrev: (payload: IOnNextOnPrevEventPayload) => {
-      this.observer.dispatch({
-        scope: WIZARD_SCOPE,
-        eventName: WizardEvents.ON_PREV,
-        payload,
-      });
-    },
-
     // Dynamic dispatch based on command
-    dispatchByCommand: (command: WizardCommands, payload: IOnNextOnPrevEventPayload) => {
-      const eventName = command === WizardCommands.NEXT 
-        ? WizardEvents.ON_NEXT 
-        : WizardEvents.ON_PREV;
-      
+    dispatchByCommand: (
+      command: WizardCommands,
+      payload: IOnNextOnPrevEventPayload
+    ) => {
+      const eventName =
+        command === WizardCommands.NEXT
+          ? WizardEvents.ON_NEXT
+          : WizardEvents.ON_PREV;
+
       this.observer.dispatch({
         scope: WIZARD_SCOPE,
         eventName,

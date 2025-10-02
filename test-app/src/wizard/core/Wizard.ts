@@ -66,17 +66,15 @@ class Wizard {
               this.setStatus(WizardStatus.SUCCESS);
             },
           });
-          return;
         }
         if (stepName) {
-          const obj = {
+          this.events.internal.dispatchByCommand(command, {
             command,
             resolve: this.resolve(stepName),
             reject: this.reject(stepName, command),
             params: this.transitionParams(stepName),
             actionMeta,
-          };
-          this.events.internal.dispatchByCommand(command, obj);
+          });
         }
       },
     });
