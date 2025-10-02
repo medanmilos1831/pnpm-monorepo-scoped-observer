@@ -1,8 +1,10 @@
 import React from "react";
-import { useStep } from "../wizard";
+import { useStep, useWizzard } from "../wizard";
 
 const Navigation = () => {
   const { activeSteps, activeStep, activeStepsLength } = useStep();
+
+  const { navigateToStep } = useWizzard();
 
   const getCurrentStepIndex = () => {
     return activeSteps.findIndex((step: string) => step === activeStep);
@@ -45,6 +47,7 @@ const Navigation = () => {
                 }}
               >
                 <div
+                  onClick={() => navigateToStep(step)}
                   style={{
                     width: "40px",
                     height: "40px",
@@ -65,6 +68,7 @@ const Navigation = () => {
                       ? "0 0 0 4px rgba(0, 123, 255, 0.25)"
                       : "none",
                     transition: "all 0.3s ease",
+                    cursor: "pointer",
                   }}
                 >
                   {isCompleted ? "✓" : index + 1}
