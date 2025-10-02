@@ -76,9 +76,7 @@ class Wizard {
             params: this.transitionParams(stepName),
             actionMeta,
           };
-          command === WizardCommands.NEXT
-            ? this.events.internal.onNext(obj)
-            : this.events.internal.onPrev(obj);
+          this.events.internal.dispatchByCommand(command, obj);
         }
       },
     });

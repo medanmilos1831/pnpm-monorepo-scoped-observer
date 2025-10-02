@@ -83,6 +83,19 @@ class Events {
       });
     },
 
+    // Dynamic dispatch based on command
+    dispatchByCommand: (command: WizardCommands, payload: IOnNextOnPrevEventPayload) => {
+      const eventName = command === WizardCommands.NEXT 
+        ? WizardEvents.ON_NEXT 
+        : WizardEvents.ON_PREV;
+      
+      this.observer.dispatch({
+        scope: WIZARD_SCOPE,
+        eventName,
+        payload,
+      });
+    },
+
     changeStep: () => {
       this.observer.dispatch({
         scope: WIZARD_SCOPE,
