@@ -20,6 +20,8 @@ export const WizardEvents = {
   RESET: "reset",
   SET_STATUS: "setStatus",
   NAVIGATE_TO_STEP: "navigateToStep",
+  ON_NEXT: "onNext",
+  ON_PREV: "onPrev",
 };
 
 export const WizardScopes = {
@@ -28,14 +30,14 @@ export const WizardScopes = {
 } as const;
 
 export interface IStepProps {
-  onNext?: (obj: IBeforeChangeEventPayload) => void;
-  onPrev?: (obj: IBeforeChangeEventPayload) => void;
+  onNext?: (obj: IOnNextOnPrevEventPayload) => void;
+  onPrev?: (obj: IOnNextOnPrevEventPayload) => void;
   onFail?: (obj: IFailChangeStepEventPayload) => void;
   onFinish?: (obj: any) => void;
 }
 
 // EVENTS PAYLOAD
-export interface IBeforeChangeEventPayload {
+export interface IOnNextOnPrevEventPayload {
   command: WizardCommands;
   params: ITransitionParams;
   actionMeta: IMeta;

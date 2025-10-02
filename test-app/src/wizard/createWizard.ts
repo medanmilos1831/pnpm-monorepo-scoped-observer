@@ -13,6 +13,7 @@ const createWizard = (
     reset: wizard.events.reset,
     navigateToStep: wizard.events.navigateToStep,
     subscribe: wizard.observer.subscribe,
+    interceptor: wizard.observer.eventInterceptor,
     getActiveStep: () => wizard.currentStep,
     getIsLast: () => wizard.isLast,
     getIsFirst: () => wizard.isFirst,

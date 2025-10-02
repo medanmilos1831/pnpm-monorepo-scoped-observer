@@ -1,34 +1,68 @@
 import { Modal } from "antd";
-import { useState } from "react";
-import { useWizzard, WizzardProvider } from "../wizard";
+import { useEffect, useState } from "react";
+import { useWizzard, WizzardProvider, useInterceptor } from "../wizard";
+
+const SomeComponent = () => {
+  useInterceptor({
+    eventName: "onNext",
+    callback: (prev) => {
+      return {
+        ...prev,
+        fname: "pera",
+      };
+    },
+  });
+  return <div>Some Component</div>;
+};
+
+const SomeComponent2 = () => {
+  useInterceptor({
+    eventName: "reset",
+    callback: (prev) => {
+      return {
+        ...prev,
+        lname: "peric",
+      };
+    },
+  });
+  return <div>Some Component</div>;
+};
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
   const { next } = useWizzard();
+
   return (
     <>
       <WizzardProvider.Step
         onNext={(params) => {
-          if (params.actionMeta.actionType === "validation") {
-            params.reject({
-              message: "Step One",
-            });
-            return;
-          }
-          if (params.actionMeta?.actionType === "validated") {
-            params.resolve();
-            return;
-          }
+          console.log("onNext", params);
+          // params.reject({
+          //   message: "Step One",
+          // });
+          // if (params.actionMeta.actionType === "validation") {
+          //   params.reject({
+          //     message: "Step One",
+          //   });
+          //   return;
+          // }
+          // if (params.actionMeta?.actionType === "validated") {
+          //   params.resolve();
+          //   return;
+          // }
           params.resolve();
         }}
         onPrev={() => {
           // onPrev handler
         }}
         onFail={(params) => {
+          console.log("FAILED", params);
           setOpen(true);
         }}
       >
         <div>Step One</div>
+        <SomeComponent />
+        <SomeComponent2 />
         <Modal
           title="Step One Modal"
           open={open}

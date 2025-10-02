@@ -15,9 +15,6 @@ import {
 import { Events } from "./Events";
 import { Step } from "./Step";
 
-// **************************************************************************************
-// napraviti intersecpotre sa observerom
-// **************************************************************************************
 class Wizard {
   currentStep: string;
   observer: IScopedObserver = createScopedObserver([
@@ -77,13 +74,16 @@ class Wizard {
           return;
         }
         if (stepName) {
-          this.events.beforeChangeStep({
+          const obj = {
             command,
             resolve: this.resolve(stepName),
             reject: this.reject(stepName, command),
             params: this.transitionParams(stepName),
             actionMeta,
-          });
+          };
+          command === WizardCommands.NEXT
+            ? this.events.onNext(obj)
+            : this.events.onPrev(obj);
         }
       },
     });

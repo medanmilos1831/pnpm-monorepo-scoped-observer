@@ -8,7 +8,7 @@ import { createWizard } from "../createWizard";
 import {
   WizardEvents,
   WizardScopes,
-  type IBeforeChangeEventPayload,
+  type IOnNextOnPrevEventPayload,
   type IFailChangeStepEventPayload,
   type IStepProps,
 } from "../types";
@@ -41,17 +41,21 @@ WizzardProvider.Step = ({
   useEffect(() => {
     const unsubscribe = context.subscribe({
       scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.BEFORE_CHANGE_STEP,
-      callback: ({ payload }: { payload: IBeforeChangeEventPayload }) => {
-        const obj = {
-          next: () => {
-            onNext ? onNext(payload) : payload.resolve();
-          },
-          prev: () => {
-            onPrev ? onPrev(payload) : payload.resolve();
-          },
-        };
-        obj[payload.command]();
+      eventName: WizardEvents.ON_NEXT,
+      callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
+        onNext ? onNext(payload) : payload.resolve();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+  useEffect(() => {
+    const unsubscribe = context.subscribe({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.ON_PREV,
+      callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
+        onPrev ? onPrev(payload) : payload.resolve();
       },
     });
     return () => {

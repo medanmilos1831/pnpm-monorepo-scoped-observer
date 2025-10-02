@@ -3,9 +3,9 @@ import {
   WizardCommands,
   WizardEvents,
   WizardScopes,
-  type IBeforeChangeEventPayload,
   type IFailChangeStepEventPayload,
   type IMeta,
+  type IOnNextOnPrevEventPayload,
 } from "../types";
 
 class Events {
@@ -48,10 +48,18 @@ class Events {
     });
   };
 
-  beforeChangeStep = (payload: IBeforeChangeEventPayload) => {
+  onNext = (payload: IOnNextOnPrevEventPayload) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.BEFORE_CHANGE_STEP,
+      eventName: WizardEvents.ON_NEXT,
+      payload,
+    });
+  };
+
+  onPrev = (payload: IOnNextOnPrevEventPayload) => {
+    this.observer.dispatch({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.ON_PREV,
       payload,
     });
   };
