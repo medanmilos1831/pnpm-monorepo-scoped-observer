@@ -11,6 +11,7 @@ const useWizzard = () => {
     next: context.next,
     prev: context.prev,
     reset: context.reset,
+    navigateToStep: context.navigateToStep,
   };
 };
 

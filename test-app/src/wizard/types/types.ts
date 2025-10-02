@@ -19,6 +19,7 @@ export const WizardEvents = {
   ON_UPDATE_STEPS: "onUpdateSteps",
   RESET: "reset",
   SET_STATUS: "setStatus",
+  NAVIGATE_TO_STEP: "navigateToStep",
 };
 
 export const WizardScopes = {

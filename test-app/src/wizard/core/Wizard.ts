@@ -16,9 +16,7 @@ import { Events } from "./Events";
 import { Step } from "./Step";
 
 // **************************************************************************************
-// napraviti navigation jump tj da moze direknto da ide na neki step
 // napraviti intersecpotre sa observerom
-// napraviti on enter za step
 // **************************************************************************************
 class Wizard {
   currentStep: string;
@@ -89,6 +87,19 @@ class Wizard {
         }
       },
     });
+    this.observer.subscribe({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.RESET,
+      callback: this.reset,
+    });
+
+    this.observer.subscribe({
+      scope: WizardScopes.COMMANDS,
+      eventName: WizardEvents.NAVIGATE_TO_STEP,
+      callback: ({ payload }: { payload: string }) => {
+        this.resolve(payload)();
+      },
+    });
   }
 
   private setStatus = (status: WizardStatus) => {
@@ -96,7 +107,7 @@ class Wizard {
     this.events.setStatus();
   };
 
-  reset = () => {
+  private reset = () => {
     this.wizardStepsConfig.activeSteps = [
       ...this.__INIT_WIZZARD_STEPS_CONFIG__.activeSteps,
     ];
@@ -136,6 +147,7 @@ class Wizard {
         : this.events.prev(actionMeta);
     };
   };
+
   private resolve(stepName: string) {
     return () => {
       this.navigate({ stepName });
@@ -143,6 +155,7 @@ class Wizard {
       this.events.changeStep();
     };
   }
+
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
       this.events.failChangeStep({
@@ -152,12 +165,14 @@ class Wizard {
       });
     };
   }
+
   private transitionParams(stepName: string) {
     return {
       transitionForm: this.currentStep,
       transitionTo: stepName,
     };
   }
+
   private findStep({ command }: { command: WizardCommands }): string | null {
     return command === WizardCommands.NEXT
       ? this.findNextStep()

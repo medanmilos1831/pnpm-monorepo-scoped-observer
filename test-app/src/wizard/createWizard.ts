@@ -10,10 +10,10 @@ const createWizard = (
   return {
     next: wizard.events.next,
     prev: wizard.events.prev,
-    reset: wizard.reset,
+    reset: wizard.events.reset,
+    navigateToStep: wizard.events.navigateToStep,
     subscribe: wizard.observer.subscribe,
     getActiveStep: () => wizard.currentStep,
-    getStepEntity: () => wizard.stepsMap[wizard.currentStep],
     getIsLast: () => wizard.isLast,
     getIsFirst: () => wizard.isFirst,
     getActiveSteps: () => wizard.wizardStepsConfig.activeSteps,
