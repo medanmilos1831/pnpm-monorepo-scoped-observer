@@ -2,7 +2,7 @@ import type { IScopedObserver } from "../../scroped-observer";
 import {
   WizardCommands,
   WizardEvents,
-  WizardScopes,
+  WIZARD_SCOPE,
   type IFailChangeStepEventPayload,
   type IMeta,
   type IOnNextOnPrevEventPayload,
@@ -18,7 +18,7 @@ class Events {
   // PUBLIC CLIENT API
   next = (params?: IMeta) => {
     this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.NEXT,
@@ -31,7 +31,7 @@ class Events {
 
   prev = (params?: IMeta) => {
     this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.NAVIGATE,
       payload: {
         command: WizardCommands.PREV,
@@ -44,14 +44,14 @@ class Events {
 
   reset = () => {
     this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.RESET,
     });
   };
 
   navigateToStep = (stepName: string) => {
     this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.NAVIGATE_TO_STEP,
       payload: stepName,
     });
@@ -61,7 +61,7 @@ class Events {
   internal = {
     onFinish: (payload: any) => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.ON_FINISH,
         payload,
       });
@@ -69,7 +69,7 @@ class Events {
 
     onNext: (payload: IOnNextOnPrevEventPayload) => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.ON_NEXT,
         payload,
       });
@@ -77,7 +77,7 @@ class Events {
 
     onPrev: (payload: IOnNextOnPrevEventPayload) => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.ON_PREV,
         payload,
       });
@@ -85,14 +85,14 @@ class Events {
 
     changeStep: () => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.CHANGE_STEP,
       });
     },
 
     failChangeStep: (payload: IFailChangeStepEventPayload) => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.FAIL_CHANGE_STEP,
         payload,
       });
@@ -100,14 +100,14 @@ class Events {
 
     updateSteps: () => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.ON_UPDATE_STEPS,
       });
     },
 
     setStatus: () => {
       this.observer.dispatch({
-        scope: WizardScopes.COMMANDS,
+        scope: WIZARD_SCOPE,
         eventName: WizardEvents.SET_STATUS,
       });
     },

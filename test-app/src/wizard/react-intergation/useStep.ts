@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Context } from "./WizzardProvider";
 import { useSubscriber } from "./useSubscribe";
-import { WizardEvents, WizardScopes } from "../types";
+import { WizardEvents, WIZARD_SCOPE } from "../types";
 
 const useStep = () => {
   const context = useContext(Context);
@@ -13,7 +13,7 @@ const useStep = () => {
   const stepName = useSubscriber(
     {
       eventName: WizardEvents.CHANGE_STEP,
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
     },
     context.getActiveStep
   );

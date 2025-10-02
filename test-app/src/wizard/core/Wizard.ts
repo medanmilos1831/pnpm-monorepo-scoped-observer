@@ -3,7 +3,7 @@ import { createScopedObserver } from "../../scroped-observer";
 import {
   WizardCommands,
   WizardEvents,
-  WizardScopes,
+  WIZARD_SCOPE,
   WizardStatus,
   type IMeta,
   type INavigateEventPayload,
@@ -20,11 +20,6 @@ class Wizard {
   observer: IScopedObserver = createScopedObserver([
     {
       scope: "wizard",
-      subScopes: [
-        {
-          scope: "commands",
-        },
-      ],
     },
   ]);
 
@@ -48,7 +43,7 @@ class Wizard {
     });
     this.updateNavigationProperties();
     this.observer.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.NAVIGATE,
       callback: ({ payload }: { payload: INavigateEventPayload }) => {
         const { command, actionMeta } = payload;
@@ -88,13 +83,13 @@ class Wizard {
       },
     });
     this.observer.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.RESET,
       callback: this.reset,
     });
 
     this.observer.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.NAVIGATE_TO_STEP,
       callback: ({ payload }: { payload: string }) => {
         this.resolve(payload)();

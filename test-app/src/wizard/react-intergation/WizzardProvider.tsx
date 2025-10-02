@@ -7,7 +7,7 @@ import {
 import { createWizard } from "../createWizard";
 import {
   WizardEvents,
-  WizardScopes,
+  WIZARD_SCOPE,
   type IOnNextOnPrevEventPayload,
   type IFailChangeStepEventPayload,
   type IStepProps,
@@ -40,7 +40,7 @@ WizzardProvider.Step = ({
   }
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.ON_NEXT,
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onNext ? onNext(payload) : payload.resolve();
@@ -52,7 +52,7 @@ WizzardProvider.Step = ({
   });
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.ON_PREV,
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onPrev ? onPrev(payload) : payload.resolve();
@@ -66,7 +66,7 @@ WizzardProvider.Step = ({
   // Subscribe to FAIL_CHANGE_STEP event based on onFail prop passed to Step component
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.FAIL_CHANGE_STEP,
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
         if (onFail) {
@@ -81,7 +81,7 @@ WizzardProvider.Step = ({
 
   useEffect(() => {
     const unsubscribe = context.subscribe({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName: WizardEvents.ON_FINISH,
       callback: ({ payload }: { payload: any }) => {
         if (onFinish) {

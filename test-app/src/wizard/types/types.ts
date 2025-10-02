@@ -24,10 +24,7 @@ export const WizardEvents = {
   ON_PREV: "onPrev",
 };
 
-export const WizardScopes = {
-  COMMANDS: "wizard:commands",
-  STEP: "wizard:step",
-} as const;
+export const WIZARD_SCOPE = "wizard" as const;
 
 export interface IStepProps {
   onNext?: (obj: IOnNextOnPrevEventPayload) => void;

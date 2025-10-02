@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Context } from "./WizzardProvider";
-import { WizardEvents, WizardScopes } from "../types";
+import { WizardEvents, WIZARD_SCOPE } from "../types";
 import { useSubscriber } from "./useSubscribe";
 
 const useOnStatusChange = () => {
@@ -12,7 +12,7 @@ const useOnStatusChange = () => {
   return useSubscriber(
     {
       eventName: WizardEvents.SET_STATUS,
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
     },
     context.getStatus
   );

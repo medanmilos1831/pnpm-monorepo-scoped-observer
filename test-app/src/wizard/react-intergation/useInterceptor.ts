@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Context } from "./WizzardProvider";
-import { WizardScopes, type IOnNextOnPrevEventPayload } from "../types";
+import { WIZARD_SCOPE, type IOnNextOnPrevEventPayload } from "../types";
 
 const useInterceptor = ({
   eventName,
@@ -16,7 +16,7 @@ const useInterceptor = ({
 
   useEffect(() => {
     context.interceptor({
-      scope: WizardScopes.COMMANDS,
+      scope: WIZARD_SCOPE,
       eventName,
       callback: (data) => {
         return {
