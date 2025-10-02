@@ -27,7 +27,6 @@ const StepOne = () => {
     <>
       <WizzardProvider.Step
         onNext={(params) => {
-          console.log("onNext", params);
           // params.reject({
           //   message: "Step One",
           // });
@@ -47,7 +46,6 @@ const StepOne = () => {
           // onPrev handler
         }}
         onFail={(params) => {
-          console.log("FAILED", params);
           setOpen(true);
         }}
       >

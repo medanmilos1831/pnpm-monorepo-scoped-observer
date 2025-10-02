@@ -13,7 +13,6 @@ const StepThree = () => {
   return (
     <WizzardProvider.Step
       onFinish={(params) => {
-        console.log("onFinish", params);
         params.success();
       }}
     >

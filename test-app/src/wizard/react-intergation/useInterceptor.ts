@@ -1,10 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Context } from "./WizzardProvider";
-import {
-  WizardEvents,
-  WizardScopes,
-  type IOnNextOnPrevEventPayload,
-} from "../types";
+import { WizardScopes, type IOnNextOnPrevEventPayload } from "../types";
 
 const useInterceptor = ({
   eventName,
@@ -19,12 +15,10 @@ const useInterceptor = ({
   }
 
   useEffect(() => {
-    console.log("useInterceptor", eventName);
     context.interceptor({
       scope: WizardScopes.COMMANDS,
       eventName,
       callback: (data) => {
-        console.log("useInterceptor callback", data);
         return {
           ...data,
           actionMeta: {
