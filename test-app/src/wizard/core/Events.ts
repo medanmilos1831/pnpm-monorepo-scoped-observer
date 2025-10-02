@@ -9,11 +9,13 @@ import {
 } from "../types";
 
 class Events {
-  observer: IScopedObserver;
+  private observer: IScopedObserver;
+
   constructor(observer: IScopedObserver) {
     this.observer = observer;
   }
 
+  // PUBLIC CLIENT API
   next = (params?: IMeta) => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
@@ -40,63 +42,10 @@ class Events {
     });
   };
 
-  onFinish = (payload: any) => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.ON_FINISH,
-      payload,
-    });
-  };
-
-  onNext = (payload: IOnNextOnPrevEventPayload) => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.ON_NEXT,
-      payload,
-    });
-  };
-
-  onPrev = (payload: IOnNextOnPrevEventPayload) => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.ON_PREV,
-      payload,
-    });
-  };
-
-  changeStep = () => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.CHANGE_STEP,
-    });
-  };
-
-  failChangeStep = (payload: IFailChangeStepEventPayload) => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.FAIL_CHANGE_STEP,
-      payload,
-    });
-  };
-
-  updateSteps = () => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.ON_UPDATE_STEPS,
-    });
-  };
-
   reset = () => {
     this.observer.dispatch({
       scope: WizardScopes.COMMANDS,
       eventName: WizardEvents.RESET,
-    });
-  };
-
-  setStatus = () => {
-    this.observer.dispatch({
-      scope: WizardScopes.COMMANDS,
-      eventName: WizardEvents.SET_STATUS,
     });
   };
 
@@ -106,6 +55,62 @@ class Events {
       eventName: WizardEvents.NAVIGATE_TO_STEP,
       payload: stepName,
     });
+  };
+
+  // INTERNAL API - only for wizard system
+  internal = {
+    onFinish: (payload: any) => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.ON_FINISH,
+        payload,
+      });
+    },
+
+    onNext: (payload: IOnNextOnPrevEventPayload) => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.ON_NEXT,
+        payload,
+      });
+    },
+
+    onPrev: (payload: IOnNextOnPrevEventPayload) => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.ON_PREV,
+        payload,
+      });
+    },
+
+    changeStep: () => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.CHANGE_STEP,
+      });
+    },
+
+    failChangeStep: (payload: IFailChangeStepEventPayload) => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.FAIL_CHANGE_STEP,
+        payload,
+      });
+    },
+
+    updateSteps: () => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.ON_UPDATE_STEPS,
+      });
+    },
+
+    setStatus: () => {
+      this.observer.dispatch({
+        scope: WizardScopes.COMMANDS,
+        eventName: WizardEvents.SET_STATUS,
+      });
+    },
   };
 }
 

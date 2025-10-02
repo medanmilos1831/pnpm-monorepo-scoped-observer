@@ -10,10 +10,7 @@ const useInterceptor = ({
   eventName,
   callback,
 }: {
-  eventName:
-    | typeof WizardEvents.ON_NEXT
-    | typeof WizardEvents.ON_PREV
-    | typeof WizardEvents.ON_FINISH;
+  eventName: "onNext" | "onPrev" | "onFinish";
   callback: (data: IOnNextOnPrevEventPayload) => any;
 }) => {
   const context = useContext(Context);
@@ -22,10 +19,12 @@ const useInterceptor = ({
   }
 
   useEffect(() => {
+    console.log("useInterceptor", eventName);
     context.interceptor({
       scope: WizardScopes.COMMANDS,
       eventName,
       callback: (data) => {
+        console.log("useInterceptor callback", data);
         return {
           ...data,
           actionMeta: {

@@ -16,15 +16,6 @@ const SomeComponent = () => {
 };
 
 const SomeComponent2 = () => {
-  useInterceptor({
-    eventName: "reset",
-    callback: (prev) => {
-      return {
-        ...prev,
-        lname: "peric",
-      };
-    },
-  });
   return <div>Some Component</div>;
 };
 

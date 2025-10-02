@@ -56,7 +56,7 @@ class Wizard {
           command,
         });
         if (!stepName) {
-          this.events.onFinish({
+          this.events.internal.onFinish({
             command,
             actionMeta,
             params: this.transitionParams(this.currentStep),
@@ -82,8 +82,8 @@ class Wizard {
             actionMeta,
           };
           command === WizardCommands.NEXT
-            ? this.events.onNext(obj)
-            : this.events.onPrev(obj);
+            ? this.events.internal.onNext(obj)
+            : this.events.internal.onPrev(obj);
         }
       },
     });
@@ -104,7 +104,7 @@ class Wizard {
 
   private setStatus = (status: WizardStatus) => {
     this.status = status;
-    this.events.setStatus();
+    this.events.internal.setStatus();
   };
 
   private reset = () => {
@@ -140,7 +140,7 @@ class Wizard {
       this.wizardStepsConfig.activeSteps.forEach((step) => {
         this.stepsMap[step] = new Step(step);
       });
-      this.events.updateSteps();
+      this.events.internal.updateSteps();
 
       command === WizardCommands.NEXT
         ? this.events.next(actionMeta)
@@ -152,13 +152,13 @@ class Wizard {
     return () => {
       this.navigate({ stepName });
       this.updateNavigationProperties();
-      this.events.changeStep();
+      this.events.internal.changeStep();
     };
   }
 
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
-      this.events.failChangeStep({
+      this.events.internal.failChangeStep({
         command,
         message: error.message,
         params: this.transitionParams(stepName),
