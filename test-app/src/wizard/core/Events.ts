@@ -67,7 +67,6 @@ class Events {
       });
     },
 
-    // Dynamic dispatch based on command
     dispatchByCommand: (
       command: WizardCommands,
       payload: IOnNextOnPrevEventPayload
