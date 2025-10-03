@@ -9,13 +9,28 @@ import {
 } from "../types";
 import { Observer } from "./Observer";
 import { Step } from "./Step";
-import { State } from "./State";
 
-class Wizard extends State {
+class Wizard {
+  currentStep: string;
+  __INIT_CONFIG__: IWizardConfig;
+  __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
+  stepsMap: { [key: string]: any } = {};
+  wizardStepsConfig: IWizardStepsConfig;
+  isLast = false;
+  isFirst = false;
+  status = WizardStatus.ACTIVE;
   observer = new Observer();
 
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
-    super(config, wizardStepsConfig);
+    this.__INIT_CONFIG__ = structuredClone(config);
+    this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
+    this.wizardStepsConfig = wizardStepsConfig;
+    this.currentStep = config.activeStep;
+
+    wizardStepsConfig.activeSteps.forEach((step) => {
+      this.stepsMap[step] = new Step(step);
+    });
+    
     this.updateNavigationProperties();
   }
 
