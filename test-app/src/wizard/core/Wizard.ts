@@ -3,12 +3,12 @@ import {
   WizardEvents,
   WizardStatus,
   type IMeta,
+  type IRejectParams,
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
 import { Observer } from "./Observer";
 import { Step } from "./Step";
-import { WizardNavigator } from "./WizardNavigator";
 
 class Wizard {
   currentStep: string;
@@ -20,7 +20,6 @@ class Wizard {
   isFirst = false;
   status = WizardStatus.ACTIVE;
   observer = new Observer();
-  navigator: WizardNavigator;
 
   constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
     this.__INIT_CONFIG__ = structuredClone(config);
@@ -33,15 +32,10 @@ class Wizard {
     });
 
     this.updateNavigationProperties();
-    this.navigator = new WizardNavigator(this);
   }
 
   navigateToStep = (stepName: string) => {
-    this.currentStep = stepName;
-    this.updateNavigationProperties();
-    this.observer.dispatch({
-      eventName: WizardEvents.CHANGE_STEP,
-    });
+    this.resolve(stepName)();
   };
 
   reset = () => {
@@ -53,18 +47,8 @@ class Wizard {
       this.stepsMap[step] = new Step(step);
     });
     this.currentStep = this.__INIT_CONFIG__.activeStep;
-    this.updateNavigationProperties();
-    this.observer.dispatch({
-      eventName: WizardEvents.CHANGE_STEP,
-    });
+    this.resolve(this.currentStep)();
     this.setStatus(WizardStatus.ACTIVE);
-  };
-
-  private setStatus = (status: WizardStatus) => {
-    this.status = status;
-    this.observer.dispatch({
-      eventName: WizardEvents.SET_STATUS,
-    });
   };
 
   executeCommand = ({
@@ -74,18 +58,150 @@ class Wizard {
     command: WizardCommands;
     params?: IMeta;
   }) => {
-    return this.navigator.executeCommand({ command, params });
+    const actionMeta = params || { actionType: "default" };
+    const stepName = this.findStep({ command });
+    !stepName
+      ? this.handleFinish(command, actionMeta)
+      : this.handleStepTransition(command, stepName, actionMeta);
   };
 
-  updateNavigationProperties() {
+  private handleFinish = (command: WizardCommands, actionMeta: IMeta) => {
+    this.observer.dispatch({
+      eventName: WizardEvents.ON_FINISH,
+      payload: {
+        command,
+        actionMeta,
+        params: this.transitionParams(this.currentStep),
+        reset: this.reset,
+        updateSteps: (callback: any) =>
+          this.updateSteps(callback, { command, actionMeta }),
+        success: () => this.setStatus(WizardStatus.SUCCESS),
+      },
+    });
+  };
+
+  private handleStepTransition = (
+    command: WizardCommands,
+    stepName: string,
+    actionMeta: IMeta
+  ) => {
+    this.observer.dispatch({
+      eventName:
+        command === WizardCommands.NEXT
+          ? WizardEvents.ON_NEXT
+          : WizardEvents.ON_PREV,
+      payload: {
+        command,
+        resolve: this.resolve(stepName),
+        reject: this.reject(stepName, command),
+        params: this.transitionParams(stepName),
+        actionMeta,
+      },
+    });
+  };
+
+  private setStatus = (status: WizardStatus) => {
+    this.status = status;
+    this.observer.dispatch({
+      eventName: WizardEvents.SET_STATUS,
+    });
+  };
+
+  private updateNavigationProperties() {
     this.isLast =
       this.getCurrentIndex() === this.wizardStepsConfig.activeSteps.length - 1;
     this.isFirst = this.getCurrentIndex() === 0;
   }
 
+  private updateSteps = (
+    callback: () => string[],
+    { command, actionMeta }: { command: WizardCommands; actionMeta: IMeta }
+  ) => {
+    const value = [...callback()];
+    return () => {
+      this.wizardStepsConfig.activeSteps = value;
+      this.wizardStepsConfig.activeSteps.forEach((step) => {
+        this.stepsMap[step] = new Step(step);
+      });
+      this.observer.dispatch({
+        eventName: WizardEvents.ON_UPDATE_STEPS,
+      });
+
+      command === WizardCommands.NEXT
+        ? this.observer.dispatch({
+            eventName: WizardEvents.NAVIGATE,
+            payload: {
+              command: WizardCommands.NEXT,
+              actionMeta,
+            },
+          })
+        : this.observer.dispatch({
+            eventName: WizardEvents.NAVIGATE,
+            payload: {
+              command: WizardCommands.PREV,
+              actionMeta,
+            },
+          });
+    };
+  };
+
+  private resolve(stepName: string) {
+    return () => {
+      this.navigate({ stepName });
+      this.updateNavigationProperties();
+      this.observer.dispatch({
+        eventName: WizardEvents.CHANGE_STEP,
+      });
+    };
+  }
+
+  private reject(stepName: string, command: WizardCommands) {
+    return (error: IRejectParams) => {
+      this.observer.dispatch({
+        eventName: WizardEvents.FAIL_CHANGE_STEP,
+        payload: {
+          command,
+          message: error.message,
+          params: this.transitionParams(stepName),
+        },
+      });
+    };
+  }
+
+  private transitionParams(stepName: string) {
+    return {
+      transitionForm: this.currentStep,
+      transitionTo: stepName,
+    };
+  }
+
+  private findStep({ command }: { command: WizardCommands }): string | null {
+    return command === WizardCommands.NEXT
+      ? this.findNextStep()
+      : this.findPrevStep();
+  }
+
   private getCurrentIndex(): number {
     const activeSteps = this.wizardStepsConfig.activeSteps;
     return activeSteps.indexOf(this.currentStep);
+  }
+
+  private findNextStep(): string | null {
+    const activeSteps = this.wizardStepsConfig.activeSteps;
+    const currentIndex = this.getCurrentIndex();
+    const nextIndex = currentIndex + 1;
+    return nextIndex < activeSteps.length ? activeSteps[nextIndex] : null;
+  }
+
+  private findPrevStep(): string | null {
+    const activeSteps = this.wizardStepsConfig.activeSteps;
+    const currentIndex = this.getCurrentIndex();
+    const prevIndex = currentIndex - 1;
+    return prevIndex >= 0 ? activeSteps[prevIndex] : null;
+  }
+
+  private navigate({ stepName }: { stepName: string }) {
+    this.currentStep = stepName;
   }
 }
 
