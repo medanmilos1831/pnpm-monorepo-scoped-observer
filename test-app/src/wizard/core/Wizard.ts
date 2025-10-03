@@ -6,7 +6,6 @@ import {
   WIZARD_SCOPE,
   WizardStatus,
   type IMeta,
-  type INavigateEventPayload,
   type IRejectParams,
   type ITransitionParams,
   type IWizardConfig,
@@ -44,42 +43,6 @@ class Wizard {
     this.updateNavigationProperties();
     this.observer.subscribe({
       scope: WIZARD_SCOPE,
-      eventName: WizardEvents.NAVIGATE,
-      callback: ({ payload }: { payload: INavigateEventPayload }) => {
-        const { command, actionMeta } = payload;
-        const stepName = this.findStep({
-          command,
-        });
-        if (!stepName) {
-          this.events.internal.onFinish({
-            command,
-            actionMeta,
-            params: this.transitionParams(this.currentStep),
-            reset: this.reset,
-            updateSteps: (callback: any) =>
-              this.updateSteps(callback, {
-                command,
-                actionMeta,
-                params: this.transitionParams(this.currentStep),
-              }),
-            success: () => {
-              this.setStatus(WizardStatus.SUCCESS);
-            },
-          });
-        }
-        if (stepName) {
-          this.events.internal.dispatchByCommand(command, {
-            command,
-            resolve: this.resolve(stepName),
-            reject: this.reject(stepName, command),
-            params: this.transitionParams(stepName),
-            actionMeta,
-          });
-        }
-      },
-    });
-    this.observer.subscribe({
-      scope: WIZARD_SCOPE,
       eventName: WizardEvents.RESET,
       callback: this.reset,
     });
@@ -93,12 +56,62 @@ class Wizard {
     });
   }
 
-  private setStatus = (status: WizardStatus) => {
-    this.status = status;
-    this.events.internal.setStatus();
+  private executeCommand = ({
+    command,
+    params,
+  }: {
+    command: WizardCommands;
+    params?: IMeta;
+  }) => {
+    let actionMeta = params || {
+      actionType: "default",
+    };
+    const stepName = this.findStep({
+      command,
+    });
+    if (!stepName) {
+      this.events.onFinish({
+        command,
+        actionMeta,
+        params: this.transitionParams(this.currentStep),
+        reset: this.reset,
+        updateSteps: (callback: any) =>
+          this.updateSteps(callback, {
+            command,
+            actionMeta,
+            params: this.transitionParams(this.currentStep),
+          }),
+        success: () => {
+          this.setStatus(WizardStatus.SUCCESS);
+        },
+      });
+    }
+    if (stepName) {
+      this.events.dispatchByCommand(command, {
+        command,
+        resolve: this.resolve(stepName),
+        reject: this.reject(stepName, command),
+        params: this.transitionParams(stepName),
+        actionMeta,
+      });
+    }
   };
 
-  private reset = () => {
+  next = (params?: IMeta) =>
+    this.executeCommand({ command: WizardCommands.NEXT, params });
+  prev = (params?: IMeta) =>
+    this.executeCommand({ command: WizardCommands.PREV, params });
+
+  navigateToStep = (stepName: string) => {
+    this.resolve(stepName)();
+  };
+
+  private setStatus = (status: WizardStatus) => {
+    this.status = status;
+    this.events.setStatus();
+  };
+
+  reset = () => {
     this.wizardStepsConfig.activeSteps = [
       ...this.__INIT_WIZZARD_STEPS_CONFIG__.activeSteps,
     ];
@@ -131,11 +144,8 @@ class Wizard {
       this.wizardStepsConfig.activeSteps.forEach((step) => {
         this.stepsMap[step] = new Step(step);
       });
-      this.events.internal.updateSteps();
-
-      command === WizardCommands.NEXT
-        ? this.events.next(actionMeta)
-        : this.events.prev(actionMeta);
+      this.events.updateSteps();
+      this.executeCommand({ command, params: actionMeta });
     };
   };
 
@@ -143,13 +153,13 @@ class Wizard {
     return () => {
       this.navigate({ stepName });
       this.updateNavigationProperties();
-      this.events.internal.changeStep();
+      this.events.changeStep();
     };
   }
 
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
-      this.events.internal.failChangeStep({
+      this.events.failChangeStep({
         command,
         message: error.message,
         params: this.transitionParams(stepName),

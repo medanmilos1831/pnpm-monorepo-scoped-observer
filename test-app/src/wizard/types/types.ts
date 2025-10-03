@@ -73,5 +73,5 @@ export interface IWizardStepsConfig {
 }
 
 export interface IMeta {
-  actionType: string | undefined;
+  actionType: string;
 }
