@@ -1,8 +1,8 @@
-import { createWizard } from "./wizard/createWizard";
+import { createWizardClient } from "./wizard";
 
 import { HomePage } from "./pages";
 import { WizzardProvider } from "./wizard/react-intergation";
-const wizard = createWizard(
+const wizard = createWizardClient(
   {
     activeStep: "stepOne",
   },

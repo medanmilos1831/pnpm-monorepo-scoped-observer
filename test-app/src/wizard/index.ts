@@ -1,3 +1,4 @@
+export { createWizardClient } from "./createWizardClient";
 export { WizzardProvider } from "./react-intergation";
 export { useStep } from "./react-intergation";
 export { useWizzard } from "./react-intergation";

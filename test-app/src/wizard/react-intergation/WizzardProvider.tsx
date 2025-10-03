@@ -4,7 +4,7 @@ import {
   useEffect,
   type PropsWithChildren,
 } from "react";
-import { createWizard } from "../createWizard";
+import { createWizard } from "../createWizardClient";
 import {
   WizardEvents,
   WIZARD_SCOPE,
