@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { Context } from "./Wizzard";
+import { WizzardContext } from "./Wizzard";
 
 const useWizzard = () => {
-  const context = useContext(Context);
+  const context = useContext(WizzardContext);
   if (!context) {
     throw new Error("WizzardProvider not found");
   }

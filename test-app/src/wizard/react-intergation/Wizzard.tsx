@@ -16,7 +16,7 @@ import {
 } from "../types";
 import { useCreateWizzard } from "./useCreateWizzard";
 
-const Context = createContext<
+const WizzardContext = createContext<
   ReturnType<typeof createWizardClient> | undefined
 >(undefined);
 
@@ -37,7 +37,9 @@ const Wizzard = ({
       disconnect();
     };
   }, []);
-  return <Context.Provider value={wizard}>{children}</Context.Provider>;
+  return (
+    <WizzardContext.Provider value={wizard}>{children}</WizzardContext.Provider>
+  );
 };
 
 Wizzard.Step = ({
@@ -47,7 +49,7 @@ Wizzard.Step = ({
   onFail,
   onFinish,
 }: PropsWithChildren<IStepProps>) => {
-  const context = useContext(Context);
+  const context = useContext(WizzardContext);
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
@@ -109,4 +111,4 @@ Wizzard.Step = ({
   return <>{children}</>;
 };
 
-export { Context, Wizzard };
+export { WizzardContext, Wizzard };

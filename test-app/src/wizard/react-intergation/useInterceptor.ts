@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Context } from "./Wizzard";
+import { WizzardContext } from "./Wizzard";
 import { WIZARD_SCOPE, type IOnNextOnPrevEventPayload } from "../types";
 
 const useInterceptor = ({
@@ -9,21 +9,20 @@ const useInterceptor = ({
   eventName: "onNext" | "onPrev" | "onFinish";
   callback: (data: IOnNextOnPrevEventPayload) => any;
 }) => {
-  const context = useContext(Context);
+  const context = useContext(WizzardContext)!;
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-
   useEffect(() => {
     context.interceptor({
       scope: WIZARD_SCOPE,
       eventName,
-      callback: (data) => {
+      callback: (data: IOnNextOnPrevEventPayload) => {
         return {
           ...data,
           actionMeta: {
             ...data.actionMeta,
-            interceptor: { ...callback(data.actionMeta.interceptor) },
+            interceptor: { ...callback((data.actionMeta as any).interceptor) },
           },
         };
       },

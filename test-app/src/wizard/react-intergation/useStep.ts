@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { Context } from "./Wizzard";
+import { WizzardContext } from "./Wizzard";
 import { useSubscriber } from "./useSubscribe";
 import { WizardEvents, WIZARD_SCOPE } from "../types";
 
 const useStep = () => {
-  const context = useContext(Context);
+  const context = useContext(WizzardContext);
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
