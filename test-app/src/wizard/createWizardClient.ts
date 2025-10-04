@@ -4,9 +4,10 @@ import type { IWizardConfig, IWizardStepsConfig } from "./types";
 
 const createWizardClient = (
   config: IWizardConfig,
-  wizardStepsConfig: IWizardStepsConfig
+  wizardStepsConfig: IWizardStepsConfig,
+  name: string
 ) => {
-  return new Client(new Wizard(config, wizardStepsConfig));
+  return new Client(new Wizard(config, wizardStepsConfig, name));
 };
 
 export { createWizardClient };

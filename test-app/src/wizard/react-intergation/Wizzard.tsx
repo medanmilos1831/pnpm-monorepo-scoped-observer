@@ -4,30 +4,43 @@ import {
   useEffect,
   type PropsWithChildren,
 } from "react";
-import { createWizard } from "../createWizardClient";
+import { createWizardClient } from "../createWizardClient";
 import {
-  WizardEvents,
   WIZARD_SCOPE,
-  type IOnNextOnPrevEventPayload,
+  WizardEvents,
   type IFailChangeStepEventPayload,
+  type IOnNextOnPrevEventPayload,
   type IStepProps,
+  type IWizardConfig,
+  type IWizardStepsConfig,
 } from "../types";
+import { useCreateWizzard } from "./useCreateWizzard";
 
-const Context = createContext<ReturnType<typeof createWizard> | undefined>(
-  undefined
-);
+const Context = createContext<
+  ReturnType<typeof createWizardClient> | undefined
+>(undefined);
 
-const WizzardProvider = ({
+const Wizzard = ({
   children,
-  value,
+  name,
+  config,
+  steps,
 }: {
   children: React.ReactNode;
-  value: ReturnType<typeof createWizard>;
+  name: string;
+  config: IWizardConfig;
+  steps: IWizardStepsConfig;
 }) => {
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  const { wizard, disconnect } = useCreateWizzard({ name, config, steps });
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, []);
+  return <Context.Provider value={wizard}>{children}</Context.Provider>;
 };
 
-WizzardProvider.Step = ({
+Wizzard.Step = ({
   children,
   onNext,
   onPrev,
@@ -96,4 +109,4 @@ WizzardProvider.Step = ({
   return <>{children}</>;
 };
 
-export { Context, WizzardProvider };
+export { Context, Wizzard };

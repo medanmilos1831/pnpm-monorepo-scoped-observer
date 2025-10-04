@@ -1,15 +1,9 @@
-import { createWizardClient } from "./wizard";
+import { createBrowserWizard, WizzardClientProvider } from "./wizard";
 
 import { HomePage } from "./pages";
-import { WizzardProvider } from "./wizard/react-intergation";
-const wizard = createWizardClient(
-  {
-    activeStep: "stepOne",
-  },
-  {
-    activeSteps: ["stepOne", "stepTwo"],
-  }
-);
+import { browserWizard } from "./wiz";
+
+// const browserWizard = createBrowserWizard();
 
 function App() {
   return (
@@ -19,9 +13,9 @@ function App() {
         width: "100vw",
       }}
     >
-      <WizzardProvider value={wizard}>
+      <WizzardClientProvider value={browserWizard}>
         <HomePage />
-      </WizzardProvider>
+      </WizzardClientProvider>
     </div>
   );
 }

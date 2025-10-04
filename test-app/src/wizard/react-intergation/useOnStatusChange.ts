@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Context } from "./WizzardProvider";
+import { Context } from "./Wizzard";
 import { WizardEvents, WIZARD_SCOPE } from "../types";
 import { useSubscriber } from "./useSubscribe";
 
@@ -8,6 +8,7 @@ const useOnStatusChange = () => {
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
+  console.log("context", context);
 
   return useSubscriber(
     {

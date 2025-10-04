@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Context } from "./WizzardProvider";
+import { Context } from "./Wizzard";
 import { WIZARD_SCOPE, type IOnNextOnPrevEventPayload } from "../types";
 
 const useInterceptor = ({

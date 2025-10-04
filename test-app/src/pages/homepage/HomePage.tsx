@@ -1,9 +1,9 @@
 import { Controls } from "../../components/Controls";
 import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
-import { useOnStatusChange, useWizzard } from "../../wizard";
+import { useOnStatusChange, useWizzard, Wizzard } from "../../wizard";
 
-const HomePage = () => {
+const InnerPage = () => {
   const status = useOnStatusChange();
   const { reset } = useWizzard();
   return (
@@ -25,6 +25,22 @@ const HomePage = () => {
         </>
       )}
     </div>
+  );
+};
+
+const HomePage = () => {
+  return (
+    <>
+      <Wizzard
+        name="wizardOne"
+        config={{
+          activeStep: "stepOne",
+        }}
+        steps={{ activeSteps: ["stepOne", "stepTwo"] }}
+      >
+        <InnerPage />
+      </Wizzard>
+    </>
   );
 };
 

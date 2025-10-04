@@ -1,4 +1,8 @@
-export { WizzardProvider } from "./WizzardProvider";
+export { Wizzard, Context } from "./Wizzard";
+export {
+  WizzardClientProvider,
+  WizzardClientContext,
+} from "./WizzardClientProvider";
 export { useStep } from "./useStep";
 export { useWizzard } from "./useWizzard";
 export { useOnStatusChange } from "./useOnStatusChange";

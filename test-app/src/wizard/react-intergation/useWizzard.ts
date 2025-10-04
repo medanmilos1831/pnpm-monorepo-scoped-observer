@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Context } from "./WizzardProvider";
+import { Context } from "./Wizzard";
 
 const useWizzard = () => {
   const context = useContext(Context);

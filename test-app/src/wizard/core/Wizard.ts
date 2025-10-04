@@ -11,6 +11,7 @@ import { Observer } from "./Observer";
 import { Step } from "./Step";
 
 class Wizard {
+  name: string;
   currentStep: string;
   __INIT_CONFIG__: IWizardConfig;
   __INIT_WIZZARD_STEPS_CONFIG__: IWizardStepsConfig;
@@ -21,7 +22,12 @@ class Wizard {
   status = WizardStatus.ACTIVE;
   observer = new Observer();
 
-  constructor(config: IWizardConfig, wizardStepsConfig: IWizardStepsConfig) {
+  constructor(
+    config: IWizardConfig,
+    wizardStepsConfig: IWizardStepsConfig,
+    name: string
+  ) {
+    this.name = name;
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
     this.wizardStepsConfig = wizardStepsConfig;
@@ -60,6 +66,7 @@ class Wizard {
   }) => {
     const actionMeta = params || { actionType: "default" };
     const stepName = this.findStep({ command });
+    console.log("executeCommand", stepName);
     !stepName
       ? this.handleFinish(command, actionMeta)
       : this.handleStepTransition(command, stepName, actionMeta);

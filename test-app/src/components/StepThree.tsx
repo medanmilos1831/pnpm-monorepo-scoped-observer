@@ -1,4 +1,4 @@
-import { useInterceptor, WizzardProvider } from "../wizard";
+import { useInterceptor, Wizzard } from "../wizard";
 
 const StepThree = () => {
   useInterceptor({
@@ -11,13 +11,13 @@ const StepThree = () => {
     },
   });
   return (
-    <WizzardProvider.Step
+    <Wizzard.Step
       onFinish={(params) => {
         params.success();
       }}
     >
       <>step three</>
-    </WizzardProvider.Step>
+    </Wizzard.Step>
   );
 };
 

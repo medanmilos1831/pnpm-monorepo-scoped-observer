@@ -1,22 +1,36 @@
 import { Modal } from "antd";
-import { useEffect, useState } from "react";
-import { useWizzard, WizzardProvider, useInterceptor } from "../wizard";
+import { useState } from "react";
+import { useOnStatusChange, useWizzard, Wizzard } from "../wizard";
+import { Controls } from "./Controls";
+import { Navigation } from "./Navigation";
+import { WizardBodyNew } from "./WizardBodyNew";
 
-const SomeComponent = () => {
-  useInterceptor({
-    eventName: "onNext",
-    callback: (prev) => {
-      return {
-        ...prev,
-        fname: "pera",
-      };
-    },
-  });
-  return <div>Some Component</div>;
-};
-
-const SomeComponent2 = () => {
-  return <div>Some Component</div>;
+const InnerPage = () => {
+  const status = useOnStatusChange();
+  const { reset } = useWizzard();
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {status === "success" ? (
+        <>
+          <button onClick={() => reset()}>Reset</button>
+        </>
+      ) : (
+        <>
+          <Navigation />
+          <WizardBodyNew />
+          <Controls />
+          {/* <Navigation />
+          <WizardBody />
+          <Controls /> */}
+        </>
+      )}
+    </div>
+  );
 };
 
 const StepOne = () => {
@@ -25,21 +39,8 @@ const StepOne = () => {
 
   return (
     <>
-      <WizzardProvider.Step
+      <Wizzard.Step
         onNext={(params) => {
-          // params.reject({
-          //   message: "Step One",
-          // });
-          // if (params.actionMeta.actionType === "validation") {
-          //   params.reject({
-          //     message: "Step One",
-          //   });
-          //   return;
-          // }
-          // if (params.actionMeta?.actionType === "validated") {
-          //   params.resolve();
-          //   return;
-          // }
           params.resolve();
         }}
         onPrev={() => {
@@ -50,8 +51,7 @@ const StepOne = () => {
         }}
       >
         <div>Step One</div>
-        <SomeComponent />
-        <SomeComponent2 />
+        {/* <SomeComponent /> */}
         <Modal
           title="Step One Modal"
           open={open}
@@ -63,7 +63,7 @@ const StepOne = () => {
         >
           <p>This is a modal from Step One</p>
         </Modal>
-      </WizzardProvider.Step>
+      </Wizzard.Step>
     </>
   );
 };

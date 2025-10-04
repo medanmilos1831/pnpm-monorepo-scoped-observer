@@ -1,14 +1,14 @@
-import { WizzardProvider } from "../wizard";
+import { Wizzard } from "../wizard";
 
 const StepFour = () => {
   return (
-    <WizzardProvider.Step
+    <Wizzard.Step
     // stepValidate={(params) => {
     //   // Handle step validation
     // }}
     >
       <>step four</>
-    </WizzardProvider.Step>
+    </Wizzard.Step>
   );
 };
 
