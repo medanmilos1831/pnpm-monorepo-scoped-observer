@@ -1,41 +1,10 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { useOnStatusChange, useWizzard, Wizzard } from "../wizard";
-import { Controls } from "./Controls";
-import { Navigation } from "./Navigation";
-import { WizardBodyNew } from "./WizardBodyNew";
-
-const InnerPage = () => {
-  const status = useOnStatusChange();
-  const { reset } = useWizzard();
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {status === "success" ? (
-        <>
-          <button onClick={() => reset()}>Reset</button>
-        </>
-      ) : (
-        <>
-          <Navigation />
-          <WizardBodyNew />
-          <Controls />
-          {/* <Navigation />
-          <WizardBody />
-          <Controls /> */}
-        </>
-      )}
-    </div>
-  );
-};
+import { useWizardCommands, Wizzard } from "../wizard";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
-  const { next } = useWizzard();
+  const { next } = useWizardCommands();
 
   return (
     <>

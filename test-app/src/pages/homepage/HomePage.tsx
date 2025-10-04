@@ -1,11 +1,11 @@
 import { Controls } from "../../components/Controls";
 import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
-import { useOnStatusChange, useWizzard, Wizzard } from "../../wizard";
+import { useOnStatusChange, useWizardCommands, Wizzard } from "../../wizard";
 
 const InnerPage = () => {
   const status = useOnStatusChange();
-  const { reset } = useWizzard();
+  const { reset } = useWizardCommands();
   return (
     <div
       style={{

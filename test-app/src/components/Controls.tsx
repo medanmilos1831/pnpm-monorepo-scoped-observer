@@ -1,7 +1,7 @@
-import { useWizzard, useStep } from "../wizard";
+import { useWizardCommands, useStep } from "../wizard";
 
 const Controls = () => {
-  const { prev, next, reset } = useWizzard();
+  const { prev, next, reset } = useWizardCommands();
   const { isLast, isFirst } = useStep();
 
   return (

@@ -4,6 +4,6 @@ export {
   WizzardClientContext,
 } from "./WizzardClientProvider";
 export { useStep } from "./useStep";
-export { useWizzard } from "./useWizzard";
+export { useWizardCommands } from "./useWizardCommands";
 export { useOnStatusChange } from "./useOnStatusChange";
 export { useInterceptor } from "./useInterceptor";

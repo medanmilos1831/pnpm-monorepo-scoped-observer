@@ -1,10 +1,10 @@
 import React from "react";
-import { useStep, useWizzard } from "../wizard";
+import { useStep, useWizardCommands } from "../wizard";
 
 const Navigation = () => {
   const { activeSteps, activeStep, activeStepsLength } = useStep();
 
-  const { navigateToStep } = useWizzard();
+  const { navigateToStep } = useWizardCommands();
 
   const getCurrentStepIndex = () => {
     return activeSteps.findIndex((step: string) => step === activeStep);
