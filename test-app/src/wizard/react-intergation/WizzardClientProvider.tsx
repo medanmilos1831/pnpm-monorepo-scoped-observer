@@ -40,7 +40,17 @@ const WizzardClientProvider = ({
           value.getGarage().set(name, {
             wizard: createWizardClient(config, wizardStepsConfig, name),
             disconnect: () => {
-              console.log("disconnect", this);
+              const currentCount = refCount.get(name) || 0;
+              if (currentCount <= 1) {
+                // Last reference - remove engine completely
+                value.getGarage().delete(name);
+                refCount.delete(name);
+              } else {
+                // Decrement reference count
+                refCount.set(name, currentCount - 1);
+              }
+
+              // console.log("disconnect", name, this);
             },
           });
           refCount.set(name, 0);

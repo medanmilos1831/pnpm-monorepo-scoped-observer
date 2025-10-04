@@ -10,7 +10,6 @@ const useStep = () => {
   }
 
   // Current step name (reactive)
-  console.log("context", context);
   const stepName = useSubscriber(
     {
       eventName: WizardEvents.CHANGE_STEP,

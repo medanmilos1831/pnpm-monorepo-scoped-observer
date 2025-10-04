@@ -66,7 +66,6 @@ class Wizard {
   }) => {
     const actionMeta = params || { actionType: "default" };
     const stepName = this.findStep({ command });
-    console.log("executeCommand", stepName);
     !stepName
       ? this.handleFinish(command, actionMeta)
       : this.handleStepTransition(command, stepName, actionMeta);

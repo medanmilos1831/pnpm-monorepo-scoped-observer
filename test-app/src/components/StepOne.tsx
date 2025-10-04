@@ -5,7 +5,6 @@ import { useWizardCommands, Wizzard } from "../wizard";
 const StepOne = () => {
   const [open, setOpen] = useState(false);
   const { next } = useWizardCommands();
-
   return (
     <>
       <Wizzard.Step

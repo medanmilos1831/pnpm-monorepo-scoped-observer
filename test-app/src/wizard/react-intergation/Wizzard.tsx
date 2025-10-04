@@ -31,12 +31,7 @@ const Wizzard = ({
   config: IWizardConfig;
   steps: IWizardStepsConfig;
 }) => {
-  const { wizard, disconnect } = useCreateWizzard({ name, config, steps });
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, []);
+  const wizard = useCreateWizzard({ name, config, steps });
   return (
     <WizzardContext.Provider value={wizard}>{children}</WizzardContext.Provider>
   );

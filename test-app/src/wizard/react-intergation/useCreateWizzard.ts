@@ -21,10 +21,7 @@ const useCreateWizzard = ({
       disconnect();
     };
   }, []);
-  return {
-    wizard,
-    disconnect,
-  };
+  return wizard;
 };
 
 export { useCreateWizzard };

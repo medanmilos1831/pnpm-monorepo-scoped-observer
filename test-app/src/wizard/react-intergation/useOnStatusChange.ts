@@ -8,7 +8,6 @@ const useOnStatusChange = () => {
   if (!context) {
     throw new Error("WizzardProvider not found");
   }
-  console.log("context", context);
 
   return useSubscriber(
     {
