@@ -21,6 +21,7 @@ const useCreateWizzard = ({
       disconnect();
     };
   }, []);
+  // console.log(wizard);
   return wizard;
 };
 

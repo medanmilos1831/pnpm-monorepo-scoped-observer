@@ -1,17 +1,17 @@
 import { useContext } from "react";
-import { WizzardContext } from "./Wizzard";
+import { WizardContext } from "./WizardProvider";
 
 const useWizardCommands = () => {
-  const context = useContext(WizzardContext);
+  const context = useContext(WizardContext);
   if (!context) {
-    throw new Error("WizzardProvider not found");
+    throw new Error("WizardProvider not found");
   }
 
   return {
-    next: context.next,
-    prev: context.prev,
-    reset: context.reset,
-    navigateToStep: context.navigateToStep,
+    next: context.wizard.next,
+    prev: context.wizard.prev,
+    reset: context.wizard.reset,
+    navigateToStep: context.wizard.navigateToStep,
   };
 };
 

@@ -1,11 +1,11 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizzardContext } from "./Wizzard";
+import { WizardContext } from "./WizardProvider";
 
 const useSubscriber = (
   { eventName, scope = "wizard" }: { eventName: string; scope?: string },
   snapshot: () => any
 ) => {
-  const { subscribe } = useContext(WizzardContext)!;
+  const { subscribe } = useContext(WizardContext)!.wizard;
   const [state] = useState(() => {
     return (notify: () => void) => {
       return subscribe({

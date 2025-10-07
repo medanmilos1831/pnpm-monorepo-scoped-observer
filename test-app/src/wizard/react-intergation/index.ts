@@ -1,4 +1,4 @@
-export { Wizzard, WizzardContext } from "./Wizzard";
+export { WizardProvider, WizardContext } from "./WizardProvider";
 export {
   WizzardClientProvider,
   WizzardClientContext,
