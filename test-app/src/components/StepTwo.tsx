@@ -1,10 +1,10 @@
 // import { Wizzard } from "../wizard";
 
-import { WizardProvider } from "../wizard";
+import { WizardStep } from "../wiz";
 
 const StepTwo = () => {
   return (
-    <WizardProvider.Step
+    <WizardStep
       onPrev={(params) => {
         params.resolve();
       }}
@@ -16,7 +16,7 @@ const StepTwo = () => {
       }}
     >
       <>step two</>
-    </WizardProvider.Step>
+    </WizardStep>
   );
 };
 

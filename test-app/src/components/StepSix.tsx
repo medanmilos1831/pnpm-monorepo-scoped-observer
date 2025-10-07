@@ -1,10 +1,10 @@
-import { Wizzard } from "../wizard";
+import { WizardStep } from "../wiz";
 
 const StepSix = () => {
   return (
-    <Wizzard.Step>
+    <WizardStep>
       <>step six</>
-    </Wizzard.Step>
+    </WizardStep>
   );
 };
 

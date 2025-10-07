@@ -1,11 +1,11 @@
-import { useStep, WizardProvider } from "../wizard";
+import { WizardStep } from "../wiz";
 
 const StepFive = () => {
   // const { stepName } = useStep();
   return (
-    <WizardProvider.Step>
+    <WizardStep>
       <>step five</>
-    </WizardProvider.Step>
+    </WizardStep>
   );
 };
 

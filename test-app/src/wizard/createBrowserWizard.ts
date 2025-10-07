@@ -1,7 +1,8 @@
 import { createElement, type PropsWithChildren } from "react";
 import { createWizardClient } from "./createWizardClient";
-import type { IWizardConfig, IWizardStepsConfig } from "./types";
-import { WizardProvider } from "./react-intergation/WizardProvider";
+import type { IStepProps, IWizardConfig, IWizardStepsConfig } from "./types";
+import { Wizard } from "./react-intergation/WizardProvider";
+import { WizardStep } from "./react-intergation/WizardStep";
 
 const createBrowserWizard = () => {
   const garage = new Map<
@@ -34,13 +35,16 @@ const createBrowserWizard = () => {
       }
       const { wizard, disconnect } = item;
       return createElement(
-        WizardProvider,
+        Wizard,
         {
           wizard,
           disconnect,
         },
         children
       );
+    },
+    WizardStep: ({ children, ...props }: PropsWithChildren<IStepProps>) => {
+      return createElement(WizardStep, props, children);
     },
     logGarage: () => {
       // Debug method - can be enabled if needed

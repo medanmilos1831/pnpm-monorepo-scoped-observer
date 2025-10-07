@@ -1,42 +1,14 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { useStep, useWizardCommands, WizardProvider } from "../wizard";
-import { Wizard } from "../wiz";
-import { StepFour } from "./StepFour";
-import { StepFive } from "./StepFive";
-import { Controls } from "./Controls";
-const stepComponents: any = {
-  stepFour: StepFour,
-  stepFive: StepFive,
-};
-const WizardBody = () => {
-  const { stepName } = useStep() as any;
-  const StepComponent = stepComponents[stepName] as any;
-  return (
-    <div>
-      <StepComponent>step {stepName}</StepComponent>
-    </div>
-  );
-};
-// const Controls = () => {
-//   return <div>Controls</div>;
-// };
-const InnerPage = () => {
-  return (
-    <div>
-      <WizardBody />
-      <Controls />
-    </div>
-  );
-};
+import { WizardStep } from "../wiz";
+import { useWizardCommands } from "../wizard";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
   const { next } = useWizardCommands();
-  const { stepName } = useStep("wizardTwo") as any;
   return (
     <>
-      <WizardProvider.Step
+      <WizardStep
         onNext={(params) => {
           if (params.actionMeta.actionType === "validated") {
             params.resolve();
@@ -51,17 +23,7 @@ const StepOne = () => {
           setOpen(true);
         }}
       >
-        <div>Step One proba {stepName}</div>
-
-        <Wizard
-          name="wizardTwo"
-          config={{
-            activeStep: "stepFour",
-          }}
-          wizardStepsConfig={{ activeSteps: ["stepFour", "stepFive"] }}
-        >
-          <InnerPage />
-        </Wizard>
+        <div>Step One proba</div>
 
         <Modal
           title="Step One Modal"
@@ -74,7 +36,7 @@ const StepOne = () => {
         >
           <p>This is a modal from Step One</p>
         </Modal>
-      </WizardProvider.Step>
+      </WizardStep>
     </>
   );
 };

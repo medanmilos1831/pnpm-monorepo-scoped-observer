@@ -1,12 +1,10 @@
-// import { Wizzard } from "../wizard";
-
-import { WizardProvider } from "../wizard";
+import { WizardStep } from "../wiz";
 
 const StepFour = () => {
   return (
-    <WizardProvider.Step>
+    <WizardStep>
       <>step four</>
-    </WizardProvider.Step>
+    </WizardStep>
   );
 };
 

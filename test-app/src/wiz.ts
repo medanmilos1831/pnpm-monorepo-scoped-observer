@@ -1,5 +1,5 @@
 import { createBrowserWizard } from "./wizard";
 
-const { Wizard, logGarage } = createBrowserWizard();
+const { Wizard, WizardStep, logGarage } = createBrowserWizard();
 
-export { Wizard, logGarage };
+export { Wizard, WizardStep, logGarage };
