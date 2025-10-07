@@ -45,7 +45,7 @@ const createBrowserWizard = () => {
     },
     WizardStep,
     logGarage: () => {
-      // Debug method - can be enabled if needed
+      console.log(garage);
     },
     getWizard: (name: string) => {
       return garage.get(name)?.wizard;
