@@ -1,14 +1,14 @@
 import { createElement, type PropsWithChildren } from "react";
-import { createWizardClient } from "./createWizardClient";
-import type { IStepProps, IWizardConfig, IWizardStepsConfig } from "./types";
-import { Wizard } from "./react-intergation/WizardProvider";
+import { Client, WizardEntity } from "./core";
+import { WizardProvider } from "./react-intergation/WizardProvider";
 import { WizardStep } from "./react-intergation/WizardStep";
+import type { IWizardConfig, IWizardStepsConfig } from "./types";
 
 const createBrowserWizard = () => {
   const garage = new Map<
     string,
     {
-      wizard: ReturnType<typeof createWizardClient>;
+      wizard: Client;
       disconnect: () => void;
     }
   >();
@@ -26,7 +26,7 @@ const createBrowserWizard = () => {
       let item = garage.get(name);
       if (!item) {
         garage.set(name, {
-          wizard: createWizardClient(config, wizardStepsConfig, name),
+          wizard: new Client(new WizardEntity(config, wizardStepsConfig, name)),
           disconnect: () => {
             garage.delete(name);
           },
@@ -35,7 +35,7 @@ const createBrowserWizard = () => {
       }
       const { wizard, disconnect } = item;
       return createElement(
-        Wizard,
+        WizardProvider,
         {
           wizard,
           disconnect,
@@ -43,11 +43,12 @@ const createBrowserWizard = () => {
         children
       );
     },
-    WizardStep: ({ children, ...props }: PropsWithChildren<IStepProps>) => {
-      return createElement(WizardStep, props, children);
-    },
+    WizardStep,
     logGarage: () => {
       // Debug method - can be enabled if needed
+    },
+    getWizard: (name: string) => {
+      return garage.get(name)?.wizard;
     },
   };
 };

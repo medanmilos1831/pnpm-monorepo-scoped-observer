@@ -10,7 +10,7 @@ import {
 import { Observer } from "./Observer";
 import { Step } from "./Step";
 
-class Wizard {
+class WizardEntity {
   name: string;
   currentStep: string;
   __INIT_CONFIG__: IWizardConfig;
@@ -211,4 +211,4 @@ class Wizard {
   }
 }
 
-export { Wizard };
+export { WizardEntity };

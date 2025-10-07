@@ -1,4 +1,4 @@
-export { Wizard, WizardContext } from "./WizardProvider";
+export { WizardProvider, WizardContext } from "./WizardProvider";
 export { WizardStep } from "./WizardStep";
 export { useStep } from "./useStep";
 export { useWizardCommands } from "./useWizardCommands";

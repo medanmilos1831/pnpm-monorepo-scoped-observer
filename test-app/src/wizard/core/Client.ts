@@ -1,5 +1,5 @@
 import { WizardCommands, type IMeta } from "../types";
-import type { Wizard } from "./Wizard";
+import type { Wizard } from "./WizardEntity";
 
 class Client {
   // Public API methods as fields

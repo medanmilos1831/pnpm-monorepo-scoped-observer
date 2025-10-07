@@ -1,19 +1,19 @@
 import { createContext, useEffect, type PropsWithChildren } from "react";
-import { createWizardClient } from "../createWizardClient";
+import { Client } from "../core";
 
 const WizardContext = createContext<
   | {
-      wizard: ReturnType<typeof createWizardClient>;
+      wizard: Client;
     }
   | undefined
 >(undefined);
 
-const Wizard = ({
+const WizardProvider = ({
   children,
   wizard,
   disconnect,
 }: PropsWithChildren<{
-  wizard: ReturnType<typeof createWizardClient>;
+  wizard: Client;
   disconnect: () => void;
 }>) => {
   useEffect(() => {
@@ -30,4 +30,4 @@ const Wizard = ({
   );
 };
 
-export { Wizard, WizardContext };
+export { WizardProvider, WizardContext };
