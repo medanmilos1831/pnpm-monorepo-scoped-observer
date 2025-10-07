@@ -12,7 +12,7 @@ class Observer {
   ]);
 
   dispatch = ({ eventName, payload }: { eventName: string; payload?: any }) => {
-    this.observer.dispatch({
+    return this.observer.dispatch({
       scope: WIZARD_SCOPE,
       eventName,
       payload,

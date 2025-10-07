@@ -3,7 +3,7 @@ import { WizardContext } from "./WizardProvider";
 import { WizardEvents, WIZARD_SCOPE } from "../types";
 import { useSubscriber } from "./useSubscribe";
 
-const useOnStatusChange = () => {
+const useStatus = () => {
   const context = useContext(WizardContext);
   if (!context) {
     throw new Error("WizardProvider not found");
@@ -18,4 +18,4 @@ const useOnStatusChange = () => {
   );
 };
 
-export { useOnStatusChange };
+export { useStatus };

@@ -2,5 +2,5 @@ export { WizardProvider, WizardContext } from "./WizardProvider";
 export { WizardStep } from "./WizardStep";
 export { useStep } from "./useStep";
 export { useWizardCommands } from "./useWizardCommands";
-export { useOnStatusChange } from "./useOnStatusChange";
+export { useStatus } from "./useStatus";
 export { useInterceptor } from "./useInterceptor";

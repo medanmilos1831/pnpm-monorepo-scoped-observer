@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Controls } from "../../components/Controls";
 import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
-import { useOnStatusChange, useStep, useWizardCommands } from "../../wizard";
+
 import { logGarage, Wizard } from "../../wiz";
 
 const InnerPage = () => {

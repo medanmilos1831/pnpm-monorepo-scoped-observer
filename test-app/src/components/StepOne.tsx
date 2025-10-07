@@ -10,18 +10,19 @@ const StepOne = () => {
     <>
       <WizardStep
         onNext={(params) => {
-          if (params.actionMeta.actionType === "validated") {
-            params.resolve();
-          } else {
-            params.reject({ message: "StepOne" });
-          }
-        }}
-        onPrev={(params) => {
           params.resolve();
+          // if (params.actionMeta.actionType === "validated") {
+          //   params.resolve();
+          // } else {
+          //   params.reject({ message: "StepOne" });
+          // }
         }}
-        onFail={(params) => {
-          setOpen(true);
-        }}
+        // onPrev={(params) => {
+        //   params.resolve();
+        // }}
+        // onFail={(params) => {
+        //   setOpen(true);
+        // }}
       >
         <div>Step One proba</div>
 

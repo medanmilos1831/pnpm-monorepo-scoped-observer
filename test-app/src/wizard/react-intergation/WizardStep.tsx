@@ -44,7 +44,6 @@ const WizardStep = ({
     };
   });
 
-  // // Subscribe to FAIL_CHANGE_STEP event based on onFail prop passed to Step component
   useEffect(() => {
     const unsubscribe = context.wizard.subscribe({
       scope: WIZARD_SCOPE,

@@ -1,4 +1,9 @@
-import { WizardCommands, type IMeta } from "../types";
+import {
+  WIZARD_SCOPE,
+  WizardCommands,
+  type IMeta,
+  type IOnNextOnPrevEventPayload,
+} from "../types";
 import type { WizardEntity } from "./WizardEntity";
 
 class Client {
@@ -18,10 +23,12 @@ class Client {
   getIsFirst: () => boolean;
   getActiveSteps: () => any;
   getStatus: () => any;
+  onNext: ((hasOnNext: boolean) => any) | undefined = undefined;
 
   name: string;
 
   constructor(wizard: WizardEntity) {
+    console.log("wizard", wizard);
     // Initialize all methods as fields
     this.name = wizard.name;
     this.next = (params?: IMeta) => {
