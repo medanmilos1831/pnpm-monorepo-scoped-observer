@@ -30,13 +30,7 @@ const InnerPage = () => {
 
 const HomePage = () => {
   const [counter, setCounter] = useState(0);
-  // const wizard = useCreateWizzard({
-  //   name: "wizardOne",
-  //   config: {
-  //     activeStep: "stepOne",
-  //   },
-  //   steps: { activeSteps: ["stepOne", "stepTwo"] },
-  // });
+
   return (
     <>
       <button onClick={() => logGarage()}>WIZZARD GARAGE</button>

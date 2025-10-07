@@ -1,5 +1,5 @@
 export { createBrowserWizard } from "./createBrowserWizard";
-export { WizardProvider, WizzardClientProvider } from "./react-intergation";
+export { WizardProvider } from "./react-intergation";
 export { useStep } from "./react-intergation";
 export { useWizardCommands } from "./react-intergation";
 export { useOnStatusChange } from "./react-intergation";

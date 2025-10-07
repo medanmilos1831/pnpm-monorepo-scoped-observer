@@ -38,8 +38,6 @@ const createBrowserWizard = () => {
         {
           wizard,
           disconnect,
-          getWizard: (wizardName?: string) =>
-            garage.get(wizardName ? wizardName : name)!.wizard,
         },
         children
       );
