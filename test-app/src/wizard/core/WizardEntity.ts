@@ -77,8 +77,9 @@ class WizardEntity {
 
   private handleFinish = (command: WizardCommands, actionMeta: IMeta) => {
     this.observer.dispatch({
-      eventName: this.eventNameBuilder(WizardEvents.ON_FINISH),
+      eventName: this.eventNameBuilder(WizardEvents.STEP_WILDCARD),
       payload: {
+        eventName: WizardEvents.ON_FINISH,
         command,
         actionMeta,
         params: this.transitionParams(this.currentStep),
@@ -96,11 +97,12 @@ class WizardEntity {
     actionMeta: IMeta
   ) => {
     this.observer.dispatch({
-      eventName:
-        command === WizardCommands.NEXT
-          ? this.eventNameBuilder(WizardEvents.ON_NEXT)
-          : this.eventNameBuilder(WizardEvents.ON_PREV),
+      eventName: this.eventNameBuilder(WizardEvents.STEP_WILDCARD),
       payload: {
+        eventName:
+          command === WizardCommands.NEXT
+            ? WizardEvents.ON_NEXT
+            : WizardEvents.ON_PREV,
         command,
         resolve: this.resolve(stepName),
         reject: this.reject(stepName, command),
@@ -160,8 +162,9 @@ class WizardEntity {
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
       this.observer.dispatch({
-        eventName: this.eventNameBuilder(WizardEvents.FAIL_CHANGE_STEP),
+        eventName: this.eventNameBuilder(WizardEvents.STEP_WILDCARD),
         payload: {
+          eventName: WizardEvents.FAIL_CHANGE_STEP,
           command,
           message: error.message,
           params: this.transitionParams(stepName),

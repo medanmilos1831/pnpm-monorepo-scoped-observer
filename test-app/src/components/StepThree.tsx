@@ -1,4 +1,4 @@
-import { useInterceptor } from "../wizard";
+import { useInterceptor, WizardStep } from "../wizard";
 
 const StepThree = () => {
   // useInterceptor({
@@ -11,7 +11,14 @@ const StepThree = () => {
   //   },
   // });
   return (
-    <></>
+    <WizardStep
+      onFinish={(params) => {
+        // console.log("params", params);
+        params.success();
+      }}
+    >
+      <>step three</>
+    </WizardStep>
     // <Wizzard.Step
     //   onFinish={(params) => {
     //     params.success();

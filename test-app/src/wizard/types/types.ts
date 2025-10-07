@@ -22,6 +22,7 @@ export const WizardEvents = {
   NAVIGATE_TO_STEP: "navigateToStep",
   ON_NEXT: "onNext",
   ON_PREV: "onPrev",
+  STEP_WILDCARD: "step.*",
 };
 
 export const WIZARD_SCOPE = "wizard" as const;

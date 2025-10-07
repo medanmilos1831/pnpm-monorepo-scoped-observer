@@ -4,10 +4,11 @@ import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
 
 import { logGarage, Wizard } from "../../wiz";
+import { useStatus, useWizardCommands } from "../../wizard";
 
 const InnerPage = () => {
-  // const status = useOnStatusChange();
-  // const { reset } = useWizardCommands();
+  const status = useStatus();
+  const { reset } = useWizardCommands();
   return (
     <div
       style={{
@@ -16,7 +17,9 @@ const InnerPage = () => {
       }}
     >
       {status === "success" ? (
-        <>{/* <button onClick={() => reset()}>Reset</button> */}</>
+        <>
+          <button onClick={() => reset()}>Reset</button>
+        </>
       ) : (
         <>
           <Navigation />
