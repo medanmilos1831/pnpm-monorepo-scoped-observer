@@ -14,7 +14,7 @@ const useSubscriber = (
     return (notify: () => void) => {
       return context.wizard.subscribe({
         scope,
-        eventName: `${context.wizard.name}.${eventName}`,
+        eventName: context.eventNameBuilder(eventName),
         callback: notify,
       });
     };

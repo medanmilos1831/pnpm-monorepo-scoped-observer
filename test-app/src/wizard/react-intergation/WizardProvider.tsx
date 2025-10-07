@@ -4,6 +4,7 @@ import { Client } from "../core";
 const WizardContext = createContext<
   | {
       wizard: Client;
+      eventNameBuilder: (eventName: string) => string;
     }
   | undefined
 >(undefined);
@@ -12,9 +13,11 @@ const WizardProvider = ({
   children,
   wizard,
   disconnect,
+  eventNameBuilder,
 }: PropsWithChildren<{
   wizard: Client;
   disconnect: () => void;
+  eventNameBuilder: (eventName: string) => string;
 }>) => {
   useEffect(() => {
     return disconnect;
@@ -23,6 +26,7 @@ const WizardProvider = ({
     <WizardContext.Provider
       value={{
         wizard,
+        eventNameBuilder,
       }}
     >
       {children}
