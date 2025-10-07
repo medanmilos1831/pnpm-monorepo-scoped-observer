@@ -1,5 +1,5 @@
 import { WizardCommands, type IMeta } from "../types";
-import type { Wizard } from "./WizardEntity";
+import type { WizardEntity } from "./WizardEntity";
 
 class Client {
   // Public API methods as fields
@@ -19,8 +19,11 @@ class Client {
   getActiveSteps: () => any;
   getStatus: () => any;
 
-  constructor(wizard: Wizard) {
+  name: string;
+
+  constructor(wizard: WizardEntity) {
     // Initialize all methods as fields
+    this.name = wizard.name;
     this.next = (params?: IMeta) => {
       return wizard.executeCommand({
         command: WizardCommands.NEXT,

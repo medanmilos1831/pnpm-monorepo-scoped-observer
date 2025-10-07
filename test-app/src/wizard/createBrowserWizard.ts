@@ -3,6 +3,7 @@ import { Client, WizardEntity } from "./core";
 import { WizardProvider } from "./react-intergation/WizardProvider";
 import { WizardStep } from "./react-intergation/WizardStep";
 import type { IWizardConfig, IWizardStepsConfig } from "./types";
+import { Observer } from "./core/Observer";
 
 const createBrowserWizard = () => {
   const garage = new Map<
@@ -12,6 +13,9 @@ const createBrowserWizard = () => {
       disconnect: () => void;
     }
   >();
+
+  const observer = new Observer();
+
   return {
     Wizard: ({
       name,
@@ -26,7 +30,9 @@ const createBrowserWizard = () => {
       let item = garage.get(name);
       if (!item) {
         garage.set(name, {
-          wizard: new Client(new WizardEntity(config, wizardStepsConfig, name)),
+          wizard: new Client(
+            new WizardEntity(config, wizardStepsConfig, name, observer)
+          ),
           disconnect: () => {
             garage.delete(name);
           },
@@ -45,7 +51,7 @@ const createBrowserWizard = () => {
     },
     WizardStep,
     logGarage: () => {
-      console.log(garage);
+      // Debug method - can be enabled if needed
     },
     getWizard: (name: string) => {
       return garage.get(name)?.wizard;

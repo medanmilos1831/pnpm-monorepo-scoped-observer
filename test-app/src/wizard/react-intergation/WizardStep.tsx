@@ -22,7 +22,7 @@ const WizardStep = ({
   useEffect(() => {
     const unsubscribe = context.wizard.subscribe({
       scope: WIZARD_SCOPE,
-      eventName: WizardEvents.ON_NEXT,
+      eventName: `${context.wizard.name}.${WizardEvents.ON_NEXT}`,
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onNext ? onNext(payload) : payload.resolve();
       },
@@ -34,7 +34,7 @@ const WizardStep = ({
   useEffect(() => {
     const unsubscribe = context.wizard.subscribe({
       scope: WIZARD_SCOPE,
-      eventName: WizardEvents.ON_PREV,
+      eventName: `${context.wizard.name}.${WizardEvents.ON_PREV}`,
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onPrev ? onPrev(payload) : payload.resolve();
       },
@@ -48,7 +48,7 @@ const WizardStep = ({
   useEffect(() => {
     const unsubscribe = context.wizard.subscribe({
       scope: WIZARD_SCOPE,
-      eventName: WizardEvents.FAIL_CHANGE_STEP,
+      eventName: `${context.wizard.name}.${WizardEvents.FAIL_CHANGE_STEP}`,
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
         if (onFail) {
           onFail(payload);
@@ -63,7 +63,7 @@ const WizardStep = ({
   useEffect(() => {
     const unsubscribe = context.wizard.subscribe({
       scope: WIZARD_SCOPE,
-      eventName: WizardEvents.ON_FINISH,
+      eventName: `${context.wizard.name}.${WizardEvents.ON_FINISH}`,
       callback: ({ payload }: { payload: any }) => {
         if (onFinish) {
           onFinish(payload);
