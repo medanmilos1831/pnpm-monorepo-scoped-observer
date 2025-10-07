@@ -1,14 +1,13 @@
 import { Modal } from "antd";
 import { useState } from "react";
-import { useWizardCommands } from "../wizard";
+import { useWizardCommands, WizardProvider } from "../wizard";
 
 const StepOne = () => {
   const [open, setOpen] = useState(false);
   const { next } = useWizardCommands();
   return (
     <>
-      <>StepOne</>
-      {/* <Wizzard.Step
+      <WizardProvider.Step
         onNext={(params) => {
           params.resolve();
         }}
@@ -19,9 +18,9 @@ const StepOne = () => {
           setOpen(true);
         }}
       >
-        <div>Step One</div>
+        <div>Step One proba</div>
 
-        <Modal
+        {/* <Modal
           title="Step One Modal"
           open={open}
           onCancel={() => setOpen(false)}
@@ -31,8 +30,8 @@ const StepOne = () => {
           }}
         >
           <p>This is a modal from Step One</p>
-        </Modal>
-      </Wizzard.Step> */}
+        </Modal> */}
+      </WizardProvider.Step>
     </>
   );
 };

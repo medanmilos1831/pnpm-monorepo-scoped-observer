@@ -3,12 +3,18 @@ import { WizardContext } from "./WizardProvider";
 
 const useSubscriber = (
   { eventName, scope = "wizard" }: { eventName: string; scope?: string },
-  snapshot: () => any
+  snapshot: () => any,
+  name?: string
 ) => {
-  const { subscribe } = useContext(WizardContext)!.wizard;
+  const context = useContext(WizardContext);
+  if (!context) {
+    throw new Error("WizardProvider not found");
+  }
+  const entity = context.getWizard(name);
+
   const [state] = useState(() => {
     return (notify: () => void) => {
-      return subscribe({
+      return entity.subscribe({
         scope,
         eventName,
         callback: notify,

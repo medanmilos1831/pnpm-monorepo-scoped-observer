@@ -4,7 +4,13 @@ import {
   useEffect,
   type PropsWithChildren,
 } from "react";
-import { type IStepProps } from "../types";
+import {
+  WIZARD_SCOPE,
+  WizardEvents,
+  type IFailChangeStepEventPayload,
+  type IOnNextOnPrevEventPayload,
+  type IStepProps,
+} from "../types";
 import { createWizardClient } from "../createWizardClient";
 
 const WizardContext = createContext<
@@ -51,61 +57,61 @@ WizardProvider.Step = ({
   if (!context) {
     throw new Error("WizardProvider not found");
   }
-  // useEffect(() => {
-  //   const unsubscribe = context.subscribe({
-  //     scope: WIZARD_SCOPE,
-  //     eventName: WizardEvents.ON_NEXT,
-  //     callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
-  //       onNext ? onNext(payload) : payload.resolve();
-  //     },
-  //   });
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // });
-  // useEffect(() => {
-  //   const unsubscribe = context.subscribe({
-  //     scope: WIZARD_SCOPE,
-  //     eventName: WizardEvents.ON_PREV,
-  //     callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
-  //       onPrev ? onPrev(payload) : payload.resolve();
-  //     },
-  //   });
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // });
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WizardEvents.ON_NEXT,
+      callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
+        onNext ? onNext(payload) : payload.resolve();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WizardEvents.ON_PREV,
+      callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
+        onPrev ? onPrev(payload) : payload.resolve();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
 
   // // Subscribe to FAIL_CHANGE_STEP event based on onFail prop passed to Step component
-  // useEffect(() => {
-  //   const unsubscribe = context.subscribe({
-  //     scope: WIZARD_SCOPE,
-  //     eventName: WizardEvents.FAIL_CHANGE_STEP,
-  //     callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
-  //       if (onFail) {
-  //         onFail(payload);
-  //       }
-  //     },
-  //   });
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // });
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WizardEvents.FAIL_CHANGE_STEP,
+      callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
+        if (onFail) {
+          onFail(payload);
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
 
-  // useEffect(() => {
-  //   const unsubscribe = context.subscribe({
-  //     scope: WIZARD_SCOPE,
-  //     eventName: WizardEvents.ON_FINISH,
-  //     callback: ({ payload }: { payload: any }) => {
-  //       if (onFinish) {
-  //         onFinish(payload);
-  //       }
-  //     },
-  //   });
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // });
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: WizardEvents.ON_FINISH,
+      callback: ({ payload }: { payload: any }) => {
+        if (onFinish) {
+          onFinish(payload);
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
   return <>{children}</>;
 };
 

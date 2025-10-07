@@ -45,7 +45,7 @@ const createBrowserWizard = () => {
       );
     },
     logGarage: () => {
-      // console.log(garage);
+      // Debug method - can be enabled if needed
     },
   };
 };
