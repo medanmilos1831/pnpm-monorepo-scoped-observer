@@ -7,7 +7,7 @@ const StepOne = () => {
   const { next } = useWizardCommands();
   return (
     <>
-      <></>
+      <>StepOne</>
       {/* <Wizzard.Step
         onNext={(params) => {
           params.resolve();

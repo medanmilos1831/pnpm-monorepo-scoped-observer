@@ -50,7 +50,6 @@ const WizzardClientProvider = ({
                 refCount.set(name, currentCount - 1);
               }
 
-              // console.log("disconnect", name, this);
             },
           });
           refCount.set(name, 0);

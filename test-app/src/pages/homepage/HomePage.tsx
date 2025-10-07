@@ -8,7 +8,6 @@ import { logGarage, Wizard } from "../../wiz";
 const InnerPage = () => {
   // const status = useOnStatusChange();
   // const { reset } = useWizardCommands();
-  useStep();
   return (
     <div
       style={{
@@ -20,10 +19,9 @@ const InnerPage = () => {
         <>{/* <button onClick={() => reset()}>Reset</button> */}</>
       ) : (
         <>
-          <>wizzard elements</>
-          {/* <Navigation /> */}
-          {/* <WizardBody /> */}
-          {/* <Controls /> */}
+          <Navigation />
+          <WizardBody />
+          <Controls />
         </>
       )}
     </div>
@@ -32,7 +30,6 @@ const InnerPage = () => {
 
 const HomePage = () => {
   const [counter, setCounter] = useState(0);
-  // console.log(browserWizard.getWizard("wizardOne"));
   // const wizard = useCreateWizzard({
   //   name: "wizardOne",
   //   config: {

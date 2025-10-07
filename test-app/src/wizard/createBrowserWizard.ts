@@ -38,13 +38,14 @@ const createBrowserWizard = () => {
         {
           wizard,
           disconnect,
-          getWizard: (name: string) => garage.get(name)!.wizard,
+          getWizard: (wizardName?: string) =>
+            garage.get(wizardName ? wizardName : name)!.wizard,
         },
         children
       );
     },
     logGarage: () => {
-      console.log(garage);
+      // console.log(garage);
     },
   };
 };

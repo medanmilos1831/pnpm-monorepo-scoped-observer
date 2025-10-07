@@ -10,7 +10,7 @@ import { createWizardClient } from "../createWizardClient";
 const WizardContext = createContext<
   | {
       wizard: ReturnType<typeof createWizardClient>;
-      getWizard: (name: string) => ReturnType<typeof createWizardClient>;
+      getWizard: (name?: string) => ReturnType<typeof createWizardClient>;
     }
   | undefined
 >(undefined);
@@ -23,7 +23,7 @@ const WizardProvider = ({
 }: PropsWithChildren<{
   wizard: ReturnType<typeof createWizardClient>;
   disconnect: () => void;
-  getWizard: (name: string) => ReturnType<typeof createWizardClient>;
+  getWizard: (name?: string) => ReturnType<typeof createWizardClient>;
 }>) => {
   useEffect(() => {
     return disconnect;

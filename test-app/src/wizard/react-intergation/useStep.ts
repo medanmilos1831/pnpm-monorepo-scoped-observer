@@ -8,27 +8,23 @@ const useStep = (name?: string) => {
   if (!context) {
     throw new Error("WizardProvider not found");
   }
-  console.log("context", context);
+  const entity = context.getWizard(name);
 
-  // Current step name (reactive)
-  // const stepName = useSubscriber(
-  //   {
-  //     eventName: WizardEvents.CHANGE_STEP,
-  //     scope: WIZARD_SCOPE,
-  //   },
-  //   context.getActiveStep
-  // );
+  const stepName = useSubscriber(
+    {
+      eventName: WizardEvents.CHANGE_STEP,
+      scope: WIZARD_SCOPE,
+    },
+    entity.getActiveStep
+  );
 
   return {
-    // Step info
-    // stepName,
-    // activeStep: context.getActiveStep(),
-    // // Steps list
-    // activeSteps: context.getActiveSteps(),
-    // activeStepsLength: context.getActiveSteps().length,
-    // // Step position
-    // isLast: context.getIsLast(),
-    // isFirst: context.getIsFirst(),
+    stepName: stepName,
+    activeStep: entity.getActiveStep(),
+    activeSteps: entity.getActiveSteps(),
+    activeStepsLength: entity.getActiveSteps().length,
+    isLast: entity.getIsLast(),
+    isFirst: entity.getIsFirst(),
   };
 };
 

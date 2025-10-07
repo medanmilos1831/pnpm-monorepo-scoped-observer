@@ -18,7 +18,7 @@ const WizardBody = () => {
   const StepComponent = stepComponents[stepName] as any;
   return (
     <div>
-      <StepComponent />
+      <StepComponent></StepComponent>
     </div>
   );
 };
