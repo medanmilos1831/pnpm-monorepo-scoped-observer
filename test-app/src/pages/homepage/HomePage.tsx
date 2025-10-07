@@ -3,8 +3,19 @@ import { Controls } from "../../components/Controls";
 import { Navigation } from "../../components/Navigation";
 import { WizardBody } from "../../components/WizardBody";
 
-import { logGarage, Wizard } from "../../wiz";
+import { logGarage, Wizard, getWizard } from "../../wiz";
 import { useStatus, useWizardCommands } from "../../wizard";
+
+const SomeComponent = () => {
+  console.log("SomeComponent", getWizard("wizardOne"));
+  getWizard("wizardOne")!.subscribe({
+    eventName: "onNext",
+    callback: (payload: any) => {
+      console.log("payload", payload);
+    },
+  });
+  return <div>SomeComponent</div>;
+};
 
 const InnerPage = () => {
   const status = useStatus();
@@ -41,15 +52,18 @@ const HomePage = () => {
       <button onClick={() => setCounter(counter + 1)}>Increment</button>
       <button>Next</button>
       {counter % 2 === 0 ? (
-        <Wizard
-          name="wizardOne"
-          config={{
-            activeStep: "stepOne",
-          }}
-          wizardStepsConfig={{ activeSteps: ["stepOne", "stepTwo"] }}
-        >
-          <InnerPage />
-        </Wizard>
+        <>
+          <Wizard
+            name="wizardOne"
+            config={{
+              activeStep: "stepOne",
+            }}
+            wizardStepsConfig={{ activeSteps: ["stepOne", "stepTwo"] }}
+          >
+            <InnerPage />
+          </Wizard>
+          <SomeComponent />
+        </>
       ) : (
         <div>nema</div>
       )}

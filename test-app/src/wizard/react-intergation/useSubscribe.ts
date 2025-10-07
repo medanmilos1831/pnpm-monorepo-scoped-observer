@@ -1,9 +1,8 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { WizardContext } from "./WizardProvider";
-import { WIZARD_SCOPE } from "../types";
 
 const useSubscriber = (
-  { eventName, scope = WIZARD_SCOPE }: { eventName: string; scope?: string },
+  { eventName }: { eventName: string; scope?: string },
   snapshot: () => any
 ) => {
   const context = useContext(WizardContext);
@@ -13,7 +12,6 @@ const useSubscriber = (
   const [state] = useState(() => {
     return (notify: () => void) => {
       return context.wizard.subscribe({
-        scope,
         eventName: context.eventNameBuilder(eventName),
         callback: notify,
       });

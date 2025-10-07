@@ -3,7 +3,7 @@ import { Client, WizardEntity } from "./core";
 import { WizardProvider } from "./react-intergation/WizardProvider";
 import { WizardStep } from "./react-intergation/WizardStep";
 import type { IWizardConfig, IWizardStepsConfig } from "./types";
-import { Observer } from "./core/Observer";
+import { Observer } from "./Observer";
 
 const createBrowserWizard = () => {
   const garage = new Map<

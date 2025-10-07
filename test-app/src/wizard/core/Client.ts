@@ -14,7 +14,20 @@ class Client {
   navigateToStep: (stepName: string) => any;
 
   // Observer API as fields
-  subscribe: any;
+  subscribe: ({
+    eventName,
+    callback,
+  }: {
+    eventName:
+      | "onNext"
+      | "onPrev"
+      | "onFinish"
+      | "onUpdateSteps"
+      | "onNavigate"
+      | "onChangeStep"
+      | "onFailChangeStep";
+    callback: (payload: any) => void;
+  }) => () => void;
   interceptor: any;
 
   // Getters as fields
@@ -23,12 +36,10 @@ class Client {
   getIsFirst: () => boolean;
   getActiveSteps: () => any;
   getStatus: () => any;
-  onNext: ((hasOnNext: boolean) => any) | undefined = undefined;
 
   name: string;
 
   constructor(wizard: WizardEntity) {
-    console.log("wizard", wizard);
     // Initialize all methods as fields
     this.name = wizard.name;
     this.next = (params?: IMeta) => {
@@ -54,7 +65,25 @@ class Client {
     };
 
     // Observer API
-    this.subscribe = wizard.observer.subscribe;
+    this.subscribe = ({
+      eventName,
+      callback,
+    }: {
+      eventName:
+        | WizardEvents.ON_NEXT
+        | "onPrev"
+        | "onFinish"
+        | "onUpdateSteps"
+        | "onNavigate"
+        | "onChangeStep"
+        | "onFailChangeStep";
+      callback: (payload: any) => void;
+    }) => {
+      return wizard.observer.subscribe({
+        eventName: `${this.name}.${eventName}`,
+        callback,
+      });
+    };
     this.interceptor = wizard.observer.eventInterceptor;
 
     // Getters

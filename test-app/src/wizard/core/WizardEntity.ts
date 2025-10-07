@@ -1,3 +1,4 @@
+import type { Observer } from "../Observer";
 import {
   WizardCommands,
   WizardEvents,
@@ -7,7 +8,7 @@ import {
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
-import { Observer } from "./Observer";
+
 import { Step } from "./Step";
 
 class WizardEntity {
@@ -77,9 +78,8 @@ class WizardEntity {
 
   private handleFinish = (command: WizardCommands, actionMeta: IMeta) => {
     this.observer.dispatch({
-      eventName: this.eventNameBuilder(WizardEvents.STEP_WILDCARD),
+      eventName: `${this.name}.${WizardEvents.ON_FINISH}`,
       payload: {
-        eventName: WizardEvents.ON_FINISH,
         command,
         actionMeta,
         params: this.transitionParams(this.currentStep),
@@ -97,12 +97,11 @@ class WizardEntity {
     actionMeta: IMeta
   ) => {
     this.observer.dispatch({
-      eventName: this.eventNameBuilder(WizardEvents.STEP_WILDCARD),
+      eventName:
+        command === WizardCommands.NEXT
+          ? `${this.name}.${WizardEvents.ON_NEXT}`
+          : `${this.name}.${WizardEvents.ON_PREV}`,
       payload: {
-        eventName:
-          command === WizardCommands.NEXT
-            ? WizardEvents.ON_NEXT
-            : WizardEvents.ON_PREV,
         command,
         resolve: this.resolve(stepName),
         reject: this.reject(stepName, command),
@@ -115,7 +114,7 @@ class WizardEntity {
   private setStatus = (status: WizardStatus) => {
     this.status = status;
     this.observer.dispatch({
-      eventName: this.eventNameBuilder(WizardEvents.SET_STATUS),
+      eventName: `${this.name}.${WizardEvents.SET_STATUS}`,
     });
   };
 
@@ -136,16 +135,24 @@ class WizardEntity {
         this.stepsMap[step] = new Step(step);
       });
       this.observer.dispatch({
-        eventName: this.eventNameBuilder(WizardEvents.ON_UPDATE_STEPS),
+        eventName: `${this.name}.${WizardEvents.ON_UPDATE_STEPS}`,
       });
 
-      this.observer.dispatch({
-        eventName: this.eventNameBuilder(WizardEvents.NAVIGATE),
-        payload: {
-          command,
-          actionMeta,
-        },
-      });
+      command === WizardCommands.NEXT
+        ? this.observer.dispatch({
+            eventName: `${this.name}.${WizardEvents.NAVIGATE}`,
+            payload: {
+              command: WizardCommands.NEXT,
+              actionMeta,
+            },
+          })
+        : this.observer.dispatch({
+            eventName: `${this.name}.${WizardEvents.NAVIGATE}`,
+            payload: {
+              command: WizardCommands.PREV,
+              actionMeta,
+            },
+          });
     };
   };
 
@@ -154,7 +161,7 @@ class WizardEntity {
       this.navigate({ stepName });
       this.updateNavigationProperties();
       this.observer.dispatch({
-        eventName: this.eventNameBuilder(WizardEvents.CHANGE_STEP),
+        eventName: `${this.name}.${WizardEvents.CHANGE_STEP}`,
       });
     };
   }
@@ -162,9 +169,8 @@ class WizardEntity {
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
       this.observer.dispatch({
-        eventName: this.eventNameBuilder(WizardEvents.STEP_WILDCARD),
+        eventName: `${this.name}.${WizardEvents.FAIL_CHANGE_STEP}`,
         payload: {
-          eventName: WizardEvents.FAIL_CHANGE_STEP,
           command,
           message: error.message,
           params: this.transitionParams(stepName),

@@ -23,26 +23,35 @@ const WizardStep = ({
   useEffect(() => {
     const unsubscribe = context.wizard.subscribe({
       scope: WIZARD_SCOPE,
-      eventName: context.eventNameBuilder(WizardEvents.STEP_WILDCARD),
-      callback: ({ payload }: { payload: any }) => {
-        const { eventName, ...rest } = payload;
-        switch (eventName) {
-          case WizardEvents.ON_NEXT:
-            onNext
-              ? onNext(rest as IOnNextOnPrevEventPayload)
-              : payload.resolve();
-            break;
-          case WizardEvents.ON_PREV:
-            onPrev
-              ? onPrev(rest as IOnNextOnPrevEventPayload)
-              : payload.resolve();
-            break;
-          case WizardEvents.FAIL_CHANGE_STEP:
-            onFail?.(rest as IFailChangeStepEventPayload);
-            break;
-          case WizardEvents.ON_FINISH:
-            onFinish?.(rest as any);
-            break;
+      eventName: context.eventNameBuilder(WizardEvents.ON_NEXT),
+      callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
+        onNext ? onNext(payload) : payload.resolve();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: context.eventNameBuilder(WizardEvents.ON_PREV),
+      callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
+        onPrev ? onPrev(payload) : payload.resolve();
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
+
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: context.eventNameBuilder(WizardEvents.FAIL_CHANGE_STEP),
+      callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
+        if (onFail) {
+          onFail(payload);
         }
       },
     });
@@ -51,6 +60,20 @@ const WizardStep = ({
     };
   });
 
+  useEffect(() => {
+    const unsubscribe = context.wizard.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: context.eventNameBuilder(WizardEvents.ON_FINISH),
+      callback: ({ payload }: { payload: any }) => {
+        if (onFinish) {
+          onFinish(payload);
+        }
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
+  });
   return <>{children}</>;
 };
 
