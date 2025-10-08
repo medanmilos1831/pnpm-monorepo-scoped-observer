@@ -7,13 +7,11 @@ import { logGarage, Wizard, getWizard } from "../../wiz";
 import { useStatus, useWizardCommands } from "../../wizard";
 
 const SomeComponent = () => {
-  console.log("SomeComponent", getWizard("wizardOne"));
-  getWizard("wizardOne")!.subscribe({
-    eventName: "onNext",
-    callback: (payload: any) => {
-      console.log("payload", payload);
-    },
-  });
+  // getWizard("wizardOne")!.subscribe({
+  //   eventName: "onNext",
+  //   callback: (payload: any) => {
+  //   },
+  // });
   return <div>SomeComponent</div>;
 };
 

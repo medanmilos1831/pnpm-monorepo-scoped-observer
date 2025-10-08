@@ -13,7 +13,6 @@ const StepThree = () => {
   return (
     <WizardStep
       onFinish={(params) => {
-        // console.log("params", params);
         params.success();
       }}
     >

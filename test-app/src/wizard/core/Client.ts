@@ -14,20 +14,7 @@ class Client {
   navigateToStep: (stepName: string) => any;
 
   // Observer API as fields
-  subscribe: ({
-    eventName,
-    callback,
-  }: {
-    eventName:
-      | "onNext"
-      | "onPrev"
-      | "onFinish"
-      | "onUpdateSteps"
-      | "onNavigate"
-      | "onChangeStep"
-      | "onFailChangeStep";
-    callback: (payload: any) => void;
-  }) => () => void;
+  subscribe: any;
   interceptor: any;
 
   // Getters as fields
@@ -65,23 +52,13 @@ class Client {
     };
 
     // Observer API
-    this.subscribe = ({
-      eventName,
-      callback,
-    }: {
-      eventName:
-        | WizardEvents.ON_NEXT
-        | "onPrev"
-        | "onFinish"
-        | "onUpdateSteps"
-        | "onNavigate"
-        | "onChangeStep"
-        | "onFailChangeStep";
+    this.subscribe = (obj: {
+      eventName: string;
       callback: (payload: any) => void;
     }) => {
       return wizard.observer.subscribe({
-        eventName: `${this.name}.${eventName}`,
-        callback,
+        ...obj,
+        eventName: `${this.name}.${obj.eventName}`,
       });
     };
     this.interceptor = wizard.observer.eventInterceptor;

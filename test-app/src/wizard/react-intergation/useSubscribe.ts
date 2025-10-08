@@ -2,7 +2,7 @@ import { useContext, useState, useSyncExternalStore } from "react";
 import { WizardContext } from "./WizardProvider";
 
 const useSubscriber = (
-  { eventName }: { eventName: string; scope?: string },
+  { eventName }: { eventName: string },
   snapshot: () => any
 ) => {
   const context = useContext(WizardContext);
@@ -12,7 +12,7 @@ const useSubscriber = (
   const [state] = useState(() => {
     return (notify: () => void) => {
       return context.wizard.subscribe({
-        eventName: context.eventNameBuilder(eventName),
+        eventName,
         callback: notify,
       });
     };

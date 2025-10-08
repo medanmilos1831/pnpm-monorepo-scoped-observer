@@ -12,7 +12,6 @@ const useStatus = () => {
   return useSubscriber(
     {
       eventName: WizardEvents.SET_STATUS,
-      scope: WIZARD_SCOPE,
     },
     context.wizard.getStatus
   );
