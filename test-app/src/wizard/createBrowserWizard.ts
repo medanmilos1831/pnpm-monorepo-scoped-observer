@@ -28,19 +28,10 @@ const createBrowserWizard = () => {
       wizardStepsConfig: IWizardStepsConfig;
     }>) => {
       let item = garage.get(name);
-      const eventNameBuilder = (eventName: string) => {
-        return `${name}.${eventName}`;
-      };
       if (!item) {
         garage.set(name, {
           client: new Client(
-            new WizardEntity(
-              config,
-              wizardStepsConfig,
-              name,
-              observer,
-              eventNameBuilder
-            )
+            new WizardEntity(config, wizardStepsConfig, name, observer)
           ),
           disconnect: () => {
             garage.delete(name);
@@ -52,9 +43,9 @@ const createBrowserWizard = () => {
       return createElement(
         WizardProvider,
         {
+          name,
           client,
           disconnect,
-          eventNameBuilder,
           observer,
         },
         children

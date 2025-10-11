@@ -4,16 +4,20 @@ import {
   WizardEvents,
   type IOnNextOnPrevEventPayload,
   type IFailChangeStepEventPayload,
+  WIZARD_SCOPE,
 } from "../types";
+import { createEventName } from "../utils";
 
 const useOnNext = (onNext?: (payload: IOnNextOnPrevEventPayload) => void) => {
   const context = useContext(WizardContext);
   if (!context) {
     throw new Error("WizardProvider not found");
   }
+  const { observer } = context;
   useEffect(() => {
-    const unsubscribe = context?.observer.subscribe({
-      eventName: context.eventNameBuilder(WizardEvents.ON_NEXT),
+    const unsubscribe = observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: createEventName(context.name, WizardEvents.ON_NEXT),
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onNext ? onNext(payload) : payload.resolve();
       },
@@ -29,9 +33,11 @@ const useOnPrev = (onPrev?: (payload: IOnNextOnPrevEventPayload) => void) => {
   if (!context) {
     throw new Error("WizardProvider not found");
   }
+  const { observer } = context;
   useEffect(() => {
-    const unsubscribe = context.observer.subscribe({
-      eventName: WizardEvents.ON_PREV,
+    const unsubscribe = observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: createEventName(context.name, WizardEvents.ON_PREV),
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onPrev ? onPrev(payload) : payload.resolve();
       },
@@ -47,9 +53,11 @@ const useOnFail = (onFail?: (payload: IFailChangeStepEventPayload) => void) => {
   if (!context) {
     throw new Error("WizardProvider not found");
   }
+  const { observer } = context;
   useEffect(() => {
-    const unsubscribe = context.observer.subscribe({
-      eventName: WizardEvents.FAIL_CHANGE_STEP,
+    const unsubscribe = observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: createEventName(context.name, WizardEvents.FAIL_CHANGE_STEP),
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
         if (onFail) {
           onFail(payload);
@@ -67,9 +75,11 @@ const useOnFinish = (onFinish?: (payload: any) => void) => {
   if (!context) {
     throw new Error("WizardProvider not found");
   }
+  const { observer } = context;
   useEffect(() => {
-    const unsubscribe = context.observer.subscribe({
-      eventName: WizardEvents.ON_FINISH,
+    const unsubscribe = observer.subscribe({
+      scope: WIZARD_SCOPE,
+      eventName: createEventName(context.name, WizardEvents.ON_FINISH),
       callback: ({ payload }: { payload: any }) => {
         if (onFinish) {
           onFinish(payload);

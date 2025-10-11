@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { WizardEvents } from "../types";
 import { WizardContext } from "./WizardProvider";
 import { useSubscriber } from "./useSubscribe";
+import { createEventName } from "../utils";
 
 const useStep = () => {
   const context = useContext(WizardContext);
@@ -12,7 +13,7 @@ const useStep = () => {
   const { getActiveStep, getActiveSteps, getIsLast, getIsFirst } = client;
   const stepName = useSubscriber(
     {
-      eventName: WizardEvents.CHANGE_STEP,
+      eventName: createEventName(context.name, WizardEvents.CHANGE_STEP),
     },
     getActiveStep
   );

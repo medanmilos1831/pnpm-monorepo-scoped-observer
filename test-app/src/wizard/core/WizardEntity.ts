@@ -22,17 +22,14 @@ class WizardEntity {
   isFirst = false;
   status = WizardStatus.ACTIVE;
   observer: Observer;
-  eventNameBuilder: (eventName: string) => string;
   constructor(
     config: IWizardConfig,
     wizardStepsConfig: IWizardStepsConfig,
     name: string,
-    observer: Observer,
-    eventNameBuilder: (eventName: string) => string
+    observer: Observer
   ) {
     this.name = name;
     this.observer = observer;
-    this.eventNameBuilder = eventNameBuilder;
     this.__INIT_CONFIG__ = structuredClone(config);
     this.__INIT_WIZZARD_STEPS_CONFIG__ = structuredClone(wizardStepsConfig);
     this.wizardStepsConfig = wizardStepsConfig;

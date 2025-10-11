@@ -1,5 +1,6 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { WizardContext } from "./WizardProvider";
+import { WIZARD_SCOPE } from "../types";
 
 const useSubscriber = (
   { eventName }: { eventName: string },
@@ -9,11 +10,12 @@ const useSubscriber = (
   if (!context) {
     throw new Error("WizardProvider not found");
   }
-  const { client } = context;
-  const { subscribe } = client;
+  const { observer } = context;
+  const { subscribe } = observer;
   const [state] = useState(() => {
     return (notify: () => void) => {
       return subscribe({
+        scope: WIZARD_SCOPE,
         eventName,
         callback: notify,
       });

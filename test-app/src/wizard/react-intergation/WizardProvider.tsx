@@ -5,7 +5,7 @@ import { Observer } from "../Observer";
 const WizardContext = createContext<
   | {
       client: Client;
-      eventNameBuilder: (eventName: string) => string;
+      name: string;
       observer: Observer;
     }
   | undefined
@@ -15,13 +15,13 @@ const WizardProvider = ({
   children,
   client,
   disconnect,
-  eventNameBuilder,
   observer,
+  name,
 }: PropsWithChildren<{
   client: Client;
   disconnect: () => void;
-  eventNameBuilder: (eventName: string) => string;
   observer: Observer;
+  name: string;
 }>) => {
   useEffect(() => {
     return disconnect;
@@ -30,7 +30,7 @@ const WizardProvider = ({
     <WizardContext.Provider
       value={{
         client,
-        eventNameBuilder,
+        name,
         observer,
       }}
     >

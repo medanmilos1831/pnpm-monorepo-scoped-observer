@@ -56,10 +56,11 @@ class Client {
       eventName: string;
       callback: (payload: any) => void;
     }) => {
-      return wizard.observer.subscribe({
-        ...obj,
-        eventName: `${this.name}.${obj.eventName}`,
-      });
+      // return wizard.observer.subscribe({
+      //   scope: WIZARD_SCOPE,
+      //   ...obj,
+      //   eventName: `${this.name}.${obj.eventName}`,
+      // });
     };
     this.interceptor = wizard.observer.eventInterceptor;
 
