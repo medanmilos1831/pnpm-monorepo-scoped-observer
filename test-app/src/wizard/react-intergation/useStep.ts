@@ -8,21 +8,22 @@ const useStep = () => {
   if (!context) {
     throw new Error("WizardProvider not found");
   }
-
+  const { client } = context;
+  const { getActiveStep, getActiveSteps, getIsLast, getIsFirst } = client;
   const stepName = useSubscriber(
     {
       eventName: WizardEvents.CHANGE_STEP,
     },
-    context.wizard.getActiveStep
+    getActiveStep
   );
 
   return {
     stepName: stepName,
-    activeStep: context.wizard.getActiveStep(),
-    activeSteps: context.wizard.getActiveSteps(),
-    activeStepsLength: context.wizard.getActiveSteps().length,
-    isLast: context.wizard.getIsLast(),
-    isFirst: context.wizard.getIsFirst(),
+    activeStep: getActiveStep(),
+    activeSteps: getActiveSteps(),
+    activeStepsLength: getActiveSteps().length,
+    isLast: getIsLast(),
+    isFirst: getIsFirst(),
   };
 };
 

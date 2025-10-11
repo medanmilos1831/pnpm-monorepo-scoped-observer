@@ -4,7 +4,7 @@ import { Observer } from "../Observer";
 
 const WizardContext = createContext<
   | {
-      wizard: Client;
+      client: Client;
       eventNameBuilder: (eventName: string) => string;
       observer: Observer;
     }
@@ -13,12 +13,12 @@ const WizardContext = createContext<
 
 const WizardProvider = ({
   children,
-  wizard,
+  client,
   disconnect,
   eventNameBuilder,
   observer,
 }: PropsWithChildren<{
-  wizard: Client;
+  client: Client;
   disconnect: () => void;
   eventNameBuilder: (eventName: string) => string;
   observer: Observer;
@@ -29,7 +29,7 @@ const WizardProvider = ({
   return (
     <WizardContext.Provider
       value={{
-        wizard,
+        client,
         eventNameBuilder,
         observer,
       }}

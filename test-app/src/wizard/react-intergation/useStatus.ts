@@ -13,7 +13,7 @@ const useStatus = () => {
     {
       eventName: WizardEvents.SET_STATUS,
     },
-    context.wizard.getStatus
+    context.client.getStatus
   );
 };
 

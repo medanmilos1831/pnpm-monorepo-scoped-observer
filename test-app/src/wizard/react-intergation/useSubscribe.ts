@@ -9,9 +9,11 @@ const useSubscriber = (
   if (!context) {
     throw new Error("WizardProvider not found");
   }
+  const { client } = context;
+  const { subscribe } = client;
   const [state] = useState(() => {
     return (notify: () => void) => {
-      return context.wizard.subscribe({
+      return subscribe({
         eventName,
         callback: notify,
       });

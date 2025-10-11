@@ -9,9 +9,8 @@ const createBrowserWizard = () => {
   const garage = new Map<
     string,
     {
-      wizard: Client;
+      client: Client;
       disconnect: () => void;
-      client: () => void;
     }
   >();
 
@@ -34,7 +33,7 @@ const createBrowserWizard = () => {
       };
       if (!item) {
         garage.set(name, {
-          wizard: new Client(
+          client: new Client(
             new WizardEntity(
               config,
               wizardStepsConfig,
@@ -46,16 +45,14 @@ const createBrowserWizard = () => {
           disconnect: () => {
             garage.delete(name);
           },
-          client: () => {
-          },
         });
         item = garage.get(name)!;
       }
-      const { wizard, disconnect } = item;
+      const { client, disconnect } = item;
       return createElement(
         WizardProvider,
         {
-          wizard,
+          client,
           disconnect,
           eventNameBuilder,
           observer,
@@ -68,7 +65,7 @@ const createBrowserWizard = () => {
       // Debug method - can be enabled if needed
     },
     getWizard: (name: string) => {
-      return garage.get(name)?.client();
+      return garage.get(name)?.client;
     },
   };
 };

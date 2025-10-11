@@ -6,11 +6,13 @@ const useWizardCommands = () => {
   if (!context) {
     throw new Error("WizardProvider not found");
   }
+  const { client } = context;
+  const { next, prev, reset, navigateToStep } = client;
   return {
-    next: context.wizard.next,
-    prev: context.wizard.prev,
-    reset: context.wizard.reset,
-    navigateToStep: context.wizard.navigateToStep,
+    next,
+    prev,
+    reset,
+    navigateToStep,
   };
 };
 
