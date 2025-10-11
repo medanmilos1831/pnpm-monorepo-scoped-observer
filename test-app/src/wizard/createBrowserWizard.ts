@@ -55,6 +55,7 @@ const createBrowserWizard = () => {
           wizard,
           disconnect,
           eventNameBuilder,
+          observer,
         },
         children
       );
