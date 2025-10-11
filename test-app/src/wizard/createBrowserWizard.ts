@@ -11,6 +11,7 @@ const createBrowserWizard = () => {
     {
       wizard: Client;
       disconnect: () => void;
+      client: () => void;
     }
   >();
 
@@ -45,6 +46,8 @@ const createBrowserWizard = () => {
           disconnect: () => {
             garage.delete(name);
           },
+          client: () => {
+          },
         });
         item = garage.get(name)!;
       }
@@ -65,7 +68,7 @@ const createBrowserWizard = () => {
       // Debug method - can be enabled if needed
     },
     getWizard: (name: string) => {
-      return garage.get(name)?.wizard;
+      return garage.get(name)?.client();
     },
   };
 };

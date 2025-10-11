@@ -27,7 +27,6 @@ class Client {
   name: string;
 
   constructor(wizard: WizardEntity) {
-    console.log("Client", wizard);
     // Initialize all methods as fields
     this.name = wizard.name;
     this.next = (params?: IMeta) => {

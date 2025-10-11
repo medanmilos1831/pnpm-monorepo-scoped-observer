@@ -8,7 +8,6 @@ import {
 
 const useOnNext = (onNext?: (payload: IOnNextOnPrevEventPayload) => void) => {
   const context = useContext(WizardContext);
-  console.log("useOnNext", context?.observer);
   if (!context) {
     throw new Error("WizardProvider not found");
   }
