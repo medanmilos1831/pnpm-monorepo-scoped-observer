@@ -14,7 +14,7 @@ export const WizardEvents = {
   ON_FAIL: "onFail",
   ON_FINISH: "onFinish",
   ON_UPDATE_STEPS: "onUpdateSteps",
-  ON_SET_STATUS: "onSetStatus",
+  ON_STATUS_CHANGE: "onStatusChange",
   ON_NEXT: "onNext",
   ON_PREV: "onPrev",
 };

@@ -112,7 +112,7 @@ class WizardEntity {
   private setStatus = (status: WizardStatus) => {
     this.status = status;
     this.observer.dispatch({
-      eventName: createEventName(this.name, WizardEvents.ON_SET_STATUS),
+      eventName: createEventName(this.name, WizardEvents.ON_STATUS_CHANGE),
     });
   };
 

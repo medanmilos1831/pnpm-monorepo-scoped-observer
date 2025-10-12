@@ -11,7 +11,7 @@ const useStatus = () => {
   }
 
   return useSubscribe(
-    createEventName(context.name, WizardEvents.ON_SET_STATUS),
+    createEventName(context.name, WizardEvents.ON_STATUS_CHANGE),
     context.client.getStatus
   );
 };
