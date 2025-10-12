@@ -19,20 +19,19 @@ class Observer {
     });
   };
   subscribe = ({
-    scope,
     eventName,
     callback,
   }: {
-    scope: string;
     eventName: string;
     callback: (payload: any) => void;
   }) => {
     return this.observer.subscribe({
-      scope,
+      scope: WIZARD_SCOPE,
       eventName,
       callback,
     });
   };
+
   eventInterceptor = this.observer.eventInterceptor;
 }
 

@@ -9,17 +9,12 @@ export enum WizardStatus {
 }
 
 export const WizardEvents = {
-  NAVIGATE: "navigate",
-  BEFORE_CHANGE_STEP: "beforeChangeStep",
-  CHANGE_STEP: "changeStep",
-  STEP_STATE_STATE: "stepStateState",
-  FAIL_CHANGE_STEP: "onFail",
-  LEAVE_STEP: "onLeave",
+  ON_NAVIGATE: "onNavigate",
+  ON_CHANGE_STEP: "onChangeStep",
+  ON_FAIL: "onFail",
   ON_FINISH: "onFinish",
   ON_UPDATE_STEPS: "onUpdateSteps",
-  RESET: "reset",
-  SET_STATUS: "setStatus",
-  NAVIGATE_TO_STEP: "navigateToStep",
+  ON_SET_STATUS: "onSetStatus",
   ON_NEXT: "onNext",
   ON_PREV: "onPrev",
 };

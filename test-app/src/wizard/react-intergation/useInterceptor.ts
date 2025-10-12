@@ -14,7 +14,7 @@ const useInterceptor = ({
     throw new Error("WizardProvider not found");
   }
   useEffect(() => {
-    context.wizard.interceptor({
+    context.client.interceptor({
       scope: WIZARD_SCOPE,
       eventName,
       callback: (data: IOnNextOnPrevEventPayload) => {

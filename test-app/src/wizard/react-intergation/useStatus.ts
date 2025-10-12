@@ -1,7 +1,8 @@
 import { useContext } from "react";
+import { WizardEvents } from "../types";
+import { useSubscribe } from "./useSubscribe";
 import { WizardContext } from "./WizardProvider";
-import { WizardEvents, WIZARD_SCOPE } from "../types";
-import { useSubscriber } from "./useSubscribe";
+import { createEventName } from "../utils";
 
 const useStatus = () => {
   const context = useContext(WizardContext);
@@ -9,10 +10,8 @@ const useStatus = () => {
     throw new Error("WizardProvider not found");
   }
 
-  return useSubscriber(
-    {
-      eventName: WizardEvents.SET_STATUS,
-    },
+  return useSubscribe(
+    createEventName(context.name, WizardEvents.ON_SET_STATUS),
     context.client.getStatus
   );
 };

@@ -1,9 +1,4 @@
-import {
-  WIZARD_SCOPE,
-  WizardCommands,
-  type IMeta,
-  type IOnNextOnPrevEventPayload,
-} from "../types";
+import { WIZARD_SCOPE, WizardCommands, type IMeta } from "../types";
 import type { WizardEntity } from "./WizardEntity";
 
 class Client {
@@ -15,7 +10,6 @@ class Client {
 
   // Observer API as fields
   subscribe: any;
-  interceptor: any;
 
   // Getters as fields
   getActiveStep: () => any;
@@ -56,13 +50,13 @@ class Client {
       eventName: string;
       callback: (payload: any) => void;
     }) => {
-      // return wizard.observer.subscribe({
-      //   scope: WIZARD_SCOPE,
-      //   ...obj,
-      //   eventName: `${this.name}.${obj.eventName}`,
-      // });
+      return wizard.observer.subscribe({
+        eventName: `${this.name}.${obj.eventName}`,
+        callback: ({ payload }) => {
+          console.log("payload", payload);
+        },
+      });
     };
-    this.interceptor = wizard.observer.eventInterceptor;
 
     // Getters
     this.getActiveStep = () => {

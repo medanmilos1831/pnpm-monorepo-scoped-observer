@@ -8,6 +8,7 @@ import {
   type IWizardConfig,
   type IWizardStepsConfig,
 } from "../types";
+import { createEventName } from "../utils";
 
 import { Step } from "./Step";
 
@@ -75,7 +76,7 @@ class WizardEntity {
 
   private handleFinish = (command: WizardCommands, actionMeta: IMeta) => {
     this.observer.dispatch({
-      eventName: `${this.name}.${WizardEvents.ON_FINISH}`,
+      eventName: createEventName(this.name, WizardEvents.ON_FINISH),
       payload: {
         command,
         actionMeta,
@@ -111,7 +112,7 @@ class WizardEntity {
   private setStatus = (status: WizardStatus) => {
     this.status = status;
     this.observer.dispatch({
-      eventName: `${this.name}.${WizardEvents.SET_STATUS}`,
+      eventName: createEventName(this.name, WizardEvents.ON_SET_STATUS),
     });
   };
 
@@ -132,24 +133,16 @@ class WizardEntity {
         this.stepsMap[step] = new Step(step);
       });
       this.observer.dispatch({
-        eventName: `${this.name}.${WizardEvents.ON_UPDATE_STEPS}`,
+        eventName: createEventName(this.name, WizardEvents.ON_UPDATE_STEPS),
       });
 
-      command === WizardCommands.NEXT
-        ? this.observer.dispatch({
-            eventName: `${this.name}.${WizardEvents.NAVIGATE}`,
-            payload: {
-              command: WizardCommands.NEXT,
-              actionMeta,
-            },
-          })
-        : this.observer.dispatch({
-            eventName: `${this.name}.${WizardEvents.NAVIGATE}`,
-            payload: {
-              command: WizardCommands.PREV,
-              actionMeta,
-            },
-          });
+      this.observer.dispatch({
+        eventName: createEventName(this.name, WizardEvents.ON_NAVIGATE),
+        payload: {
+          command,
+          actionMeta,
+        },
+      });
     };
   };
 
@@ -158,7 +151,7 @@ class WizardEntity {
       this.navigate({ stepName });
       this.updateNavigationProperties();
       this.observer.dispatch({
-        eventName: `${this.name}.${WizardEvents.CHANGE_STEP}`,
+        eventName: createEventName(this.name, WizardEvents.ON_CHANGE_STEP),
       });
     };
   }
@@ -166,7 +159,7 @@ class WizardEntity {
   private reject(stepName: string, command: WizardCommands) {
     return (error: IRejectParams) => {
       this.observer.dispatch({
-        eventName: `${this.name}.${WizardEvents.FAIL_CHANGE_STEP}`,
+        eventName: createEventName(this.name, WizardEvents.ON_FAIL),
         payload: {
           command,
           message: error.message,

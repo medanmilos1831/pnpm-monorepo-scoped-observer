@@ -1,12 +1,11 @@
 import { useContext, useEffect } from "react";
-import { WizardContext } from "./WizardProvider";
 import {
   WizardEvents,
-  type IOnNextOnPrevEventPayload,
   type IFailChangeStepEventPayload,
-  WIZARD_SCOPE,
+  type IOnNextOnPrevEventPayload,
 } from "../types";
 import { createEventName } from "../utils";
+import { WizardContext } from "./WizardProvider";
 
 const useOnNext = (onNext?: (payload: IOnNextOnPrevEventPayload) => void) => {
   const context = useContext(WizardContext);
@@ -16,7 +15,6 @@ const useOnNext = (onNext?: (payload: IOnNextOnPrevEventPayload) => void) => {
   const { observer } = context;
   useEffect(() => {
     const unsubscribe = observer.subscribe({
-      scope: WIZARD_SCOPE,
       eventName: createEventName(context.name, WizardEvents.ON_NEXT),
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onNext ? onNext(payload) : payload.resolve();
@@ -36,7 +34,6 @@ const useOnPrev = (onPrev?: (payload: IOnNextOnPrevEventPayload) => void) => {
   const { observer } = context;
   useEffect(() => {
     const unsubscribe = observer.subscribe({
-      scope: WIZARD_SCOPE,
       eventName: createEventName(context.name, WizardEvents.ON_PREV),
       callback: ({ payload }: { payload: IOnNextOnPrevEventPayload }) => {
         onPrev ? onPrev(payload) : payload.resolve();
@@ -56,8 +53,7 @@ const useOnFail = (onFail?: (payload: IFailChangeStepEventPayload) => void) => {
   const { observer } = context;
   useEffect(() => {
     const unsubscribe = observer.subscribe({
-      scope: WIZARD_SCOPE,
-      eventName: createEventName(context.name, WizardEvents.FAIL_CHANGE_STEP),
+      eventName: createEventName(context.name, WizardEvents.ON_FAIL),
       callback: ({ payload }: { payload: IFailChangeStepEventPayload }) => {
         if (onFail) {
           onFail(payload);
@@ -78,7 +74,6 @@ const useOnFinish = (onFinish?: (payload: any) => void) => {
   const { observer } = context;
   useEffect(() => {
     const unsubscribe = observer.subscribe({
-      scope: WIZARD_SCOPE,
       eventName: createEventName(context.name, WizardEvents.ON_FINISH),
       callback: ({ payload }: { payload: any }) => {
         if (onFinish) {
@@ -92,4 +87,4 @@ const useOnFinish = (onFinish?: (payload: any) => void) => {
   });
 };
 
-export { useOnNext, useOnPrev, useOnFail, useOnFinish };
+export { useOnFail, useOnFinish, useOnNext, useOnPrev };
