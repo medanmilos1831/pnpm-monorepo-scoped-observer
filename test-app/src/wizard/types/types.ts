@@ -8,16 +8,16 @@ export enum WizardStatus {
   SUCCESS = "success",
 }
 
-export const WizardEvents = {
-  ON_NAVIGATE: "onNavigate",
-  ON_CHANGE_STEP: "onChangeStep",
-  ON_FAIL: "onFail",
-  ON_FINISH: "onFinish",
-  ON_UPDATE_STEPS: "onUpdateSteps",
-  ON_STATUS_CHANGE: "onStatusChange",
-  ON_NEXT: "onNext",
-  ON_PREV: "onPrev",
-};
+export enum WizardEvents {
+  ON_NAVIGATE = "onNavigate",
+  ON_CHANGE_STEP = "onChangeStep",
+  ON_FAIL = "onFail",
+  ON_FINISH = "onFinish",
+  ON_UPDATE_STEPS = "onUpdateSteps",
+  ON_STATUS_CHANGE = "onStatusChange",
+  ON_NEXT = "onNext",
+  ON_PREV = "onPrev",
+}
 
 export const WIZARD_SCOPE = "wizard" as const;
 

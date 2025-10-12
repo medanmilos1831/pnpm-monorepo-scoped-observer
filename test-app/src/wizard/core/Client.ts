@@ -1,4 +1,10 @@
-import { WIZARD_SCOPE, WizardCommands, type IMeta } from "../types";
+import {
+  WIZARD_SCOPE,
+  WizardCommands,
+  WizardEvents,
+  type IMeta,
+} from "../types";
+import { createEventName } from "../utils";
 import type { WizardEntity } from "./WizardEntity";
 
 class Client {
@@ -9,7 +15,10 @@ class Client {
   navigateToStep: (stepName: string) => any;
 
   // Observer API as fields
-  subscribe: any;
+  subscribe: (obj: {
+    eventName: `${WizardEvents}`;
+    callback: (payload: any) => void;
+  }) => () => void;
 
   // Getters as fields
   getActiveStep: () => any;
@@ -46,14 +55,23 @@ class Client {
     };
 
     // Observer API
-    this.subscribe = (obj: {
-      eventName: string;
+    this.subscribe = ({
+      eventName,
+      callback,
+    }: {
+      eventName: `${WizardEvents}`;
       callback: (payload: any) => void;
     }) => {
       return wizard.observer.subscribe({
-        eventName: `${this.name}.${obj.eventName}`,
-        callback: ({ payload }) => {
-          console.log("payload", payload);
+        eventName: createEventName(this.name, eventName),
+        callback: () => {
+          callback({
+            getActiveStep: this.getActiveStep,
+            getIsLast: this.getIsLast,
+            getIsFirst: this.getIsFirst,
+            getActiveSteps: this.getActiveSteps,
+            getStatus: this.getStatus,
+          });
         },
       });
     };
