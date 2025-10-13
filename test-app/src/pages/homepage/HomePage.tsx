@@ -1,4 +1,19 @@
-import { WizardProvider } from "../../wiz";
+import { WizardProvider, WizardStep } from "../../wiz";
+
+const Inner = () => {
+  return (
+    <WizardStep
+      commands={{
+        onNext: () => {},
+        // previousStep: () => {
+        //   console.log("previousStep");
+        // },
+      }}
+    >
+      Inner
+    </WizardStep>
+  );
+};
 
 const HomePage = () => {
   return (
@@ -8,7 +23,7 @@ const HomePage = () => {
         steps={["stepOne", "stepTwo", "stepThree"]}
         activeStep={"stepOne"}
       >
-        <>nesto</>
+        <Inner />
       </WizardProvider>
     </>
   );

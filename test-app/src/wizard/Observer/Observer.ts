@@ -1,5 +1,5 @@
 import { createScopedObserver } from "../../scroped-observer";
-import { SCOPE_NAME } from "../types/observer.types";
+import { SCOPE_NAME } from "./types";
 
 class Observer {
   private observer = createScopedObserver([

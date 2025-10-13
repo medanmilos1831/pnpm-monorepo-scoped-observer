@@ -1,1 +1,2 @@
-export { WizardProvider } from "./WizardProvider";
+export { WizardProviderHOC, WizardContext } from "./WizardProviderHOC";
+export { WizardStep } from "./WizardStep";

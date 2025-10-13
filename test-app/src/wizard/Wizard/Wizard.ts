@@ -1,4 +1,4 @@
-import type { IWizard } from "../types/wizardProvider.types";
+import type { IWizard } from "./types";
 
 class Wizard {
   id: string;
@@ -9,6 +9,9 @@ class Wizard {
     this.steps = steps;
     this.activeStep = activeStep;
   }
+  findStep = () => {
+    console.log("findStep");
+  };
 }
 
 export { Wizard };
