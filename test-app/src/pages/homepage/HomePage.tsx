@@ -1,4 +1,5 @@
 import { WizardProvider, WizardStep } from "../../wiz";
+import { useWizardCommands } from "../../wizard/react-intergation";
 
 const Inner = () => {
   return (
@@ -15,6 +16,16 @@ const Inner = () => {
   );
 };
 
+const Controls = () => {
+  const { next, previous } = useWizardCommands();
+  return (
+    <div>
+      <button onClick={() => previous()}>Previous</button>
+      <button onClick={() => next()}>Next</button>
+    </div>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
@@ -24,6 +35,7 @@ const HomePage = () => {
         activeStep={"stepOne"}
       >
         <Inner />
+        <Controls />
       </WizardProvider>
     </>
   );

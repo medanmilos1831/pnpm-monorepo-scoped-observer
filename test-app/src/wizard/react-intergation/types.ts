@@ -9,4 +9,8 @@ export interface IWizardStep {
     onNext?: () => void;
     onPrevious?: () => void;
   };
+  validate?: {
+    onNext?: () => boolean;
+    onPrevious?: () => boolean;
+  };
 }

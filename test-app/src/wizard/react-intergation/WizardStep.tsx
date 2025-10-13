@@ -5,11 +5,10 @@ import type { IWizardStep } from "./types";
 const WizardStep = ({ children, commands }: PropsWithChildren<IWizardStep>) => {
   const context = useContext(WizardContext);
   useEffect(() => {
-    context.client.onNext();
-    // console.log(context.client.onNext);
-    // if (!commands) return;
+    console.log(context);
+    if (!commands) return;
     // Object.entries(commands).forEach(([key, value]) => {
-    //   console.log(context.client.nextStep());
+    //   console.log(key, value);
     // });
   });
   return <>{children}</>;
