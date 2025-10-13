@@ -6,9 +6,9 @@ const Inner = () => {
     <WizardStep
       commands={{
         onNext: () => {},
-        // previousStep: () => {
-        //   console.log("previousStep");
-        // },
+        onPrevious: () => {
+          console.log("previousStep");
+        },
       }}
     >
       Inner

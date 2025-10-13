@@ -1,6 +1,9 @@
+import type { StepEntity } from "../Wizard";
+
 export interface IWizardProviderHOC {
   disconnect: () => void;
   client: any;
+  stepEntity: StepEntity;
 }
 
 export interface IWizardStep {
