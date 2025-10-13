@@ -1,8 +1,8 @@
-import type { Entity } from "../Entity/Entity";
+import type { Wizard } from "../Wizard/Wizard";
 
 class Hub {
-  entities = new Map<string, Entity>();
-  addEntity = (entity: Entity) => {
+  entities = new Map<string, Wizard>();
+  addEntity = (entity: Wizard) => {
     this.entities.set(entity.id, entity);
   };
   getEntity = (id: string) => {
@@ -11,7 +11,7 @@ class Hub {
   removeEntity = (id: string) => {
     this.entities.delete(id);
   };
-  setup = (entity: Entity) => {
+  setup = (entity: Wizard) => {
     if (!this.getEntity(entity.id)) {
       this.addEntity(entity);
     }

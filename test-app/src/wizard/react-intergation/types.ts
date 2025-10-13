@@ -1,5 +1,4 @@
 export interface IWizardProviderHOC {
-  id: string;
   disconnect: () => void;
   client: any;
 }

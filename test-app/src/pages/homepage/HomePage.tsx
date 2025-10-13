@@ -1,4 +1,4 @@
-import { WizardProvider, WizardStep } from "../../wiz";
+import { Wizard, WizardStep } from "../../wiz";
 import { useWizardCommands } from "../../wizard/react-intergation";
 
 const Inner = () => {
@@ -29,14 +29,14 @@ const Controls = () => {
 const HomePage = () => {
   return (
     <>
-      <WizardProvider
+      <Wizard
         id="wizard"
         steps={["stepOne", "stepTwo", "stepThree"]}
         activeStep={"stepOne"}
       >
         <Inner />
         <Controls />
-      </WizardProvider>
+      </Wizard>
     </>
   );
 };

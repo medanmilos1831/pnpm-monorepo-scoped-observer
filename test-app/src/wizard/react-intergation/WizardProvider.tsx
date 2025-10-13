@@ -3,9 +3,8 @@ import type { IWizardProviderHOC } from "./types";
 
 const WizardContext = createContext<any>(undefined);
 
-const WizardProviderHOC = ({
+const WizardProvider = ({
   children,
-  id,
   disconnect,
   client,
 }: PropsWithChildren<IWizardProviderHOC>) => {
@@ -17,7 +16,6 @@ const WizardProviderHOC = ({
   return (
     <WizardContext.Provider
       value={{
-        id,
         client,
       }}
     >
@@ -26,4 +24,4 @@ const WizardProviderHOC = ({
   );
 };
 
-export { WizardProviderHOC, WizardContext };
+export { WizardProvider, WizardContext };

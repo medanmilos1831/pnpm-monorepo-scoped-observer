@@ -1,5 +1,5 @@
 import { useContext, useEffect, type PropsWithChildren } from "react";
-import { WizardContext } from "./WizardProviderHOC";
+import { WizardContext } from "./WizardProvider";
 import type { IWizardStep } from "./types";
 
 const WizardStep = ({ children, commands }: PropsWithChildren<IWizardStep>) => {

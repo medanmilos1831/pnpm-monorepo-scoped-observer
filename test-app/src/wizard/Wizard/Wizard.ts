@@ -1,10 +1,11 @@
-import { WizardCommands, type IWizard } from "../types";
+import { WizardCommands } from "../types";
+import type { IWizardConfig } from "./types";
 
-class Entity {
+class Wizard {
   id: string;
   steps: string[];
   activeStep: string;
-  constructor({ id, steps, activeStep }: IWizard) {
+  constructor({ id, steps, activeStep }: IWizardConfig) {
     this.id = id;
     this.steps = steps;
     this.activeStep = activeStep;
@@ -41,4 +42,4 @@ class Entity {
   };
 }
 
-export { Entity };
+export { Wizard };
