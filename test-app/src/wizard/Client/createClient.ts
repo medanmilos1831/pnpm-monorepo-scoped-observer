@@ -5,7 +5,7 @@ import type { Step, Wizard } from "../Wizard";
 export function createClient(observer: Observer) {
   return ({ wizard, step }: { wizard: Wizard; step: Step }) => {
     function resolve(
-      step: string,
+      toStep: string,
       command: WizardCommands.NEXT | WizardCommands.PREVIOUS
     ) {
       observer.dispatch(
@@ -14,20 +14,16 @@ export function createClient(observer: Observer) {
           : WizardEvents.ON_PREVIOUS,
         {
           activeStep: wizard.activeStep,
-          toStep: step,
+          toStep,
         }
       );
-      wizard.changeStep(step);
+      wizard.changeStep(toStep);
       observer.dispatch(WizardEvents.ON_STEP_CHANGE);
     }
     return {
-      next: (obj?: {
-        actionType?: string;
-        middleware?: (params: any) => void;
-      }) => {
-        if (obj?.middleware) {
-          obj.middleware({
-            activeStep: wizard.activeStep,
+      next: (obj?: { actionType?: string }) => {
+        if (step.middleware) {
+          step.middleware({
             updateSteps: (callback: (steps: string[]) => string[]) => {
               const updatedSteps = callback(wizard.steps);
               wizard.steps = [...new Set(updatedSteps)];

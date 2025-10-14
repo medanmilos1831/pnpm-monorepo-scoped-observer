@@ -8,12 +8,14 @@ const WizardStep = ({
   onNext,
   onPrevious,
   validate,
+  middleware,
 }: PropsWithChildren<IWizardStep>) => {
   const context = useContext(WizardContext);
   context.step.setStepDefinition({
     hasValidation: !!validate,
     onNext: !!onNext,
     onPrevious: !!onPrevious,
+    middleware,
   });
   useEffect(() => {
     let unsubscribe = () => {};

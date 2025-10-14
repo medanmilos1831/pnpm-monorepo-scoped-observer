@@ -12,7 +12,6 @@ const StepMap = {
 
 const WizardNavigation = () => {
   const { steps } = useStep();
-  console.log(steps);
   return (
     <div style={{ display: "flex", gap: "10px" }}>
       {steps.map((step: string) => (
@@ -39,11 +38,14 @@ const Controls = () => {
         onClick={() =>
           next({
             actionType: "validation",
-            middleware: ({ updateSteps, activeStep }: any) => {
-              updateSteps((prev: string[]) => {
-                return [...prev, "stepThree"];
-              });
-            },
+            // middleware: ({ updateSteps, activeStep }: any) => {
+            //   if (activeStep === "stepOne") {
+            //     return;
+            //   }
+            //   updateSteps((prev: string[]) => {
+            //     return [...prev, "stepThree"];
+            //   });
+            // },
           })
         }
       >

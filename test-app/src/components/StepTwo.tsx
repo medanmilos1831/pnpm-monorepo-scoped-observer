@@ -3,11 +3,12 @@ import { WizardStep } from "../wiz";
 const StepTwo = () => {
   return (
     <WizardStep
-      onPrevious={() => {
-        console.log("onPrevious");
-      }}
-      onNext={() => {
-        console.log("onNext");
+      onPrevious={() => {}}
+      onNext={() => {}}
+      middleware={({ updateSteps }) => {
+        updateSteps((prev: string[]) => {
+          return [...prev, "stepThree"];
+        });
       }}
     >
       StepTwo

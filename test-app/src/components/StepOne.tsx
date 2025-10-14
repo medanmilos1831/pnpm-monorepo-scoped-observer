@@ -21,9 +21,7 @@ const StepOne = () => {
   return (
     <div>
       <WizardStep
-        onNext={(params) => {
-          console.log("onNext", params);
-        }}
+        onNext={(params) => {}}
         // validate={(params) => {
         //   if (params.actionType === "validation") {
         //     showModal();

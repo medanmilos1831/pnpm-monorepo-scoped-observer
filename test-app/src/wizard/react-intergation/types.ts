@@ -12,4 +12,5 @@ export interface IWizardStep {
   onNext?: (params: any) => void;
   onPrevious?: (params: any) => void;
   validate?: (params: any) => void;
+  middleware?: (params: any) => void;
 }
