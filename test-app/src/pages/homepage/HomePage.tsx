@@ -10,6 +10,18 @@ const StepMap = {
   stepThree: StepThree,
 };
 
+const WizardNavigation = () => {
+  const { steps } = useStep();
+  console.log(steps);
+  return (
+    <div style={{ display: "flex", gap: "10px" }}>
+      {steps.map((step: string) => (
+        <div key={step}>{step}</div>
+      ))}
+    </div>
+  );
+};
+
 const Controls = () => {
   const { next, previous } = useWizardCommands();
   return (
@@ -55,8 +67,12 @@ const HomePage = () => {
   return (
     <>
       <Wizard id="wizard" steps={["stepOne", "stepTwo"]} activeStep={"stepOne"}>
+        <WizardNavigation />
+        <br />
         <WizardBody />
-        <Controls />
+        <div style={{ marginTop: "20px" }}>
+          <Controls />
+        </div>
       </Wizard>
     </>
   );

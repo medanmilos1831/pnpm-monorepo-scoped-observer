@@ -56,6 +56,15 @@ export function createClient(observer: Observer) {
         actionType?: string;
         middleware?: (params: any) => void;
       }) => {
+        if (obj?.middleware) {
+          obj.middleware({
+            activeStep: wizard.activeStep,
+            updateSteps: (callback: (steps: string[]) => string[]) => {
+              const updatedSteps = callback(wizard.steps);
+              wizard.steps = [...new Set(updatedSteps)];
+            },
+          });
+        }
         const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
         if (!result) return;
         if (step.hasValidation) {

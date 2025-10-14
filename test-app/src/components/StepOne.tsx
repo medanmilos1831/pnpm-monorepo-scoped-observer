@@ -20,19 +20,6 @@ const StepOne = () => {
 
   return (
     <div>
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={() => {
-          handleOk();
-          next();
-        }}
-        onCancel={handleCancel}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
       <WizardStep
         onNext={(params) => {
           console.log("onNext", params);

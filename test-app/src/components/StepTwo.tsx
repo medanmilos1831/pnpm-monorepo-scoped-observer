@@ -9,13 +9,6 @@ const StepTwo = () => {
       onNext={() => {
         console.log("onNext");
       }}
-      // validate={(params) => {
-      //   if (params.actionType === "validation") {
-      //     console.log("validate", params);
-      //     return;
-      //   }
-      //   params.resolve();
-      // }}
     >
       StepTwo
     </WizardStep>
