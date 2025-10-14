@@ -8,6 +8,7 @@ export interface IWizardProviderHOC {
   client: any;
   onReset?: () => void;
   onFinish?: (params: any) => void;
+  renderOnFinish?: (params: any) => React.ReactNode;
 }
 
 export interface IWizardStep {

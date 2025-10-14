@@ -10,4 +10,5 @@ export interface IWizardConfig {
   activeStep: string;
   onReset?: () => void;
   onFinish?: (params: any) => void;
+  renderOnFinish?: (params: any) => React.ReactNode;
 }

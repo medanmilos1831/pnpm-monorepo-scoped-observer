@@ -15,6 +15,7 @@ const createBrowserWizard = () => {
       children,
       onReset,
       onFinish,
+      renderOnFinish,
       ...props
     }: PropsWithChildren<IWizardConfig>) => {
       const { disconnect, slice } = store.createSlice(props.id, () => {
@@ -33,6 +34,7 @@ const createBrowserWizard = () => {
           client: client({ wizard, step }),
           onReset,
           onFinish,
+          renderOnFinish,
         },
         children
       );

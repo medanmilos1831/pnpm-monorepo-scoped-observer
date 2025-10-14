@@ -1,4 +1,9 @@
-import { createContext, useEffect, type PropsWithChildren } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from "react";
 import type { IWizardProviderHOC } from "./types";
 import { WizardEvents } from "../types";
 
@@ -12,7 +17,9 @@ const WizardProvider = ({
   client,
   onReset,
   onFinish,
+  renderOnFinish,
 }: PropsWithChildren<IWizardProviderHOC>) => {
+  const [successRender, setSuccessRender] = useState(false);
   useEffect(() => {
     return () => {
       disconnect();
@@ -36,6 +43,9 @@ const WizardProvider = ({
         reset: () => {
           client.reset();
         },
+        renderOnFinish: () => {
+          setSuccessRender(true);
+        },
       })
     );
     return () => {
@@ -44,6 +54,16 @@ const WizardProvider = ({
       }
     };
   });
+  if (successRender) {
+    return renderOnFinish
+      ? renderOnFinish({
+          reset: () => {
+            setSuccessRender(false);
+            client.reset();
+          },
+        })
+      : null;
+  }
   return (
     <WizardContext.Provider
       value={{

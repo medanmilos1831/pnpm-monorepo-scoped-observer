@@ -65,10 +65,17 @@ const HomePage = () => {
         id="wizard"
         steps={["stepOne", "stepTwo"]}
         activeStep={"stepOne"}
-        onReset={() => {
-        }}
-        onFinish={({ reset }: any) => {
+        onReset={() => {}}
+        onFinish={({ reset, renderOnFinish }: any) => {
+          renderOnFinish();
           reset();
+        }}
+        renderOnFinish={({ reset }: { reset: () => void }) => {
+          return (
+            <div>
+              <button onClick={() => reset()}>reset</button>
+            </div>
+          );
         }}
       >
         <WizardNavigation />
