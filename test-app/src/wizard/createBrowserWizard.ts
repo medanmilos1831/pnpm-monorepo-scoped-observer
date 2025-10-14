@@ -2,8 +2,8 @@ import { createElement, type PropsWithChildren } from "react";
 import { Store } from "./Store";
 import { WizardProvider, WizardStep } from "./react-intergation";
 
-import { Observer } from "./Observer";
 import { createClient } from "./Client/createClient";
+import { Observer } from "./Observer";
 import { Step, Wizard, type IWizardConfig } from "./Wizard";
 
 const createBrowserWizard = () => {
@@ -40,7 +40,13 @@ const createBrowserWizard = () => {
       );
     },
     WizardStep,
-    getClient: client,
+    getClient: (id: string) => {
+      let entity = store.getSlice(id);
+      if (!entity) {
+        throw new Error(`Wizard with id ${id} not found`);
+      }
+      return client(entity);
+    },
   };
 };
 

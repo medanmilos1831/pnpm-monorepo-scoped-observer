@@ -1,8 +1,22 @@
-import { Wizard, WizardStep } from "../../wiz";
-import { useWizardCommands, useStep } from "../../wizard/";
 import { StepOne } from "../../components/StepOne";
-import { StepTwo } from "../../components/StepTwo";
 import { StepThree } from "../../components/StepThree";
+import { StepTwo } from "../../components/StepTwo";
+import { Wizard, getClient } from "../../wiz";
+import { useStep, useWizardCommands } from "../../wizard/";
+import { WizardEvents } from "../../wizard/types";
+
+const SomeComponent = () => {
+  getClient("wizard").subscribe(WizardEvents.ON_STEP_CHANGE, (params: any) => {
+    console.log("ON_STEP_CHANGE", params);
+  });
+  return (
+    <div>
+      <button onClick={() => getClient("wizard").next()}>Next</button>
+      <button onClick={() => getClient("wizard").previous()}>Previous</button>
+      <button onClick={() => getClient("wizard").reset()}>Reset</button>
+    </div>
+  );
+};
 
 const StepMap = {
   stepOne: StepOne,
@@ -85,6 +99,13 @@ const HomePage = () => {
           <Controls />
         </div>
       </Wizard>
+      <SomeComponent />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </>
   );
 };
