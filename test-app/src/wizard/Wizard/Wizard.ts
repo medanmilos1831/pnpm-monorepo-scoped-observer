@@ -17,6 +17,9 @@ class Wizard {
         : this.findPreviousStep();
     return step;
   };
+  changeStep = (step: string) => {
+    this.activeStep = step;
+  };
   private findNextStep = () => {
     const currentIndex = this.steps.indexOf(this.activeStep);
     const nextIndex = currentIndex + 1;
@@ -33,7 +36,6 @@ class Wizard {
     const previousIndex = currentIndex - 1;
 
     if (previousIndex >= 0) {
-      this.activeStep = this.steps[previousIndex];
       return this.steps[previousIndex];
     }
 
