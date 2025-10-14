@@ -8,11 +8,11 @@ class Observer {
     },
   ]);
 
-  dispatch = (eventName: string, payload: any) => {
+  dispatch = (eventName: string, payload?: any) => {
     this.observer.dispatch({
       scope: SCOPE_NAME,
       eventName,
-      payload,
+      payload: payload || undefined,
     });
   };
 

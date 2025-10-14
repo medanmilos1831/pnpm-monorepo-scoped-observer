@@ -1,12 +1,13 @@
 import { Wizard, WizardStep } from "../../wiz";
-import { useWizardCommands } from "../../wizard/react-intergation";
+import { useWizardCommands, useStep } from "../../wizard/";
 import { useState } from "react";
 import { Modal, Button } from "antd";
 
 const Inner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { next, previous } = useWizardCommands();
-
+  const step = useStep();
+  console.log("step", step);
   const showModal = () => {
     setIsModalOpen(true);
   };

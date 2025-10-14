@@ -13,6 +13,7 @@ export function createClient(observer: Observer) {
         toStep: step,
       });
       wizard.changeStep(step);
+      observer.dispatch(WizardEvents.ON_STEP_CHANGE);
     }
     return {
       next: (obj?: { actionType: string }) => {
@@ -48,6 +49,9 @@ export function createClient(observer: Observer) {
           return;
         }
         resolve(result, WizardCommands.PREVIOUS);
+      },
+      getActiveStep: () => {
+        return wizard.activeStep;
       },
       subscribe: observer.subscribe,
     };
