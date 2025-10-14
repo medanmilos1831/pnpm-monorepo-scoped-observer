@@ -25,7 +25,6 @@ export function createClient(observer: Observer) {
     }
     return {
       next: (obj?: { actionType?: string }) => {
-        console.log("next", step.middlewareOnNext);
         if (step.middlewareOnNext) {
           observer.dispatch(
             createEventName(

@@ -58,7 +58,6 @@ const WizardStep = ({
         IWizardInternalEvents.ON_MIDDLEWARE_NEXT
       ),
       (params: any) => {
-        console.log("middlewareOnNext");
         middlewareOnNext(params.payload);
       }
     );

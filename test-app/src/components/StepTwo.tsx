@@ -6,7 +6,6 @@ const StepTwo = () => {
       onPrevious={() => {}}
       onNext={() => {}}
       middlewareOnNext={({ updateSteps }) => {
-        console.log("middlewareOnNext");
         updateSteps((prev: string[]) => {
           return [...prev, "stepThree"];
         });
