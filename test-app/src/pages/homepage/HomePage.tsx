@@ -1,57 +1,13 @@
 import { Wizard, WizardStep } from "../../wiz";
 import { useWizardCommands, useStep } from "../../wizard/";
-import { useState } from "react";
-import { Modal, Button } from "antd";
+import { StepOne } from "../../components/StepOne";
+import { StepTwo } from "../../components/StepTwo";
+import { StepThree } from "../../components/StepThree";
 
-const Inner = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { next, previous } = useWizardCommands();
-  const step = useStep();
-  console.log("step", step);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  return (
-    <>
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={() => {
-          handleOk();
-          next();
-        }}
-        onCancel={handleCancel}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
-      <WizardStep
-        onNext={(params) => {
-          console.log("onNext", params);
-        }}
-        validate={(params) => {
-          console.log("validate", params);
-          if (params.actionType === "validation") {
-            showModal();
-            return;
-          }
-          params.resolve();
-        }}
-      >
-        Inner
-      </WizardStep>
-    </>
-  );
+const StepMap = {
+  stepOne: StepOne,
+  stepTwo: StepTwo,
+  stepThree: StepThree,
 };
 
 const Controls = () => {
@@ -72,6 +28,16 @@ const Controls = () => {
   );
 };
 
+const WizardBody = () => {
+  const step = useStep();
+  const Step = StepMap[step as keyof typeof StepMap];
+  return (
+    <>
+      <Step />
+    </>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
@@ -80,7 +46,7 @@ const HomePage = () => {
         steps={["stepOne", "stepTwo", "stepThree"]}
         activeStep={"stepOne"}
       >
-        <Inner />
+        <WizardBody />
         <Controls />
       </Wizard>
     </>

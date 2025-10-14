@@ -8,10 +8,15 @@ export function createClient(observer: Observer) {
       step: string,
       command: WizardCommands.NEXT | WizardCommands.PREVIOUS
     ) {
-      observer.dispatch(command, {
-        activeStep: wizard.activeStep,
-        toStep: step,
-      });
+      observer.dispatch(
+        command === WizardCommands.NEXT
+          ? WizardEvents.ON_NEXT
+          : WizardEvents.ON_PREVIOUS,
+        {
+          activeStep: wizard.activeStep,
+          toStep: step,
+        }
+      );
       wizard.changeStep(step);
       observer.dispatch(WizardEvents.ON_STEP_CHANGE);
     }

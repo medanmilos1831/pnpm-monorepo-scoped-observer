@@ -20,7 +20,22 @@ const WizardStep = ({
     if (!onNext) return;
     unsubscribe = context.client.subscribe(
       WizardEvents.ON_NEXT,
-      (params: any) => onNext(params.payload)
+      (params: any) => {
+        onNext(params.payload);
+      }
+    );
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  });
+  useEffect(() => {
+    let unsubscribe = () => {};
+    if (!onPrevious) return;
+    unsubscribe = context.client.subscribe(
+      WizardEvents.ON_PREVIOUS,
+      (params: any) => onPrevious(params.payload)
     );
     return () => {
       if (unsubscribe) {
