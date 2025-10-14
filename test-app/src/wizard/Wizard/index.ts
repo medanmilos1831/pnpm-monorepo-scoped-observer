@@ -1,3 +1,3 @@
 export { Wizard } from "./Wizard";
-export { StepEntity } from "./StepEntity";
+export { Step } from "./Step";
 export type { IWizardConfig } from "./types";

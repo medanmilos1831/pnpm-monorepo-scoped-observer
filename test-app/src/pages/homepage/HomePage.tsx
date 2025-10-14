@@ -1,18 +1,55 @@
 import { Wizard, WizardStep } from "../../wiz";
 import { useWizardCommands } from "../../wizard/react-intergation";
+import { useState } from "react";
+import { Modal, Button } from "antd";
 
 const Inner = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { next, previous } = useWizardCommands();
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <WizardStep
-      commands={{
-        onNext: () => {},
-        onPrevious: () => {
-          console.log("previousStep");
-        },
-      }}
-    >
-      Inner
-    </WizardStep>
+    <>
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onOk={() => {
+          handleOk();
+          next();
+        }}
+        onCancel={handleCancel}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+      <WizardStep
+        onNext={(params) => {
+          console.log("onNext", params);
+        }}
+        validate={(params) => {
+          console.log("validate", params);
+          if (params.actionType === "validation") {
+            showModal();
+            return;
+          }
+          params.resolve();
+        }}
+      >
+        Inner
+      </WizardStep>
+    </>
   );
 };
 
@@ -21,7 +58,15 @@ const Controls = () => {
   return (
     <div>
       <button onClick={() => previous()}>Previous</button>
-      <button onClick={() => next()}>Next</button>
+      <button
+        onClick={() =>
+          next({
+            actionType: "validation",
+          })
+        }
+      >
+        Next
+      </button>
     </div>
   );
 };

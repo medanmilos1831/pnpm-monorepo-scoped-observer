@@ -1,4 +1,4 @@
-class StepEntity {
+class Step {
   hasValidation: boolean = false;
   onNext: boolean = false;
   onPrevious: boolean = false;
@@ -14,4 +14,4 @@ class StepEntity {
   };
 }
 
-export { StepEntity };
+export { Step };

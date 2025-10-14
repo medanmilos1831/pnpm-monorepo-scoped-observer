@@ -1,24 +1,31 @@
 import { createElement, type PropsWithChildren } from "react";
-import { Hub } from "./Hub";
+import { Store } from "./Store";
 import { WizardProvider, WizardStep } from "./react-intergation";
 
 import { Observer } from "./Observer";
 import { createClient } from "./Client/createClient";
-import { StepEntity, Wizard, type IWizardConfig } from "./Wizard";
+import { Step, Wizard, type IWizardConfig } from "./Wizard";
 
 const createBrowserWizard = () => {
-  const hub = new Hub();
+  const store = new Store();
   const observer = new Observer();
   const client = createClient(observer);
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
-      const { disconnect } = hub.setup(new Wizard(props), new StepEntity());
+      const { disconnect, slice } = store.createSlice(props.id, () => {
+        return {
+          wizard: new Wizard(props),
+          step: new Step(),
+        };
+      });
+      const { wizard, step } = slice;
       return createElement(
         WizardProvider,
         {
           disconnect,
-          client: client(hub.getEntity(props.id)),
-          stepEntity: hub.getEntity(props.id).stepEntity,
+          wizard,
+          step,
+          client: client({ wizard, step }),
         },
         children
       );

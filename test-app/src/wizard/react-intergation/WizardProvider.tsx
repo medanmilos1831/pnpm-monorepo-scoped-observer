@@ -6,8 +6,9 @@ const WizardContext = createContext<any>(undefined);
 const WizardProvider = ({
   children,
   disconnect,
+  wizard,
+  step,
   client,
-  stepEntity,
 }: PropsWithChildren<IWizardProviderHOC>) => {
   useEffect(() => {
     return () => {
@@ -17,8 +18,9 @@ const WizardProvider = ({
   return (
     <WizardContext.Provider
       value={{
+        wizard,
+        step,
         client,
-        stepEntity,
       }}
     >
       {children}

@@ -1,18 +1,15 @@
-import type { StepEntity } from "../Wizard";
+import type { Wizard } from "../Wizard";
+import type { Step } from "../Wizard";
 
 export interface IWizardProviderHOC {
   disconnect: () => void;
+  wizard: Wizard;
+  step: Step;
   client: any;
-  stepEntity: StepEntity;
 }
 
 export interface IWizardStep {
-  commands?: {
-    onNext?: () => void;
-    onPrevious?: () => void;
-  };
-  validate?: {
-    onNext?: () => boolean;
-    onPrevious?: () => boolean;
-  };
+  onNext?: (params: any) => void;
+  onPrevious?: (params: any) => void;
+  validate?: (params: any) => void;
 }

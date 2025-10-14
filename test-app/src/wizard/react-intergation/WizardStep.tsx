@@ -1,29 +1,45 @@
 import { useContext, useEffect, type PropsWithChildren } from "react";
 import { WizardContext } from "./WizardProvider";
 import type { IWizardStep } from "./types";
+import { IWizardInternalEvents, WizardEvents } from "../types";
 
-const WizardStep = ({ children, commands }: PropsWithChildren<IWizardStep>) => {
+const WizardStep = ({
+  children,
+  onNext,
+  onPrevious,
+  validate,
+}: PropsWithChildren<IWizardStep>) => {
   const context = useContext(WizardContext);
-  // context.stepDefinition({
-  //   hasValidation: false,
-  //   onNext: !!commands?.onNext,
-  //   onPrevious: !!commands?.onPrevious,
-  // });
-  context.stepEntity.setStepDefinition({
-    hasValidation: false,
-    onNext: !!commands?.onNext,
-    onPrevious: !!commands?.onPrevious,
+  context.step.setStepDefinition({
+    hasValidation: !!validate,
+    onNext: !!onNext,
+    onPrevious: !!onPrevious,
   });
   useEffect(() => {
-    // context.stepDefinition({
-    //   hasValidation: false,
-    //   onNext: commands?.onNext,
-    //   onPrevious: commands?.onPrevious,
-    // });
-    // if (!commands) return;
-    // Object.entries(commands).forEach(([key, value]) => {
-    //   console.log(key, value);
-    // });
+    let unsubscribe = () => {};
+    if (!onNext) return;
+    unsubscribe = context.client.subscribe(
+      WizardEvents.ON_NEXT,
+      (params: any) => onNext(params.payload)
+    );
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  });
+  useEffect(() => {
+    let unsubscribe = () => {};
+    if (!validate) return;
+    unsubscribe = context.client.subscribe(
+      IWizardInternalEvents.ON_VALIDATE,
+      (params: any) => validate(params.payload)
+    );
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   });
   return <>{children}</>;
 };

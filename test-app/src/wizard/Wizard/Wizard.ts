@@ -22,7 +22,6 @@ class Wizard {
     const nextIndex = currentIndex + 1;
 
     if (nextIndex < this.steps.length) {
-      this.activeStep = this.steps[nextIndex];
       return this.steps[nextIndex];
     }
 

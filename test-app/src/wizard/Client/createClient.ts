@@ -1,19 +1,31 @@
 import type { Observer } from "../Observer";
-import { WizardCommands, WizardEvents } from "../types";
-import type { Wizard } from "../Wizard";
-import type { StepEntity } from "../Wizard";
+import { IWizardInternalEvents, WizardCommands, WizardEvents } from "../types";
+import type { Step, Wizard } from "../Wizard";
 
 export function createClient(observer: Observer) {
-  return (entity: { wizard: Wizard; stepEntity: StepEntity }) => {
-    const { wizard, stepEntity } = entity;
+  return ({ wizard, step }: { wizard: Wizard; step: Step }) => {
     return {
-      next: () => {
-        const step = wizard.findStep({ command: WizardCommands.NEXT });
-        observer.dispatch(WizardEvents.ON_NEXT, step);
+      next: (obj?: { actionType: string }) => {
+        const result = wizard.findStep({ command: WizardCommands.NEXT });
+        if (step.hasValidation) {
+          observer.dispatch(IWizardInternalEvents.ON_VALIDATE, {
+            command: WizardCommands.NEXT,
+            activeStep: wizard.activeStep,
+            toStep: result,
+            resolve: () => {
+              observer.dispatch(WizardEvents.ON_NEXT, {
+                activeStep: wizard.activeStep,
+                toStep: result,
+              });
+            },
+            ...obj,
+          });
+          return;
+        }
       },
       previous: () => {
-        const step = wizard.findStep({ command: WizardCommands.PREVIOUS });
-        observer.dispatch(WizardEvents.ON_PREVIOUS, step);
+        const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
+        observer.dispatch(WizardEvents.ON_PREVIOUS, result);
       },
       subscribe: observer.subscribe,
     };
