@@ -5,7 +5,11 @@ class Wizard {
   id: string;
   steps: string[];
   activeStep: string;
-  constructor({ id, steps, activeStep }: IWizardConfig) {
+  __INTERNAL__STEPS: string[];
+  __INTERNAL__ACTIVE_STEP: string;
+  constructor({ id, steps, activeStep }: Omit<IWizardConfig, "onReset">) {
+    this.__INTERNAL__STEPS = [...steps];
+    this.__INTERNAL__ACTIVE_STEP = activeStep;
     this.id = id;
     this.steps = steps;
     this.activeStep = activeStep;

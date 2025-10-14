@@ -102,8 +102,7 @@ const instance = createVisibility("myElement", "close");
 
 // Use the instance methods
 instance.subscribe(() => {
-  console.log("State changed:", instance.getState());
-  console.log("Payload:", instance.getPayload());
+  // Handle state changes
 });
 ```
 

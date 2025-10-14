@@ -1,5 +1,7 @@
+import { WizardStep } from "../wiz";
+
 const StepThree = () => {
-  return <div>StepThree</div>;
+  return <WizardStep>StepThree</WizardStep>;
 };
 
 export { StepThree };

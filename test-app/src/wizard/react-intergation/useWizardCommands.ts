@@ -6,6 +6,7 @@ const useWizardCommands = () => {
   return {
     next: context.client.next,
     previous: context.client.previous,
+    reset: context.client.reset,
   };
 };
 

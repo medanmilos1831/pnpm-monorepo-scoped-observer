@@ -22,7 +22,7 @@ const WizardNavigation = () => {
 };
 
 const Controls = () => {
-  const { next, previous } = useWizardCommands();
+  const { next, previous, reset } = useWizardCommands();
   return (
     <div>
       <button
@@ -38,19 +38,12 @@ const Controls = () => {
         onClick={() =>
           next({
             actionType: "validation",
-            // middleware: ({ updateSteps, activeStep }: any) => {
-            //   if (activeStep === "stepOne") {
-            //     return;
-            //   }
-            //   updateSteps((prev: string[]) => {
-            //     return [...prev, "stepThree"];
-            //   });
-            // },
           })
         }
       >
         Next
       </button>
+      <button onClick={() => reset()}>reset</button>
     </div>
   );
 };
@@ -68,7 +61,16 @@ const WizardBody = () => {
 const HomePage = () => {
   return (
     <>
-      <Wizard id="wizard" steps={["stepOne", "stepTwo"]} activeStep={"stepOne"}>
+      <Wizard
+        id="wizard"
+        steps={["stepOne", "stepTwo"]}
+        activeStep={"stepOne"}
+        onReset={() => {
+        }}
+        onFinish={({ reset }: any) => {
+          reset();
+        }}
+      >
         <WizardNavigation />
         <br />
         <WizardBody />

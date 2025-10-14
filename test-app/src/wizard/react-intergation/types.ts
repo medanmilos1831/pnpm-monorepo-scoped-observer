@@ -6,6 +6,8 @@ export interface IWizardProviderHOC {
   wizard: Wizard;
   step: Step;
   client: any;
+  onReset?: () => void;
+  onFinish?: (params: any) => void;
 }
 
 export interface IWizardStep {

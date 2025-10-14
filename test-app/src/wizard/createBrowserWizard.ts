@@ -11,7 +11,12 @@ const createBrowserWizard = () => {
   const observer = new Observer();
   const client = createClient(observer);
   return {
-    Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
+    Wizard: ({
+      children,
+      onReset,
+      onFinish,
+      ...props
+    }: PropsWithChildren<IWizardConfig>) => {
       const { disconnect, slice } = store.createSlice(props.id, () => {
         return {
           wizard: new Wizard(props),
@@ -26,6 +31,8 @@ const createBrowserWizard = () => {
           wizard,
           step,
           client: client({ wizard, step }),
+          onReset,
+          onFinish,
         },
         children
       );

@@ -15,7 +15,7 @@ const WizardStep = ({
     hasValidation: !!validate,
     onNext: !!onNext,
     onPrevious: !!onPrevious,
-    middleware,
+    middleware: !!middleware,
   });
   useEffect(() => {
     let unsubscribe = () => {};
@@ -38,6 +38,20 @@ const WizardStep = ({
     unsubscribe = context.client.subscribe(
       WizardEvents.ON_PREVIOUS,
       (params: any) => onPrevious(params.payload)
+    );
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  });
+
+  useEffect(() => {
+    let unsubscribe = () => {};
+    if (!middleware) return;
+    unsubscribe = context.client.subscribe(
+      IWizardInternalEvents.ON_MIDDLEWARE,
+      (params: any) => middleware(params.payload)
     );
     return () => {
       if (unsubscribe) {

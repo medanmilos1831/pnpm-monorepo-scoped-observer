@@ -23,7 +23,7 @@ export function createClient(observer: Observer) {
     return {
       next: (obj?: { actionType?: string }) => {
         if (step.middleware) {
-          step.middleware({
+          observer.dispatch(IWizardInternalEvents.ON_MIDDLEWARE, {
             updateSteps: (callback: (steps: string[]) => string[]) => {
               const updatedSteps = callback(wizard.steps);
               wizard.steps = [...new Set(updatedSteps)];
@@ -32,6 +32,7 @@ export function createClient(observer: Observer) {
         }
         const result = wizard.findStep({ command: WizardCommands.NEXT });
         if (!result) {
+          observer.dispatch(WizardEvents.ON_FINISH);
           return;
         }
         if (step.hasValidation) {
@@ -53,7 +54,7 @@ export function createClient(observer: Observer) {
         middleware?: (params: any) => void;
       }) => {
         if (step.middleware) {
-          step.middleware({
+          observer.dispatch(IWizardInternalEvents.ON_MIDDLEWARE, {
             updateSteps: (callback: (steps: string[]) => string[]) => {
               const updatedSteps = callback(wizard.steps);
               wizard.steps = [...new Set(updatedSteps)];
@@ -75,6 +76,12 @@ export function createClient(observer: Observer) {
           return;
         }
         resolve(result, WizardCommands.PREVIOUS);
+      },
+      reset: () => {
+        wizard.steps = [...wizard.__INTERNAL__STEPS];
+        wizard.changeStep(wizard.__INTERNAL__ACTIVE_STEP);
+        observer.dispatch(WizardEvents.ON_RESET);
+        observer.dispatch(WizardEvents.ON_STEP_CHANGE);
       },
       getActiveStep: () => {
         return wizard.activeStep;
