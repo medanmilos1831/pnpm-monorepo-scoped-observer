@@ -1,5 +1,6 @@
 import type { Observer } from "../Observer";
-import { IWizardInternalEvents, WizardCommands, WizardEvents } from "../types";
+import type { IOnMiddlewareNextPreviousParams } from "../react-intergation/types";
+import { WizardInternalEvents, WizardCommands, WizardEvents } from "../types";
 import type { Step, Wizard } from "../Wizard";
 import { createEventName } from "../utils";
 
@@ -31,7 +32,7 @@ export function createClient(observer: Observer) {
     ) {
       if (step.hasValidation) {
         observer.dispatch(
-          createEventName(wizard.id, IWizardInternalEvents.ON_VALIDATE),
+          createEventName(wizard.id, WizardInternalEvents.ON_VALIDATE),
           {
             command,
             activeStep: wizard.activeStep,
@@ -51,10 +52,7 @@ export function createClient(observer: Observer) {
       next: (obj?: { actionType?: string }) => {
         if (step.middlewareOnNext) {
           observer.dispatch(
-            createEventName(
-              wizard.id,
-              IWizardInternalEvents.ON_MIDDLEWARE_NEXT
-            ),
+            createEventName(wizard.id, WizardInternalEvents.ON_MIDDLEWARE_NEXT),
             {
               updateSteps: (callback: (steps: string[]) => string[]) => {
                 const updatedSteps = callback(wizard.steps);
@@ -75,13 +73,13 @@ export function createClient(observer: Observer) {
       },
       previous: (obj?: {
         actionType?: string;
-        middleware?: (params: any) => void;
+        middleware?: (params: IOnMiddlewareNextPreviousParams) => void;
       }) => {
         if (step.middlewareOnPrevious) {
           observer.dispatch(
             createEventName(
               wizard.id,
-              IWizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
+              WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
             ),
             {
               updateSteps: (callback: (steps: string[]) => string[]) => {

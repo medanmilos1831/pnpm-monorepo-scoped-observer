@@ -8,7 +8,14 @@ export interface IWizardConfig {
   id: string;
   steps: string[];
   activeStep: string;
-  onReset?: () => void;
-  onFinish?: (params: any) => void;
-  renderOnFinish?: (params: any) => React.ReactNode;
+  onReset?: onReset;
+  onFinish?: onFinish;
+  renderOnFinish?: renderOnFinish;
 }
+
+export type onReset = () => void;
+export type onFinish = (params: {
+  reset: onReset;
+  render: () => React.ReactNode;
+}) => void;
+export type renderOnFinish = (params: { reset: onReset }) => React.ReactNode;

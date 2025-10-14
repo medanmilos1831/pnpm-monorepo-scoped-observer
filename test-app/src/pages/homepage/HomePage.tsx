@@ -1,11 +1,10 @@
+import { StepFive } from "../../components/StepFive";
+import { StepFour } from "../../components/StepFour";
 import { StepOne } from "../../components/StepOne";
 import { StepThree } from "../../components/StepThree";
 import { StepTwo } from "../../components/StepTwo";
-import { Wizard, getClient } from "../../wiz";
+import { Wizard } from "../../wiz";
 import { useStep, useWizardCommands } from "../../wizard/";
-import { WizardEvents } from "../../wizard/types";
-import { StepFour } from "../../components/StepFour";
-import { StepFive } from "../../components/StepFive";
 
 const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
@@ -114,15 +113,17 @@ const HomePage = () => {
         steps={["stepFour", "stepFive"]}
         activeStep={"stepFour"}
         onReset={() => {}}
-        onFinish={({ reset, renderOnFinish }: any) => {
-          renderOnFinish();
-          reset();
+        onFinish={(params) => {
+          console.log(params);
+          // params.render();
+          // params.reset();
         }}
-        renderOnFinish={({ reset }: { reset: () => void }) => {
+        renderOnFinish={(params) => {
+          console.log(params);
           return (
             <div>
               FINISH WIZARD TWO
-              <button onClick={() => reset()}>reset</button>
+              {/* <button onClick={() => reset()}>reset</button> */}
             </div>
           );
         }}

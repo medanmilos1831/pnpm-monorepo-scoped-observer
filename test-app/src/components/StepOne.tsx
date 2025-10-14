@@ -22,13 +22,14 @@ const StepOne = () => {
     <div>
       <WizardStep
         onNext={(params) => {}}
-        // validate={(params) => {
-        //   if (params.actionType === "validation") {
-        //     showModal();
-        //     return;
-        //   }
-        //   params.resolve();
-        // }}
+        validate={(params) => {
+          console.log("validate", params);
+          if (params.actionType === "validation") {
+            showModal();
+            return;
+          }
+          params.resolve();
+        }}
       >
         StepOne
       </WizardStep>

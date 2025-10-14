@@ -1,7 +1,12 @@
 import { useContext, useEffect, type PropsWithChildren } from "react";
 import { WizardContext } from "./WizardProvider";
-import type { IWizardStep } from "./types";
-import { IWizardInternalEvents, WizardEvents } from "../types";
+import type {
+  IOnMiddlewareNextPreviousParams,
+  IOnNextPreviousParams,
+  IOnValidateParams,
+  IWizardStep,
+} from "./types";
+import { WizardInternalEvents, WizardEvents } from "../types";
 import { createEventName } from "../utils";
 
 const WizardStep = ({
@@ -25,7 +30,7 @@ const WizardStep = ({
     if (!onNext) return;
     unsubscribe = context.client.subscribe(
       createEventName(context.client.getWizardId(), WizardEvents.ON_NEXT),
-      (params: any) => {
+      (params: { payload: IOnNextPreviousParams }) => {
         onNext(params.payload);
       }
     );
@@ -40,7 +45,7 @@ const WizardStep = ({
     if (!onPrevious) return;
     unsubscribe = context.client.subscribe(
       createEventName(context.client.getWizardId(), WizardEvents.ON_PREVIOUS),
-      (params: any) => onPrevious(params.payload)
+      (params: { payload: IOnNextPreviousParams }) => onPrevious(params.payload)
     );
     return () => {
       if (unsubscribe) {
@@ -55,9 +60,9 @@ const WizardStep = ({
     unsubscribe = context.client.subscribe(
       createEventName(
         context.client.getWizardId(),
-        IWizardInternalEvents.ON_MIDDLEWARE_NEXT
+        WizardInternalEvents.ON_MIDDLEWARE_NEXT
       ),
-      (params: any) => {
+      (params: { payload: IOnMiddlewareNextPreviousParams }) => {
         middlewareOnNext(params.payload);
       }
     );
@@ -73,7 +78,7 @@ const WizardStep = ({
     unsubscribe = context.client.subscribe(
       createEventName(
         context.client.getWizardId(),
-        IWizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
+        WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
       ),
       (params: any) => middlewareOnPrevious(params.payload)
     );
@@ -89,9 +94,9 @@ const WizardStep = ({
     unsubscribe = context.client.subscribe(
       createEventName(
         context.client.getWizardId(),
-        IWizardInternalEvents.ON_VALIDATE
+        WizardInternalEvents.ON_VALIDATE
       ),
-      (params: any) => validate(params.payload)
+      (params: { payload: IOnValidateParams }) => validate(params.payload)
     );
     return () => {
       if (unsubscribe) {

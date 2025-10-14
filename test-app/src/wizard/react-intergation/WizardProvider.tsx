@@ -49,7 +49,7 @@ const WizardProvider = ({
           reset: () => {
             client.reset();
           },
-          renderOnFinish: () => {
+          render: () => {
             setSuccessRender(true);
           },
         })

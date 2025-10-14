@@ -10,7 +10,7 @@ export enum WizardEvents {
   ON_FINISH = "onFinish",
 }
 
-export enum IWizardInternalEvents {
+export enum WizardInternalEvents {
   ON_VALIDATE = "onValidate",
   ON_MIDDLEWARE_NEXT = "onMiddlewareNext",
   ON_MIDDLEWARE_PREVIOUS = "onMiddlewarePrevious",
