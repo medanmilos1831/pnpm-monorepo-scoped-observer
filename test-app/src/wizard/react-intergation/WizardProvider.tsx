@@ -6,6 +6,7 @@ import {
 } from "react";
 import type { IWizardProviderHOC } from "./types";
 import { WizardEvents } from "../types";
+import { createEventName } from "../utils";
 
 const WizardContext = createContext<any>(undefined);
 
@@ -28,7 +29,10 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
-    unsubscribe = client.subscribe(WizardEvents.ON_RESET, () => onReset());
+    unsubscribe = client.subscribe(
+      createEventName(client.getWizardId(), WizardEvents.ON_RESET),
+      () => onReset()
+    );
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -38,15 +42,17 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onFinish) return;
-    unsubscribe = client.subscribe(WizardEvents.ON_FINISH, () =>
-      onFinish({
-        reset: () => {
-          client.reset();
-        },
-        renderOnFinish: () => {
-          setSuccessRender(true);
-        },
-      })
+    unsubscribe = client.subscribe(
+      createEventName(client.getWizardId(), WizardEvents.ON_FINISH),
+      () =>
+        onFinish({
+          reset: () => {
+            client.reset();
+          },
+          renderOnFinish: () => {
+            setSuccessRender(true);
+          },
+        })
     );
     return () => {
       if (unsubscribe) {

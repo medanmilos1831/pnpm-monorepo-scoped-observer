@@ -1,12 +1,16 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { WizardContext } from "./WizardProvider";
 import { WizardEvents } from "../types";
+import { createEventName } from "../utils";
 
 const useStep = () => {
   const context = useContext(WizardContext);
   const [subsciber, __] = useState(() => (notify: () => void) => {
     return context.client.subscribe(
-      WizardEvents.ON_STEP_CHANGE,
+      createEventName(
+        context.client.getWizardId(),
+        WizardEvents.ON_STEP_CHANGE
+      ),
       (params: any) => {
         notify();
       }

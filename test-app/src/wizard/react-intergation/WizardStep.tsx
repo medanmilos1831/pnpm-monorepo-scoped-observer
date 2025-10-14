@@ -2,6 +2,7 @@ import { useContext, useEffect, type PropsWithChildren } from "react";
 import { WizardContext } from "./WizardProvider";
 import type { IWizardStep } from "./types";
 import { IWizardInternalEvents, WizardEvents } from "../types";
+import { createEventName } from "../utils";
 
 const WizardStep = ({
   children,
@@ -21,7 +22,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!onNext) return;
     unsubscribe = context.client.subscribe(
-      WizardEvents.ON_NEXT,
+      createEventName(context.client.getWizardId(), WizardEvents.ON_NEXT),
       (params: any) => {
         onNext(params.payload);
       }
@@ -36,7 +37,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!onPrevious) return;
     unsubscribe = context.client.subscribe(
-      WizardEvents.ON_PREVIOUS,
+      createEventName(context.client.getWizardId(), WizardEvents.ON_PREVIOUS),
       (params: any) => onPrevious(params.payload)
     );
     return () => {
@@ -50,7 +51,10 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!middleware) return;
     unsubscribe = context.client.subscribe(
-      IWizardInternalEvents.ON_MIDDLEWARE,
+      createEventName(
+        context.client.getWizardId(),
+        IWizardInternalEvents.ON_MIDDLEWARE
+      ),
       (params: any) => middleware(params.payload)
     );
     return () => {
@@ -63,7 +67,10 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!validate) return;
     unsubscribe = context.client.subscribe(
-      IWizardInternalEvents.ON_VALIDATE,
+      createEventName(
+        context.client.getWizardId(),
+        IWizardInternalEvents.ON_VALIDATE
+      ),
       (params: any) => validate(params.payload)
     );
     return () => {
