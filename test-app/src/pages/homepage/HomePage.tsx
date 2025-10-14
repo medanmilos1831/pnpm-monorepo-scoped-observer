@@ -17,10 +17,13 @@ const StepMap: Record<string, React.ComponentType> = {
 
 const WizardNavigation = () => {
   const { steps } = useStep();
+  const { goToStep } = useWizardCommands();
   return (
     <div style={{ display: "flex", gap: "10px" }}>
       {steps.map((step: string) => (
-        <div key={step}>{step}</div>
+        <div key={step} onClick={() => goToStep(step)}>
+          {step}
+        </div>
       ))}
     </div>
   );

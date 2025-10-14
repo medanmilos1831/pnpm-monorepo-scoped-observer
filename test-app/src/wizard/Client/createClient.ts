@@ -24,11 +24,11 @@ export function createClient(observer: Observer) {
       );
     }
 
-    const handleValidation = (
+    function handleValidation(
       command: WizardCommands,
       result: string,
       obj?: any
-    ) => {
+    ) {
       if (step.hasValidation) {
         observer.dispatch(
           createEventName(wizard.id, IWizardInternalEvents.ON_VALIDATE),
@@ -45,7 +45,7 @@ export function createClient(observer: Observer) {
         return true;
       }
       return false;
-    };
+    }
 
     return {
       next: (obj?: { actionType?: string }) => {
@@ -114,6 +114,23 @@ export function createClient(observer: Observer) {
       },
       getWizardId: () => {
         return wizard.id;
+      },
+      goToStep: (step: string) => {
+        const currentStepIndex = wizard.steps.indexOf(wizard.activeStep);
+        const targetStepIndex = wizard.steps.indexOf(step);
+        
+        if (targetStepIndex === -1) {
+          console.warn(`Step "${step}" not found in wizard steps`);
+          return;
+        }
+        
+        if (currentStepIndex === targetStepIndex) {
+          console.warn(`Already on step "${step}"`);
+          return;
+        }
+        
+        // Return 'next' if target is after current, 'previous' if before
+        return targetStepIndex > currentStepIndex ? 'next' : 'previous';
       },
       subscribe: (eventName: string, callback: (payload: any) => void) => {
         return observer.subscribe(eventName, callback);

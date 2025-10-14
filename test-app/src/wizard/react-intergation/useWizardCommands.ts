@@ -7,6 +7,7 @@ const useWizardCommands = () => {
     next: context.client.next,
     previous: context.client.previous,
     reset: context.client.reset,
+    goToStep: context.client.goToStep,
   };
 };
 
