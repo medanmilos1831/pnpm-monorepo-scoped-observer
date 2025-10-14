@@ -52,9 +52,8 @@ export function createClient(observer: Observer) {
         actionType?: string;
         middleware?: (params: any) => void;
       }) => {
-        if (obj?.middleware) {
-          obj.middleware({
-            activeStep: wizard.activeStep,
+        if (step.middleware) {
+          step.middleware({
             updateSteps: (callback: (steps: string[]) => string[]) => {
               const updatedSteps = callback(wizard.steps);
               wizard.steps = [...new Set(updatedSteps)];

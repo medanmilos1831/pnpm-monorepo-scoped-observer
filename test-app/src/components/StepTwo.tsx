@@ -4,7 +4,9 @@ const StepTwo = () => {
   return (
     <WizardStep
       onPrevious={() => {}}
-      onNext={() => {}}
+      onNext={() => {
+        console.log("onNext");
+      }}
       middleware={({ updateSteps }) => {
         updateSteps((prev: string[]) => {
           return [...prev, "stepThree"];
