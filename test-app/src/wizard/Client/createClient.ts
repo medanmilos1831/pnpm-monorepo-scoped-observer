@@ -23,6 +23,30 @@ export function createClient(observer: Observer) {
         createEventName(wizard.id, WizardEvents.ON_STEP_CHANGE)
       );
     }
+
+    const handleValidation = (
+      command: WizardCommands,
+      result: string,
+      obj?: any
+    ) => {
+      if (step.hasValidation) {
+        observer.dispatch(
+          createEventName(wizard.id, IWizardInternalEvents.ON_VALIDATE),
+          {
+            command,
+            activeStep: wizard.activeStep,
+            toStep: result,
+            resolve: () => {
+              resolve(result, command);
+            },
+            ...obj,
+          }
+        );
+        return true;
+      }
+      return false;
+    };
+
     return {
       next: (obj?: { actionType?: string }) => {
         if (step.middlewareOnNext) {
@@ -44,19 +68,7 @@ export function createClient(observer: Observer) {
           observer.dispatch(createEventName(wizard.id, WizardEvents.ON_FINISH));
           return;
         }
-        if (step.hasValidation) {
-          observer.dispatch(
-            createEventName(wizard.id, IWizardInternalEvents.ON_VALIDATE),
-            {
-              command: WizardCommands.NEXT,
-              activeStep: wizard.activeStep,
-              toStep: result,
-              resolve: () => {
-                resolve(result, WizardCommands.NEXT);
-              },
-              ...obj,
-            }
-          );
+        if (handleValidation(WizardCommands.NEXT, result, obj)) {
           return;
         }
         resolve(result, WizardCommands.NEXT);
@@ -81,19 +93,7 @@ export function createClient(observer: Observer) {
         }
         const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
         if (!result) return;
-        if (step.hasValidation) {
-          observer.dispatch(
-            createEventName(wizard.id, IWizardInternalEvents.ON_VALIDATE),
-            {
-              command: WizardCommands.PREVIOUS,
-              activeStep: wizard.activeStep,
-              toStep: result,
-              resolve: () => {
-                resolve(result, WizardCommands.PREVIOUS);
-              },
-              ...obj,
-            }
-          );
+        if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
           return;
         }
         resolve(result, WizardCommands.PREVIOUS);
