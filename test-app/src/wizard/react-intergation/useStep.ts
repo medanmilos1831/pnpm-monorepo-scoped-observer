@@ -12,7 +12,15 @@ const useStep = () => {
       }
     );
   });
-  return useSyncExternalStore(subsciber, context.client.getActiveStep);
+  const stepName = useSyncExternalStore(
+    subsciber,
+    context.client.getActiveStep
+  );
+  return {
+    stepName,
+    steps: context.client.getSteps(),
+    wizardId: context.client.getWizardId(),
+  };
 };
 
 export { useStep };

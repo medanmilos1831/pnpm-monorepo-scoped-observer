@@ -21,9 +21,23 @@ export function createClient(observer: Observer) {
       observer.dispatch(WizardEvents.ON_STEP_CHANGE);
     }
     return {
-      next: (obj?: { actionType: string }) => {
+      next: (obj?: {
+        actionType?: string;
+        middleware?: (params: any) => void;
+      }) => {
+        if (obj?.middleware) {
+          obj.middleware({
+            activeStep: wizard.activeStep,
+            updateSteps: (callback: (steps: string[]) => string[]) => {
+              const updatedSteps = callback(wizard.steps);
+              wizard.steps = [...new Set(updatedSteps)];
+            },
+          });
+        }
         const result = wizard.findStep({ command: WizardCommands.NEXT });
-        if (!result) return;
+        if (!result) {
+          return;
+        }
         if (step.hasValidation) {
           observer.dispatch(IWizardInternalEvents.ON_VALIDATE, {
             command: WizardCommands.NEXT,
@@ -38,7 +52,10 @@ export function createClient(observer: Observer) {
         }
         resolve(result, WizardCommands.NEXT);
       },
-      previous: (obj?: { actionType: string }) => {
+      previous: (obj?: {
+        actionType?: string;
+        middleware?: (params: any) => void;
+      }) => {
         const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
         if (!result) return;
         if (step.hasValidation) {
@@ -57,6 +74,12 @@ export function createClient(observer: Observer) {
       },
       getActiveStep: () => {
         return wizard.activeStep;
+      },
+      getSteps: () => {
+        return wizard.steps;
+      },
+      getWizardId: () => {
+        return wizard.id;
       },
       subscribe: observer.subscribe,
     };

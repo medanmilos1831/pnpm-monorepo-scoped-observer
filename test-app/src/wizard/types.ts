@@ -6,6 +6,7 @@ export enum WizardEvents {
   ON_NEXT = "onNext",
   ON_PREVIOUS = "onPrevious",
   ON_STEP_CHANGE = "onStepChange",
+  ON_FINISH = "onFinish",
 }
 
 export enum IWizardInternalEvents {

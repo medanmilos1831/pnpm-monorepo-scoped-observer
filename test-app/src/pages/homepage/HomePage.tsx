@@ -14,11 +14,24 @@ const Controls = () => {
   const { next, previous } = useWizardCommands();
   return (
     <div>
-      <button onClick={() => previous()}>Previous</button>
+      <button
+        onClick={() =>
+          previous({
+            actionType: "validation",
+          })
+        }
+      >
+        Previous
+      </button>
       <button
         onClick={() =>
           next({
             actionType: "validation",
+            middleware: ({ updateSteps, activeStep }: any) => {
+              updateSteps((prev: string[]) => {
+                return [...prev, "stepThree"];
+              });
+            },
           })
         }
       >
@@ -29,8 +42,8 @@ const Controls = () => {
 };
 
 const WizardBody = () => {
-  const step = useStep();
-  const Step = StepMap[step as keyof typeof StepMap];
+  const { stepName } = useStep();
+  const Step = StepMap[stepName as keyof typeof StepMap];
   return (
     <>
       <Step />
@@ -41,11 +54,7 @@ const WizardBody = () => {
 const HomePage = () => {
   return (
     <>
-      <Wizard
-        id="wizard"
-        steps={["stepOne", "stepTwo", "stepThree"]}
-        activeStep={"stepOne"}
-      >
+      <Wizard id="wizard" steps={["stepOne", "stepTwo"]} activeStep={"stepOne"}>
         <WizardBody />
         <Controls />
       </Wizard>
