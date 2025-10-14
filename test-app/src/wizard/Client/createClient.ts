@@ -25,9 +25,13 @@ export function createClient(observer: Observer) {
     }
     return {
       next: (obj?: { actionType?: string }) => {
-        if (step.middleware) {
+        console.log("next", step.middlewareOnNext);
+        if (step.middlewareOnNext) {
           observer.dispatch(
-            createEventName(wizard.id, IWizardInternalEvents.ON_MIDDLEWARE),
+            createEventName(
+              wizard.id,
+              IWizardInternalEvents.ON_MIDDLEWARE_NEXT
+            ),
             {
               updateSteps: (callback: (steps: string[]) => string[]) => {
                 const updatedSteps = callback(wizard.steps);
@@ -62,9 +66,12 @@ export function createClient(observer: Observer) {
         actionType?: string;
         middleware?: (params: any) => void;
       }) => {
-        if (step.middleware) {
+        if (step.middlewareOnPrevious) {
           observer.dispatch(
-            createEventName(wizard.id, IWizardInternalEvents.ON_MIDDLEWARE),
+            createEventName(
+              wizard.id,
+              IWizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
+            ),
             {
               updateSteps: (callback: (steps: string[]) => string[]) => {
                 const updatedSteps = callback(wizard.steps);

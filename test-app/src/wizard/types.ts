@@ -12,5 +12,6 @@ export enum WizardEvents {
 
 export enum IWizardInternalEvents {
   ON_VALIDATE = "onValidate",
-  ON_MIDDLEWARE = "onMiddleware",
+  ON_MIDDLEWARE_NEXT = "onMiddlewareNext",
+  ON_MIDDLEWARE_PREVIOUS = "onMiddlewarePrevious",
 }

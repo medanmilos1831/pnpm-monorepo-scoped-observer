@@ -9,14 +9,16 @@ const WizardStep = ({
   onNext,
   onPrevious,
   validate,
-  middleware,
+  middlewareOnNext,
+  middlewareOnPrevious,
 }: PropsWithChildren<IWizardStep>) => {
   const context = useContext(WizardContext);
   context.step.setStepDefinition({
     hasValidation: !!validate,
     onNext: !!onNext,
     onPrevious: !!onPrevious,
-    middleware: !!middleware,
+    middlewareOnNext: !!middlewareOnNext,
+    middlewareOnPrevious: !!middlewareOnPrevious,
   });
   useEffect(() => {
     let unsubscribe = () => {};
@@ -49,13 +51,32 @@ const WizardStep = ({
 
   useEffect(() => {
     let unsubscribe = () => {};
-    if (!middleware) return;
+    if (!middlewareOnNext) return;
     unsubscribe = context.client.subscribe(
       createEventName(
         context.client.getWizardId(),
-        IWizardInternalEvents.ON_MIDDLEWARE
+        IWizardInternalEvents.ON_MIDDLEWARE_NEXT
       ),
-      (params: any) => middleware(params.payload)
+      (params: any) => {
+        console.log("middlewareOnNext");
+        middlewareOnNext(params.payload);
+      }
+    );
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  });
+  useEffect(() => {
+    let unsubscribe = () => {};
+    if (!middlewareOnPrevious) return;
+    unsubscribe = context.client.subscribe(
+      createEventName(
+        context.client.getWizardId(),
+        IWizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
+      ),
+      (params: any) => middlewareOnPrevious(params.payload)
     );
     return () => {
       if (unsubscribe) {
