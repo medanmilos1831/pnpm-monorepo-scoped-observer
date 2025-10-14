@@ -4,24 +4,15 @@ import { StepTwo } from "../../components/StepTwo";
 import { Wizard, getClient } from "../../wiz";
 import { useStep, useWizardCommands } from "../../wizard/";
 import { WizardEvents } from "../../wizard/types";
+import { StepFour } from "../../components/StepFour";
+import { StepFive } from "../../components/StepFive";
 
-const SomeComponent = () => {
-  getClient("wizard").subscribe(WizardEvents.ON_STEP_CHANGE, (params: any) => {
-    console.log("ON_STEP_CHANGE", params);
-  });
-  return (
-    <div>
-      <button onClick={() => getClient("wizard").next()}>Next</button>
-      <button onClick={() => getClient("wizard").previous()}>Previous</button>
-      <button onClick={() => getClient("wizard").reset()}>Reset</button>
-    </div>
-  );
-};
-
-const StepMap = {
+const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
   stepTwo: StepTwo,
   stepThree: StepThree,
+  stepFour: StepFour,
+  stepFive: StepFive,
 };
 
 const WizardNavigation = () => {
@@ -72,6 +63,16 @@ const WizardBody = () => {
   );
 };
 
+const WizardBodyTwo = () => {
+  const { stepName } = useStep();
+  const Step = StepMap[stepName as keyof typeof StepMap];
+  return (
+    <>
+      <Step />
+    </>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
@@ -87,6 +88,7 @@ const HomePage = () => {
         renderOnFinish={({ reset }: { reset: () => void }) => {
           return (
             <div>
+              FINISH WIZARD ONE
               <button onClick={() => reset()}>reset</button>
             </div>
           );
@@ -99,12 +101,36 @@ const HomePage = () => {
           <Controls />
         </div>
       </Wizard>
-      <SomeComponent />
       <br />
       <br />
       <br />
       <br />
       <br />
+      <Wizard
+        id="wizardTwo"
+        steps={["stepFour", "stepFive"]}
+        activeStep={"stepFour"}
+        onReset={() => {}}
+        onFinish={({ reset, renderOnFinish }: any) => {
+          renderOnFinish();
+          reset();
+        }}
+        renderOnFinish={({ reset }: { reset: () => void }) => {
+          return (
+            <div>
+              FINISH WIZARD TWO
+              <button onClick={() => reset()}>reset</button>
+            </div>
+          );
+        }}
+      >
+        <WizardNavigation />
+        <br />
+        <WizardBodyTwo />
+        <div style={{ marginTop: "20px" }}>
+          <Controls />
+        </div>
+      </Wizard>
       <br />
     </>
   );
