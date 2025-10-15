@@ -22,8 +22,6 @@ const StepMap: Record<string, React.ComponentType> = {
 
 const SomeComponent = () => {
   const client = useWizardClient();
-  // console.log("client", client.getEntity("wizard").next());
-  // client.getEntity("wizard").next();
   useEffect(() => {
     client.getEntity("wizard").next();
   }, []);

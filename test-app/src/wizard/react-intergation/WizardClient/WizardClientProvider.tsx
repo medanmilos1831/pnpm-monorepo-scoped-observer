@@ -24,7 +24,6 @@ const useWizardClient = () => {
   if (!context) {
     throw new Error("WizardClientContext not found");
   }
-  console.log("context", context);
   return context;
 };
 
