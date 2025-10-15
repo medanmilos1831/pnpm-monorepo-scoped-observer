@@ -3,17 +3,17 @@ import type { IEntity } from "./types";
 class Store {
   entities = new Map<string, IEntity>();
   getEntity = (id: string) => {
-    return this.entities.get(id)!;
+    return this.entities.get(id)!.client;
   };
   removeEntity = (id: string) => {
     this.entities.delete(id);
   };
   createEntity = (id: string, entity: () => IEntity) => {
-    if (!this.getEntity(id)) {
+    if (!this.entities.has(id)) {
       this.entities.set(id, entity());
     }
     return {
-      entity: this.getEntity(id)!,
+      entity: this.entities.get(id)!,
       disconnect: () => {
         this.removeEntity(id);
       },

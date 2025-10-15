@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import type { createBrowserWizard } from "./createBrowserWizard";
 
 const WizardClientContext = createContext<
@@ -19,4 +19,9 @@ const WizardClientProvider = ({
   );
 };
 
-export { WizardClientProvider, WizardClientContext };
+const useWizardClient = () => {
+  const context = useContext(WizardClientContext)!;
+  return context;
+};
+
+export { WizardClientProvider, WizardClientContext, useWizardClient };

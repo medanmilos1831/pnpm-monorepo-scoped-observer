@@ -10,6 +10,7 @@ import {
   useWizardCommands,
   WizardProvider,
 } from "../../wizard/react-intergation";
+import { useWizardClient } from "../../wizard";
 
 const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
@@ -17,6 +18,11 @@ const StepMap: Record<string, React.ComponentType> = {
   stepThree: StepThree,
   stepFour: StepFour,
   stepFive: StepFive,
+};
+
+const SomeComponent = () => {
+  const client = useWizardClient();
+  return <div>SomeComponent</div>;
 };
 
 const WizardNavigation = () => {
@@ -109,6 +115,7 @@ const HomePage = () => {
       >
         <Inner />
       </WizardProvider>
+      <SomeComponent />
     </div>
   );
 };
