@@ -19,8 +19,42 @@ const StepOne = () => {
   };
 
   return (
-    <div>
-      <WizardProvider.Step onNext={(params) => {}}>StepOne</WizardProvider.Step>
+    <div style={{
+      padding: "24px",
+      backgroundColor: "#ffffff",
+      borderRadius: "8px",
+      border: "2px solid #007bff",
+      textAlign: "center"
+    }}>
+      <WizardProvider.Step
+        onNext={(params) => {
+        }}
+        onPrevious={(params) => {
+        }}
+        middlewareOnNext={(params) => {
+        }}
+        middlewareOnPrevious={(params) => {
+        }}
+        validate={(params) => {
+        }}
+      >
+        <div style={{
+          fontSize: "1.5rem",
+          fontWeight: "600",
+          color: "#007bff",
+          marginBottom: "16px"
+        }}>
+          🚀 Step One
+        </div>
+        <p style={{
+          fontSize: "1rem",
+          color: "#6c757d",
+          margin: "0",
+          lineHeight: "1.5"
+        }}>
+          Welcome to the first step of our wizard! This is where you can configure your initial settings.
+        </p>
+      </WizardProvider.Step>
     </div>
   );
 };
