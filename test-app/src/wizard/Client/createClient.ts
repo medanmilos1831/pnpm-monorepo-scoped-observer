@@ -56,6 +56,9 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
     obj?: { actionType?: string },
     command?: WizardCommands
   ) {
+    if (stepName === wizard.activeStep) {
+      return;
+    }
     let validationCommand = command;
     if (!validationCommand) {
       const currentStepIndex = wizard.steps.indexOf(wizard.activeStep);

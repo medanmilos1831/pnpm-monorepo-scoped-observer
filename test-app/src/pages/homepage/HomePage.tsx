@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { StepFive } from "../../components/StepFive";
 import { StepFour } from "../../components/StepFour";
 import { StepOne } from "../../components/StepOne";
 import { StepThree } from "../../components/StepThree";
 import { StepTwo } from "../../components/StepTwo";
+import { useWizardClient } from "../../wizard";
 
 import {
   useStep,
@@ -19,8 +21,18 @@ const StepMap: Record<string, React.ComponentType> = {
 };
 
 const SomeComponent = () => {
-  const { next, previous, reset, goToStep } = useWizardCommands();
-  return <div>SomeComponent</div>;
+  const client = useWizardClient();
+  // console.log("client", client.getEntity("wizard").next());
+  // client.getEntity("wizard").next();
+  useEffect(() => {
+    client.getEntity("wizard").next();
+  }, []);
+  return (
+    <div>
+      <h1>SomeComponent</h1>
+      <button onClick={() => client.getEntity("wizard").next()}>Next</button>
+    </div>
+  );
 };
 
 const WizardNavigation = () => {
@@ -279,6 +291,7 @@ const HomePage = () => {
       >
         <Inner />
       </WizardProvider>
+      <SomeComponent />
     </div>
   );
 };
