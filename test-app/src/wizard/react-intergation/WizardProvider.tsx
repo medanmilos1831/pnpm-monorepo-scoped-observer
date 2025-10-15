@@ -1,12 +1,6 @@
-import {
-  createContext,
-  useEffect,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { createContext, useEffect, type PropsWithChildren } from "react";
 import type { IWizardProviderHOC } from "./types";
 import { WizardEvents } from "../types";
-import { createEventName } from "../utils";
 
 const WizardContext = createContext<any>(undefined);
 
@@ -20,7 +14,6 @@ const WizardProvider = ({
   onFinish,
   renderOnFinish,
 }: PropsWithChildren<IWizardProviderHOC>) => {
-  const [successRender, setSuccessRender] = useState(false);
   useEffect(() => {
     return () => {
       disconnect();
@@ -29,10 +22,7 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
-    unsubscribe = client.subscribe(
-      createEventName(client.getWizardId(), WizardEvents.ON_RESET),
-      () => onReset()
-    );
+    unsubscribe = client.subscribe(WizardEvents.ON_RESET, () => onReset());
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -42,17 +32,13 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onFinish) return;
-    unsubscribe = client.subscribe(
-      createEventName(client.getWizardId(), WizardEvents.ON_FINISH),
-      () =>
-        onFinish({
-          reset: () => {
-            client.reset();
-          },
-          render: () => {
-            setSuccessRender(true);
-          },
-        })
+    unsubscribe = client.subscribe(WizardEvents.ON_FINISH, () =>
+      onFinish({
+        reset: () => {
+          client.reset();
+        },
+        renderOnFinish,
+      })
     );
     return () => {
       if (unsubscribe) {
@@ -60,16 +46,6 @@ const WizardProvider = ({
       }
     };
   });
-  if (successRender) {
-    return renderOnFinish
-      ? renderOnFinish({
-          reset: () => {
-            setSuccessRender(false);
-            client.reset();
-          },
-        })
-      : null;
-  }
   return (
     <WizardContext.Provider
       value={{

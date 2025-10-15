@@ -1,8 +1,8 @@
-import { WizardStep } from "../wiz";
+import { WizardProvider, WizardStep } from "../wizardNew/react-intergation";
 
 const StepTwo = () => {
   return (
-    <WizardStep
+    <WizardProvider.Step
       onPrevious={() => {}}
       onNext={() => {}}
       middlewareOnNext={({ updateSteps }) => {
@@ -12,7 +12,7 @@ const StepTwo = () => {
       }}
     >
       StepTwo
-    </WizardStep>
+    </WizardProvider.Step>
   );
 };
 

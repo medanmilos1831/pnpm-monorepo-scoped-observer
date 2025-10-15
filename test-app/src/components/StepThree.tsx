@@ -1,7 +1,7 @@
-import { WizardStep } from "../wiz";
+import { WizardProvider, WizardStep } from "../wizardNew/react-intergation";
 
 const StepThree = () => {
-  return <WizardStep>StepThree</WizardStep>;
+  return <WizardProvider.Step>StepThree</WizardProvider.Step>;
 };
 
 export { StepThree };

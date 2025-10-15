@@ -1,4 +1,10 @@
+import { QueryClient, QueryClientProvider } from "react-query";
 import { HomePage } from "./pages";
+import { createBrowserWizard, WizardClientProvider } from "./wizardNew";
+
+const client = createBrowserWizard();
+const r = new QueryClient();
+console.log("rrrrr", r);
 function App() {
   return (
     <div
@@ -7,7 +13,11 @@ function App() {
         width: "100vw",
       }}
     >
-      <HomePage />
+      <QueryClientProvider client={r}>
+        <WizardClientProvider client={client}>
+          <HomePage />
+        </WizardClientProvider>
+      </QueryClientProvider>
     </div>
   );
 }
