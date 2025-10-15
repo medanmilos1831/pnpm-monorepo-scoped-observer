@@ -53,8 +53,8 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
 
   function goToStep(
     stepName: string,
-    command?: WizardCommands,
-    obj?: { actionType?: string }
+    obj?: { actionType?: string },
+    command?: WizardCommands
   ) {
     let validationCommand = command;
     if (!validationCommand) {
@@ -79,7 +79,7 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
         observer.dispatch(WizardEvents.ON_FINISH);
         return;
       }
-      goToStep(result, WizardCommands.NEXT, obj);
+      goToStep(result, obj, WizardCommands.NEXT);
     },
     previous: (obj?: { actionType?: string }) => {
       const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
@@ -87,7 +87,7 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
       if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
         return;
       }
-      goToStep(result, WizardCommands.PREVIOUS, obj);
+      goToStep(result, obj, WizardCommands.PREVIOUS);
     },
     reset: () => {
       wizard.steps = [...wizard.__INTERNAL__STEPS];

@@ -10,7 +10,8 @@ const useWizardCommands = () => {
     next: context.client.next,
     previous: context.client.previous,
     reset: context.client.reset,
-    goToStep: (step: string) => context.client.goToStep(step),
+    goToStep: (step: string, obj?: { actionType?: string }) =>
+      context.client.goToStep(step, obj),
   };
 };
 

@@ -18,6 +18,11 @@ const StepMap: Record<string, React.ComponentType> = {
   stepFive: StepFive,
 };
 
+const SomeComponent = () => {
+  const { next, previous, reset, goToStep } = useWizardCommands();
+  return <div>SomeComponent</div>;
+};
+
 const WizardNavigation = () => {
   const step = useStep();
   const { previous, next, reset, goToStep } = useWizardCommands();
