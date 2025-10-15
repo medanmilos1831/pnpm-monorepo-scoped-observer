@@ -7,7 +7,6 @@ import type {
   IWizardStep,
 } from "./types";
 import { WizardInternalEvents, WizardEvents } from "../types";
-import { createEventName } from "../utils";
 
 const WizardStep = ({
   children,
@@ -29,7 +28,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!onNext) return;
     unsubscribe = context.client.subscribe(
-      createEventName(context.client.getWizardId(), WizardEvents.ON_NEXT),
+      WizardEvents.ON_NEXT,
       (params: { payload: IOnNextPreviousParams }) => {
         onNext(params.payload);
       }
@@ -44,7 +43,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!onPrevious) return;
     unsubscribe = context.client.subscribe(
-      createEventName(context.client.getWizardId(), WizardEvents.ON_PREVIOUS),
+      WizardEvents.ON_PREVIOUS,
       (params: { payload: IOnNextPreviousParams }) => onPrevious(params.payload)
     );
     return () => {
@@ -58,10 +57,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!middlewareOnNext) return;
     unsubscribe = context.client.subscribe(
-      createEventName(
-        context.client.getWizardId(),
-        WizardInternalEvents.ON_MIDDLEWARE_NEXT
-      ),
+      WizardInternalEvents.ON_MIDDLEWARE_NEXT,
       (params: { payload: IOnMiddlewareNextPreviousParams }) => {
         middlewareOnNext(params.payload);
       }
@@ -76,10 +72,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!middlewareOnPrevious) return;
     unsubscribe = context.client.subscribe(
-      createEventName(
-        context.client.getWizardId(),
-        WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS
-      ),
+      WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS,
       (params: any) => middlewareOnPrevious(params.payload)
     );
     return () => {
@@ -92,10 +85,7 @@ const WizardStep = ({
     let unsubscribe = () => {};
     if (!validate) return;
     unsubscribe = context.client.subscribe(
-      createEventName(
-        context.client.getWizardId(),
-        WizardInternalEvents.ON_VALIDATE
-      ),
+      WizardInternalEvents.ON_VALIDATE,
       (params: { payload: IOnValidateParams }) => validate(params.payload)
     );
     return () => {

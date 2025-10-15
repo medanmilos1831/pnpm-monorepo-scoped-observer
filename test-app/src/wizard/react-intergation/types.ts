@@ -1,16 +1,4 @@
 import type { WizardCommands } from "../types";
-import type { Wizard } from "../Wizard";
-import type { Step } from "../Wizard";
-
-export interface IWizardProviderHOC {
-  disconnect: () => void;
-  wizard: Wizard;
-  step: Step;
-  client: any;
-  onReset?: () => void;
-  onFinish?: (params: any) => void;
-  renderOnFinish?: (params: any) => React.ReactNode;
-}
 
 export interface IWizardStep {
   onNext?: (params: IOnNextPreviousParams) => void;

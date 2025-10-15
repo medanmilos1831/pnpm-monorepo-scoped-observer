@@ -1,19 +1,41 @@
-import { createContext, useEffect, type PropsWithChildren } from "react";
-import type { IWizardProviderHOC } from "./types";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from "react";
+import { createClient } from "../Client/createClient";
 import { WizardEvents } from "../types";
+import { Step, Wizard, type IWizardConfig } from "../Wizard";
+import { WizardClientContext } from "../WizardClientProvider";
+import { WizardStep } from "./WizardStep";
 
 const WizardContext = createContext<any>(undefined);
 
 const WizardProvider = ({
   children,
-  disconnect,
-  wizard,
-  step,
-  client,
   onReset,
   onFinish,
   renderOnFinish,
-}: PropsWithChildren<IWizardProviderHOC>) => {
+  ...props
+}: PropsWithChildren<IWizardConfig>) => {
+  const context = useContext(WizardClientContext);
+  const [{ disconnect, slice }, _] = useState(() => {
+    const item = context.createSlice(props.id, () => {
+      const wizard = new Wizard(props);
+      const step = new Step();
+      const client = createClient({ wizard, step });
+      return {
+        wizard,
+        step,
+        client,
+      };
+    });
+    return item;
+  });
+
+  const [successRender, setSuccessRender] = useState(false);
   useEffect(() => {
     return () => {
       disconnect();
@@ -22,7 +44,9 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
-    unsubscribe = client.subscribe(WizardEvents.ON_RESET, () => onReset());
+    unsubscribe = slice.client.subscribe(WizardEvents.ON_RESET, () => {
+      onReset();
+    });
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -32,12 +56,14 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onFinish) return;
-    unsubscribe = client.subscribe(WizardEvents.ON_FINISH, () =>
+    unsubscribe = slice.client.subscribe(WizardEvents.ON_FINISH, () =>
       onFinish({
         reset: () => {
-          client.reset();
+          slice.client.reset();
         },
-        renderOnFinish,
+        render: () => {
+          setSuccessRender(true);
+        },
       })
     );
     return () => {
@@ -46,17 +72,21 @@ const WizardProvider = ({
       }
     };
   });
+  if (successRender) {
+    return renderOnFinish
+      ? renderOnFinish({
+          reset: () => {
+            setSuccessRender(false);
+            slice.client.reset();
+          },
+        })
+      : null;
+  }
   return (
-    <WizardContext.Provider
-      value={{
-        wizard,
-        step,
-        client,
-      }}
-    >
-      {children}
-    </WizardContext.Provider>
+    <WizardContext.Provider value={slice}>{children}</WizardContext.Provider>
   );
 };
 
-export { WizardProvider, WizardContext };
+WizardProvider.Step = WizardStep;
+
+export { WizardContext, WizardProvider };

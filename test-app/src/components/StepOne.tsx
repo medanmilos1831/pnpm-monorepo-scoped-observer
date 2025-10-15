@@ -1,10 +1,7 @@
 import { Modal } from "antd";
 import { useState } from "react";
 
-import {
-  useWizardCommands,
-  WizardProvider,
-} from "../wizardNew/react-intergation";
+import { useWizardCommands, WizardProvider } from "../wizard/react-intergation";
 
 const StepOne = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,12 +20,7 @@ const StepOne = () => {
 
   return (
     <div>
-      <WizardProvider.Step
-        onNext={(params) => {
-        }}
-      >
-        StepOne
-      </WizardProvider.Step>
+      <WizardProvider.Step onNext={(params) => {}}>StepOne</WizardProvider.Step>
     </div>
   );
 };
