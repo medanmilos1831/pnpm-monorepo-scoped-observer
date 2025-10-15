@@ -1,7 +1,10 @@
 import { Observer } from "../Observer";
-import type { IOnMiddlewareNextPreviousParams } from "../react-intergation/types";
-import { WizardInternalEvents, WizardCommands, WizardEvents } from "../types";
 import type { Step, Wizard } from "../Wizard";
+import {
+  WizardCommands,
+  WizardEvents,
+  WizardInternalEvents,
+} from "../Wizard/types";
 import { onNextMiddleware, onPreviousMiddleware } from "./middleware";
 
 export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {

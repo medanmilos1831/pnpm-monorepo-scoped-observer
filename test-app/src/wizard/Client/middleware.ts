@@ -1,5 +1,5 @@
 import type { Observer } from "../Observer";
-import { WizardInternalEvents } from "../types";
+import { WizardInternalEvents } from "../Wizard/types";
 import type { Wizard } from "../Wizard";
 
 export const onNextMiddleware = (observer: Observer, wizard: Wizard) => {

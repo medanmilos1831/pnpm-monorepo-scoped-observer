@@ -6,7 +6,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { createClient } from "../Client/createClient";
-import { WizardEvents } from "../types";
+import { WizardEvents } from "../Wizard/types";
 import { Step, Wizard, type IWizardConfig } from "../Wizard";
 import { WizardClientContext } from "../WizardClientProvider";
 import { WizardStep } from "./WizardStep";

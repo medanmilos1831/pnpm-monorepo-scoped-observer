@@ -1,4 +1,4 @@
-import { WizardCommands } from "../types";
+import { WizardCommands } from "./types";
 import type { IWizardConfig } from "./types";
 
 class Wizard {
