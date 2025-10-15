@@ -11,16 +11,13 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
     toStep: string,
     command: WizardCommands.NEXT | WizardCommands.PREVIOUS
   ) {
-    if (command === WizardCommands.NEXT) {
-      if (step.middlewareOnNext) {
-        onNextMiddleware(observer, wizard);
-      }
+    if (command === WizardCommands.NEXT && step.middlewareOnNext) {
+      onNextMiddleware(observer, wizard);
     }
-    if (command === WizardCommands.PREVIOUS) {
-      if (step.middlewareOnPrevious) {
-        onPreviousMiddleware(observer, wizard);
-      }
+    if (command === WizardCommands.PREVIOUS && step.middlewareOnPrevious) {
+      onPreviousMiddleware(observer, wizard);
     }
+
     observer.dispatch(
       command === WizardCommands.NEXT
         ? WizardEvents.ON_NEXT
@@ -54,39 +51,44 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
     return false;
   }
 
-  function next(obj?: { actionType?: string }) {
-    const result = wizard.findStep({ command: WizardCommands.NEXT })!;
-    if (!result) {
-      observer.dispatch(WizardEvents.ON_FINISH);
-      return;
-    }
-    if (handleValidation(WizardCommands.NEXT, result, obj)) {
-      return;
-    }
-    if (step.middlewareOnNext) {
-      onNextMiddleware(observer, wizard);
-    }
-    resolve(result, WizardCommands.NEXT);
-  }
+  function goToStep(
+    stepName: string,
+    command?: WizardCommands,
+    obj?: { actionType?: string }
+  ) {
+    let validationCommand = command;
+    if (!validationCommand) {
+      const currentStepIndex = wizard.steps.indexOf(wizard.activeStep);
+      const targetStepIndex = wizard.steps.indexOf(stepName);
 
-  function previous(obj?: {
-    actionType?: string;
-    middleware?: (params: IOnMiddlewareNextPreviousParams) => void;
-  }) {
-    const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
-    if (!result) return;
-    if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
+      validationCommand =
+        targetStepIndex > currentStepIndex
+          ? WizardCommands.NEXT
+          : WizardCommands.PREVIOUS;
+    }
+    if (handleValidation(validationCommand, stepName, obj)) {
       return;
     }
-    if (step.middlewareOnPrevious) {
-      onPreviousMiddleware(observer, wizard);
-    }
-    resolve(result, WizardCommands.PREVIOUS);
+    resolve(stepName, validationCommand);
   }
 
   return {
-    next,
-    previous,
+    next(obj?: { actionType?: string }) {
+      const result = wizard.findStep({ command: WizardCommands.NEXT })!;
+      if (!result) {
+        observer.dispatch(WizardEvents.ON_FINISH);
+        return;
+      }
+      goToStep(result, WizardCommands.NEXT, obj);
+    },
+    previous: (obj?: { actionType?: string }) => {
+      const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
+      if (!result) return;
+      if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
+        return;
+      }
+      goToStep(result, WizardCommands.PREVIOUS, obj);
+    },
     reset: () => {
       wizard.steps = [...wizard.__INTERNAL__STEPS];
       wizard.changeStep(wizard.__INTERNAL__ACTIVE_STEP);
@@ -102,20 +104,7 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
     getWizardId: () => {
       return wizard.id;
     },
-    goToStep: (step: string) => {
-      const currentStepIndex = wizard.steps.indexOf(wizard.activeStep);
-      const targetStepIndex = wizard.steps.indexOf(step);
-
-      const command =
-        targetStepIndex > currentStepIndex
-          ? WizardCommands.NEXT
-          : WizardCommands.PREVIOUS;
-      if (command === WizardCommands.NEXT) {
-        next();
-      } else {
-        previous();
-      }
-    },
+    goToStep,
     isLast: () => {
       return wizard.isLast;
     },

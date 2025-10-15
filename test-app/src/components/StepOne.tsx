@@ -36,9 +36,11 @@ const StepOne = () => {
         middlewareOnNext={(params) => {
           console.log("MIDDLEWARE ON NEXT");
         }}
-        middlewareOnPrevious={(params) => {}}
+        middlewareOnPrevious={(params) => {
+          console.log("MIDDLEWARE ON PREVIOUS");
+        }}
         validate={(params) => {
-          console.log("VALIDATION");
+          console.log("VALIDATION", params);
           params.resolve();
         }}
       >
