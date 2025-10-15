@@ -20,9 +20,9 @@ const WizardProvider = ({
   renderOnFinish,
   ...props
 }: PropsWithChildren<IWizardConfig>) => {
-  const context = useContext(WizardClientContext);
-  const [{ disconnect, slice }, _] = useState(() => {
-    const item = context.createSlice(props.id, () => {
+  const context = useContext(WizardClientContext)!;
+  const [{ disconnect, entity }, _] = useState(() => {
+    const item = context.createEntity(props.id, () => {
       const wizard = new Wizard(props);
       const step = new Step();
       const client = createClient({ wizard, step });
@@ -44,9 +44,7 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
-    unsubscribe = slice.client.subscribe(WizardEvents.ON_RESET, () => {
-      onReset();
-    });
+    unsubscribe = entity.client.subscribe(WizardEvents.ON_RESET, onReset);
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -56,10 +54,10 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onFinish) return;
-    unsubscribe = slice.client.subscribe(WizardEvents.ON_FINISH, () =>
+    unsubscribe = entity.client.subscribe(WizardEvents.ON_FINISH, () =>
       onFinish({
         reset: () => {
-          slice.client.reset();
+          entity.client.reset();
         },
         render: () => {
           setSuccessRender(true);
@@ -77,13 +75,13 @@ const WizardProvider = ({
       ? renderOnFinish({
           reset: () => {
             setSuccessRender(false);
-            slice.client.reset();
+            entity.client.reset();
           },
         })
       : null;
   }
   return (
-    <WizardContext.Provider value={slice}>{children}</WizardContext.Provider>
+    <WizardContext.Provider value={entity}>{children}</WizardContext.Provider>
   );
 };
 

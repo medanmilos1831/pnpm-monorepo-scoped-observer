@@ -1,21 +1,21 @@
-import type { ISlice } from "./types";
+import type { IEntity } from "./types";
 
 class Store {
-  slices = new Map<string, ISlice>();
-  getSlice = (id: string) => {
-    return this.slices.get(id)!;
+  entities = new Map<string, IEntity>();
+  getEntity = (id: string) => {
+    return this.entities.get(id)!;
   };
-  removeSlice = (id: string) => {
-    this.slices.delete(id);
+  removeEntity = (id: string) => {
+    this.entities.delete(id);
   };
-  createSlice = (id: string, slice: () => ISlice) => {
-    if (!this.getSlice(id)) {
-      this.slices.set(id, slice());
+  createEntity = (id: string, entity: () => IEntity) => {
+    if (!this.getEntity(id)) {
+      this.entities.set(id, entity());
     }
     return {
-      slice: this.getSlice(id)!,
+      entity: this.getEntity(id)!,
       disconnect: () => {
-        this.removeSlice(id);
+        this.removeEntity(id);
       },
     };
   };
