@@ -1,0 +1,20 @@
+import type { Observer } from "../Observer";
+import { WizardInternalEvents } from "../types";
+import type { Wizard } from "../Wizard";
+
+export const onNextMiddleware = (observer: Observer, wizard: Wizard) => {
+  observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_NEXT, {
+    updateSteps: (callback: (steps: string[]) => string[]) => {
+      const updatedSteps = callback(wizard.steps);
+      wizard.steps = [...new Set(updatedSteps)];
+    },
+  });
+};
+export const onPreviousMiddleware = (observer: Observer, wizard: Wizard) => {
+  observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS, {
+    updateSteps: (callback: (steps: string[]) => string[]) => {
+      const updatedSteps = callback(wizard.steps);
+      wizard.steps = [...new Set(updatedSteps)];
+    },
+  });
+};

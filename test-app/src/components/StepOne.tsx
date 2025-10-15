@@ -30,19 +30,16 @@ const StepOne = () => {
     >
       <WizardProvider.Step
         onNext={(params) => {
-          console.log("onNext", params);
+          console.log("ON NEXT");
         }}
-        onPrevious={(params) => {
-          console.log("onPrevious", params);
-        }}
+        onPrevious={(params) => {}}
         middlewareOnNext={(params) => {
-          console.log("middlewareOnNext", params);
+          console.log("MIDDLEWARE ON NEXT");
         }}
-        middlewareOnPrevious={(params) => {
-          console.log("middlewareOnPrevious", params);
-        }}
+        middlewareOnPrevious={(params) => {}}
         validate={(params) => {
-          console.log("validate", params);
+          console.log("VALIDATION");
+          params.resolve();
         }}
       >
         <div

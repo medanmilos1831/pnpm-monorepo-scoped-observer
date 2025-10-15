@@ -12,12 +12,21 @@ const StepTwo = () => {
       }}
     >
       <WizardProvider.Step
-        onPrevious={() => {}}
-        onNext={() => {}}
+        onPrevious={() => {
+          console.log("ON PREVIOUS");
+        }}
+        onNext={() => {
+          console.log("ON NEXT");
+        }}
         middlewareOnNext={({ updateSteps }) => {
-          updateSteps((prev: string[]) => {
-            return [...prev, "stepThree"];
-          });
+          console.log("MIDDLEWARE ON NEXT");
+        }}
+        middlewareOnPrevious={({ updateSteps }) => {
+          console.log("MIDDLEWARE ON PREVIOUS");
+        }}
+        validate={(params) => {
+          console.log("VALIDATE");
+          params.resolve();
         }}
       >
         <div

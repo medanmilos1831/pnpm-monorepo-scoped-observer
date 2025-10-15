@@ -2,13 +2,25 @@ import { Observer } from "../Observer";
 import type { IOnMiddlewareNextPreviousParams } from "../react-intergation/types";
 import { WizardInternalEvents, WizardCommands, WizardEvents } from "../types";
 import type { Step, Wizard } from "../Wizard";
+import { onNextMiddleware, onPreviousMiddleware } from "./middleware";
 
 export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
   const observer = new Observer();
+
   function resolve(
     toStep: string,
     command: WizardCommands.NEXT | WizardCommands.PREVIOUS
   ) {
+    if (command === WizardCommands.NEXT) {
+      if (step.middlewareOnNext) {
+        onNextMiddleware(observer, wizard);
+      }
+    }
+    if (command === WizardCommands.PREVIOUS) {
+      if (step.middlewareOnPrevious) {
+        onPreviousMiddleware(observer, wizard);
+      }
+    }
     observer.dispatch(
       command === WizardCommands.NEXT
         ? WizardEvents.ON_NEXT
@@ -42,45 +54,39 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
     return false;
   }
 
+  function next(obj?: { actionType?: string }) {
+    const result = wizard.findStep({ command: WizardCommands.NEXT })!;
+    if (!result) {
+      observer.dispatch(WizardEvents.ON_FINISH);
+      return;
+    }
+    if (handleValidation(WizardCommands.NEXT, result, obj)) {
+      return;
+    }
+    if (step.middlewareOnNext) {
+      onNextMiddleware(observer, wizard);
+    }
+    resolve(result, WizardCommands.NEXT);
+  }
+
+  function previous(obj?: {
+    actionType?: string;
+    middleware?: (params: IOnMiddlewareNextPreviousParams) => void;
+  }) {
+    const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
+    if (!result) return;
+    if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
+      return;
+    }
+    if (step.middlewareOnPrevious) {
+      onPreviousMiddleware(observer, wizard);
+    }
+    resolve(result, WizardCommands.PREVIOUS);
+  }
+
   return {
-    next: (obj?: { actionType?: string }) => {
-      const result = wizard.findStep({ command: WizardCommands.NEXT })!;
-      if (!result) {
-        observer.dispatch(WizardEvents.ON_FINISH);
-        return;
-      }
-      if (handleValidation(WizardCommands.NEXT, result, obj)) {
-        return;
-      }
-      if (step.middlewareOnNext) {
-        observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_NEXT, {
-          updateSteps: (callback: (steps: string[]) => string[]) => {
-            const updatedSteps = callback(wizard.steps);
-            wizard.steps = [...new Set(updatedSteps)];
-          },
-        });
-      }
-      resolve(result, WizardCommands.NEXT);
-    },
-    previous: (obj?: {
-      actionType?: string;
-      middleware?: (params: IOnMiddlewareNextPreviousParams) => void;
-    }) => {
-      const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
-      if (!result) return;
-      if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
-        return;
-      }
-      if (step.middlewareOnPrevious) {
-        observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS, {
-          updateSteps: (callback: (steps: string[]) => string[]) => {
-            const updatedSteps = callback(wizard.steps);
-            wizard.steps = [...new Set(updatedSteps)];
-          },
-        });
-      }
-      resolve(result, WizardCommands.PREVIOUS);
-    },
+    next,
+    previous,
     reset: () => {
       wizard.steps = [...wizard.__INTERNAL__STEPS];
       wizard.changeStep(wizard.__INTERNAL__ACTIVE_STEP);
@@ -104,7 +110,11 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
         targetStepIndex > currentStepIndex
           ? WizardCommands.NEXT
           : WizardCommands.PREVIOUS;
-      resolve(step, command);
+      if (command === WizardCommands.NEXT) {
+        next();
+      } else {
+        previous();
+      }
     },
     isLast: () => {
       return wizard.isLast;

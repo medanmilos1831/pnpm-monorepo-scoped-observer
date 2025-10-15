@@ -27,7 +27,6 @@ const SomeComponent = () => {
 
 const WizardNavigation = () => {
   const step = useStep();
-  console.log("step", step);
   const { previous, next, reset, goToStep } = useWizardCommands();
   return (
     <div
