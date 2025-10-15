@@ -17,6 +17,9 @@ const WizardStep = ({
   middlewareOnPrevious,
 }: PropsWithChildren<IWizardStep>) => {
   const context = useContext(WizardContext);
+  if (!context) {
+    throw new Error("WizardContext not found");
+  }
   context.step.setStepDefinition({
     hasValidation: !!validate,
     onNext: !!onNext,

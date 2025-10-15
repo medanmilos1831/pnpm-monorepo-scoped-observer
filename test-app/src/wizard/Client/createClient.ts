@@ -44,14 +44,6 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
 
   return {
     next: (obj?: { actionType?: string }) => {
-      if (step.middlewareOnNext) {
-        observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_NEXT, {
-          updateSteps: (callback: (steps: string[]) => string[]) => {
-            const updatedSteps = callback(wizard.steps);
-            wizard.steps = [...new Set(updatedSteps)];
-          },
-        });
-      }
       const result = wizard.findStep({ command: WizardCommands.NEXT })!;
       if (!result) {
         observer.dispatch(WizardEvents.ON_FINISH);
@@ -60,12 +52,25 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
       if (handleValidation(WizardCommands.NEXT, result, obj)) {
         return;
       }
+      if (step.middlewareOnNext) {
+        observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_NEXT, {
+          updateSteps: (callback: (steps: string[]) => string[]) => {
+            const updatedSteps = callback(wizard.steps);
+            wizard.steps = [...new Set(updatedSteps)];
+          },
+        });
+      }
       resolve(result, WizardCommands.NEXT);
     },
     previous: (obj?: {
       actionType?: string;
       middleware?: (params: IOnMiddlewareNextPreviousParams) => void;
     }) => {
+      const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
+      if (!result) return;
+      if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
+        return;
+      }
       if (step.middlewareOnPrevious) {
         observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS, {
           updateSteps: (callback: (steps: string[]) => string[]) => {
@@ -73,11 +78,6 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
             wizard.steps = [...new Set(updatedSteps)];
           },
         });
-      }
-      const result = wizard.findStep({ command: WizardCommands.PREVIOUS });
-      if (!result) return;
-      if (handleValidation(WizardCommands.PREVIOUS, result, obj)) {
-        return;
       }
       resolve(result, WizardCommands.PREVIOUS);
     },

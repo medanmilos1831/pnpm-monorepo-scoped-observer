@@ -10,8 +10,9 @@ import { WizardEvents } from "../types";
 import { Step, Wizard, type IWizardConfig } from "../Wizard";
 import { WizardClientContext } from "../WizardClientProvider";
 import { WizardStep } from "./WizardStep";
+import type { IEntity } from "../Store/types";
 
-const WizardContext = createContext<any>(undefined);
+const WizardContext = createContext<IEntity | undefined>(undefined);
 
 const WizardProvider = ({
   children,
@@ -21,6 +22,9 @@ const WizardProvider = ({
   ...props
 }: PropsWithChildren<IWizardConfig>) => {
   const context = useContext(WizardClientContext)!;
+  if (!context) {
+    throw new Error("WizardClientContext not found");
+  }
   const [{ disconnect, entity }, _] = useState(() => {
     const item = context.createEntity(props.id, () => {
       const wizard = new Wizard(props);

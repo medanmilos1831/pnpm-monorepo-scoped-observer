@@ -107,7 +107,11 @@ const Controller = () => {
         ← Previous
       </button>
       <button
-        onClick={() => next()}
+        onClick={() =>
+          next({
+            actionType: "validate",
+          })
+        }
         style={{
           padding: "10px 20px",
           backgroundColor: "#28a745",
