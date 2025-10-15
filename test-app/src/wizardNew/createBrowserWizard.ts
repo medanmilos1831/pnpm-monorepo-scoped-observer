@@ -10,7 +10,6 @@ const createBrowserWizard = () => {
   // const store = new Store();
   // const observer = new Observer();
   // const client = createClient(observer);
-  // console.log(store.slices);
   return new Store();
 };
 

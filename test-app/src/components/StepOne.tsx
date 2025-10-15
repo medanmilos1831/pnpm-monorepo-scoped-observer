@@ -25,7 +25,6 @@ const StepOne = () => {
     <div>
       <WizardProvider.Step
         onNext={(params) => {
-          console.log("onNext", params);
         }}
       >
         StepOne

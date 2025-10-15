@@ -4,7 +4,6 @@ import { StepFour } from "../../components/StepFour";
 import { StepOne } from "../../components/StepOne";
 import { StepThree } from "../../components/StepThree";
 import { StepTwo } from "../../components/StepTwo";
-import { Wizard } from "../../wiz";
 
 import {
   useStep,
@@ -98,8 +97,7 @@ const HomePage = () => {
             : ["stepOne", "stepTwo", "stepThree"]
         }
         activeStep="stepOne"
-        onFinish={({ reset, render }) => {
-          console.log("onFinish", counter);
+        onFinish={({ render }) => {
           render();
         }}
         renderOnFinish={({ reset }) => {

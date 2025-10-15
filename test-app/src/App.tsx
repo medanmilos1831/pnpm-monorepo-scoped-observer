@@ -4,7 +4,6 @@ import { createBrowserWizard, WizardClientProvider } from "./wizardNew";
 
 const client = createBrowserWizard();
 const r = new QueryClient();
-console.log("rrrrr", r);
 function App() {
   return (
     <div
