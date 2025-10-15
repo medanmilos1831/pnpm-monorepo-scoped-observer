@@ -1,16 +1,15 @@
-import { createScopedObserver } from "../../scroped-observer";
-import { SCOPE_NAME } from "./types";
+import { createScopedObserver } from "../../../scroped-observer";
 
 class Observer {
   private observer = createScopedObserver([
     {
-      scope: SCOPE_NAME,
+      scope: "wizard",
     },
   ]);
 
   dispatch = (eventName: string, payload?: any) => {
     this.observer.dispatch({
-      scope: SCOPE_NAME,
+      scope: "wizard",
       eventName,
       payload: payload || undefined,
     });
@@ -18,7 +17,7 @@ class Observer {
 
   subscribe = (eventName: string, callback: (payload: any) => void) => {
     return this.observer.subscribe({
-      scope: SCOPE_NAME,
+      scope: "wizard",
       eventName,
       callback,
     });

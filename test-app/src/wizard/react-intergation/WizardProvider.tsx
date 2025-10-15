@@ -5,10 +5,10 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { createClient } from "../Client/createClient";
-import { WizardEvents } from "../Wizard/types";
-import { Step, Wizard, type IWizardConfig } from "../Wizard";
-import { WizardClientContext } from "../WizardClientProvider";
+import { createClient } from "../Entity/Client/createClient";
+import { WizardEvents } from "../Entity/types";
+import { Step, Wizard, type IWizardConfig } from "../Entity";
+import { WizardClientContext } from "./WizardClient/WizardClientProvider";
 import { WizardStep } from "./WizardStep";
 import type { IEntity } from "../Store/types";
 

@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import type { createBrowserWizard } from "./createBrowserWizard";
+import type { createWizardClient } from "./createWizardClient";
 
 const WizardClientContext = createContext<
-  ReturnType<typeof createBrowserWizard> | undefined
+  ReturnType<typeof createWizardClient> | undefined
 >(undefined);
 
 const WizardClientProvider = ({
@@ -10,7 +10,7 @@ const WizardClientProvider = ({
   client,
 }: {
   children: React.ReactNode;
-  client: ReturnType<typeof createBrowserWizard>;
+  client: ReturnType<typeof createWizardClient>;
 }) => {
   return (
     <WizardClientContext.Provider value={client}>

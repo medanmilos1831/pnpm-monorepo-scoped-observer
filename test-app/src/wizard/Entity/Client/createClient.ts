@@ -1,11 +1,9 @@
-import { Observer } from "../Observer";
-import type { Step, Wizard } from "../Wizard";
-import {
-  WizardCommands,
-  WizardEvents,
-  WizardInternalEvents,
-} from "../Wizard/types";
+import { Observer } from "./Observer";
+
+import { WizardCommands, WizardEvents, WizardInternalEvents } from "../types";
 import { onNextMiddleware, onPreviousMiddleware } from "./middleware";
+import type { Step } from "../Step";
+import type { Wizard } from "../Wizard";
 
 export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
   const observer = new Observer();

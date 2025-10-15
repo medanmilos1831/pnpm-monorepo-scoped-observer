@@ -1,6 +1,6 @@
-import type { createClient } from "../Client/createClient";
-import type { Step } from "../Wizard";
-import type { Wizard } from "../Wizard/Wizard";
+import type { createClient } from "../Entity/Client/createClient";
+import type { Step } from "../Entity";
+import type { Wizard } from "../Entity/Wizard";
 
 export interface IEntity {
   wizard: Wizard;
