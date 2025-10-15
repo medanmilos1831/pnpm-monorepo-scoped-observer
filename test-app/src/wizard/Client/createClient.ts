@@ -106,6 +106,12 @@ export function createClient({ wizard, step }: { wizard: Wizard; step: Step }) {
           : WizardCommands.PREVIOUS;
       resolve(step, command);
     },
+    isLast: () => {
+      return wizard.isLast;
+    },
+    isFirst: () => {
+      return wizard.isFirst;
+    },
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return observer.subscribe(eventName, callback);
     },

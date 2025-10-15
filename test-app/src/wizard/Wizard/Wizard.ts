@@ -5,6 +5,8 @@ class Wizard {
   id: string;
   steps: string[];
   activeStep: string;
+  isLast: boolean;
+  isFirst: boolean;
   __INTERNAL__STEPS: string[];
   __INTERNAL__ACTIVE_STEP: string;
   constructor({
@@ -17,6 +19,8 @@ class Wizard {
     this.id = id;
     this.steps = steps;
     this.activeStep = activeStep;
+    this.isLast = steps.length - 1 === steps.indexOf(activeStep);
+    this.isFirst = steps.indexOf(activeStep) === 0;
   }
   findStep = ({ command }: { command: WizardCommands }) => {
     const step =
@@ -27,6 +31,8 @@ class Wizard {
   };
   changeStep = (step: string) => {
     this.activeStep = step;
+    this.isLast = this.steps.length - 1 === this.steps.indexOf(step);
+    this.isFirst = this.steps.indexOf(step) === 0;
   };
   private findNextStep = () => {
     const currentIndex = this.steps.indexOf(this.activeStep);
