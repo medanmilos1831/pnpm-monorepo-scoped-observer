@@ -1,187 +1,277 @@
-# react-visibility-state-new
+# Wizard System
 
-A React state management library for handling visibility states using scoped observer pattern.
+A powerful, flexible wizard system built with React and TypeScript that provides step-by-step navigation with validation, event handling, and state management.
 
 ## Features
 
-- State management for visibility states (open/close)
-- Scoped observer pattern for event handling
-- React context provider for global state management
-- TypeScript support
-- Lightweight and performant
+- 🎯 **Step Navigation**: Next, previous, go to specific step
+- ✅ **Validation**: Built-in validation system for each step
+- 🔄 **State Management**: Reactive state updates with subscriptions
+- 🎨 **React Integration**: Hooks and components for easy React integration
+- 📡 **Event System**: Subscribe to wizard events (step change, reset, finish)
+- 🎛️ **Flexible Configuration**: Customizable wizard behavior and rendering
 
-## Installation
+## Quick Start
 
-```bash
-npm install react-visibility-state-new
-```
-
-## Usage
-
-### Basic Setup
+### 1. Setup Wizard Client
 
 ```tsx
-import {
-  createBrowserVisibility,
-  VisibilityProvider,
-} from "react-visibility-state-new";
+import { createWizardClient, WizardClientProvider } from "./wizard";
 
-const visibilityStore = createBrowserVisibility();
+const client = createWizardClient();
 
 function App() {
   return (
-    <VisibilityProvider value={visibilityStore}>
-      <YourComponent />
-    </VisibilityProvider>
+    <WizardClientProvider client={client}>
+      {/* Your app content */}
+    </WizardClientProvider>
   );
 }
 ```
 
-### Using Visibility State with VisibilityProvider.Item
+### 2. Create a Wizard
 
 ```tsx
-import {
-  VisibilityProvider,
-  useVisibilityHandler,
-} from "react-visibility-state-new";
+import { Wizard, useStep, useWizardCommands } from "./wizard";
 
-function MyComponent() {
-  const { open, close } = useVisibilityHandler();
-
+function MyWizard() {
   return (
-    <>
-      <VisibilityProvider.Item name="modal" initState="close">
-        {({ state, payload }) => {
-          if (state === "open") {
-            return payload; // Render the payload as component
-          }
-          return null;
-        }}
-      </VisibilityProvider.Item>
-
-      <button onClick={() => open("modal", <div>Modal Content</div>)}>
-        Open Modal
-      </button>
-      <button onClick={() => close("modal")}>Close Modal</button>
-    </>
+    <Wizard
+      id="my-wizard"
+      steps={["stepOne", "stepTwo", "stepThree"]}
+      activeStep="stepOne"
+      onFinish={({ render, reset }) => {
+        render(); // Show success screen
+      }}
+      renderOnFinish={({ reset }) => (
+        <div>
+          <h2>Wizard Completed!</h2>
+          <button onClick={reset}>Start Over</button>
+        </div>
+      )}
+    >
+      <WizardContent />
+    </Wizard>
   );
 }
 ```
 
-### Using useVisibility Hook
+### 3. Create Step Components
 
 ```tsx
-import {
-  useVisibility,
-  useVisibilityHandler,
-} from "react-visibility-state-new";
+import { Wizard } from "./wizard";
 
-function MyComponent() {
-  const { state, payload } = useVisibility("myElement", "close");
-  const { open, close } = useVisibilityHandler();
+function StepOne() {
+  return (
+    <Wizard.Step
+      onNext={(params) => {
+        // Handle next step logic
+        console.log("Moving to:", params.toStep);
+      }}
+      onPrevious={(params) => {
+        // Handle previous step logic
+      }}
+      validate={(params) => {
+        // Validation logic
+        if (isValid) {
+          params.resolve(); // Allow navigation
+        }
+      }}
+    >
+      <div>
+        <h2>Step One Content</h2>
+        <p>Your step content here</p>
+      </div>
+    </Wizard.Step>
+  );
+}
+```
+
+### 4. Use Wizard Hooks
+
+```tsx
+function WizardControls() {
+  const { stepName, steps, isFirst, isLast } = useStep();
+  const { next, previous, reset, goToStep } = useWizardCommands();
 
   return (
     <div>
-      <p>State: {state}</p>
-      <p>Payload: {JSON.stringify(payload)}</p>
-      <button onClick={() => open("myElement", { data: "some data" })}>
-        Open
+      <button onClick={previous} disabled={isFirst}>
+        Previous
       </button>
-      <button onClick={() => close("myElement")}>Close</button>
+      <button onClick={() => next({ actionType: "validate" })}>Next</button>
+      <button onClick={reset}>Reset</button>
+      <button onClick={() => goToStep("stepTwo")}>Go to Step Two</button>
     </div>
   );
 }
 ```
 
-### Creating Standalone Visibility Instance
+## API Reference
+
+### Wizard Component
+
+The main wizard component that manages the wizard state and lifecycle.
 
 ```tsx
-import { createVisibility } from "react-visibility-state-new";
-
-const instance = createVisibility("myElement", "close");
-
-// Use the instance methods
-instance.subscribe(() => {
-  // Handle state changes
-});
+interface IWizardConfig {
+  id: string; // Unique wizard identifier
+  steps: string[]; // Array of step names
+  activeStep: string; // Initial active step
+  onReset?: () => void; // Called when wizard resets
+  onFinish?: (params: {
+    // Called when wizard finishes
+    reset: () => void;
+    render: () => void;
+  }) => void;
+  renderOnFinish?: (params: {
+    // Custom finish screen renderer
+    reset: () => void;
+  }) => React.ReactNode;
+}
 ```
 
-## API
+### Wizard.Step Component
 
-### createBrowserVisibility()
-
-Creates a browser visibility store that manages multiple visibility instances.
-
-**Returns:**
-
-- `initializeItem(name, initState)` - Initialize a new visibility item
-- `open(name, payload?)` - Open a visibility item
-- `close(name, payload?)` - Close a visibility item
-- `getEntity(name)` - Get visibility entity by name
-
-### VisibilityProvider
-
-React context provider for managing visibility state globally.
-
-**Props:**
-
-- `value` - Browser visibility store instance
-- `children` - React children
-
-**Static Methods:**
-
-- `VisibilityProvider.Item` - Component for rendering visibility state
-
-### useVisibility(name, initState)
-
-Hook for accessing visibility state and payload.
-
-**Parameters:**
-
-- `name` - Unique name for the visibility item
-- `initState` - Initial state ("open" or "close")
-
-**Returns:**
-
-- `state` - Current visibility state
-- `payload` - Current payload data
-
-### useVisibilityHandler()
-
-Hook for controlling visibility state.
-
-**Returns:**
-
-- `open(name, payload?)` - Open visibility item
-- `close(name)` - Close visibility item
-
-### createVisibility(name, initState)
-
-Creates a standalone visibility instance.
-
-**Parameters:**
-
-- `name` - Unique name for the visibility instance
-- `initState` - Initial state ("open" or "close")
-
-**Returns:**
-
-- VisibilityInstance with subscribe, getState, getPayload methods
-
-## Types
+Wraps step content and provides step-specific callbacks.
 
 ```tsx
-enum VISIBILITY_STATE {
-  OPEN = "open",
-  CLOSE = "close",
+interface IWizardStep {
+  onNext?: (params: IOnNextPreviousParams) => void;
+  onPrevious?: (params: IOnNextPreviousParams) => void;
+  validate?: (params: IOnValidateParams) => void;
 }
 
-type VisibilityConfig = {
-  name: string;
-  initState: VISIBILITY_STATE;
-};
+interface IOnNextPreviousParams {
+  activeStep: string;
+  toStep: string;
+  updateSteps: (callback: (steps: string[]) => string[]) => void;
+}
+
+interface IOnValidateParams {
+  actionType?: string;
+  command: WizardCommands;
+  activeStep: string;
+  toStep: string;
+  resolve: () => void;
+}
 ```
 
-## License
+### Hooks
 
-MIT
+#### useStep()
+
+Returns current step information and navigation state.
+
+```tsx
+const { stepName, steps, wizardId, isLast, isFirst } = useStep();
+```
+
+#### useWizardCommands()
+
+Returns wizard navigation functions.
+
+```tsx
+const { next, previous, reset, goToStep } = useWizardCommands();
+```
+
+### Wizard Commands
+
+```tsx
+enum WizardCommands {
+  NEXT = "next",
+  PREVIOUS = "previous",
+}
+
+enum WizardEvents {
+  ON_STEP_CHANGE = "onStepChange",
+  ON_RESET = "onReset",
+  ON_FINISH = "onFinish",
+}
+```
+
+## Advanced Usage
+
+### Custom Step Navigation
+
+```tsx
+function CustomNavigation() {
+  const { steps, stepName } = useStep();
+  const { goToStep } = useWizardCommands();
+
+  return (
+    <div className="step-indicators">
+      {steps.map((step) => (
+        <button
+          key={step}
+          className={step === stepName ? "active" : ""}
+          onClick={() => goToStep(step, { actionType: "validate" })}
+        >
+          {step}
+        </button>
+      ))}
+    </div>
+  );
+}
+```
+
+### Step Validation
+
+```tsx
+function ValidatedStep() {
+  const [isValid, setIsValid] = useState(false);
+
+  return (
+    <Wizard.Step
+      validate={(params) => {
+        if (isValid) {
+          params.resolve();
+        } else {
+          // Show validation error
+          alert("Please complete all required fields");
+        }
+      }}
+    >
+      <form>
+        <input
+          required
+          onChange={(e) => setIsValid(e.target.value.length > 0)}
+        />
+      </form>
+    </Wizard.Step>
+  );
+}
+```
+
+### Event Subscriptions
+
+```tsx
+function WizardWithEvents() {
+  const { getClient } = useWizardClient();
+  const client = getClient("my-wizard");
+
+  useEffect(() => {
+    const unsubscribe = client.subscribe(
+      WizardEvents.ON_STEP_CHANGE,
+      (data) => {
+        console.log("Step changed to:", data);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
+
+  return (
+    <Wizard id="my-wizard" steps={["step1", "step2"]} activeStep="step1" />
+  );
+}
+```
+
+## Architecture
+
+The wizard system is built with a modular architecture:
+
+- **Store**: Core state management with entities and observers
+- **React Integration**: Hooks and components for React integration
+- **Event System**: Pub/sub pattern for wizard events
+- **Validation**: Flexible validation system for step transitions
