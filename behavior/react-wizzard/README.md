@@ -1,397 +1,338 @@
 # react-wizzard
 
-**react-wizzard** is a lightweight React package designed to manage multi-step flows (wizards) with predictable state transitions — powered by a finite state machine under the hood.
+A powerful, flexible wizard system built with React and TypeScript that provides step-by-step navigation with validation, event handling, and state management.
 
-It allows you to define steps, navigate forward/backward, and track the active step in a clean, testable, and decoupled way, making it ideal for form wizards, guided tours, onboarding flows, or any multi-step UI pattern.
+## Features
 
-The package is built on a layered architecture:
+- 🎯 **Step Navigation**: Next, previous, go to specific step
+- ✅ **Validation**: Built-in validation system for each step
+- 🔄 **State Management**: Reactive state updates with subscriptions
+- 🎨 **React Integration**: Hooks and components for easy React integration
+- 📡 **Event System**: Subscribe to wizard events (step change, reset, finish)
+- 🎛️ **Flexible Configuration**: Customizable wizard behavior and rendering
 
-- **@scoped-observer/core** — a core event bus system
-- **@scoped-observer/react-state-machine** — a finite state machine built on top of the core
-- **react-wizzard** — the React behavior layer providing a streamlined API for defining steps and controlling navigation
+## Quick Start
 
-This separation of concerns ensures flexibility, extensibility, and ease of maintenance.
-
-Use **react-wizzard** to simplify your multi-step navigation logic with a robust, minimal dependency solution that stays consistent across any UI framework or styling approach.
-
-## 📦 Installation
-
-You can install **react-wizzard** via npm:
-
-```bash
-npm install react-wizzard
-```
-
-> **Note:**  
-> This package has peer dependencies on `react` (version 18 or above) and `@scoped-observer/react-state-machine`.  
-> Make sure to install these dependencies in your project to avoid warnings or errors during installation or runtime.
-
-```bash
-npm install react @scoped-observer/react-state-machine
-```
-
-## 🎮 Demo
-
-Try out **react-wizzard** in action with our interactive demo:
-
-**[🚀 Live Demo on StackBlitz](https://stackblitz.com/~/github.com/medanmilos1831/react-wizzard-demo?file=src/homepage/HomePage.tsx)**
-
-The demo showcases a complete multi-step wizard implementation with navigation controls, step validation, and real-time state management.
-
-## 🚀 Quick Start
-
-Here's a basic example showing how to create a wizard with multiple steps and navigate between them:
+### 1. Setup Wizard Client
 
 ```tsx
-import React from "react";
-import { createWizzard } from "react-wizzard";
+import { createWizardClient, WizardClientProvider } from "./wizard";
 
-const { useWizzard, WizzardHandler } = createWizzard({
-  keys: ["myWizard"] as const,
-});
+const client = createWizardClient();
 
-const StepOne = () => <div>Step One</div>;
-const StepTwo = () => <div>Step Two</div>;
-const StepThree = () => <div>Step Three</div>;
-
-const WizardBody = () => {
-  const wizard = useWizzard("myWizard", {
-    activeStep: "one",
-    steps: {
-      one: { element: StepOne },
-      two: { element: StepTwo },
-      three: { element: StepThree },
-    },
-  });
-
+function App() {
   return (
-    <div>
-      <h2>Current Step: {wizard.currentStep}</h2>
-      <p>
-        Step {wizard.currentStepIndex + 1} of {wizard.steps.length}
-      </p>
-    </div>
+    <WizardClientProvider client={client}>
+      {/* Your app content */}
+    </WizardClientProvider>
   );
-};
+}
+```
 
-const WizardFooter = () => {
-  const wizard = useWizzard("myWizard", {
-    activeStep: "one",
-    steps: {
-      one: { element: StepOne },
-      two: { element: StepTwo },
-      three: { element: StepThree },
-    },
-  });
+### 2. Create a Wizard
 
+```tsx
+import { Wizard, useStep, useWizardCommands } from "./wizard";
+
+function MyWizard() {
   return (
-    <>
-      <button onClick={() => wizard.prevStep()}>Previous</button>
-      <button onClick={() => wizard.nextStep()}>Next</button>
-    </>
-  );
-};
-
-const WizardContent = () => {
-  return (
-    <WizzardHandler name="myWizard">
-      {({ currentStep, steps, Element, isFirst, isLast }) => (
+    <Wizard
+      id="my-wizard"
+      steps={["stepOne", "stepTwo", "stepThree"]}
+      activeStep="stepOne"
+      onFinish={({ render, reset }) => {
+        render(); // Show success screen
+      }}
+      renderOnFinish={({ reset }) => (
         <div>
-          <WizardBody />
-          <Element />
-          <WizardFooter />
+          <h2>Wizard Completed!</h2>
+          <button onClick={reset}>Start Over</button>
         </div>
       )}
-    </WizzardHandler>
+    >
+      <WizardContent />
+    </Wizard>
   );
-};
-
-export const App = () => <WizardContent />;
-```
-
-## 📚 API Reference
-
-### `createWizzard(config)`
-
-Creates a wizard manager with predefined keys for type-safe wizard instances.
-
-**Parameters:**
-
-- `config.keys: readonly string[]` - Array of valid wizard names for type safety
-
-**Returns:**
-An object with methods to create and manage wizard instances.
-
-### Methods
-
-#### `useWizzard(name, config)`
-
-Creates a wizard instance for the specified name. Each call creates a new wizard instance if it doesn't exist.
-
-**Parameters:**
-
-- `name: string` - The wizard name (must be one of the defined keys)
-- `config: WizzardConfig` - Configuration object with initial step and step definitions
-
-**Returns:**
-
-```tsx
-{
-  currentStep: string;           // Current step name
-  currentStepIndex: number;      // Current step index (0-based)
-  steps: string[];               // Array of step names
-  stepsConfig: Record<string, { element: Component }>; // Step configurations
-  nextStepName: string;          // Next step name
-  prevStepName: string;          // Previous step name
-  isFirst: boolean;              // Whether current step is the first
-  isLast: boolean;               // Whether current step is the last
-  infinite: boolean;             // Whether wizard loops infinitely
-  nextStep(): void;              // Function to go to next step
-  prevStep(): void;              // Function to go to previous step
-  goToStep(step: string): void;  // Function to go to specific step
-  reset(): void;                 // Function to reset to initial step
 }
 ```
 
-#### `WizzardHandler`
-
-Render prop component that provides wizard state and navigation functions.
-
-**Props:**
+### 3. Create Step Components
 
 ```tsx
-{
-  name: string; // Wizard name
-  children: (props: WizzardHandlerChildrenProps) => JSX.Element; // Render function
+import { Wizard } from "./wizard";
+
+function StepOne() {
+  return (
+    <Wizard.Step
+      onNext={(params) => {
+        // Handle next step logic
+        console.log("Moving to:", params.toStep);
+      }}
+      onPrevious={(params) => {
+        // Handle previous step logic
+      }}
+      validate={(params) => {
+        // Validation logic
+        if (isValid) {
+          params.resolve(); // Allow navigation
+        }
+      }}
+    >
+      <div>
+        <h2>Step One Content</h2>
+        <p>Your step content here</p>
+      </div>
+    </Wizard.Step>
+  );
 }
 ```
 
-**Children Props:**
+### 4. Use Wizard Hooks
 
 ```tsx
-{
-  name: string;                  // Wizard name
-  steps: string[];               // Array of step names
-  stepsConfig: Record<string, { element: Component }>; // Step configurations
-  currentStep: string;           // Current step name
-  activeStep: string;            // Active step name
-  nextStepName: string;          // Next step name
-  prevStepName: string;          // Previous step name
-  isFirst: boolean;              // Whether current step is the first
-  isLast: boolean;               // Whether current step is the last
-  currentStepIndex: number;      // Current step index (0-based)
-  infinite: boolean;             // Whether wizard loops infinitely
-  Element: Component;            // Current step component
-}
-```
-
-#### `useWatch(name, callback)`
-
-Hook that watches wizard state and returns computed values.
-
-**Parameters:**
-
-- `name: string` - The wizard name to watch
-- `callback: (wizardData: WizzardData) => C` - Function to compute derived values
-
-**Returns:**
-Only the result of the callback function.
-
-#### `getItem(name)`
-
-Gets a wizard instance by name for direct access.
-
-**Parameters:**
-
-- `name: string` - The wizard name to retrieve
-
-**Returns:**
-The wizard instance or throws error if not found.
-
-## 🔧 Advanced Usage
-
-### Custom Step Validation
-
-You can add validation logic to your steps:
-
-```tsx
-const WizardBody = () => {
-  const { useWizzard } = createWizzard({
-    keys: ["myWizard"] as const,
-  });
-
-  const wizard = useWizzard("myWizard", {
-    activeStep: "one",
-    steps: {
-      one: { element: StepOne },
-      two: { element: StepTwo },
-      three: { element: StepThree },
-    },
-  });
-
-  const canProceed = () => {
-    // Add your validation logic here
-    return true;
-  };
-
-  const handleNext = () => {
-    if (canProceed()) {
-      wizard.nextStep();
-    }
-  };
+function WizardControls() {
+  const { stepName, steps, isFirst, isLast } = useStep();
+  const { next, previous, reset, goToStep } = useWizardCommands();
 
   return (
     <div>
-      {/* Step content */}
-      <button onClick={handleNext} disabled={wizard.isLast}>
-        Next
+      <button onClick={previous} disabled={isFirst}>
+        Previous
       </button>
+      <button onClick={() => next({ actionType: "validate" })}>Next</button>
+      <button onClick={reset}>Reset</button>
+      <button onClick={() => goToStep("stepTwo")}>Go to Step Two</button>
     </div>
   );
-};
+}
 ```
 
-### Dynamic Step Navigation
+## API Reference
 
-Navigate to specific steps programmatically:
+### createWizardClient()
+
+Creates a new wizard client instance that manages multiple wizards and provides a centralized store.
 
 ```tsx
-const NavigationMenu = () => {
-  const { useWizzard } = createWizzard({
-    keys: ["myWizard"] as const,
-  });
+import { createWizardClient } from "./wizard";
 
-  const wizard = useWizzard("myWizard", {
-    activeStep: "one",
-    steps: {
-      one: { element: StepOne },
-      two: { element: StepTwo },
-      three: { element: StepThree },
-    },
-  });
+const client = createWizardClient();
+```
+
+**Returns:** `Store` - A store instance with the following methods:
+
+#### Store Methods
+
+- `getClient(id: string)` - Get a wizard client by ID
+- `getEntity(id: string)` - Get wizard entity by ID
+- `removeEntity(id: string)` - Remove wizard entity by ID
+- `createEntity(props: IWizardConfig)` - Create a new wizard entity
+
+#### Wizard Client API
+
+Each wizard client (returned by `getClient()`) provides:
+
+```tsx
+interface WizardClient {
+  // Navigation methods
+  next(obj?: { actionType?: string }): void;
+  previous(obj?: { actionType?: string }): void;
+  goToStep(stepName: string, obj?: { actionType?: string }): void;
+  reset(): void;
+
+  // State getters
+  getActiveStep(): string;
+  getSteps(): string[];
+  getWizardId(): string;
+  isLast(): boolean;
+  isFirst(): boolean;
+
+  // Event subscription
+  subscribe(eventName: string, callback: (payload: any) => void): () => void;
+}
+```
+
+**Navigation Methods:**
+
+- `next()` - Move to next step
+- `previous()` - Move to previous step
+- `goToStep(stepName)` - Jump to specific step
+- `reset()` - Reset wizard to initial state
+
+**State Methods:**
+
+- `getActiveStep()` - Get current active step name
+- `getSteps()` - Get array of all step names
+- `getWizardId()` - Get wizard ID
+- `isLast()` - Check if on last step
+- `isFirst()` - Check if on first step
+
+**Event System:**
+
+- `subscribe(eventName, callback)` - Subscribe to wizard events
+  - Returns unsubscribe function
+  - Events: `"onStepChange"`, `"onReset"`, `"onFinish"`
+
+### Wizard Component
+
+The main wizard component that manages the wizard state and lifecycle.
+
+```tsx
+interface IWizardConfig {
+  id: string; // Unique wizard identifier
+  steps: string[]; // Array of step names
+  activeStep: string; // Initial active step
+  onReset?: () => void; // Called when wizard resets
+  onFinish?: (params: {
+    // Called when wizard finishes
+    reset: () => void;
+    render: () => void;
+  }) => void;
+  renderOnFinish?: (params: {
+    // Custom finish screen renderer
+    reset: () => void;
+  }) => React.ReactNode;
+}
+```
+
+### Wizard.Step Component
+
+Wraps step content and provides step-specific callbacks.
+
+```tsx
+interface IWizardStep {
+  onNext?: (params: IOnNavigateParams) => void;
+  onPrevious?: (params: IOnNavigateParams) => void;
+  validate?: (params: IOnValidateParams) => void;
+}
+
+interface IOnNavigateParams {
+  activeStep: string;
+  toStep: string;
+  updateSteps: (callback: (steps: string[]) => string[]) => void;
+}
+
+interface IOnValidateParams {
+  actionType?: string;
+  command: WizardCommands;
+  activeStep: string;
+  toStep: string;
+  resolve: () => void;
+}
+```
+
+### Hooks
+
+#### useStep()
+
+Returns current step information and navigation state.
+
+```tsx
+const { stepName, steps, wizardId, isLast, isFirst } = useStep();
+```
+
+#### useWizardCommands()
+
+Returns wizard navigation functions.
+
+```tsx
+const { next, previous, reset, goToStep } = useWizardCommands();
+```
+
+### Wizard Commands
+
+```tsx
+enum WizardCommands {
+  NEXT = "next",
+  PREVIOUS = "previous",
+}
+
+enum WizardEvents {
+  ON_STEP_CHANGE = "onStepChange",
+  ON_RESET = "onReset",
+  ON_FINISH = "onFinish",
+}
+```
+
+## Advanced Usage
+
+### Custom Step Navigation
+
+```tsx
+function CustomNavigation() {
+  const { steps, stepName } = useStep();
+  const { goToStep } = useWizardCommands();
 
   return (
-    <nav>
-      {wizard.steps.map((stepName) => (
+    <div className="step-indicators">
+      {steps.map((step) => (
         <button
-          key={stepName}
-          onClick={() => wizard.goToStep(stepName)}
-          className={wizard.currentStep === stepName ? "active" : ""}
+          key={step}
+          className={step === stepName ? "active" : ""}
+          onClick={() => goToStep(step, { actionType: "validate" })}
         >
-          {stepName}
+          {step}
         </button>
       ))}
-    </nav>
-  );
-};
-```
-
-### Multiple Wizards
-
-Manage multiple independent wizards in the same application:
-
-```tsx
-const { WizzardHandler } = createWizzard({
-  keys: ["userWizard", "settingsWizard"] as const,
-});
-
-const App = () => (
-  <>
-    <WizzardHandler name="userWizard">
-      {({ Element, currentStep }) => (
-        <div>
-          <h2>User Wizard - {currentStep}</h2>
-          <Element />
-        </div>
-      )}
-    </WizzardHandler>
-
-    <WizzardHandler name="settingsWizard">
-      {({ Element, currentStep }) => (
-        <div>
-          <h2>Settings Wizard - {currentStep}</h2>
-          <Element />
-        </div>
-      )}
-    </WizzardHandler>
-  </>
-);
-```
-
-### Watching Wizard State
-
-Use the `useWatch` hook to react to wizard state changes:
-
-```tsx
-const WizardProgress = () => {
-  const { useWatch } = createWizzard({
-    keys: ["myWizard"] as const,
-  });
-
-  const { progress, isLastStep } = useWatch("myWizard", (wizardData) => ({
-    progress: Math.round(
-      (wizardData.currentStepIndex / wizardData.steps.length) * 100
-    ),
-    isLastStep: wizardData.isLast,
-  }));
-
-  return (
-    <div>
-      <div className="progress-bar">
-        <div className="progress-fill" style={{ width: `${progress}%` }} />
-      </div>
-      <span>{progress}% Complete</span>
-      {isLastStep && <span>Final Step!</span>}
     </div>
   );
-};
+}
 ```
 
-### Infinite Loop Wizards
-
-Create wizards that loop infinitely:
+### Step Validation
 
 ```tsx
-const { useWizzard } = createWizzard({
-  keys: ["myWizard"] as const,
-});
+function ValidatedStep() {
+  const [isValid, setIsValid] = useState(false);
 
-const infiniteWizard = useWizzard("myWizard", {
-  activeStep: "one",
-  infinite: true, // Enable infinite looping
-  steps: {
-    one: { element: StepOne },
-    two: { element: StepTwo },
-    three: { element: StepThree },
-  },
-});
-
-// Now nextStep() on the last step will go to the first step
-// and prevStep() on the first step will go to the last step
+  return (
+    <Wizard.Step
+      validate={(params) => {
+        if (isValid) {
+          params.resolve();
+        } else {
+          // Show validation error
+          alert("Please complete all required fields");
+        }
+      }}
+    >
+      <form>
+        <input
+          required
+          onChange={(e) => setIsValid(e.target.value.length > 0)}
+        />
+      </form>
+    </Wizard.Step>
+  );
+}
 ```
 
-## 🎯 Features
+### Event Subscriptions
 
-- **🚀 Lightweight** - Minimal bundle size with no unnecessary dependencies
-- **🔒 Type Safe** - Full TypeScript support with comprehensive type definitions
-- **🎮 Flexible** - Support for any number of steps and custom navigation logic
-- **🧪 Testable** - Clean separation of concerns makes testing straightforward
-- **♻️ Reusable** - Multiple wizard instances can coexist in the same application
-- **⚡ Performant** - Built on efficient state management with minimal re-renders
-- **🔄 Infinite Loops** - Optional infinite looping for circular workflows
-- **👀 State Watching** - Reactive state watching with computed values
-- **🎯 Direct Access** - Direct instance access for external control
+```tsx
+function WizardWithEvents() {
+  const { getClient } = useWizardClient();
+  const client = getClient("my-wizard");
 
-## 🤝 Contributing
+  useEffect(() => {
+    const unsubscribe = client.subscribe("onStepChange", (data) => {
+      console.log("Step changed to:", data);
+    });
 
-We welcome contributions! Please see our [contributing guidelines](https://github.com/medanmilos1831/scoped-observer/blob/main/CONTRIBUTING.md) for more details.
+    return unsubscribe;
+  }, []);
 
-## 📄 License
+  return (
+    <Wizard id="my-wizard" steps={["step1", "step2"]} activeStep="step1" />
+  );
+}
+```
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/medanmilos1831/scoped-observer/blob/main/LICENSE) file for details.
+## Architecture
 
-## 🔗 Related Packages
+The wizard system is built with a modular architecture:
 
-- [@scoped-observer/core](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/core) - Core event bus system
-- [@scoped-observer/react-state-machine](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/react-state-machine) - React state machine implementation
-- [@scoped-observer/react](https://github.com/medanmilos1831/scoped-observer/tree/main/scoped-observer/react) - React integration utilities
+- **Store**: Core state management with entities and observers
+- **React Integration**: Hooks and components for React integration
+- **Event System**: Pub/sub pattern for wizard events
+- **Validation**: Flexible validation system for step transitions
