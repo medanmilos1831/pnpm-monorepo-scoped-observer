@@ -1,4 +1,4 @@
-class Step {
+class StepModule {
   hasValidation: boolean = false;
   onNext: boolean = false;
   onPrevious: boolean = false;
@@ -20,4 +20,4 @@ class Step {
   };
 }
 
-export { Step };
+export { StepModule };

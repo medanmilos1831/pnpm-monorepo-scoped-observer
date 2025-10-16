@@ -1,7 +1,7 @@
 import { WizardCommands } from "./types";
 import type { IWizardConfig } from "./types";
 
-class Wizard {
+class WizardModule {
   id: string;
   steps: string[];
   activeStep: string;
@@ -57,4 +57,4 @@ class Wizard {
   };
 }
 
-export { Wizard };
+export { WizardModule };

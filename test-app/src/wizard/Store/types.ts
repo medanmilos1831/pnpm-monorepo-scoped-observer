@@ -1,9 +1,8 @@
 import type { createClient } from "../Entity/Client/createClient";
-import type { Step } from "../Entity";
-import type { Wizard } from "../Entity/Wizard";
+import type { StepModule, WizardModule } from "./Entity";
 
 export interface IEntity {
-  wizard: Wizard;
-  step: Step;
+  wizard: WizardModule;
+  step: StepModule;
   client: ReturnType<typeof createClient>;
 }

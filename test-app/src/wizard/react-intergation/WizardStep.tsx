@@ -6,7 +6,7 @@ import type {
   IOnValidateParams,
   IWizardStep,
 } from "./types";
-import { WizardInternalEvents, WizardEvents } from "../Entity/types";
+import { WizardInternalEvents, WizardEvents } from "../Store/Entity/types";
 
 const WizardStep = ({
   children,

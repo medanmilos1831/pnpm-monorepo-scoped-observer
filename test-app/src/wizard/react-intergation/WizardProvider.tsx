@@ -5,12 +5,12 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { createClient } from "../Entity/Client/createClient";
-import { WizardEvents } from "../Entity/types";
-import { Step, Wizard, type IWizardConfig } from "../Entity";
+import { createClient } from "../Store/Entity/Client/createClient";
 import { WizardClientContext } from "./WizardClient/WizardClientProvider";
 import { WizardStep } from "./WizardStep";
 import type { IEntity } from "../Store/types";
+import { StepModule, WizardModule, type IWizardConfig } from "../Store/Entity";
+import { WizardEvents } from "../Store/Entity/types";
 
 const WizardContext = createContext<IEntity | undefined>(undefined);
 
@@ -27,8 +27,8 @@ const WizardProvider = ({
   }
   const [{ disconnect, entity }, _] = useState(() => {
     const item = context.createEntity(props.id, () => {
-      const wizard = new Wizard(props);
-      const step = new Step();
+      const wizard = new WizardModule(props);
+      const step = new StepModule();
       const client = createClient({ wizard, step });
       return {
         wizard,
