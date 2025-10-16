@@ -16,11 +16,8 @@ export function createClient({
     let toStep = wizard.findStep({ command })!;
     return {
       toStep,
-      middleware: () => {
-        const prop =
-          command === WizardCommands.NEXT
-            ? "middlewareOnNext"
-            : "middlewareOnPrevious";
+      action: () => {
+        const prop = command === WizardCommands.NEXT ? "onNext" : "onPrevious";
         if (step[prop]) {
           step[prop]({
             updateSteps: (callback: (steps: string[]) => string[]) => {
@@ -28,14 +25,6 @@ export function createClient({
               wizard.steps = [...new Set(updatedSteps)];
               toStep = wizard.findStep({ command })!;
             },
-          });
-        }
-      },
-      action: () => {
-        if (!toStep) return;
-        const prop = command === WizardCommands.NEXT ? "onNext" : "onPrevious";
-        if (step[prop]) {
-          step[prop]({
             activeStep: wizard.activeStep,
             toStep: wizard.findStep({ command })!,
           });
@@ -60,14 +49,13 @@ export function createClient({
     transitionPlan: ReturnType<typeof transition>,
     obj?: any
   ) {
-    const { middleware, action, changeStep, toStep } = transitionPlan;
+    const { action, changeStep, toStep } = transitionPlan;
     if (step.validate) {
       step.validate({
         command,
         activeStep: wizard.activeStep,
         toStep: toStep,
         resolve: () => {
-          middleware();
           action();
           changeStep();
         },
@@ -88,8 +76,8 @@ export function createClient({
     if (validationResult === "validated") {
       return;
     }
-    const { middleware, action, changeStep } = transitionPlan;
-    middleware();
+    const { action, changeStep } = transitionPlan;
+
     action();
     changeStep();
   }

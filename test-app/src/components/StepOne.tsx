@@ -31,8 +31,6 @@ const StepOne = () => {
       <Wizard.Step
         onNext={(params) => {}}
         onPrevious={(params) => {}}
-        middlewareOnNext={(params) => {}}
-        middlewareOnPrevious={(params) => {}}
         validate={(params) => {
           params.resolve();
         }}
