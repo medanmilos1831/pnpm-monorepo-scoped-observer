@@ -11,7 +11,15 @@ const StepThree = () => {
         textAlign: "center",
       }}
     >
-      <Wizard.Step>
+      <Wizard.Step
+        onNext={(params) => {}}
+        onPrevious={(params) => {}}
+        middlewareOnNext={(params) => {}}
+        middlewareOnPrevious={(params) => {}}
+        validate={(params) => {
+          params.resolve();
+        }}
+      >
         <div
           style={{
             fontSize: "1.5rem",

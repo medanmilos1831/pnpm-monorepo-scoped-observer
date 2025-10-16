@@ -18,7 +18,7 @@ export interface IOnMiddlewareNextPreviousParams {
 }
 
 export interface IOnValidateParams {
-  actionType: string;
+  actionType?: string;
   command: WizardCommands;
   activeStep: string;
   toStep: string;

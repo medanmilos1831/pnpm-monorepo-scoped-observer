@@ -38,7 +38,7 @@ const WizardNavigation = () => {
       {step.steps.map((stepName: any) => (
         <button
           key={stepName}
-          onClick={() => goToStep(stepName)}
+          onClick={() => goToStep(stepName, { actionType: "validate" })}
           style={{
             padding: "8px 16px",
             backgroundColor: stepName === step.stepName ? "#007bff" : "#6c757d",
