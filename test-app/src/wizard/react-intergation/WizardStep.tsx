@@ -24,6 +24,7 @@ const WizardStep = ({
   const store = useWizardClient();
   const client = store.getClient(context.id);
   const step = store.getEntity(context.id).step;
+
   step.setStepDefinition({
     hasValidation: !!validate,
     onNext: !!onNext,
@@ -31,76 +32,54 @@ const WizardStep = ({
     middlewareOnNext: !!middlewareOnNext,
     middlewareOnPrevious: !!middlewareOnPrevious,
   });
+
   useEffect(() => {
-    let unsubscribe = () => {};
-    if (!onNext) return;
-    unsubscribe = client.subscribe(
-      WizardEvents.ON_NEXT,
-      (params: { payload: IOnNextPreviousParams }) => {
-        onNext(params.payload);
-      }
-    );
+    const eventHandlers: Array<{
+      event: string;
+      handler: Function | undefined;
+      callback: (params: any) => void;
+    }> = [
+      {
+        event: WizardEvents.ON_NEXT,
+        handler: onNext,
+        callback: (params: { payload: IOnNextPreviousParams }) =>
+          onNext!(params.payload),
+      },
+      {
+        event: WizardEvents.ON_PREVIOUS,
+        handler: onPrevious,
+        callback: (params: { payload: IOnNextPreviousParams }) =>
+          onPrevious!(params.payload),
+      },
+      {
+        event: WizardInternalEvents.ON_MIDDLEWARE_NEXT,
+        handler: middlewareOnNext,
+        callback: (params: { payload: IOnMiddlewareNextPreviousParams }) =>
+          middlewareOnNext!(params.payload),
+      },
+      {
+        event: WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS,
+        handler: middlewareOnPrevious,
+        callback: (params: { payload: IOnMiddlewareNextPreviousParams }) =>
+          middlewareOnPrevious!(params.payload),
+      },
+      {
+        event: WizardInternalEvents.ON_VALIDATE,
+        handler: validate,
+        callback: (params: { payload: IOnValidateParams }) =>
+          validate!(params.payload),
+      },
+    ];
+
+    const unsubscribers = eventHandlers
+      .filter(({ handler }) => handler)
+      .map(({ event, callback }) => client.subscribe(event, callback));
+
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  });
-  useEffect(() => {
-    let unsubscribe = () => {};
-    if (!onPrevious) return;
-    unsubscribe = client.subscribe(
-      WizardEvents.ON_PREVIOUS,
-      (params: { payload: IOnNextPreviousParams }) => onPrevious(params.payload)
-    );
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribers.forEach((unsubscribe) => unsubscribe());
     };
   });
 
-  useEffect(() => {
-    let unsubscribe = () => {};
-    if (!middlewareOnNext) return;
-    unsubscribe = client.subscribe(
-      WizardInternalEvents.ON_MIDDLEWARE_NEXT,
-      (params: { payload: IOnMiddlewareNextPreviousParams }) => {
-        middlewareOnNext(params.payload);
-      }
-    );
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  });
-  useEffect(() => {
-    let unsubscribe = () => {};
-    if (!middlewareOnPrevious) return;
-    unsubscribe = client.subscribe(
-      WizardInternalEvents.ON_MIDDLEWARE_PREVIOUS,
-      (params: any) => middlewareOnPrevious(params.payload)
-    );
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  });
-  useEffect(() => {
-    let unsubscribe = () => {};
-    if (!validate) return;
-    unsubscribe = client.subscribe(
-      WizardInternalEvents.ON_VALIDATE,
-      (params: { payload: IOnValidateParams }) => validate(params.payload)
-    );
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  });
   return <>{children}</>;
 };
 

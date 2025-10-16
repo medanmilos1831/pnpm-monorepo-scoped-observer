@@ -11,10 +11,6 @@ import {
   useWizardCommands,
   Wizard,
 } from "../../wizard/react-intergation";
-import {
-  WizardEvents,
-  WizardInternalEvents,
-} from "../../wizard/Store/Entity/types";
 
 const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
@@ -23,27 +19,6 @@ const StepMap: Record<string, React.ComponentType> = {
   stepFour: StepFour,
   stepFive: StepFive,
 };
-
-const SomeComponent = () => {
-  const client = useWizardClient();
-  useEffect(() => {
-    client
-      .getClient("wizard")
-      .subscribe(
-        WizardInternalEvents.ON_VALIDATE,
-        (params: { payload: any }) => {
-          console.log("validate", params.payload);
-        }
-      );
-  }, []);
-  return (
-    <div>
-      <h1>SomeComponent</h1>
-      <button onClick={() => client.getClient("wizard").next()}>Next</button>
-    </div>
-  );
-};
-
 const WizardNavigation = () => {
   const step = useStep();
   const { previous, next, reset, goToStep } = useWizardCommands();
@@ -300,7 +275,6 @@ const HomePage = () => {
       >
         <Inner />
       </Wizard>
-      <SomeComponent />
     </div>
   );
 };
