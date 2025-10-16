@@ -137,12 +137,12 @@ Wraps step content and provides step-specific callbacks.
 
 ```tsx
 interface IWizardStep {
-  onNext?: (params: IOnNextPreviousParams) => void;
-  onPrevious?: (params: IOnNextPreviousParams) => void;
+  onNext?: (params: IOnNavigateParams) => void;
+  onPrevious?: (params: IOnNavigateParams) => void;
   validate?: (params: IOnValidateParams) => void;
 }
 
-interface IOnNextPreviousParams {
+interface IOnNavigateParams {
   activeStep: string;
   toStep: string;
   updateSteps: (callback: (steps: string[]) => string[]) => void;
@@ -251,12 +251,9 @@ function WizardWithEvents() {
   const client = getClient("my-wizard");
 
   useEffect(() => {
-    const unsubscribe = client.subscribe(
-      WizardEvents.ON_STEP_CHANGE,
-      (data) => {
-        console.log("Step changed to:", data);
-      }
-    );
+    const unsubscribe = client.subscribe("onStepChange", (data) => {
+      console.log("Step changed to:", data);
+    });
 
     return unsubscribe;
   }, []);

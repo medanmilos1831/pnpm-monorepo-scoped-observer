@@ -1,12 +1,12 @@
 import type { WizardCommands } from "../Store/Entity/types";
 
 export interface IWizardStep {
-  onNext?: (params: IOnNextPreviousParams) => void;
-  onPrevious?: (params: IOnNextPreviousParams) => void;
+  onNext?: (params: IOnNavigateParams) => void;
+  onPrevious?: (params: IOnNavigateParams) => void;
   validate?: (params: IOnValidateParams) => void;
 }
 
-export interface IOnNextPreviousParams {
+export interface IOnNavigateParams {
   activeStep: string;
   toStep: string;
   updateSteps: (callback: (steps: string[]) => string[]) => void;
