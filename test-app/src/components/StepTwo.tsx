@@ -14,7 +14,11 @@ const StepTwo = () => {
       <Wizard.Step
         onPrevious={() => {}}
         onNext={() => {}}
-        middlewareOnNext={({ updateSteps }) => {}}
+        middlewareOnNext={({ updateSteps }) => {
+          updateSteps((steps) => {
+            return [...steps, "stepThree"];
+          });
+        }}
         middlewareOnPrevious={({ updateSteps }) => {}}
         validate={(params) => {
           params.resolve();

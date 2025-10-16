@@ -29,20 +29,11 @@ const StepOne = () => {
       }}
     >
       <Wizard.Step
-        onNext={(params) => {
-          console.log("ON NEXT", params);
-        }}
-        onPrevious={(params) => {
-          console.log("ON PREVIOUS", params);
-        }}
-        middlewareOnNext={(params) => {
-          console.log("MIDDLEWARE ON NEXT", params);
-        }}
-        middlewareOnPrevious={(params) => {
-          console.log("MIDDLEWARE ON PREVIOUS", params);
-        }}
+        onNext={(params) => {}}
+        onPrevious={(params) => {}}
+        middlewareOnNext={(params) => {}}
+        middlewareOnPrevious={(params) => {}}
         validate={(params) => {
-          console.log("VALIDATE", params);
           params.resolve();
         }}
       >
