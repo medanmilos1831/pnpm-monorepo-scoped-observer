@@ -1,4 +1,4 @@
-# Wizard System
+# react-wizzard
 
 A powerful, flexible wizard system built with React and TypeScript that provides step-by-step navigation with validation, event handling, and state management.
 
@@ -108,6 +108,70 @@ function WizardControls() {
 ```
 
 ## API Reference
+
+### createWizardClient()
+
+Creates a new wizard client instance that manages multiple wizards and provides a centralized store.
+
+```tsx
+import { createWizardClient } from "./wizard";
+
+const client = createWizardClient();
+```
+
+**Returns:** `Store` - A store instance with the following methods:
+
+#### Store Methods
+
+- `getClient(id: string)` - Get a wizard client by ID
+- `getEntity(id: string)` - Get wizard entity by ID
+- `removeEntity(id: string)` - Remove wizard entity by ID
+- `createEntity(props: IWizardConfig)` - Create a new wizard entity
+
+#### Wizard Client API
+
+Each wizard client (returned by `getClient()`) provides:
+
+```tsx
+interface WizardClient {
+  // Navigation methods
+  next(obj?: { actionType?: string }): void;
+  previous(obj?: { actionType?: string }): void;
+  goToStep(stepName: string, obj?: { actionType?: string }): void;
+  reset(): void;
+
+  // State getters
+  getActiveStep(): string;
+  getSteps(): string[];
+  getWizardId(): string;
+  isLast(): boolean;
+  isFirst(): boolean;
+
+  // Event subscription
+  subscribe(eventName: string, callback: (payload: any) => void): () => void;
+}
+```
+
+**Navigation Methods:**
+
+- `next()` - Move to next step
+- `previous()` - Move to previous step
+- `goToStep(stepName)` - Jump to specific step
+- `reset()` - Reset wizard to initial state
+
+**State Methods:**
+
+- `getActiveStep()` - Get current active step name
+- `getSteps()` - Get array of all step names
+- `getWizardId()` - Get wizard ID
+- `isLast()` - Check if on last step
+- `isFirst()` - Check if on first step
+
+**Event System:**
+
+- `subscribe(eventName, callback)` - Subscribe to wizard events
+  - Returns unsubscribe function
+  - Events: `"onStepChange"`, `"onReset"`, `"onFinish"`
 
 ### Wizard Component
 

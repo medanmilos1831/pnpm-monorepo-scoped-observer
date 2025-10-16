@@ -1,4 +1,4 @@
-import { createScopedObserver } from "../../../scroped-observer";
+import { createScopedObserver } from "@scoped-observer/core";
 
 class Observer {
   private observer = createScopedObserver([
