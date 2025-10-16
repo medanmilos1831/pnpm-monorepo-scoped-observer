@@ -15,7 +15,7 @@ import { WizardStep } from "./WizardStep";
 
 const WizardContext = createContext<{ id: string } | undefined>(undefined);
 
-const WizardProvider = ({
+const Wizard = ({
   children,
   onReset,
   onFinish,
@@ -86,6 +86,6 @@ const WizardProvider = ({
   );
 };
 
-WizardProvider.Step = WizardStep;
+Wizard.Step = WizardStep;
 
-export { WizardContext, WizardProvider };
+export { WizardContext, Wizard };

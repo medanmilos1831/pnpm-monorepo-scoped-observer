@@ -1,9 +1,8 @@
 import { Observer } from "./Observer";
-
-import { WizardCommands, WizardEvents, WizardInternalEvents } from "../types";
+import { WizardModule } from "./WizardModule";
+import { StepModule } from "./StepModule";
+import { WizardCommands, WizardEvents, WizardInternalEvents } from "./types";
 import { onNextMiddleware, onPreviousMiddleware } from "./middleware";
-import type { StepModule } from "../StepModule";
-import type { WizardModule } from "../WizardModule";
 
 export function createClient({
   wizard,

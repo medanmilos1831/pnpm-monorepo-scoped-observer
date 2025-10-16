@@ -9,8 +9,12 @@ import { useWizardClient } from "../../wizard";
 import {
   useStep,
   useWizardCommands,
-  WizardProvider,
+  Wizard,
 } from "../../wizard/react-intergation";
+import {
+  WizardEvents,
+  WizardInternalEvents,
+} from "../../wizard/Store/Entity/types";
 
 const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
@@ -23,7 +27,14 @@ const StepMap: Record<string, React.ComponentType> = {
 const SomeComponent = () => {
   const client = useWizardClient();
   useEffect(() => {
-    client.getClient("wizard").next();
+    client
+      .getClient("wizard")
+      .subscribe(
+        WizardInternalEvents.ON_VALIDATE,
+        (params: { payload: any }) => {
+          console.log("validate", params.payload);
+        }
+      );
   }, []);
   return (
     <div>
@@ -248,7 +259,7 @@ const HomePage = () => {
         </p>
       </div>
 
-      <WizardProvider
+      <Wizard
         id="wizard"
         steps={["stepOne", "stepTwo"]}
         activeStep="stepOne"
@@ -288,7 +299,7 @@ const HomePage = () => {
         }}
       >
         <Inner />
-      </WizardProvider>
+      </Wizard>
       <SomeComponent />
     </div>
   );

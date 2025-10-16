@@ -1,6 +1,10 @@
-import { StepModule, WizardModule, type IWizardConfig } from "./Entity";
-import { createClient } from "./Entity/Client/createClient";
-import type { IEntity } from "./types";
+import {
+  StepModule,
+  WizardModule,
+  type IWizardConfig,
+  createClient,
+  type IEntity,
+} from "./Entity";
 
 class Store {
   entities = new Map<string, IEntity>();
@@ -18,7 +22,7 @@ class Store {
       const wizard = new WizardModule(props);
       const step = new StepModule();
       const client = createClient({ wizard, step });
-      this.entities.set(props.id, {
+      this.entities.set(wizard.id, {
         wizard,
         step,
         client,

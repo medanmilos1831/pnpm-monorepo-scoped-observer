@@ -1,7 +1,7 @@
 import { Modal } from "antd";
 import { useState } from "react";
 
-import { useWizardCommands, WizardProvider } from "../wizard/react-intergation";
+import { useWizardCommands, Wizard } from "../wizard/react-intergation";
 
 const StepOne = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +28,7 @@ const StepOne = () => {
         textAlign: "center",
       }}
     >
-      <WizardProvider.Step
+      <Wizard.Step
         onNext={(params) => {}}
         onPrevious={(params) => {}}
         middlewareOnNext={(params) => {}}
@@ -58,7 +58,7 @@ const StepOne = () => {
           Welcome to the first step of our wizard! This is where you can
           configure your initial settings.
         </p>
-      </WizardProvider.Step>
+      </Wizard.Step>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { WizardProvider, WizardStep } from "../wizard/react-intergation";
+import { Wizard } from "../wizard/react-intergation";
 
 const StepTwo = () => {
   return (
@@ -11,7 +11,7 @@ const StepTwo = () => {
         textAlign: "center",
       }}
     >
-      <WizardProvider.Step
+      <Wizard.Step
         onPrevious={() => {}}
         onNext={() => {}}
         middlewareOnNext={({ updateSteps }) => {}}
@@ -41,7 +41,7 @@ const StepTwo = () => {
           Great! You're on step two. This step will dynamically add step three
           to the wizard.
         </p>
-      </WizardProvider.Step>
+      </Wizard.Step>
     </div>
   );
 };

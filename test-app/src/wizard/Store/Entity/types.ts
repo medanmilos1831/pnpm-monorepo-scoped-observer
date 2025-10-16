@@ -1,3 +1,13 @@
+import type { createClient } from "./createClient";
+import type { WizardModule } from "./WizardModule";
+import type { StepModule } from "./StepModule";
+
+export interface IEntity {
+  wizard: WizardModule;
+  step: StepModule;
+  client: ReturnType<typeof createClient>;
+}
+
 export enum WizardCommands {
   NEXT = "next",
   PREVIOUS = "previous",

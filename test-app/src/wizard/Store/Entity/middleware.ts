@@ -1,6 +1,6 @@
 import type { Observer } from "./Observer";
-import { WizardInternalEvents } from "../types";
-import type { WizardModule } from "../WizardModule";
+import { WizardInternalEvents } from "./types";
+import { WizardModule } from "./WizardModule";
 
 export const onNextMiddleware = (observer: Observer, wizard: WizardModule) => {
   observer.dispatch(WizardInternalEvents.ON_MIDDLEWARE_NEXT, {
