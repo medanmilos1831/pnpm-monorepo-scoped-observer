@@ -1,21 +1,32 @@
+import { StepModule, WizardModule, type IWizardConfig } from "./Entity";
+import { createClient } from "./Entity/Client/createClient";
 import type { IEntity } from "./types";
 
 class Store {
   entities = new Map<string, IEntity>();
   getEntity = (id: string) => {
-    return this.entities.get(id)!.client;
+    return this.entities.get(id)!;
   };
   removeEntity = (id: string) => {
     this.entities.delete(id);
   };
-  createEntity = (id: string, entity: () => IEntity) => {
-    if (!this.entities.has(id)) {
-      this.entities.set(id, entity());
+  getClient = (id: string) => {
+    return this.entities.get(id)!.client;
+  };
+  createEntity = (props: IWizardConfig) => {
+    if (!this.entities.has(props.id)) {
+      const wizard = new WizardModule(props);
+      const step = new StepModule();
+      const client = createClient({ wizard, step });
+      this.entities.set(props.id, {
+        wizard,
+        step,
+        client,
+      });
     }
     return {
-      entity: this.entities.get(id)!,
       disconnect: () => {
-        this.removeEntity(id);
+        this.removeEntity(props.id);
       },
     };
   };

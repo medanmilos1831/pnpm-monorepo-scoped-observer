@@ -5,14 +5,15 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { createClient } from "../Store/Entity/Client/createClient";
-import { WizardClientContext } from "./WizardClient/WizardClientProvider";
-import { WizardStep } from "./WizardStep";
-import type { IEntity } from "../Store/types";
-import { StepModule, WizardModule, type IWizardConfig } from "../Store/Entity";
+import { type IWizardConfig } from "../Store/Entity";
 import { WizardEvents } from "../Store/Entity/types";
+import {
+  useWizardClient,
+  WizardClientContext,
+} from "./WizardClient/WizardClientProvider";
+import { WizardStep } from "./WizardStep";
 
-const WizardContext = createContext<IEntity | undefined>(undefined);
+const WizardContext = createContext<{ id: string } | undefined>(undefined);
 
 const WizardProvider = ({
   children,
@@ -25,19 +26,9 @@ const WizardProvider = ({
   if (!context) {
     throw new Error("WizardClientContext not found");
   }
-  const [{ disconnect, entity }, _] = useState(() => {
-    const item = context.createEntity(props.id, () => {
-      const wizard = new WizardModule(props);
-      const step = new StepModule();
-      const client = createClient({ wizard, step });
-      return {
-        wizard,
-        step,
-        client,
-      };
-    });
-    return item;
-  });
+  const [{ disconnect }, _] = useState(() => context.createEntity(props));
+  const store = useWizardClient();
+  const client = store.getClient(props.id);
 
   const [successRender, setSuccessRender] = useState(false);
   useEffect(() => {
@@ -48,7 +39,7 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
-    unsubscribe = entity.client.subscribe(WizardEvents.ON_RESET, onReset);
+    unsubscribe = client.subscribe(WizardEvents.ON_RESET, onReset);
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -58,10 +49,10 @@ const WizardProvider = ({
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onFinish) return;
-    unsubscribe = entity.client.subscribe(WizardEvents.ON_FINISH, () =>
+    unsubscribe = client.subscribe(WizardEvents.ON_FINISH, () =>
       onFinish({
         reset: () => {
-          entity.client.reset();
+          client.reset();
         },
         render: () => {
           setSuccessRender(true);
@@ -79,13 +70,19 @@ const WizardProvider = ({
       ? renderOnFinish({
           reset: () => {
             setSuccessRender(false);
-            entity.client.reset();
+            client.reset();
           },
         })
       : null;
   }
   return (
-    <WizardContext.Provider value={entity}>{children}</WizardContext.Provider>
+    <WizardContext.Provider
+      value={{
+        id: props.id,
+      }}
+    >
+      {children}
+    </WizardContext.Provider>
   );
 };
 

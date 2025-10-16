@@ -23,12 +23,12 @@ const StepMap: Record<string, React.ComponentType> = {
 const SomeComponent = () => {
   const client = useWizardClient();
   useEffect(() => {
-    client.getEntity("wizard").next();
+    client.getClient("wizard").next();
   }, []);
   return (
     <div>
       <h1>SomeComponent</h1>
-      <button onClick={() => client.getEntity("wizard").next()}>Next</button>
+      <button onClick={() => client.getClient("wizard").next()}>Next</button>
     </div>
   );
 };

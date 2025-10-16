@@ -1,17 +1,20 @@
 import { useContext } from "react";
 import { WizardContext } from "./WizardProvider";
+import { useWizardClient } from "./WizardClient/WizardClientProvider";
 
 const useWizardCommands = () => {
   const context = useContext(WizardContext)!;
   if (!context) {
     throw new Error("WizardContext not found");
   }
+  const store = useWizardClient();
+  const client = store.getClient(context.id);
   return {
-    next: context.client.next,
-    previous: context.client.previous,
-    reset: context.client.reset,
+    next: client.next,
+    previous: client.previous,
+    reset: client.reset,
     goToStep: (step: string, obj?: { actionType?: string }) =>
-      context.client.goToStep(step, obj),
+      client.goToStep(step, obj),
   };
 };
 
