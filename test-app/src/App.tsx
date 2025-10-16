@@ -1,9 +1,17 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HomePage } from "./pages";
+import { createBrowserRouter } from "react-router-dom";
 import { createWizardClient, WizardClientProvider } from "./wizard";
 
 const client = createWizardClient();
 const r = new QueryClient();
+const w = createBrowserRouter([
+  {
+    path: "/",
+    element: <></>,
+  },
+]);
+console.log("w", w);
 function App() {
   return (
     <div
