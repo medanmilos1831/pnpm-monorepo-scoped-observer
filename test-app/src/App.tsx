@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HomePage } from "./pages";
 import { createBrowserRouter } from "react-router-dom";
-import { createWizardClient, WizardClientProvider } from "./wizard";
+import { createWizardClient, WizardClientProvider } from "react-wizzard";
 
 const client = createWizardClient();
 const r = new QueryClient();

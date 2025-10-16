@@ -23,7 +23,7 @@
     "react-router-dom": "^7.9.4",
     "react-use-wizard": "^2.3.0",
     "react-visibility-state": "^1.1.0",
-    "react-wizzard": "^2.0.0",
+    "react-wizzard": "^3.0.0",
     "xstate": "^5.20.2"
   },
   "devDependencies": {

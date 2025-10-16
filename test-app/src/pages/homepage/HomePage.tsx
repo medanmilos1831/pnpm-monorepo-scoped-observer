@@ -4,13 +4,9 @@ import { StepFour } from "../../components/StepFour";
 import { StepOne } from "../../components/StepOne";
 import { StepThree } from "../../components/StepThree";
 import { StepTwo } from "../../components/StepTwo";
-import { useWizardClient } from "../../wizard";
+import { useWizardClient } from "react-wizzard";
 
-import {
-  useStep,
-  useWizardCommands,
-  Wizard,
-} from "../../wizard/react-intergation";
+import { useStep, useWizardCommands, Wizard } from "react-wizzard";
 import { useQuery } from "react-query";
 
 const StepMap: Record<string, React.ComponentType> = {
