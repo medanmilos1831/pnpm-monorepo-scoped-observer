@@ -1,8 +1,7 @@
 import { Observer } from "./Observer";
-import { WizardModule } from "./WizardModule";
 import { StepModule } from "./StepModule";
-import { WizardCommands, WizardEvents, WizardInternalEvents } from "./types";
-import { onNextMiddleware, onPreviousMiddleware } from "./middleware";
+import { WizardCommands, WizardEvents } from "./types";
+import { WizardModule } from "./WizardModule";
 
 export function createClient({
   wizard,
@@ -18,21 +17,34 @@ export function createClient({
     command: WizardCommands.NEXT | WizardCommands.PREVIOUS
   ) {
     if (command === WizardCommands.NEXT && step.middlewareOnNext) {
-      onNextMiddleware(observer, wizard);
+      step.middlewareOnNext({
+        updateSteps: (callback: (steps: string[]) => string[]) => {
+          const updatedSteps = callback(wizard.steps);
+          wizard.steps = [...new Set(updatedSteps)];
+        },
+      });
     }
     if (command === WizardCommands.PREVIOUS && step.middlewareOnPrevious) {
-      onPreviousMiddleware(observer, wizard);
+      step.middlewareOnPrevious({
+        updateSteps: (callback: (steps: string[]) => string[]) => {
+          const updatedSteps = callback(wizard.steps);
+          wizard.steps = [...new Set(updatedSteps)];
+        },
+      });
     }
 
-    observer.dispatch(
-      command === WizardCommands.NEXT
-        ? WizardEvents.ON_NEXT
-        : WizardEvents.ON_PREVIOUS,
-      {
+    if (command === WizardCommands.NEXT && step.onNext) {
+      step.onNext({
         activeStep: wizard.activeStep,
         toStep,
-      }
-    );
+      });
+    }
+    if (command === WizardCommands.PREVIOUS && step.onPrevious) {
+      step.onPrevious({
+        activeStep: wizard.activeStep,
+        toStep,
+      });
+    }
     wizard.changeStep(toStep);
     observer.dispatch(WizardEvents.ON_STEP_CHANGE);
   }
@@ -42,8 +54,8 @@ export function createClient({
     result: string,
     obj?: any
   ) {
-    if (step.hasValidation) {
-      observer.dispatch(WizardInternalEvents.ON_VALIDATE, {
+    if (step.validate) {
+      step.validate({
         command,
         activeStep: wizard.activeStep,
         toStep: result,

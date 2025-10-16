@@ -11,7 +11,7 @@ const w = createBrowserRouter([
     element: <></>,
   },
 ]);
-console.log("w", w);
+console.log("w", r);
 function App() {
   return (
     <div

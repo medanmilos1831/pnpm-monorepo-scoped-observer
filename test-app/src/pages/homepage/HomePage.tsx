@@ -11,6 +11,7 @@ import {
   useWizardCommands,
   Wizard,
 } from "../../wizard/react-intergation";
+import { useQuery } from "react-query";
 
 const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
@@ -199,6 +200,14 @@ const Inner = () => {
 };
 
 const HomePage = () => {
+  // useQuery({
+  //   queryKey: ["wizard"],
+  //   queryFn: () => {
+  //     return {
+  //       steps: ["stepOne", "stepTwo"],
+  //     };
+  //   },
+  // });
   return (
     <div
       style={{

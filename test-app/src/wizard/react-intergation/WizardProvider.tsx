@@ -11,7 +11,7 @@ import {
   useWizardClient,
   WizardClientContext,
 } from "./WizardClient/WizardClientProvider";
-import { WizardStep } from "./WizardStep";
+import { Step } from "./WizardStep";
 
 const WizardContext = createContext<{ id: string } | undefined>(undefined);
 
@@ -86,6 +86,6 @@ const Wizard = ({
   );
 };
 
-Wizard.Step = WizardStep;
+Wizard.Step = Step;
 
 export { WizardContext, Wizard };
