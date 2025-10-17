@@ -11,6 +11,14 @@ A powerful, flexible wizard system built with React and TypeScript that provides
 - 📡 **Event System**: Subscribe to wizard events (step change, reset, finish)
 - 🎛️ **Flexible Configuration**: Customizable wizard behavior and rendering
 
+## 🎮 Demo
+
+Try out **react-wizzard** in action with our interactive demo:
+
+**[🚀 Live Demo](https://medanmilos1831.github.io/react-wizard-demo/)**
+
+The demo showcases a complete wizard implementation with step navigation, validation, event handling, and state management.
+
 ## Quick Start
 
 ### 1. Setup Wizard Client
