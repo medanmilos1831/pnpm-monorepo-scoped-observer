@@ -32,7 +32,7 @@ const StepOne = () => {
         onNext={(params) => {}}
         onPrevious={(params) => {}}
         validate={(params) => {
-          params.resolve();
+          // params.resolve();
         }}
       >
         <div
