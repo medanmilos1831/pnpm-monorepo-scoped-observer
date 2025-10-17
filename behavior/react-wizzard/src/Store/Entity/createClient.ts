@@ -12,8 +12,14 @@ export function createClient({
 }) {
   const observer = new Observer();
 
-  function transition({ command }: { command: WizardCommands }) {
-    let toStep = wizard.findStep({ command })!;
+  function transition({
+    command,
+    stepName,
+  }: {
+    command: WizardCommands;
+    stepName?: string;
+  }) {
+    let toStep = stepName ? stepName : wizard.findStep({ command })!;
     return {
       toStep,
       action: () => {
@@ -67,10 +73,12 @@ export function createClient({
   }
   function transitionWrapper(
     command: WizardCommands,
-    obj?: { actionType?: string }
+    obj?: { actionType?: string },
+    stepName?: string
   ) {
     const transitionPlan = transition({
       command,
+      stepName,
     });
     const validationResult = validationHandler(command, transitionPlan, obj);
     if (validationResult === "validated") {
@@ -114,7 +122,7 @@ export function createClient({
         targetStepIndex > currentStepIndex
           ? WizardCommands.NEXT
           : WizardCommands.PREVIOUS;
-      transitionWrapper(command, obj);
+      transitionWrapper(command, obj, stepName);
     },
     isLast: () => {
       return wizard.isLast;
