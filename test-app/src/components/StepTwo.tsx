@@ -1,4 +1,4 @@
-import { Wizard } from "react-wizzard";
+import { Wizard } from "../wizard";
 
 const StepTwo = () => {
   return (
@@ -11,17 +11,7 @@ const StepTwo = () => {
         textAlign: "center",
       }}
     >
-      <Wizard.Step
-        onPrevious={() => {}}
-        onNext={({ updateSteps }) => {
-          updateSteps((steps) => {
-            return [...steps, "stepThree"];
-          });
-        }}
-        validate={(params) => {
-          params.resolve();
-        }}
-      >
+      <Wizard.Step>
         <div
           style={{
             fontSize: "1.5rem",

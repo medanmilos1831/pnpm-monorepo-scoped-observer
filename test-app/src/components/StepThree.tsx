@@ -1,4 +1,4 @@
-import { Wizard } from "react-wizzard";
+import { Wizard } from "../wizard";
 
 const StepThree = () => {
   return (

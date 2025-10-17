@@ -1,7 +1,7 @@
 import { Modal } from "antd";
 import { useState } from "react";
 
-import { useWizardCommands, Wizard } from "react-wizzard";
+import { useWizardCommands, Wizard } from "../wizard";
 
 const StepOne = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

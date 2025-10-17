@@ -4,10 +4,8 @@ import { StepFour } from "../../components/StepFour";
 import { StepOne } from "../../components/StepOne";
 import { StepThree } from "../../components/StepThree";
 import { StepTwo } from "../../components/StepTwo";
-import { useWizardClient } from "react-wizzard";
 
-import { useStep, useWizardCommands, Wizard } from "react-wizzard";
-import { useQuery } from "react-query";
+import { useStep, useWizardCommands, Wizard } from "../../wizard";
 
 const StepMap: Record<string, React.ComponentType> = {
   stepOne: StepOne,
@@ -34,7 +32,7 @@ const WizardNavigation = () => {
       {step.steps.map((stepName: any) => (
         <button
           key={stepName}
-          onClick={() => goToStep(stepName, { actionType: "validate" })}
+          onClick={() => goToStep(stepName)}
           style={{
             padding: "8px 16px",
             backgroundColor: stepName === step.stepName ? "#007bff" : "#6c757d",
@@ -241,7 +239,7 @@ const HomePage = () => {
 
       <Wizard
         id="wizard"
-        steps={["stepOne", "stepTwo"]}
+        steps={["stepOne", "stepTwo", "stepThree"]}
         activeStep="stepOne"
         onFinish={({ render }) => {
           render();
