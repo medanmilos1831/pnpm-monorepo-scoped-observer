@@ -2,6 +2,7 @@ export { createWizardClient } from "./react-intergation/WizardClient/createWizar
 export {
   useStep,
   useWizardCommands,
+  useWizardSelector,
   Wizard,
   WizardClientProvider,
   useWizardClient,

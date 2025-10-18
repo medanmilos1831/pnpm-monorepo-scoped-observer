@@ -5,14 +5,27 @@ import {
   createClient,
   type IEntity,
 } from "./Entity";
+import { createScopedObserver } from "@scoped-observer/core";
 
 class Store {
+  observer = createScopedObserver([
+    {
+      scope: "wizard-store",
+    },
+  ]);
   entities = new Map<string, IEntity>();
   getEntity = (id: string) => {
     return this.entities.get(id)!;
   };
   removeEntity = (id: string) => {
     this.entities.delete(id);
+    this.observer.dispatch({
+      scope: "wizard-store",
+      eventName: `createWizard-${id}`,
+      payload: {
+        id: id,
+      },
+    });
   };
   getClient = (id: string) => {
     return this.entities.get(id)!.client;
@@ -28,10 +41,17 @@ class Store {
         client,
       });
     }
-    return {
-      disconnect: () => {
+    return () => {
+      this.observer.dispatch({
+        scope: "wizard-store",
+        eventName: `createWizard-${props.id}`,
+        payload: {
+          id: props.id,
+        },
+      });
+      return () => {
         this.removeEntity(props.id);
-      },
+      };
     };
   };
 }

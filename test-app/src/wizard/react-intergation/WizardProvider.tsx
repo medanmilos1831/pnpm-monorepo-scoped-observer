@@ -26,24 +26,21 @@ const Wizard = ({
   if (!context) {
     throw new Error("WizardClientContext not found");
   }
-  const [{ disconnect }, _] = useState(() => context.createEntity(props));
+  const [created, _] = useState(() => {
+    return context.createEntity(props);
+  });
   const store = useWizardClient();
   const client = store.getClient(props.id);
 
   const [successRender, setSuccessRender] = useState(false);
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, []);
+  useEffect(created, []);
+
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
     unsubscribe = client.subscribe(WizardEvents.ON_RESET, onReset);
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribe();
     };
   });
   useEffect(() => {
@@ -60,9 +57,7 @@ const Wizard = ({
       })
     );
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribe();
     };
   });
   if (successRender) {
