@@ -1,5 +1,5 @@
-import { createClient, type IEntity, ScrollModule } from "./Entity";
 import { createScopedObserver } from "@scoped-observer/core";
+import { createClient } from "./Entity";
 import { SCROLLIUM_STORE_SCOPE, ScrolliumStoreEvents } from "./types";
 
 class Store {
@@ -29,9 +29,8 @@ class Store {
   };
   createEntity = (props: { id: string }) => {
     if (!this.entities.has(props.id)) {
-      const scroll = new ScrollModule(props);
-      const client = createClient({ id: scroll.id });
-      this.entities.set(scroll.id, {
+      const client = createClient({ id: props.id });
+      this.entities.set(props.id, {
         client,
       });
     }

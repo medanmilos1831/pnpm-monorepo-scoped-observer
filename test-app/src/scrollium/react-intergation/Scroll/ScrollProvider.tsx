@@ -31,12 +31,15 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
     >
       <div
         ref={(element) => {
+          console.log("element", element);
           const clientHeight = Math.ceil(element?.clientHeight || 0);
           const maxScroll = Math.ceil(
             (element?.scrollHeight || 0) - (element?.clientHeight || 0)
           );
           client?.setClientHeight(clientHeight);
           client?.setScrollHeight(maxScroll);
+          client.scrollTo = element?.scrollTo;
+          console.log("client", client);
         }}
         style={{
           height: "100%",

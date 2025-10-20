@@ -1,14 +1,19 @@
 import { Observer } from "./Observer";
 import { ScrollModule } from "./ScrollModule";
-import { ScrolliumEvents } from "../types";
+import { ScrolliumDirection, ScrolliumEvents } from "../types";
 
 export function createClient({ id }: { id: string }) {
   const observer = new Observer();
   const scroll = new ScrollModule({ id });
   return {
     setScrollPosition(position: number) {
+      const previousScrollPosition = scroll.scrollPosition;
       scroll.scrollPosition = Math.ceil(position as number);
-
+      if (scroll.scrollPosition > previousScrollPosition) {
+        scroll.direction = ScrolliumDirection.DOWN;
+      } else {
+        scroll.direction = ScrolliumDirection.UP;
+      }
       observer.dispatch(ScrolliumEvents.ON_SCROLL, {
         id,
         position: (() => {
@@ -37,6 +42,10 @@ export function createClient({ id }: { id: string }) {
         })(),
       });
     },
+    getDirection: () => {
+      return scroll.direction;
+    },
+    scrollTo: (options?: ScrollToOptions) => {},
     getScrollPosition: () => {
       return scroll.scrollPosition;
     },
@@ -57,6 +66,9 @@ export function createClient({ id }: { id: string }) {
     },
     getIsBottom: () => {
       return scroll.isBottom;
+    },
+    getProgress: () => {
+      return scroll.progress;
     },
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return observer.subscribe(eventName, callback);
