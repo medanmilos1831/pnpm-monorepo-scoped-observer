@@ -241,7 +241,7 @@ const { next, previous, reset, goToStep } = useWizardCommands();
 
 #### useWizard(id)
 
-Vraća klijenta za konkretan wizard po `id`. Ako wizard još nije kreiran/mountovan, vraća `undefined` dok ne postane dostupan.
+Returns a wizard client for a specific wizard by `id`. If the wizard hasn't been created/mounted yet, returns `undefined` until it becomes available.
 
 ```tsx
 import { useWizard } from "./wizard";
@@ -254,16 +254,18 @@ function ExternalControls() {
   return (
     <div>
       <button onClick={() => wizard.previous()}>Previous</button>
-      <button onClick={() => wizard.next({ actionType: "validate" })}>Next</button>
+      <button onClick={() => wizard.next({ actionType: "validate" })}>
+        Next
+      </button>
       <div>Active step: {wizard.getActiveStep()}</div>
     </div>
   );
 }
 ```
 
-– Returns: `WizardClient | undefined`
-– Kada je dostupan: čim se kreira entitet (npr. mount `<Wizard id="my-wizard" ... />`)
-– Tipična upotreba: kontrole izvan `<Wizard>` koje upravljaju istim wizard-om
+– **Returns**: `WizardClient | undefined`
+– **When available**: as soon as the entity is created (e.g., mounting `<Wizard id="my-wizard" ... />`)
+– **Typical use case**: controls outside `<Wizard>` that manage the same wizard
 
 ### Wizard Commands
 
