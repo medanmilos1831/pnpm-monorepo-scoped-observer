@@ -21,9 +21,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
   });
   useEffect(created, []);
   const client = useScroll(props.id);
-  useEffect(() => {
-    console.log("hehehheheh", client);
-  }, []);
+
   return (
     <ScrollContext.Provider
       value={{
@@ -37,7 +35,6 @@ const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
             (element?.scrollHeight || 0) - (element?.clientHeight || 0)
           );
           client?.setClientHeight(clientHeight);
-          console.log("element", maxScroll);
           client?.setScrollHeight(maxScroll);
         }}
         style={{

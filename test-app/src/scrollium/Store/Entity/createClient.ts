@@ -6,18 +6,28 @@ export function createClient({ id }: { id: string }) {
   const observer = new Observer();
   const scroll = new ScrollModule({ id });
   return {
-    setScrollPosition: (position: number) => {
-      scroll.scrollPosition = position;
+    setScrollPosition(position: number) {
+      scroll.scrollPosition = Math.ceil(position as number);
+
       observer.dispatch(ScrolliumEvents.ON_SCROLL, {
         id,
         position: (() => {
-          if (position === 0) {
-            return {
-              isTop: true,
-              isBottom: false,
-            };
+          if (scroll.scrollPosition === 0) {
+            scroll.isTop = true;
+            scroll.isBottom = false;
           }
-          return position > 0 ? false : true;
+          if (scroll.scrollPosition === scroll.scrollHeight) {
+            scroll.isBottom = true;
+            scroll.isTop = false;
+          }
+          if (
+            scroll.scrollPosition > 0 &&
+            scroll.scrollPosition < scroll.scrollHeight
+          ) {
+            scroll.isTop = false;
+            scroll.isBottom = false;
+          }
+          return scroll.scrollPosition;
         })(),
       });
     },
@@ -35,6 +45,12 @@ export function createClient({ id }: { id: string }) {
     },
     getScrollHeight: () => {
       return scroll.scrollHeight;
+    },
+    getIsTop: () => {
+      return scroll.isTop;
+    },
+    getIsBottom: () => {
+      return scroll.isBottom;
     },
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return observer.subscribe(eventName, callback);

@@ -20,6 +20,8 @@ const useScrollPosition = () => {
   );
   return {
     scrollPosition,
+    isTop: client.getIsTop(),
+    isBottom: client.getIsBottom(),
   };
 };
 
