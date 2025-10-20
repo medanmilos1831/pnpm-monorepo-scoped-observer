@@ -2,6 +2,7 @@ import { useContext, useState, useSyncExternalStore } from "react";
 import { useScroll } from "./useScroll";
 import { ScrollContext } from "../Scroll";
 import { ScrolliumEvents } from "../types";
+import { getScrolliumData } from "../../utils";
 
 const useScrollPosition = () => {
   const context = useContext(ScrollContext);
@@ -14,19 +15,8 @@ const useScrollPosition = () => {
       notify();
     });
   });
-  const scrollPosition = useSyncExternalStore(
-    subsciber,
-    client.getScrollPosition
-  );
-  return {
-    scrollPosition,
-    isTop: client.getIsTop(),
-    isBottom: client.getIsBottom(),
-    progress: client.getProgress(),
-    clientHeight: client.getClientHeight(),
-    scrollHeight: client.getScrollHeight(),
-    direction: client.getDirection(),
-  };
+  useSyncExternalStore(subsciber, client.getScrollPosition);
+  return getScrolliumData(client);
 };
 
 export { useScrollPosition };

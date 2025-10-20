@@ -27,6 +27,12 @@ export function createClient(props: ScrolliumProps) {
         progress: scroll.progress,
       });
     },
+    getId: () => {
+      return scroll.id;
+    },
+    getThrottle: () => {
+      return scroll.throttle;
+    },
     getDirection: () => {
       return scroll.direction;
     },

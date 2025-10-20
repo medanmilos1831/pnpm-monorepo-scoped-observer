@@ -35,7 +35,7 @@ const HomePage = () => {
         <Scroll
           id="main"
           onScroll={(value) => {
-            // console.log("onScroll", value)
+            // console.log("onScroll", value);
           }}
         >
           <>

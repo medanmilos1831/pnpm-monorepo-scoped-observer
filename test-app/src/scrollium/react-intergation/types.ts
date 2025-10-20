@@ -1,3 +1,5 @@
+import type { ScrolliumDirection } from "../Store/types";
+
 export enum ScrolliumEvents {
   ON_SCROLL = "onScroll",
 }
@@ -14,4 +16,7 @@ export interface ScrolliumOnScrollProps {
   isBottom: boolean;
   clientHeight: number;
   scrollHeight: number;
+  progress: number;
+  direction: ScrolliumDirection;
+  id: string;
 }

@@ -9,6 +9,7 @@ import {
 import { ScrolliumClientContext } from "../ScrolliumClientProvider";
 import { useScroll } from "../hooks/useScroll";
 import type { ScrolliumProps } from "../types";
+import { getScrolliumData } from "../../utils";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
 
@@ -49,13 +50,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
         onScroll={(e: React.UIEvent<HTMLDivElement>) => {
           client?.setScrollPosition((e.target as HTMLDivElement).scrollTop);
           if (props.onScroll) {
-            props.onScroll({
-              position: client.getScrollPosition(),
-              isTop: client.getIsTop(),
-              isBottom: client.getIsBottom(),
-              clientHeight: client.getClientHeight(),
-              scrollHeight: client.getScrollHeight(),
-            });
+            props.onScroll(getScrolliumData(client));
           }
         }}
       >
