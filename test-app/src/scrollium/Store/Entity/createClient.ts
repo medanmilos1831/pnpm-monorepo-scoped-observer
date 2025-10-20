@@ -31,7 +31,7 @@ export function createClient({ id }: { id: string }) {
             scroll.scrollHeight > 0
               ? scroll.scrollPosition / scroll.scrollHeight
               : 0;
-          const progress = Math.ceil(ratio * 100);
+          const progress = Number((ratio * 100).toFixed(2));
           scroll.progress = Math.min(100, Math.max(1, progress));
           return scroll.scrollPosition;
         })(),
