@@ -11,6 +11,7 @@ const w = createBrowserRouter([
     element: <></>,
   },
 ]);
+console.log("RENDER APP", client);
 function App() {
   return (
     <div

@@ -8,18 +8,25 @@ import {
 import { createScopedObserver } from "@scoped-observer/core";
 
 class Store {
-  observer = createScopedObserver([
+  private _observer = createScopedObserver([
     {
       scope: "wizard-store",
     },
   ]);
+  subscribe = (eventName: string, callback: (payload: any) => void) => {
+    return this._observer.subscribe({
+      scope: "wizard-store",
+      eventName,
+      callback,
+    });
+  };
   entities = new Map<string, IEntity>();
   getEntity = (id: string) => {
     return this.entities.get(id)!;
   };
   removeEntity = (id: string) => {
     this.entities.delete(id);
-    this.observer.dispatch({
+    this._observer.dispatch({
       scope: "wizard-store",
       eventName: `createWizard-${id}`,
       payload: {
@@ -42,7 +49,7 @@ class Store {
       });
     }
     return () => {
-      this.observer.dispatch({
+      this._observer.dispatch({
         scope: "wizard-store",
         eventName: `createWizard-${props.id}`,
         payload: {

@@ -1,5 +1,5 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizardClientContext } from "./WizardClient/WizardClientProvider";
+import { WizardClientContext } from "../WizardClient/WizardClientProvider";
 
 const useWizardSelector = (id: string) => {
   const context = useContext(WizardClientContext);
@@ -8,11 +8,7 @@ const useWizardSelector = (id: string) => {
   }
   const [subscriber] = useState(() => {
     return (notify: () => void) => {
-      return context.observer.subscribe({
-        scope: "wizard-store",
-        eventName: `createWizard-${id}`,
-        callback: notify,
-      });
+      return context.subscribe(`createWizard-${id}`, notify);
     };
   });
   const [snapshot] = useState(() => {

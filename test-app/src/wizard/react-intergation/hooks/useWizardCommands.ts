@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { WizardContext } from "./WizardProvider";
-import { useWizardClient } from "./WizardClient/WizardClientProvider";
+import { useWizardClient } from "./useWizardClient";
+import { WizardContext } from "../Wizard/WizardProvider";
 
 const useWizardCommands = () => {
   const context = useContext(WizardContext)!;

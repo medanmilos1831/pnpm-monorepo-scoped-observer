@@ -1,7 +1,7 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizardEvents } from "../Store/Entity/types";
-import { WizardContext } from "./WizardProvider";
-import { useWizardClient } from "./WizardClient/WizardClientProvider";
+import { WizardEvents } from "../../Store/Entity/types";
+import { useWizardClient } from "./useWizardClient";
+import { WizardContext } from "../Wizard/WizardProvider";
 
 const useStep = () => {
   const context = useContext(WizardContext);

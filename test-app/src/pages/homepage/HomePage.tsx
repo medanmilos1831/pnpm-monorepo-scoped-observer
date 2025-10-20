@@ -80,11 +80,10 @@ const WizardControls = () => {
 };
 const SomeComponent = () => {
   const wizard = useWizardSelector("my-wizard");
-  console.log("RENDER SOME COMPONENT", wizard);
   return <div>SomeComponent</div>;
 };
 const WizardWrapper = () => {
-  const [counter, setCounter] = useState(1);
+  const [counter, setCounter] = useState(0);
 
   return (
     <>

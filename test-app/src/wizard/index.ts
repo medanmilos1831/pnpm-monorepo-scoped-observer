@@ -5,5 +5,4 @@ export {
   useWizardSelector,
   Wizard,
   WizardClientProvider,
-  useWizardClient,
 } from "./react-intergation";

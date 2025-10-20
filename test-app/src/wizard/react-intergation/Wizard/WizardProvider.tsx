@@ -5,13 +5,11 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { type IWizardConfig } from "../Store/Entity";
-import { WizardEvents } from "../Store/Entity/types";
-import {
-  useWizardClient,
-  WizardClientContext,
-} from "./WizardClient/WizardClientProvider";
 import { Step } from "./WizardStep";
+import type { IWizardConfig } from "../../Store/Entity";
+import { WizardEvents } from "../../Store/Entity/types";
+import { useWizardClient } from "../hooks";
+import { WizardClientContext } from "../WizardClient/WizardClientProvider";
 
 const WizardContext = createContext<{ id: string } | undefined>(undefined);
 
