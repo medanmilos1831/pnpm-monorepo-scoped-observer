@@ -1,27 +1,38 @@
 import { useEffect } from "react";
-import { Scroll, useScrollPosition } from "../../scrollium";
-import { useScroll } from "../../scrollium/react-intergation/hooks/useScroll";
-const SomeComponent = () => {
-  const value = useScrollPosition();
+import { Scroll, useScroll } from "../../scrollium";
+
+const SomeComponentUpper = () => {
   const client = useScroll("main");
+  console.log("RENDER", client);
   useEffect(() => {
-    client.scrollTo({ top: 500, behavior: "smooth" });
-  }, []);
-  return <div>Some Component</div>;
-};
-const SomeButton = () => {
-  const client = useScroll("main");
+    client?.subscribe("onScroll", (value: any) => {
+      console.log("ON_SCROLL", value.payload);
+    });
+  }, [client]);
   return (
-    <button
-      onClick={() =>
-        client.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        })
-      }
-    >
-      Scroll to top
-    </button>
+    <>
+      <h1>Some Component Upper</h1>
+    </>
+  );
+};
+
+const SomeComponent = () => {
+  const client = useScroll("main");
+
+  return (
+    <div>
+      Some Component
+      <button
+        onClick={() =>
+          client.scrollTo({
+            top: client.getScrollHeight(),
+            behavior: "smooth",
+          })
+        }
+      >
+        Scroll to top
+      </button>
+    </div>
   );
 };
 const HomePage = () => {
@@ -34,6 +45,7 @@ const HomePage = () => {
           background: "red",
         }}
       >
+        <SomeComponentUpper />
         <Scroll
           id="main"
           onScroll={(value) => {
@@ -50,7 +62,6 @@ const HomePage = () => {
                 {i}
               </div>
             ))}
-            <SomeButton />
           </>
         </Scroll>
       </div>

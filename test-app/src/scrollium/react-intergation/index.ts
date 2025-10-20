@@ -3,4 +3,4 @@ export {
   ScrolliumClientProvider,
   ScrolliumClientContext,
 } from "./ScrolliumClientProvider";
-export { useScrollPosition } from "./hooks/useScrollPosition";
+export { useScrollPosition, useScroll } from "./hooks";

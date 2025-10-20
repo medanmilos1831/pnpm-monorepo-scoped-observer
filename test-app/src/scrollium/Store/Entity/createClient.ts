@@ -14,32 +14,16 @@ export function createClient({ id }: { id: string }) {
       } else {
         scroll.direction = ScrolliumDirection.UP;
       }
+      scroll.calucate();
       observer.dispatch(ScrolliumEvents.ON_SCROLL, {
         id,
-        position: (() => {
-          if (scroll.scrollPosition === 0) {
-            scroll.isTop = true;
-            scroll.isBottom = false;
-          }
-          if (scroll.scrollPosition === scroll.scrollHeight) {
-            scroll.isBottom = true;
-            scroll.isTop = false;
-          }
-          if (
-            scroll.scrollPosition > 0 &&
-            scroll.scrollPosition < scroll.scrollHeight
-          ) {
-            scroll.isTop = false;
-            scroll.isBottom = false;
-          }
-          const ratio =
-            scroll.scrollHeight > 0
-              ? scroll.scrollPosition / scroll.scrollHeight
-              : 0;
-          const progress = Number((ratio * 100).toFixed(2));
-          scroll.progress = Math.min(100, Math.max(1, progress));
-          return scroll.scrollPosition;
-        })(),
+        position: scroll.scrollPosition,
+        direction: scroll.direction,
+        isTop: scroll.isTop,
+        isBottom: scroll.isBottom,
+        clientHeight: scroll.clientHeight,
+        scrollHeight: scroll.scrollHeight,
+        progress: scroll.progress,
       });
     },
     getDirection: () => {
