@@ -5,7 +5,7 @@ import {
   createClient,
   type IEntity,
 } from "./Entity";
-import { WIZARD_STORE_SCOPE } from "./types";
+import { WIZARD_STORE_SCOPE, WizardStoreEvents } from "./types";
 import { createScopedObserver } from "@scoped-observer/core";
 
 class Store {
@@ -29,7 +29,7 @@ class Store {
     this.entities.delete(id);
     this._observer.dispatch({
       scope: WIZARD_STORE_SCOPE,
-      eventName: `createWizard-${id}`,
+      eventName: `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
       payload: {
         id,
       },
@@ -52,7 +52,7 @@ class Store {
     return () => {
       this._observer.dispatch({
         scope: WIZARD_STORE_SCOPE,
-        eventName: `createWizard-${props.id}`,
+        eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
         payload: {
           id: props.id,
         },

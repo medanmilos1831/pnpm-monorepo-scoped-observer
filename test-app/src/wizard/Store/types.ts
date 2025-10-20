@@ -18,6 +18,10 @@ export enum WizardEvents {
   ON_FINISH = "onFinish",
 }
 
+export enum WizardStoreEvents {
+  CREATE_WIZARD = "createWizard",
+}
+
 export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 
 export interface IWizardConfig {
