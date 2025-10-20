@@ -5,17 +5,18 @@ import {
   createClient,
   type IEntity,
 } from "./Entity";
+import { WIZARD_STORE_SCOPE } from "./types";
 import { createScopedObserver } from "@scoped-observer/core";
 
 class Store {
   private _observer = createScopedObserver([
     {
-      scope: "wizard-store",
+      scope: WIZARD_STORE_SCOPE,
     },
   ]);
   subscribe = (eventName: string, callback: (payload: any) => void) => {
     return this._observer.subscribe({
-      scope: "wizard-store",
+      scope: WIZARD_STORE_SCOPE,
       eventName,
       callback,
     });
@@ -27,10 +28,10 @@ class Store {
   removeEntity = (id: string) => {
     this.entities.delete(id);
     this._observer.dispatch({
-      scope: "wizard-store",
+      scope: WIZARD_STORE_SCOPE,
       eventName: `createWizard-${id}`,
       payload: {
-        id: id,
+        id,
       },
     });
   };
@@ -50,7 +51,7 @@ class Store {
     }
     return () => {
       this._observer.dispatch({
-        scope: "wizard-store",
+        scope: WIZARD_STORE_SCOPE,
         eventName: `createWizard-${props.id}`,
         payload: {
           id: props.id,

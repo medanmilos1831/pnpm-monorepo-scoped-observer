@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Step } from "./WizardStep";
 import type { IWizardConfig } from "../../Store/Entity";
-import { WizardEvents } from "../../Store/Entity/types";
+import { WizardEvents } from "../../Store/types";
 import { WizardClientContext } from "../WizardClientProvider";
 
 const WizardContext = createContext<{ id: string } | undefined>(undefined);

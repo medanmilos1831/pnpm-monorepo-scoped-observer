@@ -80,6 +80,7 @@ const WizardControls = () => {
 };
 const SomeComponent = () => {
   const wizard = useWizard("my-wizard");
+  console.log("wiz", wizard);
   return <div>SomeComponent</div>;
 };
 const WizardWrapper = () => {
@@ -111,8 +112,8 @@ const WizardWrapper = () => {
 const HomePage = () => {
   return (
     <WizardClientProvider client={client}>
-      <SomeComponent />
       <WizardWrapper />
+      <SomeComponent />
     </WizardClientProvider>
   );
 };

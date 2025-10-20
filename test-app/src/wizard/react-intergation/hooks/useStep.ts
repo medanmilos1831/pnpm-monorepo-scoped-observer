@@ -1,5 +1,5 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizardEvents } from "../../Store/Entity/types";
+import { WizardEvents } from "../../Store/types";
 import { WizardContext } from "../Wizard/WizardProvider";
 import { useWizard } from "./useWizard";
 
