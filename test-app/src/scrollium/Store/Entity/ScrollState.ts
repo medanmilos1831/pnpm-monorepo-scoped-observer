@@ -1,11 +1,10 @@
-import type { ScrolliumProps } from "../../react-intergation/types";
-import { ScrolliumDirection } from "../../types";
+import { ScrolliumDirection, type ScrolliumProps } from "../../types";
 
 class ScrollState {
   scrollPosition: number;
   previousScrollPosition: number = 0;
   isScrolling: boolean = false;
-  scrollTimeoutId: NodeJS.Timeout | null = null;
+  scrollTimeoutId: ReturnType<typeof setTimeout> | null = null;
   id: string;
   throttle: number;
   isTop: boolean = true;

@@ -1,8 +1,7 @@
 import { createScopedObserver } from "@scoped-observer/core";
 import { createClient } from "./Entity";
 import { SCROLLIUM_STORE_SCOPE, ScrolliumStoreEvents } from "../types";
-import type { ScrolliumProps } from "../react-intergation/types";
-
+import type { ScrolliumProps } from "../types";
 class Store {
   private _observer = createScopedObserver([
     {

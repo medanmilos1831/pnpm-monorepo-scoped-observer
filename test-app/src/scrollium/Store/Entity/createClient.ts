@@ -1,6 +1,5 @@
 import { Observer } from "./Observer";
-import { ScrolliumEvents } from "../../types";
-import type { ScrolliumProps } from "../../react-intergation/types";
+import { ScrolliumEvents, type ScrolliumProps } from "../../types";
 import { calucate } from "../../utils";
 import { ScrollState } from "./ScrollState";
 
