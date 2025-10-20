@@ -11,7 +11,7 @@ export interface ScrolliumProps {
 }
 
 export interface ScrolliumOnScrollProps {
-  position: number;
+  scrollPosition: number;
   isTop: boolean;
   isBottom: boolean;
   clientHeight: number;
