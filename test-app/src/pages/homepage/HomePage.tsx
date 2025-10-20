@@ -1,7 +1,7 @@
 import { Scroll, useScrollPosition } from "../../scrollium";
 const SomeComponent = () => {
   const value = useScrollPosition();
-  
+
   return <div>Some Component</div>;
 };
 const HomePage = () => {
@@ -14,7 +14,12 @@ const HomePage = () => {
           background: "red",
         }}
       >
-        <Scroll id="main">
+        <Scroll
+          id="main"
+          onScroll={(value) => {
+            // console.log("onScroll", value)
+          }}
+        >
           <>
             <SomeComponent />
             {Array.from({ length: 100 }).map((_, i) => (

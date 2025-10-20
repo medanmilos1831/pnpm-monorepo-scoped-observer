@@ -4,5 +4,13 @@ export enum ScrolliumEvents {
 
 export interface ScrolliumProps {
   id: string;
-  onScroll?: (props: any) => void;
+  onScroll?: (props: ScrolliumOnScrollProps) => void;
+}
+
+export interface ScrolliumOnScrollProps {
+  position: number;
+  isTop: boolean;
+  isBottom: boolean;
+  clientHeight: number;
+  scrollHeight: number;
 }

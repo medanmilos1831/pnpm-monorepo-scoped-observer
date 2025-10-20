@@ -47,10 +47,11 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
           client?.setScrollPosition((e.target as HTMLDivElement).scrollTop);
           if (props.onScroll) {
             props.onScroll({
-              id: props.id,
-              position: (e.target as HTMLDivElement).scrollTop,
-              isTop: client?.getIsTop(),
-              isBottom: client?.getIsBottom(),
+              position: client.getScrollPosition(),
+              isTop: client.getIsTop(),
+              isBottom: client.getIsBottom(),
+              clientHeight: client.getClientHeight(),
+              scrollHeight: client.getScrollHeight(),
             });
           }
         }}
