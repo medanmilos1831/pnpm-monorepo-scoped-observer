@@ -66,7 +66,7 @@ function StepOne() {
     <Wizard.Step
       onNext={(params) => {
         // Handle next step logic
-        console.log("Moving to:", params.toStep);
+        // handle next step target in your UI
       }}
       onPrevious={(params) => {
         // Handle previous step logic
@@ -343,7 +343,7 @@ function WizardWithEvents() {
 
   useEffect(() => {
     const unsubscribe = subscribe("onStepChange", (data) => {
-      console.log("Step changed to:", data);
+      // handle step change
     });
 
     return unsubscribe;

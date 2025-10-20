@@ -2,7 +2,7 @@ import { HomePage } from "./pages";
 import { createScrolliumClient, ScrolliumClientProvider } from "./scrollium";
 
 const store = createScrolliumClient();
-console.log(store);
+
 function App() {
   return (
     <div

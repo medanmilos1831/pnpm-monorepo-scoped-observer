@@ -8,10 +8,11 @@ import {
 
 import { ScrolliumClientContext } from "../ScrolliumClientProvider";
 import { useScroll } from "../hooks/useScroll";
+import type { ScrolliumProps } from "../types";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
 
-const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
+const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
   const context = useContext(ScrolliumClientContext)!;
   if (!context) {
     throw new Error("ScrolliumClientContext not found");
@@ -44,6 +45,14 @@ const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
         }}
         onScroll={(e: React.UIEvent<HTMLDivElement>) => {
           client?.setScrollPosition((e.target as HTMLDivElement).scrollTop);
+          if (props.onScroll) {
+            props.onScroll({
+              id: props.id,
+              position: (e.target as HTMLDivElement).scrollTop,
+              isTop: client?.getIsTop(),
+              isBottom: client?.getIsBottom(),
+            });
+          }
         }}
       >
         {children}
