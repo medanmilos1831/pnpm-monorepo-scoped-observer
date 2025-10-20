@@ -5,13 +5,10 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { type IWizardConfig } from "../Store/Entity";
-import { WizardEvents } from "../Store/Entity/types";
-import {
-  useWizardClient,
-  WizardClientContext,
-} from "./WizardClient/WizardClientProvider";
 import { Step } from "./WizardStep";
+import type { IWizardConfig } from "../../Store/Entity";
+import { WizardEvents } from "../../Store/types";
+import { WizardClientContext } from "../WizardClientProvider";
 
 const WizardContext = createContext<{ id: string } | undefined>(undefined);
 
@@ -26,24 +23,21 @@ const Wizard = ({
   if (!context) {
     throw new Error("WizardClientContext not found");
   }
-  const [{ disconnect }, _] = useState(() => context.createEntity(props));
-  const store = useWizardClient();
+  const [created, _] = useState(() => {
+    return context.createEntity(props);
+  });
+  const store = useContext(WizardClientContext)!;
   const client = store.getClient(props.id);
 
   const [successRender, setSuccessRender] = useState(false);
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, []);
+  useEffect(created, []);
+
   useEffect(() => {
     let unsubscribe = () => {};
     if (!onReset) return;
     unsubscribe = client.subscribe(WizardEvents.ON_RESET, onReset);
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribe();
     };
   });
   useEffect(() => {
@@ -60,9 +54,7 @@ const Wizard = ({
       })
     );
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribe();
     };
   });
   if (successRender) {

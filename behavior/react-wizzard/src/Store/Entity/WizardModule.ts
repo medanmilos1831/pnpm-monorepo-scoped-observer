@@ -1,5 +1,5 @@
-import { WizardCommands } from "./types";
-import type { IWizardConfig } from "./types";
+import { WizardCommands } from "../types";
+import type { IWizardConfig } from "../types";
 
 class WizardModule {
   id: string;

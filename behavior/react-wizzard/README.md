@@ -11,14 +11,6 @@ A powerful, flexible wizard system built with React and TypeScript that provides
 - 📡 **Event System**: Subscribe to wizard events (step change, reset, finish)
 - 🎛️ **Flexible Configuration**: Customizable wizard behavior and rendering
 
-## 🎮 Demo
-
-Try out **react-wizzard** in action with our interactive demo:
-
-**[🚀 Live Demo](https://medanmilos1831.github.io/react-wizard-demo/)**
-
-The demo showcases a complete wizard implementation with step navigation, validation, event handling, and state management.
-
 ## Quick Start
 
 ### 1. Setup Wizard Client
@@ -40,7 +32,7 @@ function App() {
 ### 2. Create a Wizard
 
 ```tsx
-import { Wizard, useStep, useWizardCommands } from "./wizard";
+import { Wizard, useWizardStep, useWizardCommands } from "./wizard";
 
 function MyWizard() {
   return (
@@ -99,7 +91,7 @@ function StepOne() {
 
 ```tsx
 function WizardControls() {
-  const { stepName, steps, isFirst, isLast } = useStep();
+  const { stepName, steps, isFirst, isLast } = useWizardStep();
   const { next, previous, reset, goToStep } = useWizardCommands();
 
   return (
@@ -231,12 +223,12 @@ interface IOnValidateParams {
 
 ### Hooks
 
-#### useStep()
+#### useWizardStep()
 
 Returns current step information and navigation state.
 
 ```tsx
-const { stepName, steps, wizardId, isLast, isFirst } = useStep();
+const { stepName, steps, wizardId, isLast, isFirst } = useWizardStep();
 ```
 
 #### useWizardCommands()
@@ -246,6 +238,34 @@ Returns wizard navigation functions.
 ```tsx
 const { next, previous, reset, goToStep } = useWizardCommands();
 ```
+
+#### useWizard(id)
+
+Returns a wizard client for a specific wizard by `id`. If the wizard hasn't been created/mounted yet, returns `undefined` until it becomes available.
+
+```tsx
+import { useWizard } from "./wizard";
+
+function ExternalControls() {
+  const wizard = useWizard("my-wizard");
+
+  if (!wizard) return <div>Loading wizard…</div>;
+
+  return (
+    <div>
+      <button onClick={() => wizard.previous()}>Previous</button>
+      <button onClick={() => wizard.next({ actionType: "validate" })}>
+        Next
+      </button>
+      <div>Active step: {wizard.getActiveStep()}</div>
+    </div>
+  );
+}
+```
+
+– **Returns**: `WizardClient | undefined`
+– **When available**: as soon as the entity is created (e.g., mounting `<Wizard id="my-wizard" ... />`)
+– **Typical use case**: controls outside `<Wizard>` that manage the same wizard
 
 ### Wizard Commands
 
@@ -268,7 +288,7 @@ enum WizardEvents {
 
 ```tsx
 function CustomNavigation() {
-  const { steps, stepName } = useStep();
+  const { steps, stepName } = useWizardStep();
   const { goToStep } = useWizardCommands();
 
   return (
@@ -319,11 +339,10 @@ function ValidatedStep() {
 
 ```tsx
 function WizardWithEvents() {
-  const { getClient } = useWizardClient();
-  const client = getClient("my-wizard");
+  const { subscribe } = useWizard("my-wizard");
 
   useEffect(() => {
-    const unsubscribe = client.subscribe("onStepChange", (data) => {
+    const unsubscribe = subscribe("onStepChange", (data) => {
       console.log("Step changed to:", data);
     });
 

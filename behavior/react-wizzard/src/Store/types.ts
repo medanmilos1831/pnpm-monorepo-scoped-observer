@@ -1,6 +1,6 @@
-import type { createClient } from "./createClient";
-import type { WizardModule } from "./WizardModule";
-import type { StepModule } from "./StepModule";
+import type { createClient } from "./Entity/createClient";
+import type { WizardModule } from "./Entity/WizardModule";
+import type { StepModule } from "./Entity/StepModule";
 
 export interface IEntity {
   wizard: WizardModule;
@@ -17,6 +17,12 @@ export enum WizardEvents {
   ON_RESET = "onReset",
   ON_FINISH = "onFinish",
 }
+
+export enum WizardStoreEvents {
+  CREATE_WIZARD = "createWizard",
+}
+
+export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 
 export interface IWizardConfig {
   id: string;

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { createWizardClient } from "./createWizardClient";
+import type { createWizardClient } from "../createWizardClient";
 
 const WizardClientContext = createContext<
   ReturnType<typeof createWizardClient> | undefined
@@ -19,12 +19,4 @@ const WizardClientProvider = ({
   );
 };
 
-const useWizardClient = () => {
-  const context = useContext(WizardClientContext)!;
-  if (!context) {
-    throw new Error("WizardClientContext not found");
-  }
-  return context;
-};
-
-export { WizardClientProvider, WizardClientContext, useWizardClient };
+export { WizardClientProvider, WizardClientContext };

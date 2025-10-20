@@ -1,15 +1,14 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizardEvents } from "../Store/Entity/types";
-import { WizardContext } from "./WizardProvider";
-import { useWizardClient } from "./WizardClient/WizardClientProvider";
+import { WizardEvents } from "../../Store/types";
+import { WizardContext } from "../Wizard/WizardProvider";
+import { useWizard } from "./useWizard";
 
-const useStep = () => {
+const useWizardStep = () => {
   const context = useContext(WizardContext);
   if (!context) {
     throw new Error("WizardContext not found");
   }
-  const store = useWizardClient();
-  const client = store.getClient(context.id);
+  const client = useWizard(context.id)!;
   const [subsciber, __] = useState(() => (notify: () => void) => {
     return client.subscribe(WizardEvents.ON_STEP_CHANGE, () => {
       notify();
@@ -25,4 +24,4 @@ const useStep = () => {
   };
 };
 
-export { useStep };
+export { useWizardStep };

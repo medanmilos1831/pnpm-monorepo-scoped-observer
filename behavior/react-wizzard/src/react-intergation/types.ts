@@ -1,4 +1,4 @@
-import type { WizardCommands } from "../Store/Entity/types";
+import type { WizardCommands } from "../Store/types";
 
 export interface IWizardStep {
   onNext?: (params: IOnNavigateParams) => void;
