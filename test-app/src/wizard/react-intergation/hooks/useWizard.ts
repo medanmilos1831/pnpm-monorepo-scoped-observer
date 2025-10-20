@@ -1,5 +1,6 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { WizardClientContext } from "../WizardClientProvider";
+import { WizardStoreEvents } from "../../Store/types";
 
 const useWizard = (id: string) => {
   const context = useContext(WizardClientContext);
@@ -8,7 +9,10 @@ const useWizard = (id: string) => {
   }
   const [subscriber] = useState(() => {
     return (notify: () => void) => {
-      return context.subscribe(`createWizard-${id}`, notify);
+      return context.subscribe(
+        `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
+        notify
+      );
     };
   });
   const [snapshot] = useState(() => {

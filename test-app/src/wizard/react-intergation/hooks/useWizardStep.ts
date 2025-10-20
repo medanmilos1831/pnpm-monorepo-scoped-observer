@@ -3,7 +3,7 @@ import { WizardEvents } from "../../Store/types";
 import { WizardContext } from "../Wizard/WizardProvider";
 import { useWizard } from "./useWizard";
 
-const useStep = () => {
+const useWizardStep = () => {
   const context = useContext(WizardContext);
   if (!context) {
     throw new Error("WizardContext not found");
@@ -24,4 +24,4 @@ const useStep = () => {
   };
 };
 
-export { useStep };
+export { useWizardStep };

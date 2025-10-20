@@ -11,7 +11,13 @@ const StepTwo = () => {
         textAlign: "center",
       }}
     >
-      <Wizard.Step>
+      <Wizard.Step
+        onNext={({ updateSteps }) => {
+          updateSteps((prev) => {
+            return [...prev, "stepThree"];
+          });
+        }}
+      >
         <div
           style={{
             fontSize: "1.5rem",

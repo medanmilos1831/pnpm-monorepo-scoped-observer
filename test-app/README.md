@@ -32,7 +32,7 @@ function App() {
 ### 2. Create a Wizard
 
 ```tsx
-import { Wizard, useStep, useWizardCommands } from "./wizard";
+import { Wizard, useWizardStep, useWizardCommands } from "./wizard";
 
 function MyWizard() {
   return (
@@ -91,7 +91,7 @@ function StepOne() {
 
 ```tsx
 function WizardControls() {
-  const { stepName, steps, isFirst, isLast } = useStep();
+  const { stepName, steps, isFirst, isLast } = useWizardStep();
   const { next, previous, reset, goToStep } = useWizardCommands();
 
   return (
@@ -223,12 +223,12 @@ interface IOnValidateParams {
 
 ### Hooks
 
-#### useStep()
+#### useWizardStep()
 
 Returns current step information and navigation state.
 
 ```tsx
-const { stepName, steps, wizardId, isLast, isFirst } = useStep();
+const { stepName, steps, wizardId, isLast, isFirst } = useWizardStep();
 ```
 
 #### useWizardCommands()
@@ -288,7 +288,7 @@ enum WizardEvents {
 
 ```tsx
 function CustomNavigation() {
-  const { steps, stepName } = useStep();
+  const { steps, stepName } = useWizardStep();
   const { goToStep } = useWizardCommands();
 
   return (

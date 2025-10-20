@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createWizardClient,
-  useStep,
   useWizardCommands,
   useWizard,
   Wizard,
   WizardClientProvider,
+  useWizardStep,
 } from "../../wizard";
 const client = createWizardClient();
 // const LeftSide = () => {
@@ -64,7 +64,7 @@ const BodyWrapper = ({
 }: {
   children: (stepName: string) => React.ReactNode;
 }) => {
-  const { stepName } = useStep();
+  const { stepName } = useWizardStep();
   return <div>{children(stepName)}</div>;
 };
 const WizardControls = () => {
@@ -80,8 +80,25 @@ const WizardControls = () => {
 };
 const SomeComponent = () => {
   const wizard = useWizard("my-wizard");
-  console.log("wiz", wizard);
+  // console.log("wiz", wizard);
   return <div>SomeComponent</div>;
+};
+
+const SomeComponentToWatch = () => {
+  // const value = useWizardStep("my-wizard");
+  // console.log("value", value);
+  const client = useWizard("my-wizard");
+
+  useEffect(() => {
+    const unsubscribe = client?.subscribe("onStepChange", () => {
+      console.log("callback");
+    });
+    return () => {
+      if (!unsubscribe) return;
+      unsubscribe();
+    };
+  }, [client]);
+  return <div>SomeComponentToWatch</div>;
 };
 const WizardWrapper = () => {
   const [counter, setCounter] = useState(0);
@@ -112,8 +129,9 @@ const WizardWrapper = () => {
 const HomePage = () => {
   return (
     <WizardClientProvider client={client}>
+      <SomeComponentToWatch />
       <WizardWrapper />
-      <SomeComponent />
+      {/* <SomeComponent /> */}
     </WizardClientProvider>
   );
 };
