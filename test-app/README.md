@@ -239,6 +239,32 @@ Returns wizard navigation functions.
 const { next, previous, reset, goToStep } = useWizardCommands();
 ```
 
+#### useWizard(id)
+
+Vraća klijenta za konkretan wizard po `id`. Ako wizard još nije kreiran/mountovan, vraća `undefined` dok ne postane dostupan.
+
+```tsx
+import { useWizard } from "./wizard";
+
+function ExternalControls() {
+  const wizard = useWizard("my-wizard");
+
+  if (!wizard) return <div>Loading wizard…</div>;
+
+  return (
+    <div>
+      <button onClick={() => wizard.previous()}>Previous</button>
+      <button onClick={() => wizard.next({ actionType: "validate" })}>Next</button>
+      <div>Active step: {wizard.getActiveStep()}</div>
+    </div>
+  );
+}
+```
+
+– Returns: `WizardClient | undefined`
+– Kada je dostupan: čim se kreira entitet (npr. mount `<Wizard id="my-wizard" ... />`)
+– Tipična upotreba: kontrole izvan `<Wizard>` koje upravljaju istim wizard-om
+
 ### Wizard Commands
 
 ```tsx
@@ -311,11 +337,10 @@ function ValidatedStep() {
 
 ```tsx
 function WizardWithEvents() {
-  const { getClient } = useWizardClient();
-  const client = getClient("my-wizard");
+  const { subscribe } = useWizard("my-wizard");
 
   useEffect(() => {
-    const unsubscribe = client.subscribe("onStepChange", (data) => {
+    const unsubscribe = subscribe("onStepChange", (data) => {
       console.log("Step changed to:", data);
     });
 
