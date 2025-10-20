@@ -1,6 +1,6 @@
 import { HomePage } from "./pages";
-import { ScrolliumClientProvider } from "./scrollium/react-intergation/ScrolliumClientProvider";
-import { createScrolliumClient } from "./scrollium/createScrolliumClient";
+import { createScrolliumClient, ScrolliumClientProvider } from "./scrollium";
+
 const store = createScrolliumClient();
 console.log(store);
 function App() {

@@ -1,8 +1,6 @@
-export { createWizardClient } from "./createScrolliumClient";
+export { createScrolliumClient } from "./createScrolliumClient";
 export {
-  useWizard,
-  useWizardCommands,
-  Wizard,
-  WizardClientProvider,
-  useWizardStep,
+  ScrolliumClientProvider,
+  useScrollPosition,
+  Scroll,
 } from "./react-intergation";

@@ -1,5 +1,9 @@
-import { Scroll } from "../../scrollium/react-intergation/Scroll/ScrollProvider";
-
+import { Scroll, useScrollPosition } from "../../scrollium";
+const SomeComponent = () => {
+  const value = useScrollPosition();
+  console.log(value);
+  return <div>Some Component</div>;
+};
 const HomePage = () => {
   return (
     <>
@@ -11,11 +15,17 @@ const HomePage = () => {
         }}
       >
         <Scroll id="main">
-          {Array.from({ length: 100 }).map((_, i) => (
-            <div key={i} style={{ background: i % 2 === 0 ? "blue" : "red " }}>
-              {i}
-            </div>
-          ))}
+          <>
+            <SomeComponent />
+            {Array.from({ length: 100 }).map((_, i) => (
+              <div
+                key={i}
+                style={{ background: i % 2 === 0 ? "blue" : "red " }}
+              >
+                {i}
+              </div>
+            ))}
+          </>
         </Scroll>
       </div>
     </>

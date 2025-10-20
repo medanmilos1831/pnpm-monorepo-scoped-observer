@@ -1,3 +1,6 @@
-export { Wizard } from "./Scroll";
-export { useWizardCommands, useWizard, useWizardStep } from "./hooks";
-export { WizardClientProvider } from "./ScrolliumClientProvider";
+export { Scroll, ScrollContext } from "./Scroll/ScrollProvider";
+export {
+  ScrolliumClientProvider,
+  ScrolliumClientContext,
+} from "./ScrolliumClientProvider";
+export { useScrollPosition } from "./hooks/useScrollPosition";

@@ -1,1 +1,1 @@
-export { Wizard } from "./ScrollProvider";
+export { Scroll, ScrollContext } from "./ScrollProvider";

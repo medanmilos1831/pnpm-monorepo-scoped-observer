@@ -1,16 +1,16 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizardClientContext } from "../ScrolliumClientProvider";
-import { WizardStoreEvents } from "../../Store/types";
+import { ScrolliumClientContext } from "../ScrolliumClientProvider";
+import { ScrolliumStoreEvents } from "../../Store/types";
 
-const useWizard = (id: string) => {
-  const context = useContext(WizardClientContext);
+const useScroll = (id: string) => {
+  const context = useContext(ScrolliumClientContext);
   if (!context) {
-    throw new Error("WizardClientContext not found");
+    throw new Error("ScrolliumClientContext not found");
   }
   const [subscriber] = useState(() => {
     return (notify: () => void) => {
       return context.subscribe(
-        `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
+        `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`,
         notify
       );
     };
@@ -22,4 +22,4 @@ const useWizard = (id: string) => {
   return entity ? context.getEntity(id).client : undefined;
 };
 
-export { useWizard };
+export { useScroll };

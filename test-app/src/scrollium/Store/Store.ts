@@ -1,15 +1,16 @@
 import { createClient, type IEntity, ScrollModule } from "./Entity";
 import { createScopedObserver } from "@scoped-observer/core";
+import { SCROLLIUM_STORE_SCOPE, ScrolliumStoreEvents } from "./types";
 
 class Store {
   private _observer = createScopedObserver([
     {
-      scope: "scrollium-store",
+      scope: SCROLLIUM_STORE_SCOPE,
     },
   ]);
   subscribe = (eventName: string, callback: (payload: any) => void) => {
     return this._observer.subscribe({
-      scope: "scrollium-store",
+      scope: SCROLLIUM_STORE_SCOPE,
       eventName,
       callback,
     });
@@ -21,15 +22,10 @@ class Store {
   removeEntity = (id: string) => {
     this.entities.delete(id);
     this._observer.dispatch({
-      scope: "scrollium-store",
-      eventName: `scrollium-store-${id}`,
-      payload: {
-        id,
-      },
+      scope: SCROLLIUM_STORE_SCOPE,
+      eventName: `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`,
+      payload: { id },
     });
-  };
-  getClient = (id: string) => {
-    return this.entities.get(id)!.client;
   };
   createEntity = (props: { id: string }) => {
     if (!this.entities.has(props.id)) {
@@ -41,8 +37,8 @@ class Store {
     }
     return () => {
       this._observer.dispatch({
-        scope: "scrollium-store",
-        eventName: `scrollium-store-${props.id}`,
+        scope: SCROLLIUM_STORE_SCOPE,
+        eventName: `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${props.id}`,
         payload: {
           id: props.id,
         },
