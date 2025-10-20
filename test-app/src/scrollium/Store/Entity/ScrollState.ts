@@ -1,7 +1,7 @@
 import type { ScrolliumProps } from "../../react-intergation/types";
 import { ScrolliumDirection } from "../types";
 
-class ScrollModule {
+class ScrollState {
   id: string;
   throttle: number;
   scrollPosition: number;
@@ -21,4 +21,4 @@ class ScrollModule {
   }
 }
 
-export { ScrollModule };
+export { ScrollState };

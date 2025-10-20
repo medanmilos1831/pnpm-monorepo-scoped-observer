@@ -5,7 +5,6 @@ const SomeComponentUpper = () => {
   const client = useScroll("main");
   useEffect(() => {
     client?.subscribe("onScroll", (value: any) => {
-      // console.log("ON_SCROLL", value.payload);
     });
   }, [client]);
   return (
@@ -17,7 +16,6 @@ const SomeComponentUpper = () => {
 
 const SomeComponent = () => {
   const { scrollPosition } = useScrollPosition();
-  console.log("scrollPosition", scrollPosition);
 
   return <div>Some Component</div>;
 };
@@ -35,7 +33,6 @@ const HomePage = () => {
         <Scroll
           id="main"
           onScroll={(value) => {
-            console.log("onScroll", value);
           }}
         >
           <>
