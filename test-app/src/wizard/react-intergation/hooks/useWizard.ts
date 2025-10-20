@@ -1,7 +1,7 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { WizardClientContext } from "../WizardClientProvider";
 
-const useWizardSelector = (id: string) => {
+const useWizard = (id: string) => {
   const context = useContext(WizardClientContext);
   if (!context) {
     throw new Error("WizardClientContext not found");
@@ -18,4 +18,4 @@ const useWizardSelector = (id: string) => {
   return entity ? context.getEntity(id).client : undefined;
 };
 
-export { useWizardSelector };
+export { useWizard };
