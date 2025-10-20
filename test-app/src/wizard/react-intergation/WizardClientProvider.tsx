@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { createWizardClient } from "./createWizardClient";
+import type { createWizardClient } from "../createWizardClient";
 
 const WizardClientContext = createContext<
   ReturnType<typeof createWizardClient> | undefined

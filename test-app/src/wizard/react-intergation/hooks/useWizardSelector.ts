@@ -1,5 +1,5 @@
 import { useContext, useState, useSyncExternalStore } from "react";
-import { WizardClientContext } from "../WizardClient/WizardClientProvider";
+import { WizardClientContext } from "../WizardClientProvider";
 
 const useWizardSelector = (id: string) => {
   const context = useContext(WizardClientContext);
