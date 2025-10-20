@@ -1,5 +1,8 @@
 import { HomePage } from "./pages";
-
+import { ScrolliumClientProvider } from "./scrollium/react-intergation/ScrolliumClientProvider";
+import { createScrolliumClient } from "./scrollium/createScrolliumClient";
+const store = createScrolliumClient();
+console.log(store);
 function App() {
   return (
     <div
@@ -10,7 +13,9 @@ function App() {
         color: "white",
       }}
     >
-      <HomePage />
+      <ScrolliumClientProvider client={store}>
+        <HomePage />
+      </ScrolliumClientProvider>
     </div>
   );
 }

@@ -26,7 +26,18 @@ const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
         id: props.id,
       }}
     >
-      {children}
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          overflow: "auto",
+        }}
+        onScroll={(e: React.UIEvent<HTMLDivElement>) => {
+          console.log("scroll", (e.target as HTMLDivElement).scrollTop);
+        }}
+      >
+        {children}
+      </div>
     </ScrollContext.Provider>
   );
 };
