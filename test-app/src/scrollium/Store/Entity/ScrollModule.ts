@@ -14,7 +14,7 @@ class ScrollModule {
   direction: ScrolliumDirection = ScrolliumDirection.NONE;
   constructor({ id, throttle }: ScrolliumProps) {
     this.id = id;
-    this.throttle = throttle || 100;
+    this.throttle = throttle || 50;
     this.scrollPosition = 0;
     this.progress = 0;
     this.direction = ScrolliumDirection.NONE;

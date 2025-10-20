@@ -16,7 +16,12 @@ class Store {
       callback,
     });
   };
-  entities = new Map<string, any>();
+  entities = new Map<
+    string,
+    {
+      client: ReturnType<typeof createClient>;
+    }
+  >();
   getEntity = (id: string) => {
     return this.entities.get(id)!;
   };

@@ -9,7 +9,8 @@ import {
 import { ScrolliumClientContext } from "../ScrolliumClientProvider";
 import { useScroll } from "../hooks/useScroll";
 import type { ScrolliumProps } from "../types";
-import { getScrolliumData } from "../../utils";
+import { throttle } from "../../utils";
+import { createScrollHandler } from "../../utils";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
 
@@ -38,7 +39,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
           );
           client?.setClientHeight(clientHeight);
           client?.setScrollHeight(maxScroll);
-          client.scrollTo = (options?: ScrollToOptions) => {
+          client!.scrollTo = (options?: ScrollToOptions) => {
             element?.scrollTo(options);
           };
         }}
@@ -47,12 +48,10 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
           width: "100%",
           overflow: "auto",
         }}
-        onScroll={(e: React.UIEvent<HTMLDivElement>) => {
-          client?.setScrollPosition((e.target as HTMLDivElement).scrollTop);
-          if (props.onScroll) {
-            props.onScroll(getScrolliumData(client));
-          }
-        }}
+        onScroll={throttle(
+          createScrollHandler(client!, props.onScroll!),
+          client!.getThrottle()
+        )}
       >
         {children}
       </div>

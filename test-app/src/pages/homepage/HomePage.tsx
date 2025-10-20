@@ -37,6 +37,7 @@ const HomePage = () => {
           onScroll={(value) => {
             // console.log("onScroll", value);
           }}
+          // throttle={2000}
         >
           <>
             <SomeComponent />
