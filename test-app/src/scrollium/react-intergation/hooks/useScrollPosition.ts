@@ -4,7 +4,6 @@ import { ScrollContext } from "../Scroll";
 import { ScrolliumEvents } from "../types";
 
 const useScrollPosition = () => {
-  console.log("useScrollPosition");
   const context = useContext(ScrollContext);
   if (!context) {
     throw new Error("ScrollContext not found");

@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import { Scroll, useScrollPosition } from "../../scrollium";
 import { useScroll } from "../../scrollium/react-intergation/hooks/useScroll";
 const SomeComponent = () => {
   const value = useScrollPosition();
-  console.log("value", value);
+  const client = useScroll("main");
+  useEffect(() => {
+    client.scrollTo({ top: 500, behavior: "smooth" });
+  }, []);
   return <div>Some Component</div>;
 };
 const SomeButton = () => {
