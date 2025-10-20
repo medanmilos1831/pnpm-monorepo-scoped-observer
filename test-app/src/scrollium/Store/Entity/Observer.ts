@@ -1,15 +1,16 @@
 import { createScopedObserver } from "@scoped-observer/core";
+import { SCROLLIUM_SCOPE } from "../types";
 
 class Observer {
   private observer = createScopedObserver([
     {
-      scope: "scroll",
+      scope: SCROLLIUM_SCOPE,
     },
   ]);
 
   dispatch = (eventName: string, payload?: any) => {
     this.observer.dispatch({
-      scope: "scroll",
+      scope: SCROLLIUM_SCOPE,
       eventName,
       payload: payload || undefined,
     });
@@ -17,7 +18,7 @@ class Observer {
 
   subscribe = (eventName: string, callback: (payload: any) => void) => {
     return this.observer.subscribe({
-      scope: "scroll",
+      scope: SCROLLIUM_SCOPE,
       eventName,
       callback,
     });

@@ -1,7 +1,6 @@
 import { Scroll, useScrollPosition } from "../../scrollium";
 const SomeComponent = () => {
   const value = useScrollPosition();
-  console.log(value);
   return <div>Some Component</div>;
 };
 const HomePage = () => {

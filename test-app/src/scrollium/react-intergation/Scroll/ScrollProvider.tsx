@@ -7,19 +7,20 @@ import {
 } from "react";
 
 import { ScrolliumClientContext } from "../ScrolliumClientProvider";
+import { useScroll } from "../hooks/useScroll";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
 
 const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
   const context = useContext(ScrolliumClientContext)!;
   if (!context) {
-    throw new Error("WizardClientContext not found");
+    throw new Error("ScrolliumClientContext not found");
   }
   const [created, _] = useState(() => {
     return context.createEntity(props);
   });
-  const store = useContext(ScrolliumClientContext)!;
   useEffect(created, []);
+  const client = useScroll(props.id);
   return (
     <ScrollContext.Provider
       value={{
@@ -33,7 +34,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<{ id: string }>) => {
           overflow: "auto",
         }}
         onScroll={(e: React.UIEvent<HTMLDivElement>) => {
-          console.log("scroll", (e.target as HTMLDivElement).scrollTop);
+          client?.setScrollPosition((e.target as HTMLDivElement).scrollTop);
         }}
       >
         {children}

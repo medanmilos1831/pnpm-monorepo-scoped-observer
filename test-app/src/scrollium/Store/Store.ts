@@ -30,7 +30,7 @@ class Store {
   createEntity = (props: { id: string }) => {
     if (!this.entities.has(props.id)) {
       const scroll = new ScrollModule(props);
-      const client = createClient();
+      const client = createClient({ id: scroll.id });
       this.entities.set(scroll.id, {
         client,
       });
