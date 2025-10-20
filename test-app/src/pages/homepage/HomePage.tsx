@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import { Scroll, useScroll } from "../../scrollium";
+import { Scroll, useScroll, useScrollPosition } from "../../scrollium";
 
 const SomeComponentUpper = () => {
   const client = useScroll("main");
-  console.log("RENDER", client);
   useEffect(() => {
     client?.subscribe("onScroll", (value: any) => {
-      console.log("ON_SCROLL", value.payload);
+      // console.log("ON_SCROLL", value.payload);
     });
   }, [client]);
   return (
@@ -17,23 +16,10 @@ const SomeComponentUpper = () => {
 };
 
 const SomeComponent = () => {
-  const client = useScroll("main");
+  const { scrollPosition } = useScrollPosition();
+  console.log("scrollPosition", scrollPosition);
 
-  return (
-    <div>
-      Some Component
-      <button
-        onClick={() =>
-          client.scrollTo({
-            top: client.getScrollHeight(),
-            behavior: "smooth",
-          })
-        }
-      >
-        Scroll to top
-      </button>
-    </div>
-  );
+  return <div>Some Component</div>;
 };
 const HomePage = () => {
   return (

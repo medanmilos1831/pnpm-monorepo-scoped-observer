@@ -5,6 +5,7 @@ export enum ScrolliumEvents {
 export interface ScrolliumProps {
   id: string;
   onScroll?: (props: ScrolliumOnScrollProps) => void;
+  throttle?: number;
 }
 
 export interface ScrolliumOnScrollProps {

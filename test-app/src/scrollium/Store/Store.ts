@@ -1,6 +1,7 @@
 import { createScopedObserver } from "@scoped-observer/core";
 import { createClient } from "./Entity";
 import { SCROLLIUM_STORE_SCOPE, ScrolliumStoreEvents } from "./types";
+import type { ScrolliumProps } from "../react-intergation/types";
 
 class Store {
   private _observer = createScopedObserver([
@@ -27,9 +28,9 @@ class Store {
       payload: { id },
     });
   };
-  createEntity = (props: { id: string }) => {
+  createEntity = (props: ScrolliumProps) => {
     if (!this.entities.has(props.id)) {
-      const client = createClient({ id: props.id });
+      const client = createClient(props);
       this.entities.set(props.id, {
         client,
       });
