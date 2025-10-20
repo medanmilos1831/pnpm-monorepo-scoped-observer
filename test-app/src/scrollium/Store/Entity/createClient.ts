@@ -2,10 +2,12 @@ import { Observer } from "./Observer";
 import { ScrollModule } from "./ScrollModule";
 import { ScrolliumDirection, ScrolliumEvents } from "../types";
 import type { ScrolliumProps } from "../../react-intergation/types";
+import { calucate } from "../../utils";
 
 export function createClient(props: ScrolliumProps) {
   const observer = new Observer();
   const scroll = new ScrollModule(props);
+
   return {
     setScrollPosition(position: number) {
       const previousScrollPosition = scroll.scrollPosition;
@@ -15,7 +17,7 @@ export function createClient(props: ScrolliumProps) {
       } else {
         scroll.direction = ScrolliumDirection.UP;
       }
-      scroll.calucate();
+      calucate(scroll);
       observer.dispatch(ScrolliumEvents.ON_SCROLL, {
         id: props.id,
         position: scroll.scrollPosition,

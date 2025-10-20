@@ -1,4 +1,4 @@
-import type { createClient } from "./Store/Entity";
+import type { createClient, ScrollModule } from "./Store/Entity";
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {
   return {
@@ -37,5 +37,27 @@ export function createScrollHandler(
     if (onScroll) {
       onScroll(getScrolliumData(client));
     }
-  }, 16); // ~60fps
+  }, client.getThrottle());
+}
+
+export function calucate(scroll: ScrollModule) {
+  if (scroll.scrollPosition === 0) {
+    scroll.isTop = true;
+    scroll.isBottom = false;
+  }
+  if (scroll.scrollPosition === scroll.scrollHeight) {
+    scroll.isBottom = true;
+    scroll.isTop = false;
+  }
+  if (
+    scroll.scrollPosition > 0 &&
+    scroll.scrollPosition < scroll.scrollHeight
+  ) {
+    scroll.isTop = false;
+    scroll.isBottom = false;
+  }
+  const ratio =
+    scroll.scrollHeight > 0 ? scroll.scrollPosition / scroll.scrollHeight : 0;
+  const progress = Number((ratio * 100).toFixed(2));
+  scroll.progress = Math.min(100, Math.max(1, progress));
 }
