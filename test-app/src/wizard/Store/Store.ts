@@ -1,4 +1,4 @@
-import { SCROLLIUM_STORE_SCOPE } from "../../scrollium/Store/types";
+import { SCROLLIUM_STORE_SCOPE } from "../../scrollium/types";
 import {
   StepModule,
   WizardModule,

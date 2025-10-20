@@ -1,6 +1,6 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { ScrolliumClientContext } from "../ScrolliumClientProvider";
-import { ScrolliumStoreEvents } from "../../Store/types";
+import { ScrolliumStoreEvents } from "../../types";
 
 const useScroll = (id: string) => {
   const context = useContext(ScrolliumClientContext);

@@ -1,8 +1,8 @@
 import { useContext, useState, useSyncExternalStore } from "react";
 import { useScroll } from "./useScroll";
-import { ScrollContext } from "../Scroll";
-import { ScrolliumEvents } from "../types";
+import { ScrollContext } from "../ScrollProvider";
 import { getScrolliumData } from "../../utils";
+import { ScrolliumEvents } from "../../types";
 
 const useScrollPosition = () => {
   const context = useContext(ScrollContext);

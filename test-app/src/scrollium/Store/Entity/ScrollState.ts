@@ -1,5 +1,5 @@
 import type { ScrolliumProps } from "../../react-intergation/types";
-import { ScrolliumDirection } from "../types";
+import { ScrolliumDirection } from "../../types";
 
 class ScrollState {
   scrollPosition: number;

@@ -1,6 +1,6 @@
 import type { createClient } from "./Store/Entity";
 import type { ScrollState } from "./Store/Entity/ScrollState";
-import { ScrolliumDirection } from "./Store/types";
+import { ScrolliumDirection } from "./types";
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {
   return {

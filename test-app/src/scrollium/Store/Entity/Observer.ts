@@ -1,5 +1,5 @@
 import { createScopedObserver } from "@scoped-observer/core";
-import { SCROLLIUM_SCOPE } from "../types";
+import { SCROLLIUM_SCOPE } from "../../types";
 
 class Observer {
   private observer = createScopedObserver([

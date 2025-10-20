@@ -1,4 +1,4 @@
-export { Scroll, ScrollContext } from "./Scroll/ScrollProvider";
+export { Scroll, ScrollContext } from "./ScrollProvider";
 export {
   ScrolliumClientProvider,
   ScrolliumClientContext,

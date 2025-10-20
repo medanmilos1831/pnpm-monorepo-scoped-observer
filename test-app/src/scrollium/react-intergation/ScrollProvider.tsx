@@ -6,11 +6,12 @@ import {
   type PropsWithChildren,
 } from "react";
 
-import { ScrolliumClientContext } from "../ScrolliumClientProvider";
-import { useScroll } from "../hooks/useScroll";
+import { ScrolliumClientContext } from "./ScrolliumClientProvider";
+import { useScroll } from "./hooks/useScroll";
+
+import { throttle } from "../utils";
+import { createScrollHandler } from "../utils";
 import type { ScrolliumProps } from "../types";
-import { throttle } from "../../utils";
-import { createScrollHandler } from "../../utils";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
 
