@@ -5,6 +5,7 @@ class ScrollState {
   id: string;
   throttle: number;
   scrollPosition: number;
+  previousScrollPosition: number = 0;
   isTop: boolean = true;
   isBottom: boolean = false;
   clientHeight!: number;
@@ -16,6 +17,7 @@ class ScrollState {
     this.id = id;
     this.throttle = throttle || 50;
     this.scrollPosition = 0;
+    this.previousScrollPosition = 0;
     this.progress = 0;
     this.direction = ScrolliumDirection.NONE;
   }

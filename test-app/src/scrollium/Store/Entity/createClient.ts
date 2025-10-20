@@ -10,24 +10,10 @@ export function createClient(props: ScrolliumProps) {
 
   return {
     setScrollPosition(position: number) {
-      const previousScrollPosition = scroll.scrollPosition;
+      scroll.previousScrollPosition = scroll.scrollPosition;
       scroll.scrollPosition = Math.ceil(position as number);
-      if (scroll.scrollPosition > previousScrollPosition) {
-        scroll.direction = ScrolliumDirection.DOWN;
-      } else {
-        scroll.direction = ScrolliumDirection.UP;
-      }
       calucate(scroll);
-      observer.dispatch(ScrolliumEvents.ON_SCROLL, {
-        id: props.id,
-        position: scroll.scrollPosition,
-        direction: scroll.direction,
-        isTop: scroll.isTop,
-        isBottom: scroll.isBottom,
-        clientHeight: scroll.clientHeight,
-        scrollHeight: scroll.scrollHeight,
-        progress: scroll.progress,
-      });
+      observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     getId: () => {
       return scroll.id;

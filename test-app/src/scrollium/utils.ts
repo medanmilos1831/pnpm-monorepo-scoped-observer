@@ -1,4 +1,6 @@
-import type { createClient, ScrollModule } from "./Store/Entity";
+import type { createClient } from "./Store/Entity";
+import type { ScrollState } from "./Store/Entity/ScrollState";
+import { ScrolliumDirection } from "./Store/types";
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {
   return {
@@ -29,7 +31,7 @@ export function throttle<T extends (...args: any[]) => void>(
 }
 
 export function createScrollHandler(
-  client: any,
+  client: ReturnType<typeof createClient>,
   onScroll?: (data: any) => void
 ) {
   return throttle((e: React.UIEvent<HTMLDivElement>) => {
@@ -40,7 +42,14 @@ export function createScrollHandler(
   }, client.getThrottle());
 }
 
-export function calucate(scroll: ScrollModule) {
+export function calucate(scroll: ScrollState) {
+  // Calculate direction using previous position from state
+  if (scroll.scrollPosition > scroll.previousScrollPosition) {
+    scroll.direction = ScrolliumDirection.DOWN;
+  } else {
+    scroll.direction = ScrolliumDirection.UP;
+  }
+
   if (scroll.scrollPosition === 0) {
     scroll.isTop = true;
     scroll.isBottom = false;

@@ -4,8 +4,7 @@ import { Scroll, useScroll, useScrollPosition } from "../../scrollium";
 const SomeComponentUpper = () => {
   const client = useScroll("main");
   useEffect(() => {
-    client?.subscribe("onScroll", (value: any) => {
-    });
+    client?.subscribe("onScroll", (value: any) => {});
   }, [client]);
   return (
     <>
@@ -33,6 +32,7 @@ const HomePage = () => {
         <Scroll
           id="main"
           onScroll={(value) => {
+            console.log("onScroll", value);
           }}
         >
           <>
