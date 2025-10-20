@@ -3,7 +3,7 @@ import {
   createWizardClient,
   useStep,
   useWizardCommands,
-  useWizardSelector,
+  useWizard,
   Wizard,
   WizardClientProvider,
 } from "../../wizard";
@@ -79,7 +79,7 @@ const WizardControls = () => {
   );
 };
 const SomeComponent = () => {
-  const wizard = useWizardSelector("my-wizard");
+  const wizard = useWizard("my-wizard");
   return <div>SomeComponent</div>;
 };
 const WizardWrapper = () => {

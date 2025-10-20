@@ -8,7 +8,6 @@ import {
 import { Step } from "./WizardStep";
 import type { IWizardConfig } from "../../Store/Entity";
 import { WizardEvents } from "../../Store/Entity/types";
-import { useWizardClient } from "../hooks";
 import { WizardClientContext } from "../WizardClientProvider";
 
 const WizardContext = createContext<{ id: string } | undefined>(undefined);
@@ -27,7 +26,7 @@ const Wizard = ({
   const [created, _] = useState(() => {
     return context.createEntity(props);
   });
-  const store = useWizardClient();
+  const store = useContext(WizardClientContext)!;
   const client = store.getClient(props.id);
 
   const [successRender, setSuccessRender] = useState(false);
