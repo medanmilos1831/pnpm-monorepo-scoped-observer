@@ -15,6 +15,7 @@ const SomeComponentUpper = () => {
 
 const SomeComponent = () => {
   const { scrollPosition } = useScrollPosition();
+  console.log("scrollPosition", scrollPosition);
 
   return <div>Some Component</div>;
 };
@@ -32,7 +33,7 @@ const HomePage = () => {
         <Scroll
           id="main"
           onScroll={(value) => {
-            console.log("onScroll", value);
+            // console.log("onScroll", value);
           }}
         >
           <>

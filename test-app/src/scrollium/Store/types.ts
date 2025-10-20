@@ -7,6 +7,7 @@ export const SCROLLIUM_SCOPE = "scrollium" as const;
 
 export enum ScrolliumEvents {
   ON_SCROLL = "onScroll",
+  ON_SCROLL_STOP = "onScrollStop",
 }
 
 export enum ScrolliumDirection {

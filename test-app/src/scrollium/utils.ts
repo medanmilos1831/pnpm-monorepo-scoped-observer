@@ -11,6 +11,7 @@ export function getScrolliumData(client: ReturnType<typeof createClient>) {
     scrollHeight: client.getScrollHeight(),
     progress: client.getProgress(),
     direction: client.getDirection(),
+    isScrolling: client.getIsScrolling(),
     id: client.getId(),
   };
 }
@@ -42,8 +43,10 @@ export function createScrollHandler(
   }, client.getThrottle());
 }
 
-export function calucate(scroll: ScrollState) {
-  // Calculate direction using previous position from state
+export function calucate(scroll: ScrollState, position: number) {
+  scroll.previousScrollPosition = scroll.scrollPosition;
+  scroll.scrollPosition = Math.ceil(position as number);
+  scroll.isScrolling = true;
   if (scroll.scrollPosition > scroll.previousScrollPosition) {
     scroll.direction = ScrolliumDirection.DOWN;
   } else {

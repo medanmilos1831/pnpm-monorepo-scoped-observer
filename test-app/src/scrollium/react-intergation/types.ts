@@ -2,6 +2,7 @@ import type { ScrolliumDirection } from "../Store/types";
 
 export enum ScrolliumEvents {
   ON_SCROLL = "onScroll",
+  ON_SCROLL_STOP = "onScrollStop",
 }
 
 export interface ScrolliumProps {

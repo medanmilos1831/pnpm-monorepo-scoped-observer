@@ -1,5 +1,5 @@
 import { Observer } from "./Observer";
-import { ScrolliumDirection, ScrolliumEvents } from "../types";
+import { ScrolliumEvents } from "../types";
 import type { ScrolliumProps } from "../../react-intergation/types";
 import { calucate } from "../../utils";
 import { ScrollState } from "./ScrollState";
@@ -10,9 +10,17 @@ export function createClient(props: ScrolliumProps) {
 
   return {
     setScrollPosition(position: number) {
-      scroll.previousScrollPosition = scroll.scrollPosition;
-      scroll.scrollPosition = Math.ceil(position as number);
-      calucate(scroll);
+      calucate(scroll, position);
+      if (scroll.scrollTimeoutId) {
+        clearTimeout(scroll.scrollTimeoutId);
+      }
+
+      scroll.scrollTimeoutId = setTimeout(() => {
+        scroll.isScrolling = false;
+        scroll.scrollTimeoutId = null;
+        observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
+      }, 500);
+
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     getId: () => {
@@ -20,6 +28,9 @@ export function createClient(props: ScrolliumProps) {
     },
     getThrottle: () => {
       return scroll.throttle;
+    },
+    getIsScrolling: () => {
+      return scroll.isScrolling;
     },
     getDirection: () => {
       return scroll.direction;
