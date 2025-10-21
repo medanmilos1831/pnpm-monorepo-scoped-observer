@@ -26,28 +26,31 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
     });
   });
   useEffect(created, []);
-  const someRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
   const client = useScroll(props.id);
 
   useEffect(() => {
-    if (someRef.current) {
+    if (elementRef.current) {
       const clientSize = Math.ceil(
-        someRef.current![
+        elementRef.current![
           props.axis === ScrolliumAxis.VERTICAL ? "clientHeight" : "clientWidth"
         ] || 0
       );
       const maxScroll = Math.ceil(
-        (someRef.current![
+        (elementRef.current![
           props.axis === ScrolliumAxis.VERTICAL ? "scrollHeight" : "scrollWidth"
         ] || 0) - (clientSize || 0)
       );
       client?.setClientSize(clientSize);
       client?.setScrollSize(maxScroll);
       client!.scrollTo = (options?: ScrollToOptions) => {
-        someRef.current?.scrollTo(options);
+        elementRef.current?.scrollTo(options);
       };
     }
-  }, [someRef.current]);
+  }, [elementRef.current]);
+  useEffect(() => {
+    client!.setAxis(props.axis as ScrolliumAxis);
+  }, [props.axis]);
   return (
     <ScrollContext.Provider
       value={{
@@ -55,28 +58,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
       }}
     >
       <div
-        ref={someRef}
-        // ref={(element) => {
-        // const clientSize = Math.ceil(
-        //   element![
-        //     props.axis === ScrolliumAxis.VERTICAL
-        //       ? "clientHeight"
-        //       : "clientWidth"
-        //   ] || 0
-        // );
-        // const maxScroll = Math.ceil(
-        //   (element![
-        //     props.axis === ScrolliumAxis.VERTICAL
-        //       ? "scrollHeight"
-        //       : "scrollWidth"
-        //   ] || 0) - (clientSize || 0)
-        // );
-        // client?.setClientSize(clientSize);
-        // client?.setScrollSize(maxScroll);
-        // client!.scrollTo = (options?: ScrollToOptions) => {
-        //   element?.scrollTo(options);
-        // };
-        // }}
+        ref={elementRef}
         style={{
           height: "100%",
           width: "100%",

@@ -1,5 +1,9 @@
 import { Observer } from "./Observer";
-import { ScrolliumEvents, type ScrolliumProps } from "../../types";
+import {
+  ScrolliumAxis,
+  ScrolliumEvents,
+  type ScrolliumProps,
+} from "../../types";
 import { calucate } from "../../utils";
 import { ScrollState } from "./ScrollState";
 
@@ -10,6 +14,9 @@ export function createClient(props: ScrolliumProps) {
   return {
     getAxis: () => {
       return scroll.axis;
+    },
+    setAxis: (axis: ScrolliumAxis) => {
+      scroll.axis = axis;
     },
     setScrollPosition(position: number) {
       calucate(scroll, position);

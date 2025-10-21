@@ -14,6 +14,8 @@ export enum ScrolliumDirection {
   UP = "up",
   DOWN = "down",
   NONE = "none",
+  LEFT = "left",
+  RIGHT = "right",
 }
 
 export enum ScrolliumAxis {

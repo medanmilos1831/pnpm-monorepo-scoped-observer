@@ -1,6 +1,6 @@
 import type { createClient } from "./Store/Entity";
 import type { ScrollState } from "./Store/Entity/ScrollState";
-import { ScrolliumDirection } from "./types";
+import { ScrolliumAxis, ScrolliumDirection } from "./types";
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {
   return {
@@ -20,10 +20,19 @@ export function calucate(scroll: ScrollState, position: number) {
   scroll.previousScrollPosition = scroll.scrollPosition;
   scroll.scrollPosition = Math.ceil(position as number);
   scroll.isScrolling = true;
-  if (scroll.scrollPosition > scroll.previousScrollPosition) {
-    scroll.direction = ScrolliumDirection.DOWN;
+  if (scroll.axis === ScrolliumAxis.HORIZONTAL) {
+    console.log("scroll.scrollPosition", scroll.scrollPosition);
+    if (scroll.scrollPosition < scroll.previousScrollPosition) {
+      scroll.direction = ScrolliumDirection.RIGHT;
+    } else {
+      scroll.direction = ScrolliumDirection.LEFT;
+    }
   } else {
-    scroll.direction = ScrolliumDirection.UP;
+    if (scroll.scrollPosition < scroll.previousScrollPosition) {
+      scroll.direction = ScrolliumDirection.DOWN;
+    } else {
+      scroll.direction = ScrolliumDirection.UP;
+    }
   }
 
   if (scroll.scrollPosition === 0) {
