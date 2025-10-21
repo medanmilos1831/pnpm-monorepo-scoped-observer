@@ -21,7 +21,7 @@ class ScrollState {
   direction: ScrolliumDirection = ScrolliumDirection.NONE;
   constructor({ id, throttle, axis }: ScrolliumProps) {
     this.id = id;
-    this.throttle = throttle || 2000;
+    this.throttle = throttle || 50;
     this.scrollPosition = 0;
     this.previousScrollPosition = 0;
     this.progress = 0;

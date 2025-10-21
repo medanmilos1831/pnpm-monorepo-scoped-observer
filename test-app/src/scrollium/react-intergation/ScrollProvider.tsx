@@ -65,10 +65,17 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
               ? "auto hidden"
               : "hidden auto",
         }}
-        onScroll={throttle(
-          createScrollHandler(client!, props.onScroll!),
-          client!.getThrottle()
-        )}
+        onScroll={(e) => {
+          client?.setScrollPosition(
+            client.getAxis() === ScrolliumAxis.VERTICAL
+              ? (e.target as HTMLDivElement).scrollTop
+              : (e.target as HTMLDivElement).scrollLeft
+          );
+        }}
+        // onScroll={throttle(
+        //   createScrollHandler(client!, props.onScroll!),
+        //   client!.getThrottle()
+        // )}
       >
         {children}
       </div>
