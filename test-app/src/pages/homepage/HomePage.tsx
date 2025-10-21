@@ -23,11 +23,24 @@ const SomeComponent = () => {
 const axis: any = "vertical";
 const HomePage = () => {
   const [counter, setCounter] = useState(0);
+  const [axis, setAxis] = useState<ScrolliumAxis>(ScrolliumAxis.VERTICAL);
   return (
     <>
       <button onClick={() => setCounter(counter + 1)}>
-        Click me {counter}
+        click me {counter}
       </button>
+      <button
+        onClick={() => {
+          setAxis((prev) =>
+            prev === ScrolliumAxis.VERTICAL
+              ? ScrolliumAxis.HORIZONTAL
+              : ScrolliumAxis.VERTICAL
+          );
+        }}
+      >
+        change axis
+      </button>
+      <h1>Axis: {axis}</h1>
       <div
         style={{
           height: "20rem",
@@ -37,13 +50,14 @@ const HomePage = () => {
       >
         <SomeComponentUpper />
         <Scroll
-          axis={counter % 2 === 0 ? "horizontal" : "vertical"}
+          axis={axis}
           id="main"
           onScroll={(value) => {
+            console.log("onScroll", value);
           }}
         >
           <>
-            {counter % 2 === 0 ? (
+            {axis === ScrolliumAxis.HORIZONTAL ? (
               <div
                 style={{
                   display: "flex",

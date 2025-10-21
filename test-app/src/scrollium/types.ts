@@ -28,8 +28,8 @@ export interface ScrolliumProps {
 
 export interface ScrolliumOnScrollProps {
   scrollPosition: number;
-  isTop: boolean;
-  isBottom: boolean;
+  isStart: boolean;
+  isEnd: boolean;
   clientSize: number;
   scrollSize: number;
   progress: number;

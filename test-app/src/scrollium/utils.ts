@@ -1,12 +1,12 @@
 import type { createClient } from "./Store/Entity";
 import type { ScrollState } from "./Store/Entity/ScrollState";
-import { ScrolliumAxis, ScrolliumDirection } from "./types";
+import { ScrolliumDirection } from "./types";
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {
   return {
     scrollPosition: client.getScrollPosition(),
-    isTop: client.getIsTop(),
-    isBottom: client.getIsBottom(),
+    isStart: client.getIsStart(),
+    isEnd: client.getIsEnd(),
     clientSize: client.getClientSize(),
     scrollSize: client.getScrollSize(),
     progress: client.getProgress(),
@@ -27,16 +27,16 @@ export function calucate(scroll: ScrollState, position: number) {
   }
 
   if (scroll.scrollPosition === 0) {
-    scroll.isTop = true;
-    scroll.isBottom = false;
+    scroll.isStart = true;
+    scroll.isEnd = false;
   }
   if (scroll.scrollPosition === scroll.scrollSize) {
-    scroll.isBottom = true;
-    scroll.isTop = false;
+    scroll.isEnd = true;
+    scroll.isStart = false;
   }
   if (scroll.scrollPosition > 0 && scroll.scrollPosition < scroll.scrollSize) {
-    scroll.isTop = false;
-    scroll.isBottom = false;
+    scroll.isStart = false;
+    scroll.isEnd = false;
   }
   const ratio =
     scroll.scrollSize > 0 ? scroll.scrollPosition / scroll.scrollSize : 0;

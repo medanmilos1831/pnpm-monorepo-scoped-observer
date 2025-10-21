@@ -50,11 +50,11 @@ export function createClient(props: ScrolliumProps) {
     getScrollSize: () => {
       return scroll.scrollSize;
     },
-    getIsTop: () => {
-      return scroll.isTop;
+    getIsStart: () => {
+      return scroll.isStart;
     },
-    getIsBottom: () => {
-      return scroll.isBottom;
+    getIsEnd: () => {
+      return scroll.isEnd;
     },
     getProgress: () => {
       return scroll.progress;

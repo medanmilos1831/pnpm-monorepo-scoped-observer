@@ -11,8 +11,8 @@ class ScrollState {
   isScrolling: boolean = false;
   scrollTimeoutId: ReturnType<typeof setTimeout> | null = null;
   id: string;
-  isTop: boolean = true;
-  isBottom: boolean = false;
+  isStart: boolean = true;
+  isEnd: boolean = false;
   clientSize!: number;
   scrollSize!: number;
   progress!: number;
