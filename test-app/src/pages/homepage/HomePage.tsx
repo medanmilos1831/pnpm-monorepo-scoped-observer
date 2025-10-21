@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Scroll, useScroll, useScrollPosition } from "../../scrollium";
 import { ScrolliumAxis } from "../../scrollium/types";
 
@@ -16,15 +16,18 @@ const SomeComponentUpper = () => {
 
 const SomeComponent = () => {
   const client = useScrollPosition();
-  console.log("scrollPosition", client);
 
   return <></>;
 };
-const axis = "horizontal";
-// const axis: any = "vertical";
+// const axis = "horizontal";
+const axis: any = "vertical";
 const HomePage = () => {
+  const [counter, setCounter] = useState(0);
   return (
     <>
+      <button onClick={() => setCounter(counter + 1)}>
+        Click me {counter}
+      </button>
       <div
         style={{
           height: "20rem",
@@ -34,14 +37,13 @@ const HomePage = () => {
       >
         <SomeComponentUpper />
         <Scroll
-          axis={axis}
+          axis={counter % 2 === 0 ? "horizontal" : "vertical"}
           id="main"
           onScroll={(value) => {
-            // console.log("onScroll", value);
           }}
         >
           <>
-            {axis === "horizontal" ? (
+            {counter % 2 === 0 ? (
               <div
                 style={{
                   display: "flex",

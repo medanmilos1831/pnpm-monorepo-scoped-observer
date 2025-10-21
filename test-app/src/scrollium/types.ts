@@ -30,8 +30,8 @@ export interface ScrolliumOnScrollProps {
   scrollPosition: number;
   isTop: boolean;
   isBottom: boolean;
-  clientHeight: number;
-  scrollHeight: number;
+  clientSize: number;
+  scrollSize: number;
   progress: number;
   direction: ScrolliumDirection;
   id: string;
