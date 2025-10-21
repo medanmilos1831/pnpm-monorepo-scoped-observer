@@ -16,6 +16,7 @@ export function createClient(props: ScrolliumProps) {
     getAxis: () => scroll.axis,
     setAxis: (axis: ScrolliumAxis) => {
       scroll.axis = axis;
+      calculate(scroll, scroll.scrollPosition);
     },
 
     // Scroll position and actions

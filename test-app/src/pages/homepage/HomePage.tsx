@@ -53,7 +53,7 @@ const HomePage = () => {
           axis={axis}
           id="main"
           onScroll={(value) => {
-            console.log("onScroll", value);
+            // onScroll callback
           }}
         >
           <>

@@ -1,7 +1,7 @@
 export { createScrolliumClient } from "./createScrolliumClient";
 export {
   ScrolliumClientProvider,
-  useScrollPosition,
   Scroll,
+  useScrollPosition,
   useScroll,
 } from "./react-intergation";
