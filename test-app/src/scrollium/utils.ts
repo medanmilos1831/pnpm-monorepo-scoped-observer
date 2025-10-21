@@ -1,14 +1,14 @@
 import type { createClient } from "./Store/Entity";
 import type { ScrollState } from "./Store/Entity/ScrollState";
-import { ScrolliumDirection } from "./types";
+import { ScrolliumAxis, ScrolliumDirection } from "./types";
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {
   return {
     scrollPosition: client.getScrollPosition(),
     isTop: client.getIsTop(),
     isBottom: client.getIsBottom(),
-    clientHeight: client.getClientHeight(),
-    scrollHeight: client.getScrollHeight(),
+    clientSize: client.getClientSize(),
+    scrollSize: client.getScrollSize(),
     progress: client.getProgress(),
     direction: client.getDirection(),
     isScrolling: client.getIsScrolling(),
@@ -36,7 +36,11 @@ export function createScrollHandler(
   onScroll?: (data: any) => void
 ) {
   return throttle((e: React.UIEvent<HTMLDivElement>) => {
-    client?.setScrollPosition((e.target as HTMLDivElement).scrollTop);
+    client?.setScrollPosition(
+      client.getAxis() === ScrolliumAxis.VERTICAL
+        ? (e.target as HTMLDivElement).scrollTop
+        : (e.target as HTMLDivElement).scrollLeft
+    );
     if (onScroll) {
       onScroll(getScrolliumData(client));
     }
@@ -57,19 +61,16 @@ export function calucate(scroll: ScrollState, position: number) {
     scroll.isTop = true;
     scroll.isBottom = false;
   }
-  if (scroll.scrollPosition === scroll.scrollHeight) {
+  if (scroll.scrollPosition === scroll.scrollSize) {
     scroll.isBottom = true;
     scroll.isTop = false;
   }
-  if (
-    scroll.scrollPosition > 0 &&
-    scroll.scrollPosition < scroll.scrollHeight
-  ) {
+  if (scroll.scrollPosition > 0 && scroll.scrollPosition < scroll.scrollSize) {
     scroll.isTop = false;
     scroll.isBottom = false;
   }
   const ratio =
-    scroll.scrollHeight > 0 ? scroll.scrollPosition / scroll.scrollHeight : 0;
+    scroll.scrollSize > 0 ? scroll.scrollPosition / scroll.scrollSize : 0;
   const progress = Number((ratio * 100).toFixed(2));
   scroll.progress = Math.min(100, Math.max(1, progress));
 }

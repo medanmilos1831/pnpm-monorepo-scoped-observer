@@ -16,10 +16,15 @@ export enum ScrolliumDirection {
   NONE = "none",
 }
 
+export enum ScrolliumAxis {
+  HORIZONTAL = "horizontal",
+  VERTICAL = "vertical",
+}
 export interface ScrolliumProps {
   id: string;
   onScroll?: (props: ScrolliumOnScrollProps) => void;
   throttle?: number;
+  axis?: `${ScrolliumAxis}`;
 }
 
 export interface ScrolliumOnScrollProps {

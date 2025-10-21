@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Scroll, useScroll, useScrollPosition } from "../../scrollium";
+import { ScrolliumAxis } from "../../scrollium/types";
 
 const SomeComponentUpper = () => {
   const client = useScroll("main");
@@ -14,11 +15,13 @@ const SomeComponentUpper = () => {
 };
 
 const SomeComponent = () => {
-  const { scrollPosition } = useScrollPosition();
-  console.log("scrollPosition", scrollPosition);
+  const client = useScrollPosition();
+  console.log("scrollPosition", client);
 
-  return <div>Some Component</div>;
+  return <></>;
 };
+// const axis = "horizontal";
+const axis: any = "vertical";
 const HomePage = () => {
   return (
     <>
@@ -31,21 +34,46 @@ const HomePage = () => {
       >
         <SomeComponentUpper />
         <Scroll
+          axis={axis}
           id="main"
           onScroll={(value) => {
             // console.log("onScroll", value);
           }}
         >
           <>
-            <SomeComponent />
-            {Array.from({ length: 100 }).map((_, i) => (
+            {axis === "horizontal" ? (
               <div
-                key={i}
-                style={{ background: i % 2 === 0 ? "blue" : "red " }}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "20px",
+                }}
               >
-                {i}
+                <SomeComponent />
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      flex: "0 0 300px",
+                    }}
+                  >
+                    {index}
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div>
+                <SomeComponent />
+                {Array.from({ length: 100 }).map((_, i) => (
+                  <div
+                    key={i}
+                    style={{ background: i % 2 === 0 ? "blue" : "red " }}
+                  >
+                    {i}
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         </Scroll>
       </div>

@@ -11,7 +11,7 @@ import { useScroll } from "./hooks/useScroll";
 
 import { throttle } from "../utils";
 import { createScrollHandler } from "../utils";
-import type { ScrolliumProps } from "../types";
+import { ScrolliumAxis, type ScrolliumProps } from "../types";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
 
@@ -21,7 +21,10 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
     throw new Error("ScrolliumClientContext not found");
   }
   const [created, _] = useState(() => {
-    return context.createEntity(props);
+    return context.createEntity({
+      ...props,
+      axis: props.axis || ScrolliumAxis.VERTICAL,
+    });
   });
   useEffect(created, []);
   const client = useScroll(props.id);
@@ -34,12 +37,22 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
     >
       <div
         ref={(element) => {
-          const clientHeight = Math.ceil(element?.clientHeight || 0);
-          const maxScroll = Math.ceil(
-            (element?.scrollHeight || 0) - (element?.clientHeight || 0)
+          const clientSize = Math.ceil(
+            element![
+              props.axis === ScrolliumAxis.VERTICAL
+                ? "clientHeight"
+                : "clientWidth"
+            ] || 0
           );
-          client?.setClientHeight(clientHeight);
-          client?.setScrollHeight(maxScroll);
+          const maxScroll = Math.ceil(
+            (element![
+              props.axis === ScrolliumAxis.VERTICAL
+                ? "scrollHeight"
+                : "scrollWidth"
+            ] || 0) - (clientSize || 0)
+          );
+          client?.setClientSize(clientSize);
+          client?.setScrollSize(maxScroll);
           client!.scrollTo = (options?: ScrollToOptions) => {
             element?.scrollTo(options);
           };
@@ -47,7 +60,10 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
         style={{
           height: "100%",
           width: "100%",
-          overflow: "auto",
+          overflow:
+            props.axis === ScrolliumAxis.HORIZONTAL
+              ? "auto hidden"
+              : "hidden auto",
         }}
         onScroll={throttle(
           createScrollHandler(client!, props.onScroll!),

@@ -8,6 +8,9 @@ export function createClient(props: ScrolliumProps) {
   const scroll = new ScrollState(props);
 
   return {
+    getAxis: () => {
+      return scroll.axis;
+    },
     setScrollPosition(position: number) {
       calucate(scroll, position);
       if (scroll.scrollTimeoutId) {
@@ -18,7 +21,7 @@ export function createClient(props: ScrolliumProps) {
         scroll.isScrolling = false;
         scroll.scrollTimeoutId = null;
         observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
-      }, 500);
+      }, scroll.throttle + 500);
 
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
@@ -38,17 +41,17 @@ export function createClient(props: ScrolliumProps) {
     getScrollPosition: () => {
       return scroll.scrollPosition;
     },
-    setClientHeight: (height: number) => {
-      scroll.clientHeight = height;
+    setClientSize: (height: number) => {
+      scroll.clientSize = height;
     },
-    getClientHeight: () => {
-      return scroll.clientHeight;
+    getClientSize: () => {
+      return scroll.clientSize;
     },
-    setScrollHeight: (height: number) => {
-      scroll.scrollHeight = height;
+    setScrollSize: (height: number) => {
+      scroll.scrollSize = height;
     },
-    getScrollHeight: () => {
-      return scroll.scrollHeight;
+    getScrollSize: () => {
+      return scroll.scrollSize;
     },
     getIsTop: () => {
       return scroll.isTop;
