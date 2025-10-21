@@ -4,7 +4,7 @@ import {
   ScrolliumEvents,
   type ScrolliumProps,
 } from "../../types";
-import { calucate } from "../../utils";
+import { calculate } from "../../utils";
 import { ScrollState } from "./ScrollState";
 
 export function createClient(props: ScrolliumProps) {
@@ -20,7 +20,7 @@ export function createClient(props: ScrolliumProps) {
 
     // Scroll position and actions
     setScrollPosition(position: number) {
-      calucate(scroll, position);
+      calculate(scroll, position);
       if (scroll.scrollTimeoutId) {
         clearTimeout(scroll.scrollTimeoutId);
       }
@@ -34,7 +34,9 @@ export function createClient(props: ScrolliumProps) {
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     getScrollPosition: () => scroll.scrollPosition,
-    scrollTo: (options?: ScrollToOptions) => {},
+    scrollTo: (options?: ScrollToOptions) => {
+      scroll.element?.scrollTo(options);
+    },
 
     // Scroll state
     getIsScrolling: () => scroll.isScrolling,
@@ -54,6 +56,7 @@ export function createClient(props: ScrolliumProps) {
     getScrollSize: () => scroll.scrollSize,
     initializeElement(element: HTMLElement) {
       if (element) {
+        scroll.element = element;
         const clientSize = Math.ceil(
           element![
             props.axis === ScrolliumAxis.VERTICAL
@@ -70,9 +73,6 @@ export function createClient(props: ScrolliumProps) {
         );
         this.setClientSize(clientSize);
         this.setScrollSize(maxScroll);
-        this.scrollTo = (options?: ScrollToOptions) => {
-          element?.scrollTo(options);
-        };
       }
     },
 

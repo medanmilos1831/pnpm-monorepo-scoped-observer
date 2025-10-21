@@ -31,7 +31,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
 
   useEffect(() => {
     client?.initializeElement(elementRef.current as HTMLElement);
-  }, [elementRef.current]);
+  }, []);
   useEffect(() => {
     client!.setAxis(props.axis as ScrolliumAxis);
   }, [props.axis]);
