@@ -8,9 +8,6 @@ import {
 
 import { ScrolliumClientContext } from "./ScrolliumClientProvider";
 import { useScroll } from "./hooks/useScroll";
-
-import { throttle } from "../utils";
-import { createScrollHandler } from "../utils";
 import { ScrolliumAxis, type ScrolliumProps } from "../types";
 
 const ScrollContext = createContext<{ id: string } | undefined>(undefined);
@@ -72,10 +69,6 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
               : (e.target as HTMLDivElement).scrollLeft
           );
         }}
-        // onScroll={throttle(
-        //   createScrollHandler(client!, props.onScroll!),
-        //   client!.getThrottle()
-        // )}
       >
         {children}
       </div>

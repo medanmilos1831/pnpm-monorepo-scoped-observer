@@ -16,37 +16,6 @@ export function getScrolliumData(client: ReturnType<typeof createClient>) {
   };
 }
 
-export function throttle<T extends (...args: any[]) => void>(
-  fn: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let lastCall = 0;
-
-  return (...args: Parameters<T>) => {
-    const now = Date.now();
-    if (now - lastCall >= delay) {
-      lastCall = now;
-      fn(...args);
-    }
-  };
-}
-
-export function createScrollHandler(
-  client: ReturnType<typeof createClient>,
-  onScroll?: (data: any) => void
-) {
-  return throttle((e: React.UIEvent<HTMLDivElement>) => {
-    client?.setScrollPosition(
-      client.getAxis() === ScrolliumAxis.VERTICAL
-        ? (e.target as HTMLDivElement).scrollTop
-        : (e.target as HTMLDivElement).scrollLeft
-    );
-    if (onScroll) {
-      onScroll(getScrolliumData(client));
-    }
-  }, client.getThrottle());
-}
-
 export function calucate(scroll: ScrollState, position: number) {
   scroll.previousScrollPosition = scroll.scrollPosition;
   scroll.scrollPosition = Math.ceil(position as number);

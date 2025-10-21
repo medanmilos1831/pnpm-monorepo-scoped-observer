@@ -21,15 +21,12 @@ export function createClient(props: ScrolliumProps) {
         scroll.isScrolling = false;
         scroll.scrollTimeoutId = null;
         observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
-      }, scroll.throttle + 500);
+      }, 500);
 
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     getId: () => {
       return scroll.id;
-    },
-    getThrottle: () => {
-      return scroll.throttle;
     },
     getIsScrolling: () => {
       return scroll.isScrolling;

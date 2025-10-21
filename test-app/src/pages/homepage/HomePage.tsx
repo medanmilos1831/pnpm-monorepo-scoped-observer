@@ -20,8 +20,8 @@ const SomeComponent = () => {
 
   return <></>;
 };
-// const axis = "horizontal";
-const axis: any = "vertical";
+const axis = "horizontal";
+// const axis: any = "vertical";
 const HomePage = () => {
   return (
     <>

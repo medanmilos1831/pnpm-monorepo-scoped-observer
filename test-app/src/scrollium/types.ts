@@ -23,7 +23,6 @@ export enum ScrolliumAxis {
 export interface ScrolliumProps {
   id: string;
   onScroll?: (props: ScrolliumOnScrollProps) => void;
-  throttle?: number;
   axis?: `${ScrolliumAxis}`;
 }
 

@@ -11,7 +11,6 @@ class ScrollState {
   isScrolling: boolean = false;
   scrollTimeoutId: ReturnType<typeof setTimeout> | null = null;
   id: string;
-  throttle: number;
   isTop: boolean = true;
   isBottom: boolean = false;
   clientSize!: number;
@@ -19,9 +18,8 @@ class ScrollState {
   progress!: number;
   element!: HTMLElement;
   direction: ScrolliumDirection = ScrolliumDirection.NONE;
-  constructor({ id, throttle, axis }: ScrolliumProps) {
+  constructor({ id, axis }: ScrolliumProps) {
     this.id = id;
-    this.throttle = throttle || 50;
     this.scrollPosition = 0;
     this.previousScrollPosition = 0;
     this.progress = 0;
