@@ -12,12 +12,13 @@ export function createClient(props: ScrolliumProps) {
   const scroll = new ScrollState(props);
 
   return {
-    getAxis: () => {
-      return scroll.axis;
-    },
+    // Axis management
+    getAxis: () => scroll.axis,
     setAxis: (axis: ScrolliumAxis) => {
       scroll.axis = axis;
     },
+
+    // Scroll position and actions
     setScrollPosition(position: number) {
       calucate(scroll, position);
       if (scroll.scrollTimeoutId) {
@@ -32,40 +33,51 @@ export function createClient(props: ScrolliumProps) {
 
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
-    getId: () => {
-      return scroll.id;
-    },
-    getIsScrolling: () => {
-      return scroll.isScrolling;
-    },
-    getDirection: () => {
-      return scroll.direction;
-    },
+    getScrollPosition: () => scroll.scrollPosition,
     scrollTo: (options?: ScrollToOptions) => {},
-    getScrollPosition: () => {
-      return scroll.scrollPosition;
+
+    // Scroll state
+    getIsScrolling: () => scroll.isScrolling,
+    getDirection: () => scroll.direction,
+    getIsStart: () => scroll.isStart,
+    getIsEnd: () => scroll.isEnd,
+    getProgress: () => scroll.progress,
+
+    // Size management
+    setClientSize: (size: number) => {
+      scroll.clientSize = size;
     },
-    setClientSize: (height: number) => {
-      scroll.clientSize = height;
+    getClientSize: () => scroll.clientSize,
+    setScrollSize: (size: number) => {
+      scroll.scrollSize = size;
     },
-    getClientSize: () => {
-      return scroll.clientSize;
+    getScrollSize: () => scroll.scrollSize,
+    initializeElement(element: HTMLElement) {
+      if (element) {
+        const clientSize = Math.ceil(
+          element![
+            props.axis === ScrolliumAxis.VERTICAL
+              ? "clientHeight"
+              : "clientWidth"
+          ] || 0
+        );
+        const maxScroll = Math.ceil(
+          (element![
+            props.axis === ScrolliumAxis.VERTICAL
+              ? "scrollHeight"
+              : "scrollWidth"
+          ] || 0) - (clientSize || 0)
+        );
+        this.setClientSize(clientSize);
+        this.setScrollSize(maxScroll);
+        this.scrollTo = (options?: ScrollToOptions) => {
+          element?.scrollTo(options);
+        };
+      }
     },
-    setScrollSize: (height: number) => {
-      scroll.scrollSize = height;
-    },
-    getScrollSize: () => {
-      return scroll.scrollSize;
-    },
-    getIsStart: () => {
-      return scroll.isStart;
-    },
-    getIsEnd: () => {
-      return scroll.isEnd;
-    },
-    getProgress: () => {
-      return scroll.progress;
-    },
+
+    // Identity and events
+    getId: () => scroll.id,
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return observer.subscribe(eventName, callback);
     },

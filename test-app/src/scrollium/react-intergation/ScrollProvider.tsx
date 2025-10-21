@@ -30,23 +30,7 @@ const Scroll = ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
   const client = useScroll(props.id);
 
   useEffect(() => {
-    if (elementRef.current) {
-      const clientSize = Math.ceil(
-        elementRef.current![
-          props.axis === ScrolliumAxis.VERTICAL ? "clientHeight" : "clientWidth"
-        ] || 0
-      );
-      const maxScroll = Math.ceil(
-        (elementRef.current![
-          props.axis === ScrolliumAxis.VERTICAL ? "scrollHeight" : "scrollWidth"
-        ] || 0) - (clientSize || 0)
-      );
-      client?.setClientSize(clientSize);
-      client?.setScrollSize(maxScroll);
-      client!.scrollTo = (options?: ScrollToOptions) => {
-        elementRef.current?.scrollTo(options);
-      };
-    }
+    client?.initializeElement(elementRef.current as HTMLElement);
   }, [elementRef.current]);
   useEffect(() => {
     client!.setAxis(props.axis as ScrolliumAxis);
