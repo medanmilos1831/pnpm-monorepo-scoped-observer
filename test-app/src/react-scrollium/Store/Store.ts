@@ -1,16 +1,12 @@
 import { createScopedObserver } from "@scoped-observer/core";
 import {
   SCROLLIUM_STORE_SCOPE,
-  ScrolliumAxis,
-  ScrolliumDirection,
   ScrolliumStoreEvents,
   type ScrolliumProps,
 } from "../types";
-import { ScrollState } from "./Entity/ScrollState";
-import { Observer } from "./Entity/Observer";
-import { slice } from "./slice";
-import { mutations as mutationsFn } from "./Entity/mutations";
 import { getters as gettersFn } from "./Entity/getters";
+import { mutations as mutationsFn } from "./Entity/mutations";
+import { ScrollState } from "./Entity/ScrollState";
 
 class Store {
   private _observer = createScopedObserver([
@@ -48,7 +44,6 @@ class Store {
   };
   createEntity = (props: ScrolliumProps) => {
     if (!this.entities.has(props.id)) {
-      let r = slice(props);
       const state = new ScrollState(props);
       const mutations = mutationsFn(state);
       const getters = gettersFn(state);
