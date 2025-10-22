@@ -1,23 +1,22 @@
-import { SCROLLIUM_STORE_SCOPE } from "../../scrollium/types";
+import { createScopedObserver } from "@scoped-observer/core";
 import {
+  createClient,
   StepModule,
   WizardModule,
-  type IWizardConfig,
-  createClient,
   type IEntity,
+  type IWizardConfig,
 } from "./Entity";
-import { WizardStoreEvents } from "./types";
-import { createScopedObserver } from "@scoped-observer/core";
+import { WIZARD_STORE_SCOPE, WizardStoreEvents } from "./types";
 
 class Store {
   private _observer = createScopedObserver([
     {
-      scope: SCROLLIUM_STORE_SCOPE,
+      scope: WIZARD_STORE_SCOPE,
     },
   ]);
   subscribe = (eventName: string, callback: (payload: any) => void) => {
     return this._observer.subscribe({
-      scope: SCROLLIUM_STORE_SCOPE,
+      scope: WIZARD_STORE_SCOPE,
       eventName,
       callback,
     });
@@ -29,7 +28,7 @@ class Store {
   removeEntity = (id: string) => {
     this.entities.delete(id);
     this._observer.dispatch({
-      scope: SCROLLIUM_STORE_SCOPE,
+      scope: WIZARD_STORE_SCOPE,
       eventName: `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
       payload: {
         id,
@@ -52,7 +51,7 @@ class Store {
     }
     return () => {
       this._observer.dispatch({
-        scope: SCROLLIUM_STORE_SCOPE,
+        scope: WIZARD_STORE_SCOPE,
         eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
         payload: {
           id: props.id,

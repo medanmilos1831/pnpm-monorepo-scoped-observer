@@ -4,7 +4,9 @@ import type { ScrolliumAxis, ScrolliumProps } from "../types";
 
 const useSetup = (store: Store, props: ScrolliumProps) => {
   store.createEntity(props);
-  const { mutations, getters, onCreate, remove } = store.getEntity(props.id)!;
+  const { mutations, onCreate, remove, onScroll, style } = store.getEntity(
+    props.id
+  )!;
   useEffect(() => {
     onCreate();
     return () => {
@@ -19,7 +21,7 @@ const useSetup = (store: Store, props: ScrolliumProps) => {
   useEffect(() => {
     mutations.setAxis(props.axis as ScrolliumAxis);
   }, [props.axis]);
-  return { mutations, getters, elementRef };
+  return { elementRef, onScroll, style };
 };
 
 export { useSetup };
