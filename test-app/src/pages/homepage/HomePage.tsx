@@ -11,7 +11,7 @@ const SomeComponent = () => {
 };
 
 const SomeInnerComponent = () => {
-  useScrollPosition();
+  const scroll = useScrollPosition();
   return (
     <div>
       <h1>Some Inner Component</h1>

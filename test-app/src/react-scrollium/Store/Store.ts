@@ -9,6 +9,9 @@ import {
 import { ScrollState } from "./Entity/ScrollState";
 import { Observer } from "./Entity/Observer";
 import { slice } from "./slice";
+import { mutations as mutationsFn } from "./Entity/mutations";
+import { getters as gettersFn } from "./Entity/getters";
+
 class Store {
   private _observer = createScopedObserver([
     {
@@ -25,10 +28,10 @@ class Store {
   entities = new Map<
     string,
     {
-      client: ScrollState;
-      slice: {
-        data: ReturnType<typeof slice>["data"];
-        mutations: any;
+      client: {
+        state: ScrollState;
+        mutations: ReturnType<typeof mutationsFn>;
+        getters: ReturnType<typeof gettersFn>;
       };
     }
   >();
@@ -46,10 +49,16 @@ class Store {
   createEntity = (props: ScrolliumProps) => {
     if (!this.entities.has(props.id)) {
       let r = slice(props);
+      const state = new ScrollState(props);
+      const mutations = mutationsFn(state);
+      const getters = gettersFn(state);
       this.entities.set(props.id, {
-        client: new ScrollState(props),
-        slice: slice(props),
-        // getters: {},
+        // client: new ScrollState(props),
+        client: {
+          state,
+          mutations,
+          getters,
+        },
       });
     }
     return () => {
