@@ -5,6 +5,7 @@ import {
   ScrolliumStoreEvents,
   type ScrolliumProps,
 } from "../types";
+import { ScrollState } from "./Entity/ScrollState";
 
 class Store {
   private _observer = createScopedObserver([
@@ -22,7 +23,7 @@ class Store {
   entities = new Map<
     string,
     {
-      client: ReturnType<typeof createClient>;
+      client: ScrollState;
     }
   >();
   getEntity = (id: string) => {
@@ -40,7 +41,7 @@ class Store {
     if (!this.entities.has(props.id)) {
       const client = createClient(props);
       this.entities.set(props.id, {
-        client,
+        client: new ScrollState(props),
       });
     }
     return () => {

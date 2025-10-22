@@ -1,4 +1,3 @@
-import type { createClient } from "./Store/Entity";
 import type { ScrollState } from "./Store/Entity/ScrollState";
 import { ScrolliumAxis, ScrolliumDirection } from "./types";
 
@@ -38,6 +37,21 @@ function calculateProgress(scroll: ScrollState) {
     scroll.scrollSize > 0 ? scroll.scrollPosition / scroll.scrollSize : 0;
   const progress = Number((ratio * 100).toFixed(2));
   scroll.progress = Math.min(100, Math.max(1, progress));
+}
+
+export function createClient(scroll: ScrollState) {
+  return {
+    getScrollPosition: () => scroll.scrollPosition,
+    getIsStart: () => scroll.isStart,
+    getIsEnd: () => scroll.isEnd,
+    getClientSize: () => scroll.clientSize,
+    getScrollSize: () => scroll.scrollSize,
+    getProgress: () => scroll.progress,
+    getDirection: () => scroll.direction,
+    getIsScrolling: () => scroll.isScrolling,
+    getId: () => scroll.id,
+    subscribe: scroll.observer.subscribe,
+  };
 }
 
 export function getScrolliumData(client: ReturnType<typeof createClient>) {

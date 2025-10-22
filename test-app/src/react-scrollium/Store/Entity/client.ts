@@ -14,28 +14,28 @@ export function createClient(props: ScrolliumProps) {
 
   return {
     // Axis management
-    getAxis: () => scroll.axis,
-    setAxis: (axis: ScrolliumAxis) => {
-      scroll.axis = axis;
-      calculate(scroll, scroll.scrollPosition);
-    },
+    // getAxis: () => scroll.axis,
+    // setAxis: (axis: ScrolliumAxis) => {
+    //   scroll.axis = axis;
+    //   calculate(scroll, scroll.scrollPosition);
+    // },
 
     // Scroll position and actions
-    setScrollPosition(position: number) {
-      calculate(scroll, position);
-      if (scroll.scrollTimeoutId) {
-        clearTimeout(scroll.scrollTimeoutId);
-      }
+    // setScrollPosition(position: number) {
+    //   calculate(scroll, position);
+    //   if (scroll.scrollTimeoutId) {
+    //     clearTimeout(scroll.scrollTimeoutId);
+    //   }
 
-      scroll.scrollTimeoutId = setTimeout(() => {
-        scroll.isScrolling = false;
-        scroll.scrollTimeoutId = null;
-        observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
-      }, 500);
+    //   scroll.scrollTimeoutId = setTimeout(() => {
+    //     scroll.isScrolling = false;
+    //     scroll.scrollTimeoutId = null;
+    //     observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
+    //   }, 500);
 
-      observer.dispatch(ScrolliumEvents.ON_SCROLL);
-    },
-    getScrollPosition: () => scroll.scrollPosition,
+    //   observer.dispatch(ScrolliumEvents.ON_SCROLL);
+    // },
+    // getScrollPosition: () => scroll.scrollPosition,
     scrollTo: (options?: ScrollToOptions) => {
       scroll.element?.scrollTo(options);
     },

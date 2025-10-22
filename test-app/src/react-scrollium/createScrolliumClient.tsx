@@ -12,7 +12,7 @@ import {
   ScrolliumStoreEvents,
   type ScrolliumProps,
 } from "../scrollium/types";
-import { getScrolliumData } from "./utils";
+import { createClient } from "./utils";
 import { useScroll } from "./react-intergation/hooks/useScroll";
 import { useScrollPosition } from "./react-intergation/hooks/useScrollPosition";
 
@@ -31,12 +31,13 @@ const createScrolliumClient = () => {
       useEffect(created, []);
       const elementRef = useRef<HTMLDivElement>(null);
       const client = useScroll(store, props.id);
-
+      // console.log(store.getEntity(props.id).client);
+      const scroll = store.getEntity(props.id).client;
       useEffect(() => {
-        client?.initializeElement(elementRef.current as HTMLElement);
+        scroll?.initializeElement(elementRef.current as HTMLElement);
       }, []);
       useEffect(() => {
-        client!.setAxis(props.axis as ScrolliumAxis);
+        scroll!.setAxis(props.axis as ScrolliumAxis);
       }, [props.axis]);
       return (
         <ScrollContext.Provider
@@ -55,13 +56,13 @@ const createScrolliumClient = () => {
                   : "hidden auto",
             }}
             onScroll={(e) => {
-              client?.setScrollPosition(
-                client.getAxis() === ScrolliumAxis.VERTICAL
+              scroll?.setScrollPosition(
+                scroll.getAxis() === ScrolliumAxis.VERTICAL
                   ? (e.target as HTMLDivElement).scrollTop
                   : (e.target as HTMLDivElement).scrollLeft
               );
               if (props.onScroll) {
-                props.onScroll(getScrolliumData(client!));
+                props.onScroll(createClient(scroll));
               }
             }}
           >
@@ -75,9 +76,6 @@ const createScrolliumClient = () => {
     },
     useScrollPosition: () => {
       return useScrollPosition(store);
-    },
-    getClient: (id: string) => {
-      return store.getEntity(id).client;
     },
   };
 };

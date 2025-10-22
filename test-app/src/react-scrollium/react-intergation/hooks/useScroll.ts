@@ -1,10 +1,10 @@
-import { useContext, useState, useSyncExternalStore } from "react";
-import { ScrolliumClientContext } from "../ScrolliumClientProvider";
-import { ScrolliumStoreEvents } from "../../types";
+import { useState, useSyncExternalStore } from "react";
 import type { Store } from "../../Store";
+import { ScrolliumStoreEvents } from "../../types";
+import { createClient } from "../../utils";
 
 const useScroll = (store: Store, id: string) => {
-  const client = store.getEntity(id).client;
+  const client = createClient(store.getEntity(id).client);
   const [subscriber] = useState(() => {
     return (notify: () => void) => {
       return client.subscribe(
