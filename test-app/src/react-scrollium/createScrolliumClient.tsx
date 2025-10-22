@@ -20,29 +20,8 @@ const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
   const store = new Store();
 
-  // const useScroll = (id: string) => {
-  //   const [subscriber] = useState(() => {
-  //     return (notify: () => void) => {
-  //       return store
-  //         .getEntity(id)
-  //         .client.subscribe(
-  //           `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`,
-  //           notify
-  //         );
-  //     };
-  //   });
-  //   const [snapshot] = useState(() => {
-  //     return () => store.entities.size;
-  //   });
-  //   const entity = useSyncExternalStore(subscriber, snapshot);
-  //   return entity ? store.getEntity(id).client : undefined;
-  // };
   return {
     Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
-      // const context = useContext(ScrolliumClientContext)!;
-      // if (!context) {
-      //   throw new Error("ScrolliumClientContext not found");
-      // }
       const [created, _] = useState(() => {
         return store.createEntity({
           ...props,
@@ -96,6 +75,9 @@ const createScrolliumClient = () => {
     },
     useScrollPosition: () => {
       return useScrollPosition(store);
+    },
+    getClient: (id: string) => {
+      return store.getEntity(id).client;
     },
   };
 };

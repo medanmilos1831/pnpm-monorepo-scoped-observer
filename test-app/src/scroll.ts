@@ -1,3 +1,3 @@
 import { createScrolliumClient } from "./react-scrollium";
 
-export const scrollClient = createScrolliumClient();
+export const { Scroll, useScroll, useScrollPosition } = createScrolliumClient();

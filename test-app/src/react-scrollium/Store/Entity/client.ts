@@ -1,10 +1,11 @@
-import { Observer } from "./Observer";
 import {
   ScrolliumAxis,
   ScrolliumEvents,
   type ScrolliumProps,
 } from "../../types";
 import { calculate } from "../../utils";
+import { Observer } from "./Observer";
+
 import { ScrollState } from "./ScrollState";
 
 export function createClient(props: ScrolliumProps) {

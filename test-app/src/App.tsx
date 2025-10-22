@@ -1,6 +1,5 @@
 import { HomePage } from "./pages";
-import { scrollClient } from "./scroll";
-console.log(scrollClient);
+
 function App() {
   return (
     <div
