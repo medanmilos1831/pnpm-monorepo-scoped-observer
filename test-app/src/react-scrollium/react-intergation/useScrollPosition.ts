@@ -17,20 +17,20 @@ const useScrollPosition = (
   if (!context) {
     throw new Error("ScrollContext not found");
   }
-  const client = useScroll(store, context.id)!;
+  const getters = useScroll(store, context.id)!;
   const [subsciber] = useState(() => (notify: () => void) => {
-    return client.subscribe(ScrolliumEvents.ON_SCROLL, () => {
+    return getters.subscribe(ScrolliumEvents.ON_SCROLL, () => {
       notify();
     });
   });
   const [subsciberStop] = useState(() => (notify: () => void) => {
-    return client.subscribe(ScrolliumEvents.ON_SCROLL_STOP, () => {
+    return getters.subscribe(ScrolliumEvents.ON_SCROLL_STOP, () => {
       notify();
     });
   });
-  useSyncExternalStore(subsciber, client.getScrollPosition);
-  useSyncExternalStore(subsciberStop, client.getIsScrolling);
-  return getScrolliumData(client);
+  useSyncExternalStore(subsciber, getters.getScrollPosition);
+  useSyncExternalStore(subsciberStop, getters.getIsScrolling);
+  return getScrolliumData(getters);
 };
 
 export { useScrollPosition };
