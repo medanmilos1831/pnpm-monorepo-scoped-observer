@@ -27,6 +27,8 @@ class Store {
       state: ReturnType<typeof stateFn>;
       mutations: ReturnType<typeof mutationsFn>;
       getters: ReturnType<typeof gettersFn>;
+      onCreate: () => void;
+      remove: () => void;
     }
   >();
   getEntity = (id: string) => {
@@ -45,24 +47,25 @@ class Store {
       const state = stateFn(props);
       const mutations = mutationsFn(state);
       const getters = gettersFn(state);
+      const lifecycle = () =>
+        this._observer.dispatch({
+          scope: SCROLLIUM_STORE_SCOPE,
+          eventName: `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${props.id}`,
+          payload: {
+            id: props.id,
+          },
+        });
       this.entities.set(props.id, {
         state,
         mutations,
         getters,
-      });
-    }
-    return () => {
-      this._observer.dispatch({
-        scope: SCROLLIUM_STORE_SCOPE,
-        eventName: `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${props.id}`,
-        payload: {
-          id: props.id,
+        onCreate: lifecycle,
+        remove: () => {
+          this.entities.delete(props.id);
+          lifecycle();
         },
       });
-      return () => {
-        this.removeEntity(props.id);
-      };
-    };
+    }
   };
 }
 
