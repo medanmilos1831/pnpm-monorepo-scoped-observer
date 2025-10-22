@@ -3,9 +3,9 @@ import {
   ScrolliumDirection,
   ScrolliumEvents,
 } from "../../types";
-import type { ScrollState } from "./ScrollState";
+import { stateFn } from "./state";
 
-export function mutations(state: ScrollState) {
+export function mutations(state: ReturnType<typeof stateFn>) {
   return {
     setScrollPosition(position: number) {
       this.calculate(position);
@@ -18,10 +18,9 @@ export function mutations(state: ScrollState) {
         state.scrollTimeoutId = null;
         state.observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
       }, 500);
-      // state.mutations.calculate(position);
-      // if (state.data.scrollTimeoutId) {
-      //   clearTimeout(state.data.scrollTimeoutId);
-      // }
+      if (state.scrollTimeoutId) {
+        clearTimeout(state.scrollTimeoutId);
+      }
       state.observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     setAxis(axis: ScrolliumAxis) {

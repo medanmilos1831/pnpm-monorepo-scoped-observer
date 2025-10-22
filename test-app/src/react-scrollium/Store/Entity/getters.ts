@@ -1,6 +1,6 @@
-import type { ScrollState } from "./ScrollState";
+import { stateFn } from "./state";
 
-export function getters(state: ScrollState) {
+export function getters(state: ReturnType<typeof stateFn>) {
   return {
     getAxis: () => state.axis,
     getScrollPosition: () => state.scrollPosition,
