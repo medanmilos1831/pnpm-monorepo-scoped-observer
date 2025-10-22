@@ -62,7 +62,11 @@ const createScrolliumClient = () => {
       );
     },
     useScroll: (id: string) => {
-      return useScroll(store, id);
+      const item = useScroll(store, id);
+      if (!item) {
+        return undefined;
+      }
+      return createClient(item);
     },
     useScrollPosition: () => {
       return useScrollPosition(store);
