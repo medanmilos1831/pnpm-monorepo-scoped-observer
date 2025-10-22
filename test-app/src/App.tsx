@@ -1,8 +1,6 @@
 import { HomePage } from "./pages";
-import { createScrolliumClient, ScrolliumClientProvider } from "./scrollium";
-
-const store = createScrolliumClient();
-
+import { scrollClient } from "./scroll";
+console.log(scrollClient);
 function App() {
   return (
     <div
@@ -13,9 +11,7 @@ function App() {
         color: "white",
       }}
     >
-      <ScrolliumClientProvider client={store}>
-        <HomePage />
-      </ScrolliumClientProvider>
+      <HomePage />
     </div>
   );
 }
