@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { Store } from "./Store";
-import { createClient, getScrolliumData } from "./utils";
+import { getScrolliumData } from "./utils";
 import { ScrolliumAxis, type ScrolliumProps } from "./types";
 import { useScroll, useScrollPosition } from "./react-intergation";
 
@@ -53,7 +53,7 @@ const createScrolliumClient = () => {
                   : (e.target as HTMLDivElement).scrollLeft
               );
               if (props.onScroll) {
-                props.onScroll(getScrolliumData(createClient(scroll.state)));
+                props.onScroll(getScrolliumData(scroll.getters));
               }
             }}
           >

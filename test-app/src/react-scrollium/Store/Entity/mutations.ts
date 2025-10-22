@@ -3,7 +3,6 @@ import {
   ScrolliumDirection,
   ScrolliumEvents,
 } from "../../types";
-import { calculate } from "../../utils";
 import type { ScrollState } from "./ScrollState";
 
 export function mutations(state: ScrollState) {
@@ -25,9 +24,9 @@ export function mutations(state: ScrollState) {
       // }
       state.observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
-    setAxis: (axis: ScrolliumAxis) => {
+    setAxis(axis: ScrolliumAxis) {
       state.axis = axis;
-      calculate(state, state.scrollPosition);
+      this.calculate(state.scrollPosition);
     },
     setClientSize: (size: number) => {
       state.clientSize = size;
@@ -35,7 +34,7 @@ export function mutations(state: ScrollState) {
     setScrollSize: (size: number) => {
       state.scrollSize = size;
     },
-    initializeElement: (element: HTMLElement) => {
+    initializeElement(element: HTMLElement) {
       if (element) {
         state.element = element;
         const clientSize = Math.ceil(
@@ -52,8 +51,8 @@ export function mutations(state: ScrollState) {
               : "scrollWidth"
           ] || 0) - (clientSize || 0)
         );
-        state.setClientSize(clientSize);
-        state.setScrollSize(maxScroll);
+        this.setClientSize(clientSize);
+        this.setScrollSize(maxScroll);
       }
     },
     calculateDirection() {
