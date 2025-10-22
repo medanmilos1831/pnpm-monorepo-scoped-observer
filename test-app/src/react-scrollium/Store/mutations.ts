@@ -1,8 +1,4 @@
-import {
-  ScrolliumAxis,
-  ScrolliumDirection,
-  ScrolliumEvents,
-} from "../../types";
+import { ScrolliumAxis, ScrolliumDirection, ScrolliumEvents } from "../types";
 import { stateFn } from "./state";
 
 export function mutations(state: ReturnType<typeof stateFn>) {

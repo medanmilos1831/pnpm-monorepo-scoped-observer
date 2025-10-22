@@ -22,13 +22,25 @@ const createScrolliumClient = () => {
       });
       useEffect(created, []);
       const elementRef = useRef<HTMLDivElement>(null);
-      const scroll = store.getEntity(props.id).client;
+      const { mutations, getters } = store.getEntity(props.id);
+
       useEffect(() => {
-        scroll?.mutations.initializeElement(elementRef.current as HTMLElement);
+        mutations.initializeElement(elementRef.current as HTMLElement);
       }, []);
       useEffect(() => {
-        scroll!.mutations.setAxis(props.axis as ScrolliumAxis);
+        mutations.setAxis(props.axis as ScrolliumAxis);
       }, [props.axis]);
+
+      function onScroll(e: React.UIEvent<HTMLDivElement, UIEvent>) {
+        mutations.setScrollPosition(
+          getters.getAxis() === ScrolliumAxis.VERTICAL
+            ? (e.target as HTMLDivElement).scrollTop
+            : (e.target as HTMLDivElement).scrollLeft
+        );
+        if (props.onScroll) {
+          props.onScroll(getScrolliumData(getters));
+        }
+      }
       return (
         <ScrollContext.Provider
           value={{
@@ -45,17 +57,7 @@ const createScrolliumClient = () => {
                   ? "auto hidden"
                   : "hidden auto",
             }}
-            onScroll={(e) => {
-              const scroll = store.getEntity(props.id).client;
-              scroll.mutations.setScrollPosition(
-                scroll.getters.getAxis() === ScrolliumAxis.VERTICAL
-                  ? (e.target as HTMLDivElement).scrollTop
-                  : (e.target as HTMLDivElement).scrollLeft
-              );
-              if (props.onScroll) {
-                props.onScroll(getScrolliumData(scroll.getters));
-              }
-            }}
+            onScroll={onScroll}
           >
             {children}
           </div>

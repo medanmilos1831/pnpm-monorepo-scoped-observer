@@ -1,4 +1,4 @@
-import { getters as gettersFn } from "./Store/Entity/getters";
+import { getters as gettersFn } from "./Store/getters";
 
 export function getScrolliumData(getters: ReturnType<typeof gettersFn>) {
   return {

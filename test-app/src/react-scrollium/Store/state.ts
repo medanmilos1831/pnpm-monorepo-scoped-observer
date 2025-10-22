@@ -4,7 +4,7 @@ import {
   ScrolliumAxis,
   ScrolliumDirection,
   type ScrolliumProps,
-} from "../../types";
+} from "../types";
 
 export function stateFn(props: ScrolliumProps) {
   const observer = createScopedObserver([

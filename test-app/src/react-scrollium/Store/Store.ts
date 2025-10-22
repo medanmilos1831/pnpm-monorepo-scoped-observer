@@ -4,9 +4,9 @@ import {
   ScrolliumStoreEvents,
   type ScrolliumProps,
 } from "../types";
-import { getters as gettersFn } from "./Entity/getters";
-import { mutations as mutationsFn } from "./Entity/mutations";
-import { stateFn } from "./Entity/state";
+import { getters as gettersFn } from "./getters";
+import { mutations as mutationsFn } from "./mutations";
+import { stateFn } from "./state";
 
 class Store {
   private _observer = createScopedObserver([
@@ -24,11 +24,9 @@ class Store {
   entities = new Map<
     string,
     {
-      client: {
-        state: ReturnType<typeof stateFn>;
-        mutations: ReturnType<typeof mutationsFn>;
-        getters: ReturnType<typeof gettersFn>;
-      };
+      state: ReturnType<typeof stateFn>;
+      mutations: ReturnType<typeof mutationsFn>;
+      getters: ReturnType<typeof gettersFn>;
     }
   >();
   getEntity = (id: string) => {
@@ -48,11 +46,9 @@ class Store {
       const mutations = mutationsFn(state);
       const getters = gettersFn(state);
       this.entities.set(props.id, {
-        client: {
-          state,
-          mutations,
-          getters,
-        },
+        state,
+        mutations,
+        getters,
       });
     }
     return () => {

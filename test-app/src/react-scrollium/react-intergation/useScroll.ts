@@ -15,7 +15,7 @@ const useScroll = (store: Store, id: string) => {
     return () => store.entities.size;
   });
   const entity = useSyncExternalStore(subscriber, snapshot);
-  return entity ? store.getEntity(id).client.getters : undefined;
+  return entity ? store.getEntity(id).getters : undefined;
 };
 
 export { useScroll };
