@@ -23,7 +23,13 @@ const HomePage = () => {
       </button>
       <SomeComponent />
       <div style={{ height: "20rem", width: "20rexm", background: "red" }}>
-        <Scroll id="main" onScroll={(data) => {}} axis={axis}>
+        <Scroll
+          id="main"
+          onScroll={(data) => {
+            console.log("data", data);
+          }}
+          axis={axis}
+        >
           <>
             {axis === "horizontal" ? (
               <div
