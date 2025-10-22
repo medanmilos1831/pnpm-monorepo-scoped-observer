@@ -32,15 +32,10 @@ class Store {
     }
   >();
   getEntity = (id: string) => {
-    return this.entities.get(id)!;
-  };
-  removeEntity = (id: string) => {
-    this.entities.delete(id);
-    this._observer.dispatch({
-      scope: SCROLLIUM_STORE_SCOPE,
-      eventName: `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`,
-      payload: { id },
-    });
+    if (!this.entities.has(id)) {
+      throw new Error(`Scrollium entity with id ${id} not found`);
+    }
+    return this.entities.get(id);
   };
   createEntity = (props: ScrolliumProps) => {
     if (!this.entities.has(props.id)) {

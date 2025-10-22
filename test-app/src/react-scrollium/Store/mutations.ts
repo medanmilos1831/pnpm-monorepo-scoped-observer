@@ -14,9 +14,7 @@ export function mutations(state: ReturnType<typeof stateFn>) {
         state.scrollTimeoutId = null;
         state.observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
       }, 500);
-      if (state.scrollTimeoutId) {
-        clearTimeout(state.scrollTimeoutId);
-      }
+
       state.observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     setAxis(axis: ScrolliumAxis) {

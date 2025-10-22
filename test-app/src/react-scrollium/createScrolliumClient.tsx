@@ -1,16 +1,11 @@
-import {
-  createContext,
-  useEffect,
-  useRef,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { createContext, type PropsWithChildren } from "react";
 
-import { Store } from "./Store";
-import { getScrolliumData } from "./utils";
 import { ScrolliumAxis, type ScrolliumProps } from "./types";
-import { useScroll, useScrollPosition, useSetup } from "./react-intergation";
-
+import { getScrolliumData } from "./utils";
+import { Store } from "./Store/Store";
+import { useSetup } from "./react-intergation/useSetup";
+import { useScroll } from "./react-intergation/useScroll";
+import { useScrollPosition } from "./react-intergation/useScrollPosition";
 const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
   const store = new Store();
@@ -18,26 +13,6 @@ const createScrolliumClient = () => {
   return {
     Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
       const { mutations, getters, elementRef } = useSetup(store, props);
-      // useState(() => {
-      //   return store.createEntity(props);
-      // });
-      // const { mutations, getters, onCreate, remove } = store.getEntity(
-      //   props.id
-      // );
-      // useEffect(() => {
-      //   onCreate();
-      //   return () => {
-      //     remove();
-      //   };
-      // }, []);
-      // const elementRef = useRef<HTMLDivElement>(null);
-
-      // useEffect(() => {
-      //   mutations.initializeElement(elementRef.current as HTMLElement);
-      // }, []);
-      // useEffect(() => {
-      //   mutations.setAxis(props.axis as ScrolliumAxis);
-      // }, [props.axis]);
 
       function onScroll(e: React.UIEvent<HTMLDivElement, UIEvent>) {
         mutations.setScrollPosition(

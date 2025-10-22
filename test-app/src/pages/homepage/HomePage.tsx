@@ -3,7 +3,6 @@ import { useScroll, Scroll, useScrollPosition } from "../../scroll";
 
 const SomeComponent = () => {
   const scroll = useScroll("main");
-  console.log(scroll);
   return (
     <div>
       <h1>Some Component</h1>
@@ -13,6 +12,7 @@ const SomeComponent = () => {
 
 const SomeInnerComponent = () => {
   const scroll = useScrollPosition();
+  console.log(scroll);
   return (
     <div>
       <h1>Some Inner Component</h1>

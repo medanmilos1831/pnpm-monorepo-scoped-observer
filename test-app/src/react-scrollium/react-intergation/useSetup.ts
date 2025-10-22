@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import type { Store } from "../Store/Store";
 import type { ScrolliumAxis, ScrolliumProps } from "../types";
-import type { Store } from "../Store";
 
 const useSetup = (store: Store, props: ScrolliumProps) => {
-  useState(() => {
-    return store.createEntity(props);
-  });
-  const { mutations, getters, onCreate, remove } = store.getEntity(props.id);
+  store.createEntity(props);
+  const { mutations, getters, onCreate, remove } = store.getEntity(props.id)!;
   useEffect(() => {
     onCreate();
     return () => {
