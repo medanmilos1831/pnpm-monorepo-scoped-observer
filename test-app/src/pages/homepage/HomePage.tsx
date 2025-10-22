@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Scroll } from "../../scroll";
+import { useScroll, Scroll } from "../../scroll";
+
+const SomeComponent = () => {
+  const scroll = useScroll("main");
+  return (
+    <div>
+      <h1>Some Component</h1>
+    </div>
+  );
+};
 
 const HomePage = () => {
   const [axis, setAxis] = useState<any>("vertical");
@@ -11,8 +20,9 @@ const HomePage = () => {
       >
         {axis}
       </button>
+      <SomeComponent />
       <div style={{ height: "20rem", width: "20rexm", background: "red" }}>
-        <Scroll id="main" onScroll={(data) => console.log(data)} axis={axis}>
+        <Scroll id="main" onScroll={(data) => {}} axis={axis}>
           <>
             {axis === "horizontal" ? (
               <div

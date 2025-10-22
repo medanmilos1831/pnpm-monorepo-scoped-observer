@@ -3,18 +3,13 @@ import {
   useEffect,
   useRef,
   useState,
-  useSyncExternalStore,
   type PropsWithChildren,
 } from "react";
-import { Store } from "./Store";
-import {
-  ScrolliumAxis,
-  ScrolliumStoreEvents,
-  type ScrolliumProps,
-} from "../scrollium/types";
-import { createClient } from "./utils";
 import { useScroll } from "./react-intergation/hooks/useScroll";
 import { useScrollPosition } from "./react-intergation/hooks/useScrollPosition";
+import { Store } from "./Store";
+import { createClient, getScrolliumData } from "./utils";
+import { ScrolliumAxis, type ScrolliumProps } from "./types";
 
 const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
@@ -23,15 +18,10 @@ const createScrolliumClient = () => {
   return {
     Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
       const [created, _] = useState(() => {
-        return store.createEntity({
-          ...props,
-          axis: props.axis || ScrolliumAxis.VERTICAL,
-        });
+        return store.createEntity(props);
       });
       useEffect(created, []);
       const elementRef = useRef<HTMLDivElement>(null);
-      const client = useScroll(store, props.id);
-      // console.log(store.getEntity(props.id).client);
       const scroll = store.getEntity(props.id).client;
       useEffect(() => {
         scroll?.initializeElement(elementRef.current as HTMLElement);
@@ -62,7 +52,7 @@ const createScrolliumClient = () => {
                   : (e.target as HTMLDivElement).scrollLeft
               );
               if (props.onScroll) {
-                props.onScroll(createClient(scroll));
+                props.onScroll(getScrolliumData(createClient(scroll)));
               }
             }}
           >

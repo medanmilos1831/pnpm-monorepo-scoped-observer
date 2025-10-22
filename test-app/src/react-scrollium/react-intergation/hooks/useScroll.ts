@@ -4,10 +4,14 @@ import { ScrolliumStoreEvents } from "../../types";
 import { createClient } from "../../utils";
 
 const useScroll = (store: Store, id: string) => {
-  const client = createClient(store.getEntity(id).client);
+  // const client = createClient(store.getEntity(id).client);
+  // if (!store.getEntity(id)) {
+  //   throw new Error(`Scrollium entity with id ${id} not found`);
+  // }
+  // const client = createClient(store.getEntity(id).client);
   const [subscriber] = useState(() => {
     return (notify: () => void) => {
-      return client.subscribe(
+      return store.subscribe(
         `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`,
         notify
       );

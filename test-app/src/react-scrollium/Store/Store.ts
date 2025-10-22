@@ -39,7 +39,6 @@ class Store {
   };
   createEntity = (props: ScrolliumProps) => {
     if (!this.entities.has(props.id)) {
-      const client = createClient(props);
       this.entities.set(props.id, {
         client: new ScrollState(props),
       });
