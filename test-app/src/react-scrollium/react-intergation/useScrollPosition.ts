@@ -1,15 +1,23 @@
-import { useContext, useState, useSyncExternalStore } from "react";
+import {
+  useContext,
+  useState,
+  useSyncExternalStore,
+  type Context,
+} from "react";
 import { useScroll } from "./useScroll";
-import { ScrollContext } from "../ScrollProvider";
-import { getScrolliumData } from "../../utils";
-import { ScrolliumEvents } from "../../types";
+import type { Store } from "../Store";
+import { ScrolliumEvents } from "../types";
+import { getScrolliumData } from "../utils";
 
-const useScrollPosition = () => {
+const useScrollPosition = (
+  store: Store,
+  ScrollContext: Context<{ id: string } | undefined>
+) => {
   const context = useContext(ScrollContext);
   if (!context) {
     throw new Error("ScrollContext not found");
   }
-  const client = useScroll(context.id)!;
+  const client = useScroll(store, context.id)!;
   const [subsciber] = useState(() => (notify: () => void) => {
     return client.subscribe(ScrolliumEvents.ON_SCROLL, () => {
       notify();

@@ -1,5 +1,4 @@
 import { createScopedObserver } from "@scoped-observer/core";
-import { createClient } from "./Entity";
 import {
   SCROLLIUM_STORE_SCOPE,
   ScrolliumStoreEvents,

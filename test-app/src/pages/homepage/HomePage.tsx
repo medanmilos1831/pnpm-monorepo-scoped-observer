@@ -1,12 +1,20 @@
 import { useState } from "react";
-import { useScroll, Scroll } from "../../scroll";
+import { useScroll, Scroll, useScrollPosition } from "../../scroll";
 
 const SomeComponent = () => {
   const scroll = useScroll("main");
-  console.log("scroll", scroll);
   return (
     <div>
       <h1>Some Component</h1>
+    </div>
+  );
+};
+
+const SomeInnerComponent = () => {
+  useScrollPosition();
+  return (
+    <div>
+      <h1>Some Inner Component</h1>
     </div>
   );
 };
@@ -25,9 +33,7 @@ const HomePage = () => {
       <div style={{ height: "20rem", width: "20rexm", background: "red" }}>
         <Scroll
           id="main"
-          onScroll={(data) => {
-            console.log("data", data);
-          }}
+          onScroll={(data) => {}}
           axis={axis}
         >
           <>
@@ -52,6 +58,7 @@ const HomePage = () => {
               </div>
             ) : (
               <div>
+                <SomeInnerComponent />
                 {Array.from({ length: 100 }).map((_, i) => (
                   <div
                     key={i}

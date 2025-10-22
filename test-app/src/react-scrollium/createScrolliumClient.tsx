@@ -5,11 +5,11 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { useScroll } from "./react-intergation/hooks/useScroll";
-import { useScrollPosition } from "./react-intergation/hooks/useScrollPosition";
+
 import { Store } from "./Store";
 import { createClient, getScrolliumData } from "./utils";
 import { ScrolliumAxis, type ScrolliumProps } from "./types";
+import { useScroll, useScrollPosition } from "./react-intergation";
 
 const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
@@ -66,10 +66,10 @@ const createScrolliumClient = () => {
       if (!item) {
         return undefined;
       }
-      return createClient(item);
+      return item;
     },
     useScrollPosition: () => {
-      return useScrollPosition(store);
+      return useScrollPosition(store, ScrollContext);
     },
   };
 };
