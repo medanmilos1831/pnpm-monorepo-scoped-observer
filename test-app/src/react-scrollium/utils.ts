@@ -76,3 +76,12 @@ export function calculate(scroll: ScrollState, position: number) {
   calculateScrollBounds(scroll);
   calculateProgress(scroll);
 }
+
+export function calculateNew(scroll: ScrollState, position: number) {
+  scroll.previousScrollPosition = scroll.scrollPosition;
+  scroll.scrollPosition = Math.ceil(position as number);
+  scroll.isScrolling = true;
+  calculateDirection(scroll);
+  calculateScrollBounds(scroll);
+  calculateProgress(scroll);
+}

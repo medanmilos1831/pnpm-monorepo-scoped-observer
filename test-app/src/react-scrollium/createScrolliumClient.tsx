@@ -46,14 +46,20 @@ const createScrolliumClient = () => {
                   : "hidden auto",
             }}
             onScroll={(e) => {
-              scroll?.setScrollPosition(
-                scroll.getAxis() === ScrolliumAxis.VERTICAL
-                  ? (e.target as HTMLDivElement).scrollTop
-                  : (e.target as HTMLDivElement).scrollLeft
-              );
-              if (props.onScroll) {
-                props.onScroll(getScrolliumData(createClient(scroll)));
-              }
+              store
+                .getEntity(props.id)
+                .slice.mutations.setScrollPosition.call(
+                  store.getEntity(props.id).slice.data,
+                  (e.target as HTMLDivElement).scrollTop
+                );
+              // scroll?.setScrollPosition(
+              //   scroll.getAxis() === ScrolliumAxis.VERTICAL
+              //     ? (e.target as HTMLDivElement).scrollTop
+              //     : (e.target as HTMLDivElement).scrollLeft
+              // );
+              // if (props.onScroll) {
+              //   props.onScroll(getScrolliumData(createClient(scroll)));
+              // }
             }}
           >
             {children}

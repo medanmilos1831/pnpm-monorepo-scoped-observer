@@ -49,15 +49,6 @@ class ScrollState {
 
     this.observer.dispatch(ScrolliumEvents.ON_SCROLL);
   };
-  getAxis = () => this.axis;
-  getScrollPosition = () => this.scrollPosition;
-  getPreviousScrollPosition = () => this.previousScrollPosition;
-  getIsScrolling = () => this.isScrolling;
-  getScrollTimeoutId = () => this.scrollTimeoutId;
-  getIsStart = () => this.isStart;
-  getIsEnd = () => this.isEnd;
-  getProgress = () => this.progress;
-  getClientSize = () => this.clientSize;
   setClientSize = (size: number) => {
     this.clientSize = size;
   };
