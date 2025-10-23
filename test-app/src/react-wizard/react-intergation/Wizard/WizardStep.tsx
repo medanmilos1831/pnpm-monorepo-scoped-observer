@@ -1,7 +1,7 @@
 import { useContext, type PropsWithChildren } from "react";
 
 import { WizardContext } from "./WizardProvider";
-import type { IWizardStep } from "../types";
+import type { IWizardStep } from "../../types";
 import { WizardClientContext } from "../WizardClientProvider";
 
 const Step = ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
