@@ -12,3 +12,8 @@ export interface IWizardConfig {
 export type onReset = () => void;
 export type onFinish = (params: { reset: onReset; render: () => void }) => void;
 export type renderOnFinish = (params: { reset: onReset }) => React.ReactNode;
+
+export enum WizardCommands {
+  NEXT = "next",
+  PREVIOUS = "previous",
+}
