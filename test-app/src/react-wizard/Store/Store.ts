@@ -8,12 +8,12 @@ import { wizzardSubscriptionFn } from "./wizzardSubscription";
 class Store {
   private _observer = createScopedObserver([
     {
-      scope: "WIZARD_STORE_SCOPE",
+      scope: WIZARD_STORE_SCOPE,
     },
   ]);
   subscribe = (eventName: string, callback: (payload: any) => void) => {
     return this._observer.subscribe({
-      scope: "WIZARD_STORE_SCOPE",
+      scope: WIZARD_STORE_SCOPE,
       eventName,
       callback,
     });
@@ -25,8 +25,8 @@ class Store {
   removeEntity = (id: string) => {
     this.entities.delete(id);
     this._observer.dispatch({
-      scope: "WIZARD_STORE_SCOPE",
-      eventName: `${"WizardStoreEvents.CREATE_WIZARD"}-${id}`,
+      scope: WIZARD_STORE_SCOPE,
+      eventName: `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
       payload: {
         id,
       },
@@ -51,8 +51,16 @@ class Store {
         mutations,
         getters,
         wizzardSubscription,
-        remove: (() => {
-          setTimeout(() => {
+        lifecycle: () => {
+          this._observer.dispatch({
+            scope: WIZARD_STORE_SCOPE,
+            eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
+            payload: {
+              id: props.id,
+            },
+          });
+          return () => {
+            this.entities.delete(props.id);
             this._observer.dispatch({
               scope: WIZARD_STORE_SCOPE,
               eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
@@ -60,15 +68,11 @@ class Store {
                 id: props.id,
               },
             });
-          }, 0);
-          return () => {
-            return () => {
-              this.entities.delete(props.id);
-            };
           };
-        })(),
+        },
       });
     }
+    return this.getEntity(props.id)!;
   };
 }
 

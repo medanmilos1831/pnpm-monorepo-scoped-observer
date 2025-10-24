@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Wizard,
   useWizard,
@@ -70,7 +71,7 @@ const Controls = () => {
 
 const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
-  console.log(client);
+  console.log("some component", client);
   return (
     <div>
       <div>SomeComponent</div>
@@ -78,35 +79,39 @@ const SomeComponent = () => {
   );
 };
 
+const Inner = () => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <button
+        onClick={() => {
+          setCount(count + 1);
+        }}
+      >
+        {count}
+      </button>
+      {count % 2 === 0 ? (
+        <Wizard
+          id="wizard-1"
+          steps={["stepOne", "stepTwo", "stepThree"]}
+          activeStep="stepOne"
+          onFinish={(params) => {
+            params.render();
+          }}
+        >
+          <Body />
+          <Controls />
+        </Wizard>
+      ) : null}
+    </>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
       <SomeComponent />
-      <Wizard
-        id="wizard-1"
-        steps={["stepOne", "stepTwo", "stepThree"]}
-        activeStep="stepOne"
-        onFinish={(params) => {
-          params.render();
-        }}
-        renderOnFinish={({ reset }) => {
-          return (
-            <div>
-              <div>Finish</div>
-              <button
-                onClick={() => {
-                  reset();
-                }}
-              >
-                Reset
-              </button>
-            </div>
-          );
-        }}
-      >
-        <Body />
-        <Controls />
-      </Wizard>
+      <Inner />
     </>
   );
 };

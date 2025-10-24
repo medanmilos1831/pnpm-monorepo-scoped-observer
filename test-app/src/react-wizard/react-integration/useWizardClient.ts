@@ -2,20 +2,20 @@ import { useState, useSyncExternalStore } from "react";
 import { Store } from "../Store/Store";
 import { WizardStoreEvents } from "../types";
 
-const useWizardClient = (
-  { subscribe, getEntity, entities }: Store,
-  id: string
-) => {
+const useWizardClient = (store: Store, id: string) => {
   const [mount] = useState(() => {
     return (notify: () => void) => {
-      return subscribe(`${WizardStoreEvents.CREATE_WIZARD}-${id}`, notify);
+      return store.subscribe(
+        `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
+        notify
+      );
     };
   });
   const [snapshot] = useState(() => {
-    return () => entities.size;
+    return () => store.entities.has(id);
   });
-  const entity = useSyncExternalStore(mount, snapshot);
-  return entity ? getEntity(id)?.getters : undefined;
+  useSyncExternalStore(mount, snapshot);
+  return store.getEntity(id)?.getters;
 };
 
 export { useWizardClient };
