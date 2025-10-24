@@ -1,8 +1,2 @@
 export { createWizardClient } from "./createWizardClient";
-export {
-  useWizard,
-  useWizardCommands,
-  Wizard,
-  WizardClientProvider,
-  useWizardStep,
-} from "./react-intergation";
+export { useWizard } from "./react-integration/useWizard";

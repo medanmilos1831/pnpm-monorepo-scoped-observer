@@ -5,73 +5,64 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
+import { useWizard } from "./react-integration/useWizard";
 import { Store } from "./Store/Store";
-import type { IWizardConfig } from "./types";
+import { type IWizardConfig, type IWizardStep } from "./types";
+import { useWizardClient } from "./react-integration/useWizardClient";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
   const store = new Store();
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
-      store.createEntity(props);
-      const client = store.getClient(props.id);
-
       const [successRender, setSuccessRender] = useState(false);
-      // useEffect(() => {
-      //   onCreate();
-      //   return () => {
-      //     remove();
-      //   };
-      // }, []);
-
-      // useEffect(() => {
-      //   let unsubscribe = () => {};
-      //   if (!onReset) return;
-      //   unsubscribe = client.subscribe(WizardEvents.ON_RESET, onReset);
-      //   return () => {
-      //     unsubscribe();
-      //   };
-      // });
-      // useEffect(() => {
-      //   let unsubscribe = () => {};
-      //   if (!onFinish) return;
-      //   unsubscribe = client.subscribe(WizardEvents.ON_FINISH, () =>
-      //     onFinish({
-      //       reset: () => {
-      //         client.reset();
-      //       },
-      //       render: () => {
-      //         setSuccessRender(true);
-      //       },
-      //     })
-      //   );
-      //   return () => {
-      //     unsubscribe();
-      //   };
-      // });
-      // if (successRender) {
-      //   return renderOnFinish
-      //     ? renderOnFinish({
-      //         reset: () => {
-      //           setSuccessRender(false);
-      //           client.reset();
-      //         },
-      //       })
-      //     : null;
-      // }
+      store.createEntity(props, setSuccessRender);
+      const wizard = store.getEntity(props.id);
+      useEffect(wizard.wizzardSubscription.onFinishSubscription);
+      useEffect(wizard.wizzardSubscription.onResetSubscription);
+      useEffect(wizard.remove, []);
+      if (successRender) {
+        return props.renderOnFinish
+          ? props.renderOnFinish({
+              reset: () => {
+                setSuccessRender(false);
+                wizard.mutations.reset();
+              },
+            })
+          : null;
+      }
       return (
         <WizardContext.Provider value={{ id: props.id }}>
           {children}
         </WizardContext.Provider>
       );
     },
-    Step: ({ children, ...props }: PropsWithChildren) => {
+    Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const context = useContext(WizardContext)!;
       if (!context) {
         throw new Error("WizardContext not found");
       }
       const client = store.getClient(context.id);
       return <>{children}</>;
+    },
+    useWizardCommands: () => {
+      const context = useContext(WizardContext)!;
+      if (!context) {
+        throw new Error("WizardContext not found");
+      }
+      const item = store.getEntity(context.id).mutations;
+      return {
+        next: item.next,
+        previous: item.previous,
+        reset: () => item.reset(),
+        goToStep: item.goToStep,
+      };
+    },
+    useWizard: () => {
+      return useWizard(store, WizardContext);
+    },
+    useWizardClient: (id: string) => {
+      return useWizardClient(store, id);
     },
   };
 };

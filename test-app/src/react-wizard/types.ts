@@ -9,6 +9,16 @@ export interface IWizardConfig {
   renderOnFinish?: renderOnFinish;
 }
 
+export enum WizardStoreEvents {
+  CREATE_WIZARD = "createWizard",
+}
+
+export enum WizardEvents {
+  ON_STEP_CHANGE = "onStepChange",
+  ON_RESET = "onReset",
+  ON_FINISH = "onFinish",
+}
+
 export type onReset = () => void;
 export type onFinish = (params: { reset: onReset; render: () => void }) => void;
 export type renderOnFinish = (params: { reset: onReset }) => React.ReactNode;
@@ -16,4 +26,23 @@ export type renderOnFinish = (params: { reset: onReset }) => React.ReactNode;
 export enum WizardCommands {
   NEXT = "next",
   PREVIOUS = "previous",
+}
+interface IOnNavigateParams {
+  activeStep: string;
+  toStep: string;
+  updateSteps: (callback: (steps: string[]) => string[]) => void;
+}
+
+interface IOnValidateParams {
+  actionType?: string;
+  command: WizardCommands;
+  activeStep: string;
+  toStep: string;
+  resolve: () => void;
+}
+
+export interface IWizardStep {
+  onNext?: (params: IOnNavigateParams) => void;
+  onPrevious?: (params: IOnNavigateParams) => void;
+  validate?: (params: IOnValidateParams) => void;
 }

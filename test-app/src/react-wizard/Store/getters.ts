@@ -1,7 +1,7 @@
 import { WizardCommands } from "../types";
 import { stateFn } from "./state";
 
-export function getters(state: ReturnType<typeof stateFn>) {
+export function gettersFn(state: ReturnType<typeof stateFn>) {
   return {
     subscribe: state.observer.subscribe,
     getStepByCommand({ command }: { command: WizardCommands }) {
