@@ -1,5 +1,9 @@
 import { createScopedObserver } from "@scoped-observer/core";
-import { WIZARD_STORE_SCOPE, WizardStoreEvents } from "../types";
+import {
+  WIZARD_STORE_SCOPE,
+  WizardStoreEvents,
+  type IWizardConfig,
+} from "../types";
 import { gettersFn } from "./getters";
 import { mutationsFn } from "./mutations";
 import { stateFn } from "./state";
@@ -35,8 +39,20 @@ class Store {
   getClient = (id: string) => {
     return this.entities.get(id)!.client;
   };
-  createEntity = (props: any, setSuccessRender: (success: boolean) => void) => {
+  createEntity = (
+    props: IWizardConfig,
+    setSuccessRender: (success: boolean) => void
+  ) => {
     if (!this.entities.has(props.id)) {
+      const event = () => {
+        this._observer.dispatch({
+          scope: WIZARD_STORE_SCOPE,
+          eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
+          payload: {
+            id: props.id,
+          },
+        });
+      };
       const state = stateFn(props);
       const getters = gettersFn(state);
       const mutations = mutationsFn(state, getters);
@@ -51,23 +67,11 @@ class Store {
         mutations,
         getters,
         wizzardSubscription,
-        lifecycle: () => {
-          this._observer.dispatch({
-            scope: WIZARD_STORE_SCOPE,
-            eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
-            payload: {
-              id: props.id,
-            },
-          });
+        mount: () => {
+          event();
           return () => {
             this.entities.delete(props.id);
-            this._observer.dispatch({
-              scope: WIZARD_STORE_SCOPE,
-              eventName: `${WizardStoreEvents.CREATE_WIZARD}-${props.id}`,
-              payload: {
-                id: props.id,
-              },
-            });
+            event();
           };
         },
       });

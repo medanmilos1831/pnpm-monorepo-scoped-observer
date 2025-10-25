@@ -10,6 +10,7 @@ import { Store } from "./Store/Store";
 import { type IWizardConfig, type IWizardStep } from "./types";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
+import { useRequiredContext } from "./react-integration/useRequiredContext";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
@@ -21,7 +22,7 @@ const createWizardClient = () => {
       const wizard = store.createEntity(props, setSuccessRender);
       useEffect(wizard.wizzardSubscription.onFinishSubscription);
       useEffect(wizard.wizzardSubscription.onResetSubscription);
-      useEffect(wizard.lifecycle, []);
+      useEffect(wizard.mount, []);
       if (successRender) {
         return props.renderOnFinish
           ? props.renderOnFinish({
@@ -39,19 +40,13 @@ const createWizardClient = () => {
       );
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
-      const context = useContext(WizardContext)!;
-      if (!context) {
-        throw new Error("WizardContext not found");
-      }
-      const client = store.getClient(context.id);
+      const { id } = useRequiredContext(WizardContext);
+      const client = store.getClient(id);
       return <>{children}</>;
     },
     useWizardCommands: () => {
-      const context = useContext(WizardContext)!;
-      if (!context) {
-        throw new Error("WizardContext not found");
-      }
-      const item = store.getEntity(context.id).mutations;
+      const { id } = useRequiredContext(WizardContext);
+      const item = store.getEntity(id).mutations;
       return {
         next: item.next,
         previous: item.previous,
@@ -60,11 +55,7 @@ const createWizardClient = () => {
       };
     },
     useWizard: () => {
-      const context = useContext(WizardContext);
-      if (!context) {
-        throw new Error("WizardContext not found");
-      }
-      const { id } = context;
+      const { id } = useRequiredContext(WizardContext);
       return useWizard(store, id);
     },
     useWizardClient: (id: string) => {
