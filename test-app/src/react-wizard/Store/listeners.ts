@@ -1,10 +1,8 @@
-import { WizardEvents } from "../types";
-
 export function listeners(
   subscribe: (
     eventName: "onReset" | "onFinish" | "onStepChange",
     callback: (data: any) => void
-  ) => void
+  ) => () => void
 ) {
   return (
     eventName: "onReset" | "onFinish" | "onStepChange",

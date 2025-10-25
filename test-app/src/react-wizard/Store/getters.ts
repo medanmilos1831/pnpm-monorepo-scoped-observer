@@ -1,4 +1,4 @@
-import { WizardCommands, WizardEvents } from "../types";
+import { WizardCommands } from "../types";
 import { stateFn } from "./state";
 
 export function gettersFn(state: ReturnType<typeof stateFn>) {

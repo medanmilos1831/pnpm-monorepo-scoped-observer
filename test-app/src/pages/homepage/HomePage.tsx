@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Wizard,
   useWizard,
   useWizardClient,
   useWizardCommands,
 } from "../../wizService";
-import { WizardEvents } from "../../react-wizard/types";
 
 const StepOne = () => {
   return <div>StepOne</div>;
@@ -25,6 +24,7 @@ const StepsMap: any = {
 
 const Body = () => {
   const { activeStep } = useWizard();
+  console.log("activeStep", useWizard());
 
   let StepComponent = StepsMap[activeStep as keyof typeof StepsMap];
   return (
@@ -72,10 +72,16 @@ const Controls = () => {
 
 const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
-  console.log("some component", client);
-  client.on("onStepChange", (data: any) => {
-    console.log("on step change", data);
-  });
+  console.log("SOME COMPONENT", client);
+  useEffect(() => {
+    if (!client) return;
+    const unsubscribe = client.addEventListener("onStepChange", (data: any) => {
+      console.log("on step change", data);
+    });
+    // return () => {
+    //   // unsubscribe();
+    // };
+  }, [client]);
   return (
     <div>
       <div>SomeComponent</div>

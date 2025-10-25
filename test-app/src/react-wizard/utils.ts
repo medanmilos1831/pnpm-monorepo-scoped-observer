@@ -9,6 +9,5 @@ export function getWizardData(getters: ReturnType<typeof gettersFn>) {
     isFirst: getters.isFirst(),
     steps: getters.getSteps(),
     wizardId: getters.getWizardId(),
-    addEventListener: addEventListener,
   };
 }

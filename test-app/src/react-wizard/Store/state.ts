@@ -1,23 +1,24 @@
 import { createScopedObserver } from "@scoped-observer/core";
+import { WIZARD_OBSERVER_SCOPE } from "../types";
 
 export function stateFn(props: any) {
   const observer = createScopedObserver([
     {
-      scope: "WIZARD_STORE_SCOPE",
+      scope: WIZARD_OBSERVER_SCOPE,
     },
   ]);
   return {
     observer: {
       dispatch: (eventName: string, payload?: any) => {
         observer.dispatch({
-          scope: "WIZARD_STORE_SCOPE",
+          scope: WIZARD_OBSERVER_SCOPE,
           eventName,
           payload: payload || undefined,
         });
       },
       subscribe: (eventName: string, callback: (payload: any) => void) => {
         return observer.subscribe({
-          scope: "WIZARD_STORE_SCOPE",
+          scope: WIZARD_OBSERVER_SCOPE,
           eventName,
           callback,
         });

@@ -1,4 +1,5 @@
 export const WIZARD_STORE_SCOPE = "wizard-store" as const;
+export const WIZARD_OBSERVER_SCOPE = "wizard-observer" as const;
 
 export interface IWizardConfig {
   id: string;

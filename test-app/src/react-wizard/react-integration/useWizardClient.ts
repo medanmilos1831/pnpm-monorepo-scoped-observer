@@ -16,11 +16,10 @@ const useWizardClient = (store: Store, id: string) => {
     return () => store.entities.has(id);
   });
   useSyncExternalStore(mount, snapshot);
+  if (!store.getEntity(id)) return undefined;
   return {
-    getters: store.getEntity(id)
-      ? getWizardData(store.getEntity(id).getters)
-      : undefined,
-    on: store.getEntity(id)?.on,
+    ...store.getEntity(id).getters,
+    addEventListener: store.getEntity(id).addEventListener,
   };
 };
 

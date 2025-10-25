@@ -3,11 +3,11 @@ import {
   WIZARD_STORE_SCOPE,
   WizardStoreEvents,
 } from "../../wizard/Store/types";
-import { WizardEvents, type IWizardConfig } from "../types";
+import { type IWizardConfig } from "../types";
 import { gettersFn } from "./getters";
+import { listeners } from "./listeners";
 import { mutationsFn } from "./mutations";
 import { stateFn } from "./state";
-import { listeners } from "./listeners";
 
 export function entityFn(
   props: IWizardConfig,
@@ -31,7 +31,7 @@ export function entityFn(
     state,
     getters,
     mutations,
-    on: listeners(state.observer.subscribe),
+    addEventListener: listeners(state.observer.subscribe),
     mount: () => {
       return () => {
         entitiesMap.delete(props.id);
