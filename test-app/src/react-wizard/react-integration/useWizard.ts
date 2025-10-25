@@ -1,8 +1,8 @@
 import { useState, useSyncExternalStore } from "react";
-import { Store } from "../Store/Store";
+import { createStore } from "../Store/createStore";
 import { WizardEvents } from "../types";
 
-const useWizard = (store: Store, id: string) => {
+const useWizard = (store: ReturnType<typeof createStore>, id: string) => {
   const entity = store.getEntity(id);
   const [subsciber] = useState(() => (notify: () => void) => {
     return entity.addEventListener(WizardEvents.ON_STEP_CHANGE, () => {

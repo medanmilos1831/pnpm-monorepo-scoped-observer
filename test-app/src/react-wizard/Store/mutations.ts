@@ -2,7 +2,7 @@ import { WizardEvents } from "../../wizard/Store/types";
 import { WizardCommands } from "../types";
 import { stateFn } from "./state";
 import { gettersFn } from "./getters";
-import { createObserver } from "./observer";
+import type { createObserver } from "../observer";
 
 export function mutationsFn(
   state: ReturnType<typeof stateFn>,

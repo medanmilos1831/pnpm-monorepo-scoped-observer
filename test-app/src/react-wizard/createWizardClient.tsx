@@ -5,15 +5,15 @@ import {
   type PropsWithChildren,
 } from "react";
 
-import { Store } from "./Store/Store";
-import { WizardEvents, type IWizardConfig, type IWizardStep } from "./types";
+import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
-import { useRequiredContext } from "./react-integration/useRequiredContext";
+import { createStore } from "./Store/createStore";
+import { WizardEvents, type IWizardConfig, type IWizardStep } from "./types";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
-  const store = new Store();
+  const store = createStore();
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
       const [successRender, setSuccessRender] = useState(false);

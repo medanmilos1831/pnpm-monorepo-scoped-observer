@@ -1,7 +1,6 @@
-import { createScopedObserver } from "@scoped-observer/core";
-import { WIZARD_OBSERVER_SCOPE } from "../types";
+import type { IWizardConfig } from "../types";
 
-export function stateFn(props: any) {
+export function stateFn(props: IWizardConfig) {
   return {
     id: props.id,
     steps: props.steps,

@@ -1,8 +1,8 @@
 import { useState, useSyncExternalStore } from "react";
-import { Store } from "../Store/Store";
+import { createStore } from "../Store/createStore";
 import { WizardStoreEvents } from "../types";
 
-const useWizardClient = (store: Store, id: string) => {
+const useWizardClient = (store: ReturnType<typeof createStore>, id: string) => {
   const [mount] = useState(() => {
     return (notify: () => void) => {
       return store.subscribe(
