@@ -1,7 +1,6 @@
 import { useState, useSyncExternalStore } from "react";
 import { Store } from "../Store/Store";
 import { WizardStoreEvents } from "../types";
-import { getWizardData } from "../utils";
 
 const useWizardClient = (store: Store, id: string) => {
   const [mount] = useState(() => {
@@ -17,9 +16,10 @@ const useWizardClient = (store: Store, id: string) => {
   });
   useSyncExternalStore(mount, snapshot);
   if (!store.getEntity(id)) return undefined;
+  const entity = store.getEntity(id);
   return {
-    ...store.getEntity(id).getters,
-    addEventListener: store.getEntity(id).addEventListener,
+    ...entity.getters,
+    addEventListener: entity.addEventListener,
   };
 };
 

@@ -1,7 +1,6 @@
 import { useState, useSyncExternalStore } from "react";
 import { Store } from "../Store/Store";
 import { WizardEvents } from "../types";
-import { getWizardData } from "../utils";
 
 const useWizard = (store: Store, id: string) => {
   const entity = store.getEntity(id);
@@ -11,7 +10,15 @@ const useWizard = (store: Store, id: string) => {
     });
   });
   useSyncExternalStore(subsciber, entity.getters.getActiveStep);
-  return getWizardData(entity.getters);
+  return {
+    activeStep: entity.getters.getActiveStep(),
+    nextStep: entity.getters.getNextStep(),
+    previousStep: entity.getters.getPreviousStep(),
+    isLast: entity.getters.isLast(),
+    isFirst: entity.getters.isFirst(),
+    steps: entity.getters.getSteps(),
+    wizardId: entity.getters.getWizardId(),
+  };
 };
 
 export { useWizard };
