@@ -3,24 +3,16 @@ import {
   useContext,
   useEffect,
   useState,
-  useSyncExternalStore,
   type PropsWithChildren,
 } from "react";
+
+import { Store } from "./Store/Store";
+import { type IWizardConfig, type IWizardStep } from "./types";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
-import { Store } from "./Store/Store";
-import {
-  WizardEvents,
-  WizardStoreEvents,
-  type IWizardConfig,
-  type IWizardStep,
-} from "./types";
-import { getWizardData } from "./utils";
 
 const createWizardClient = () => {
-  const WizardContext = createContext<{ id: string; wizard: any } | undefined>(
-    undefined
-  );
+  const WizardContext = createContext<{ id: string } | undefined>(undefined);
   const store = new Store();
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
@@ -41,7 +33,7 @@ const createWizardClient = () => {
           : null;
       }
       return (
-        <WizardContext.Provider value={{ id: props.id, wizard: wizard }}>
+        <WizardContext.Provider value={{ id: props.id }}>
           {children}
         </WizardContext.Provider>
       );
@@ -72,29 +64,11 @@ const createWizardClient = () => {
       if (!context) {
         throw new Error("WizardContext not found");
       }
-      const getters = context.wizard.getters;
-      const [subsciber] = useState(() => (notify: () => void) => {
-        return getters.subscribe(WizardEvents.ON_STEP_CHANGE, () => {
-          notify();
-        });
-      });
-      useSyncExternalStore(subsciber, getters.getActiveStep);
-      return getWizardData(getters);
+      const { id } = context;
+      return useWizard(store, id);
     },
     useWizardClient: (id: string) => {
-      const [mount] = useState(() => {
-        return (notify: () => void) => {
-          return store.subscribe(
-            `${WizardStoreEvents.CREATE_WIZARD}-${id}`,
-            notify
-          );
-        };
-      });
-      const [snapshot] = useState(() => {
-        return () => store.entities.has(id);
-      });
-      useSyncExternalStore(mount, snapshot);
-      return store.getEntity(id)?.getters;
+      return useWizardClient(store, id);
     },
   };
 };

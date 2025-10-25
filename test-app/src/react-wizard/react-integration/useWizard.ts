@@ -1,18 +1,11 @@
-import { useContext, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Store } from "../Store/Store";
-import { useWizardClient } from "./useWizardClient";
-import { getWizardData } from "../utils";
 import { WizardEvents } from "../types";
+import { getWizardData } from "../utils";
+import { useWizardClient } from "./useWizardClient";
 
-const useWizard = (
-  store: Store,
-  WizardContext: React.Context<{ id: string } | undefined>
-) => {
-  const context = useContext(WizardContext);
-  if (!context) {
-    throw new Error("WizardContext not found");
-  }
-  const getters = useWizardClient(store, context.id)!;
+const useWizard = (store: Store, id: string) => {
+  const getters = useWizardClient(store, id)!;
   const [subsciber] = useState(() => (notify: () => void) => {
     return getters.subscribe(WizardEvents.ON_STEP_CHANGE, () => {
       notify();
