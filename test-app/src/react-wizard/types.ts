@@ -20,6 +20,8 @@ export enum WizardEvents {
   ON_FINISH = "onFinish",
 }
 
+export type events = "onFinish" | "onReset" | "onStepChange";
+
 export type onReset = () => void;
 export type onFinish = (params: { reset: onReset; render: () => void }) => void;
 export type renderOnFinish = (params: { reset: onReset }) => React.ReactNode;

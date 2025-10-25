@@ -13,7 +13,7 @@ const useSetup = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
-    unsubscribe = wizard.addEventListener(WizardEvents.ON_FINISH, () => {
+    unsubscribe = wizard.addEventListener("onFinish", () => {
       setSuccessRender(true);
     });
     return () => {
@@ -24,7 +24,7 @@ const useSetup = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onReset) return;
-    unsubscribe = wizard.addEventListener(WizardEvents.ON_RESET, () => {
+    unsubscribe = wizard.addEventListener("onReset", () => {
       setSuccessRender(false);
       wizard.mutations.reset();
     });

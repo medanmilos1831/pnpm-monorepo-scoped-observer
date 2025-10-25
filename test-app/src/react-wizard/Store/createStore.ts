@@ -3,9 +3,11 @@ import {
   WIZARD_OBSERVER_SCOPE,
   WIZARD_STORE_SCOPE,
   WizardStoreEvents,
+  type events,
   type IWizardConfig,
 } from "../types";
 import { gettersFn } from "./getters";
+import { listeners } from "./listeners";
 import { mountFn } from "./mount";
 import { mutationsFn } from "./mutations";
 import { stateFn } from "./state";
@@ -15,7 +17,10 @@ interface IEntity {
   getters: ReturnType<typeof gettersFn>;
   mutations: ReturnType<typeof mutationsFn>;
   mount: () => void;
-  addEventListener: ReturnType<typeof createObserver>["subscribe"];
+  addEventListener: (
+    eventName: events,
+    callback: (payload: any) => void
+  ) => () => void;
 }
 
 const createStore = () => {
@@ -41,7 +46,9 @@ const createStore = () => {
           state,
           getters,
           mutations,
-          addEventListener: entityObserver.subscribe,
+          addEventListener: (eventName, callback) => {
+            return entityObserver.subscribe(eventName, callback);
+          },
           mount,
         });
       }
