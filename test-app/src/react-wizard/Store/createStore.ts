@@ -10,10 +10,18 @@ import { mountFn } from "./mount";
 import { mutationsFn } from "./mutations";
 import { stateFn } from "./state";
 
+interface IEntity {
+  state: ReturnType<typeof stateFn>;
+  getters: ReturnType<typeof gettersFn>;
+  mutations: ReturnType<typeof mutationsFn>;
+  mount: () => void;
+  addEventListener: ReturnType<typeof createObserver>["subscribe"];
+}
+
 const createStore = () => {
   const observer = createObserver(WIZARD_STORE_SCOPE);
   return {
-    entities: new Map<string, any>(),
+    entities: new Map<string, IEntity>(),
     subscribe: observer.subscribe,
     getEntity(id: string) {
       return this.entities.get(id)!;
