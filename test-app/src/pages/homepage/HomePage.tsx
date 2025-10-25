@@ -24,7 +24,6 @@ const StepsMap: any = {
 
 const Body = () => {
   const { activeStep } = useWizard();
-  console.log("activeStep", useWizard());
 
   let StepComponent = StepsMap[activeStep as keyof typeof StepsMap];
   return (
@@ -72,11 +71,9 @@ const Controls = () => {
 
 const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
-  console.log("SOME COMPONENT", client);
   useEffect(() => {
     if (!client) return;
     const unsubscribe = client.addEventListener("onStepChange", (data: any) => {
-      console.log("on step change", data);
     });
     // return () => {
     //   // unsubscribe();
