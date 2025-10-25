@@ -71,6 +71,7 @@ const Controls = () => {
 
 const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
+  console.log("some component", client);
   return (
     <div>
       <div>SomeComponent</div>
