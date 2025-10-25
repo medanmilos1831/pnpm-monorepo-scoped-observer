@@ -1,12 +1,12 @@
 import { WizardEvents } from "../../wizard/Store/types";
 import { WizardCommands } from "../types";
-import { stateFn } from "./state";
-import { gettersFn } from "./getters";
+import { createState } from "./state";
+import { createGetters } from "./createGetters";
 import type { createObserver } from "../observer";
 
-export function mutationsFn(
-  state: ReturnType<typeof stateFn>,
-  getters: ReturnType<typeof gettersFn>,
+export function createMutations(
+  state: ReturnType<typeof createState>,
+  getters: ReturnType<typeof createGetters>,
   entityObserver: ReturnType<typeof createObserver>
 ) {
   function transition({

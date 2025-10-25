@@ -1,7 +1,7 @@
 import { WizardCommands } from "../types";
-import { stateFn } from "./state";
+import { createState } from "./state";
 
-export function gettersFn(state: ReturnType<typeof stateFn>) {
+export function createGetters(state: ReturnType<typeof createState>) {
   return {
     getStepByCommand({ command }: { command: WizardCommands }) {
       const step =

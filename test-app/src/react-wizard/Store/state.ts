@@ -1,6 +1,6 @@
 import type { IWizardConfig } from "../types";
 
-export function stateFn(props: IWizardConfig) {
+export function createState(props: IWizardConfig) {
   return {
     id: props.id,
     steps: props.steps,

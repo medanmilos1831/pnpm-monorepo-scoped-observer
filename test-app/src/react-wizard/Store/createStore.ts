@@ -6,16 +6,15 @@ import {
   type events,
   type IWizardConfig,
 } from "../types";
-import { gettersFn } from "./getters";
-import { listeners } from "./listeners";
+import { createGetters } from "./createGetters";
 import { mountFn } from "./mount";
-import { mutationsFn } from "./mutations";
-import { stateFn } from "./state";
+import { createMutations } from "./createMutations";
+import { createState } from "./state";
 
 interface IEntity {
-  state: ReturnType<typeof stateFn>;
-  getters: ReturnType<typeof gettersFn>;
-  mutations: ReturnType<typeof mutationsFn>;
+  state: ReturnType<typeof createState>;
+  getters: ReturnType<typeof createGetters>;
+  mutations: ReturnType<typeof createMutations>;
   mount: () => void;
   addEventListener: (
     eventName: events,
@@ -38,16 +37,18 @@ const createStore = () => {
     createEntity(props: IWizardConfig) {
       if (!this.entities.has(props.id)) {
         const entityObserver = createObserver(WIZARD_OBSERVER_SCOPE);
-        const state = stateFn(props);
-        const getters = gettersFn(state);
-        const mutations = mutationsFn(state, getters, entityObserver);
+        const state = createState(props);
+        const getters = createGetters(state);
+        const mutations = createMutations(state, getters, entityObserver);
         const mount = mountFn(this.entities, props, observer);
         this.entities.set(props.id, {
           state,
           getters,
           mutations,
-          addEventListener: (eventName, callback) => {
-            return entityObserver.subscribe(eventName, callback);
+          addEventListener: (event, callback) => {
+            return entityObserver.subscribe(event, ({ payload }) => {
+              callback(payload);
+            });
           },
           mount,
         });

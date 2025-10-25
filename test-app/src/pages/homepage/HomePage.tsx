@@ -74,6 +74,7 @@ const SomeComponent = () => {
   useEffect(() => {
     if (!client) return;
     const unsubscribe = client.addEventListener("onStepChange", (data: any) => {
+      console.log("on step change", data);
     });
     // return () => {
     //   // unsubscribe();
