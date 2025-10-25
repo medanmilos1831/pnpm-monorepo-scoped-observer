@@ -5,8 +5,9 @@ import {
 } from "../../wizard/Store/types";
 import { type IWizardConfig } from "../types";
 import { gettersFn } from "./getters";
-import { listeners } from "./listeners";
+
 import { mutationsFn } from "./mutations";
+import { createObserver } from "./observer";
 import { stateFn } from "./state";
 
 export function entityFn(
@@ -14,9 +15,10 @@ export function entityFn(
   observer: ReturnType<typeof createScopedObserver>,
   entitiesMap: Map<string, any>
 ) {
+  const entityObserver = createObserver();
   const state = stateFn(props);
   const getters = gettersFn(state);
-  const mutations = mutationsFn(state, getters);
+  const mutations = mutationsFn(state, getters, entityObserver);
 
   const event = () => {
     observer.dispatch({
@@ -31,8 +33,9 @@ export function entityFn(
     state,
     getters,
     mutations,
-    addEventListener: listeners(state.observer.subscribe),
+    addEventListener: entityObserver.subscribe,
     mount: () => {
+      event();
       return () => {
         entitiesMap.delete(props.id);
         event();

@@ -2,10 +2,12 @@ import { WizardEvents } from "../../wizard/Store/types";
 import { WizardCommands } from "../types";
 import { stateFn } from "./state";
 import { gettersFn } from "./getters";
+import { createObserver } from "./observer";
 
 export function mutationsFn(
   state: ReturnType<typeof stateFn>,
-  getters: ReturnType<typeof gettersFn>
+  getters: ReturnType<typeof gettersFn>,
+  entityObserver: ReturnType<typeof createObserver>
 ) {
   function transition({
     command,
@@ -34,12 +36,12 @@ export function mutationsFn(
       changeStep: () => {
         if (toStep) {
           state.activeStep = toStep;
-          state.observer.dispatch(WizardEvents.ON_STEP_CHANGE);
+          entityObserver.dispatch(WizardEvents.ON_STEP_CHANGE);
         } else {
           if (command === WizardCommands.PREVIOUS) {
             return;
           }
-          state.observer.dispatch(WizardEvents.ON_FINISH);
+          entityObserver.dispatch(WizardEvents.ON_FINISH);
         }
       },
     };
@@ -112,8 +114,8 @@ export function mutationsFn(
     reset() {
       state.steps = [...state.__INTERNAL__STEPS];
       this.changeStep(state.__INTERNAL__ACTIVE_STEP);
-      state.observer.dispatch(WizardEvents.ON_RESET);
-      state.observer.dispatch(WizardEvents.ON_STEP_CHANGE);
+      entityObserver.dispatch(WizardEvents.ON_RESET);
+      entityObserver.dispatch(WizardEvents.ON_STEP_CHANGE);
     },
   };
 }

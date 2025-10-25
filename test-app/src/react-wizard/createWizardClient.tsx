@@ -61,7 +61,6 @@ const createWizardClient = () => {
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
-      const client = store.getClient(id);
       return <>{children}</>;
     },
     useWizardCommands: () => {
