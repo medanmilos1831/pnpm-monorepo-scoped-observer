@@ -6,7 +6,7 @@ import { getWizardData } from "../utils";
 const useWizard = (store: Store, id: string) => {
   const entity = store.getEntity(id);
   const [subsciber] = useState(() => (notify: () => void) => {
-    return entity.getters.subscribe(WizardEvents.ON_STEP_CHANGE, () => {
+    return entity.addEventListener(WizardEvents.ON_STEP_CHANGE, () => {
       notify();
     });
   });

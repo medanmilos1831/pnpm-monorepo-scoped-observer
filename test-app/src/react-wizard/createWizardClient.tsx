@@ -19,6 +19,7 @@ const createWizardClient = () => {
       const [successRender, setSuccessRender] = useState(false);
 
       const wizard = store.createEntity(props);
+      useEffect(wizard.mount, []);
       useEffect(() => {
         let unsubscribe = () => {};
         if (!props.onFinish) return;
@@ -42,7 +43,6 @@ const createWizardClient = () => {
           unsubscribe();
         };
       });
-      useEffect(wizard.mount, []);
       if (successRender) {
         return props.renderOnFinish
           ? props.renderOnFinish({

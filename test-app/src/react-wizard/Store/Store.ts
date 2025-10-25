@@ -19,7 +19,7 @@ class Store {
       callback,
     });
   };
-  entities = new Map<string, any>();
+  entities = new Map<string, ReturnType<typeof entityFn>>();
   getEntity = (id: string) => {
     return this.entities.get(id)!;
   };
@@ -32,9 +32,6 @@ class Store {
         id,
       },
     });
-  };
-  getClient = (id: string) => {
-    return this.entities.get(id)!.client;
   };
   createEntity = (props: IWizardConfig) => {
     if (!this.entities.has(props.id)) {

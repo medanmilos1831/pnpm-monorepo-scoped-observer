@@ -17,7 +17,6 @@ export function entityFn(
   const state = stateFn(props);
   const getters = gettersFn(state);
   const mutations = mutationsFn(state, getters);
-  const addEventListener = listeners(state.observer.subscribe);
 
   const event = () => {
     observer.dispatch({
@@ -32,7 +31,7 @@ export function entityFn(
     state,
     getters,
     mutations,
-    addEventListener,
+    on: listeners(state.observer.subscribe),
     mount: () => {
       return () => {
         entitiesMap.delete(props.id);

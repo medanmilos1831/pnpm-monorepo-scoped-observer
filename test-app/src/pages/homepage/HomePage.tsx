@@ -5,6 +5,7 @@ import {
   useWizardClient,
   useWizardCommands,
 } from "../../wizService";
+import { WizardEvents } from "../../react-wizard/types";
 
 const StepOne = () => {
   return <div>StepOne</div>;
@@ -72,6 +73,9 @@ const Controls = () => {
 const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
   console.log("some component", client);
+  client.on("onStepChange", (data: any) => {
+    console.log("on step change", data);
+  });
   return (
     <div>
       <div>SomeComponent</div>
