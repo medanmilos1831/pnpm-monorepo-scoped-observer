@@ -36,14 +36,11 @@ class Store {
   getClient = (id: string) => {
     return this.entities.get(id)!.client;
   };
-  createEntity = (
-    props: IWizardConfig,
-    setSuccessRender: (success: boolean) => void
-  ) => {
+  createEntity = (props: IWizardConfig) => {
     if (!this.entities.has(props.id)) {
       this.entities.set(
         props.id,
-        entityFn(props, this._observer, this.entities, setSuccessRender)
+        entityFn(props, this._observer, this.entities)
       );
     }
     return this.getEntity(props.id)!;

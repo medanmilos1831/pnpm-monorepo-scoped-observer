@@ -24,7 +24,6 @@ const StepsMap: any = {
 
 const Body = () => {
   const { activeStep } = useWizard();
-  console.log("body", activeStep);
 
   let StepComponent = StepsMap[activeStep as keyof typeof StepsMap];
   return (
@@ -72,7 +71,6 @@ const Controls = () => {
 
 const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
-  console.log("some component", client);
   return (
     <div>
       <div>SomeComponent</div>

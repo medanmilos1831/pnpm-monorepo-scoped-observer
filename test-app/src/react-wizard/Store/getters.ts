@@ -1,4 +1,4 @@
-import { WizardCommands } from "../types";
+import { WizardCommands, WizardEvents } from "../types";
 import { stateFn } from "./state";
 
 export function gettersFn(state: ReturnType<typeof stateFn>) {
@@ -47,5 +47,26 @@ export function gettersFn(state: ReturnType<typeof stateFn>) {
     isFirst: () => {
       return state.isFirst;
     },
+    // on: (
+    //   event:
+    //     | WizardEvents.ON_RESET
+    //     | WizardEvents.ON_FINISH
+    //     | WizardEvents.ON_STEP_CHANGE,
+    //   callback: (data: any) => void
+    // ) => {
+    //   switch (event) {
+    //     case WizardEvents.ON_RESET:
+    //       return state.observer.subscribe(WizardEvents.ON_RESET, callback);
+    //     case WizardEvents.ON_FINISH:
+    //       return state.observer.subscribe(WizardEvents.ON_FINISH, callback);
+    //     case WizardEvents.ON_STEP_CHANGE:
+    //       return state.observer.subscribe(
+    //         WizardEvents.ON_STEP_CHANGE,
+    //         callback
+    //       );
+    //     default:
+    //       throw new Error("Unknown event: ${event}");
+    //   }
+    // },
   };
 }

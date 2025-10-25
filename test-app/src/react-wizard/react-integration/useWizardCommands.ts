@@ -11,7 +11,6 @@ const useWizardCommands = (
     throw new Error("WizardContext not found");
   }
   const item = store.getEntity(context.id);
-  console.log(item);
   return {
     // next: client.next,
     // previous: client.previous,
