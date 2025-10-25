@@ -1,48 +1,21 @@
-import {
-  createContext,
-  useEffect,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { createContext, type PropsWithChildren } from "react";
 
 import { useRequiredContext } from "./react-integration/useRequiredContext";
+import { useSetup } from "./react-integration/useSetup";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
 import { createStore } from "./Store/createStore";
-import { WizardEvents, type IWizardConfig, type IWizardStep } from "./types";
+import { type IWizardConfig, type IWizardStep } from "./types";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
   const store = createStore();
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
-      const [successRender, setSuccessRender] = useState(false);
-
-      const wizard = store.createEntity(props);
-      useEffect(wizard.mount, []);
-      useEffect(() => {
-        let unsubscribe = () => {};
-        if (!props.onFinish) return;
-        unsubscribe = wizard.addEventListener(WizardEvents.ON_FINISH, () => {
-          setSuccessRender(true);
-        });
-        return () => {
-          if (!props.onFinish) return;
-          unsubscribe();
-        };
-      });
-      useEffect(() => {
-        let unsubscribe = () => {};
-        if (!props.onReset) return;
-        unsubscribe = wizard.addEventListener(WizardEvents.ON_RESET, () => {
-          setSuccessRender(false);
-          wizard.mutations.reset();
-        });
-        return () => {
-          if (!props.onReset) return;
-          unsubscribe();
-        };
-      });
+      const { successRender, setSuccessRender, wizard } = useSetup(
+        store,
+        props
+      );
       if (successRender) {
         return props.renderOnFinish
           ? props.renderOnFinish({
