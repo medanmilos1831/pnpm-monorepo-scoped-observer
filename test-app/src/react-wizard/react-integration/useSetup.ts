@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { WizardEvents, type IWizardConfig } from "../types";
+import { useEffect } from "react";
 import type { createStore } from "../Store/createStore";
+import { type IWizardConfig } from "../types";
 
 const useSetup = (
   store: ReturnType<typeof createStore>,
@@ -11,8 +11,7 @@ const useSetup = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
-    unsubscribe = wizard.addEventListener("onFinish", (params: any) => {
-      console.log("on finish", params);
+    unsubscribe = wizard.addEventListener("onFinish", () => {
       props.onFinish!();
     });
     return () => {
