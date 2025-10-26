@@ -12,20 +12,7 @@ const createWizardClient = () => {
   const store = createStore();
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
-      const { successRender, setSuccessRender, wizard } = useSetup(
-        store,
-        props
-      );
-      if (successRender) {
-        return props.renderOnFinish
-          ? props.renderOnFinish({
-              reset: () => {
-                setSuccessRender(false);
-                wizard.mutations.reset();
-              },
-            })
-          : null;
-      }
+      useSetup(store, props);
       return (
         <WizardContext.Provider value={{ id: props.id }}>
           {children}

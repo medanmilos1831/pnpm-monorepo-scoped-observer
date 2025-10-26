@@ -7,7 +7,6 @@ export interface IWizardConfig {
   activeStep: string;
   onReset?: onReset;
   onFinish?: onFinish;
-  renderOnFinish?: renderOnFinish;
 }
 
 export enum WizardStoreEvents {
@@ -23,8 +22,7 @@ export enum WizardEvents {
 export type events = "onFinish" | "onReset" | "onStepChange";
 
 export type onReset = () => void;
-export type onFinish = (params: { reset: onReset; render: () => void }) => void;
-export type renderOnFinish = (params: { reset: onReset }) => React.ReactNode;
+export type onFinish = () => void;
 
 export enum WizardCommands {
   NEXT = "next",

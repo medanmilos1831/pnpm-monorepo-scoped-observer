@@ -103,8 +103,11 @@ const Inner = () => {
           id="wizard-1"
           steps={["stepOne", "stepTwo", "stepThree"]}
           activeStep="stepOne"
-          onFinish={(params) => {
-            params.render();
+          onFinish={() => {
+            console.log("on finish");
+          }}
+          onReset={() => {
+            console.log("on reset");
           }}
         >
           <Body />

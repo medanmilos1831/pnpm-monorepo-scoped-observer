@@ -6,15 +6,14 @@ const useSetup = (
   store: ReturnType<typeof createStore>,
   props: IWizardConfig
 ) => {
-  const [successRender, setSuccessRender] = useState(false);
-
   const wizard = store.createEntity(props);
   useEffect(wizard.mount, []);
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
-    unsubscribe = wizard.addEventListener("onFinish", () => {
-      setSuccessRender(true);
+    unsubscribe = wizard.addEventListener("onFinish", (params: any) => {
+      console.log("on finish", params);
+      props.onFinish!();
     });
     return () => {
       if (!props.onFinish) return;
@@ -25,8 +24,7 @@ const useSetup = (
     let unsubscribe = () => {};
     if (!props.onReset) return;
     unsubscribe = wizard.addEventListener("onReset", () => {
-      setSuccessRender(false);
-      wizard.mutations.reset();
+      props.onReset!();
     });
     return () => {
       if (!props.onReset) return;
@@ -34,8 +32,6 @@ const useSetup = (
     };
   });
   return {
-    successRender,
-    setSuccessRender,
     wizard,
   };
 };
