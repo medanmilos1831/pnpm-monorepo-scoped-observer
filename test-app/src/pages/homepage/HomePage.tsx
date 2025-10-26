@@ -34,33 +34,36 @@ const Body = () => {
 };
 
 const Controls = () => {
-  const { next, previous, reset, goToStep } = useWizardCommands();
+  const { next, previous, reset, goToStep, navigate } = useWizardCommands();
   return (
     <div>
       <button
         onClick={() => {
-          previous();
+          // previous();
+          navigate({ command: "previous" });
         }}
       >
         Previous
       </button>
       <button
         onClick={() => {
-          next();
+          // next();
+          navigate({ command: "next", payload: { name: "John" } });
         }}
       >
         Next
       </button>
       <button
         onClick={() => {
-          reset();
+          // reset();
         }}
       >
         Reset
       </button>
       <button
         onClick={() => {
-          goToStep("stepTwo");
+          // goToStep("stepTwo");
+          navigate({ command: "goToStep", stepName: "stepTwo" });
         }}
       >
         Go to Step Two

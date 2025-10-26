@@ -3,11 +3,9 @@ import { createState } from "./state";
 
 export function createGetters(state: ReturnType<typeof createState>) {
   return {
-    getStepByCommand({ command }: { command: WizardCommands }) {
+    getStepByCommand({ command }: { command: "next" | "previous" }) {
       const step =
-        command === WizardCommands.NEXT
-          ? this.getNextStep()
-          : this.getPreviousStep();
+        command === "next" ? this.getNextStep() : this.getPreviousStep();
       return step;
     },
     getNextStep: () => {

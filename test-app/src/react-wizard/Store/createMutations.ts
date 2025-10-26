@@ -1,5 +1,5 @@
 import { WizardEvents } from "../../wizard/Store/types";
-import { WizardCommands } from "../types";
+import { WizardCommands, type stepTransitionObject } from "../types";
 import { createState } from "./state";
 import { createGetters } from "./createGetters";
 import type { createObserver } from "../observer";
@@ -12,45 +12,43 @@ export function createMutations(
   function transition({
     command,
     stepName,
-  }: {
-    command: WizardCommands;
-    stepName?: string;
-  }) {
-    let toStep = stepName ? stepName : getters.getStepByCommand({ command })!;
+    payload,
+    clientProp,
+  }: stepTransitionObject) {
+    // let toStep = stepName ? stepName : getters.getStepByCommand({ command })!;
     return {
-      toStep,
+      toStep: stepName,
       action: () => {
-        const prop = command === WizardCommands.NEXT ? "onNext" : "onPrevious";
-        if (state.steps[prop]) {
-          state.steps[prop]({
+        // const prop = command === WizardCommands.NEXT ? "onNext" : "onPrevious";
+        if (state.steps[clientProp]) {
+          state.steps[clientProp]({
             updateSteps: (callback: (steps: string[]) => string[]) => {
               const updatedSteps = callback(state.steps);
               state.steps = [...new Set(updatedSteps)];
-              toStep = getters.getStepByCommand({ command })!;
+              // toStep = getters.getStepByCommand({ command })!;
             },
             activeStep: state.activeStep,
-            toStep: getters.getStepByCommand({ command })!,
+            toStep: stepName!,
           });
         }
       },
       changeStep: () => {
-        if (toStep) {
-          state.activeStep = toStep;
-          entityObserver.dispatch(WizardEvents.ON_STEP_CHANGE);
+        if (stepName) {
+          state.activeStep = stepName;
+          entityObserver.dispatch("onStepChange");
         } else {
-          if (command === WizardCommands.PREVIOUS) {
+          if (command === "previous") {
             return;
           }
-          entityObserver.dispatch(WizardEvents.ON_FINISH);
+          entityObserver.dispatch("onFinish");
         }
       },
     };
   }
 
   function validationHandler(
-    command: WizardCommands,
-    transitionPlan: ReturnType<typeof transition>,
-    obj?: any
+    obj: stepTransitionObject,
+    transitionPlan: ReturnType<typeof transition>
   ) {
     const { action, changeStep, toStep } = transitionPlan;
     // if (step.validate) {
@@ -68,16 +66,9 @@ export function createMutations(
     // }
     return "no_validation";
   }
-  function transitionWrapper(
-    command: WizardCommands,
-    obj?: { actionType?: string },
-    stepName?: string
-  ) {
-    const transitionPlan = transition({
-      command,
-      stepName,
-    });
-    const validationResult = validationHandler(command, transitionPlan, obj);
+  function transitionWrapper(obj: stepTransitionObject) {
+    const transitionPlan = transition(obj);
+    const validationResult = validationHandler(obj, transitionPlan);
     if (validationResult === "validated") {
       return;
     }
@@ -91,6 +82,41 @@ export function createMutations(
       state.activeStep = step;
       state.isLast = state.steps.length - 1 === state.steps.indexOf(step);
       state.isFirst = state.steps.indexOf(step) === 0;
+    },
+    navigate: (obj: {
+      command: "next" | "previous" | "goToStep";
+      stepName?: string;
+      payload?: any;
+    }) => {
+      if (obj.command === "goToStep" && !obj.stepName) {
+        return;
+      }
+      if (obj.command === "goToStep" && obj.stepName === state.activeStep) {
+        return;
+      }
+      let command = obj.command;
+      let stepName: string | null = obj.stepName ?? null;
+      let payload = obj.payload;
+      if (command === "next" || command === "previous") {
+        stepName = getters.getStepByCommand({ command });
+      }
+      let data = {
+        command,
+        stepName,
+        payload,
+        clientProp: (() => {
+          if (command === "next") {
+            return "onNext";
+          }
+          if (command === "previous") {
+            return "onPrevious";
+          }
+          const currentStepIndex = state.steps.indexOf(state.activeStep);
+          const targetStepIndex = state.steps.indexOf(stepName!);
+          return targetStepIndex > currentStepIndex ? "onNext" : "onPrevious";
+        })(),
+      };
+      transitionWrapper(data);
     },
     goToStep: (stepName: string, obj?: { actionType?: string }) => {
       if (stepName === state.activeStep) {

@@ -31,6 +31,7 @@ const createWizardClient = () => {
         previous: item.previous,
         reset: () => item.reset(),
         goToStep: item.goToStep,
+        navigate: item.navigate,
       };
     },
     useWizard: () => {

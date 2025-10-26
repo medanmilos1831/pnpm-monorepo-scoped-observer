@@ -47,3 +47,10 @@ export interface IWizardStep {
   onPrevious?: (params: IOnNavigateParams) => void;
   validate?: (params: IOnValidateParams) => void;
 }
+
+export type stepTransitionObject = {
+  command: "next" | "previous" | "goToStep";
+  stepName: string | null;
+  payload?: any;
+  clientProp: "onNext" | "onPrevious";
+};
