@@ -2,16 +2,17 @@ import { useEffect } from "react";
 import type { createStore } from "../Store/createStore";
 import { type IWizardConfig } from "../types";
 
-const useSetup = (
+const useSetupWizard = (
   store: ReturnType<typeof createStore>,
   props: IWizardConfig
 ) => {
-  const wizard = store.createEntity(props);
-  useEffect(wizard.mount, []);
+  const { mount, addEventListenerWizard: addEventListener } =
+    store.createEntity(props);
+  useEffect(mount, []);
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
-    unsubscribe = wizard.addEventListener("onFinish", () => {
+    unsubscribe = addEventListener("onFinish", () => {
       props.onFinish!();
     });
     return () => {
@@ -22,7 +23,7 @@ const useSetup = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onReset) return;
-    unsubscribe = wizard.addEventListener("onReset", () => {
+    unsubscribe = addEventListener("onReset", () => {
       props.onReset!();
     });
     return () => {
@@ -30,9 +31,6 @@ const useSetup = (
       unsubscribe();
     };
   });
-  return {
-    wizard,
-  };
 };
 
-export { useSetup };
+export { useSetupWizard };

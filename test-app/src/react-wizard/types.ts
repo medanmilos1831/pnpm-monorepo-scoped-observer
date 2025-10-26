@@ -1,5 +1,25 @@
+import type { createGetters } from "./Store/createGetters";
+import type { createMutations } from "./Store/createMutations";
+import type { createState } from "./Store/state";
+
 export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 export const WIZARD_OBSERVER_SCOPE = "wizard-observer" as const;
+export const WIZARD_STEP_OBSERVER_SCOPE = "wizard-step-observer" as const;
+
+export interface IEntity {
+  state: ReturnType<typeof createState>;
+  getters: ReturnType<typeof createGetters>;
+  mutations: ReturnType<typeof createMutations>;
+  mount: () => void;
+  addEventListenerStep: (
+    eventName: eventsWizard,
+    callback: (payload: any) => void
+  ) => () => void;
+  addEventListenerWizard: (
+    eventName: eventsWizard,
+    callback: (payload: any) => void
+  ) => () => void;
+}
 
 export interface IWizardConfig {
   id: string;
@@ -19,12 +39,8 @@ export enum WizardEvents {
   ON_FINISH = "onFinish",
 }
 
-export type events =
-  | "onFinish"
-  | "onReset"
-  | "onStepChange"
-  | "onNext"
-  | "onPrevious";
+export type eventsWizard = "onFinish" | "onReset" | "onStepChange";
+export type eventsStep = "onNext" | "onPrevious";
 export enum commandType {
   NEXT = "next",
   PREVIOUS = "previous",

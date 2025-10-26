@@ -1,18 +1,19 @@
 import { createContext, useEffect, type PropsWithChildren } from "react";
 
 import { useRequiredContext } from "./react-integration/useRequiredContext";
-import { useSetup } from "./react-integration/useSetup";
+import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
 import { createStore } from "./Store/createStore";
 import { type IWizardConfig, type IWizardStep } from "./types";
+import { useSetupStep } from "./react-integration/useSetupStep";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
   const store = createStore();
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
-      useSetup(store, props);
+      useSetupWizard(store, props);
       return (
         <WizardContext.Provider value={{ id: props.id }}>
           {children}
@@ -21,29 +22,29 @@ const createWizardClient = () => {
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
-      console.log("Step", props);
-      console.log("entity", store.getEntity(id));
-      useEffect(() => {
-        const unsubscribe = store
-          .getEntity(id)
-          .addEventListener("onNext", (params) => {
-            props.onNext?.(params);
-          });
-        return () => {
-          unsubscribe();
-        };
-      });
+      const entity = store.getEntity(id);
+      useSetupStep(store.getEntity(id), props);
+      // useEffect(() => {
+      //   const unsubscribe = store
+      //     .getEntity(id)
+      //     .addEventListenerStep("onNext", (params) => {
+      //       props.onNext?.(params);
+      //     });
+      //   return () => {
+      //     unsubscribe();
+      //   };
+      // });
 
-      useEffect(() => {
-        const unsubscribe = store
-          .getEntity(id)
-          .addEventListener("onPrevious", (params) => {
-            props.onPrevious?.(params);
-          });
-        return () => {
-          unsubscribe();
-        };
-      });
+      // useEffect(() => {
+      //   const unsubscribe = store
+      //     .getEntity(id)
+      //     .addEventListenerStep("onPrevious", (params) => {
+      //       props.onPrevious?.(params);
+      //     });
+      //   return () => {
+      //     unsubscribe();
+      //   };
+      // });
 
       return <>{children}</>;
     },

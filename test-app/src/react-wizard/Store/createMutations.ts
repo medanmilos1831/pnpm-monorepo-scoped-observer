@@ -12,7 +12,8 @@ import type { createObserver } from "../observer";
 export function createMutations(
   state: ReturnType<typeof createState>,
   getters: ReturnType<typeof createGetters>,
-  entityObserver: ReturnType<typeof createObserver>
+  entityObserver: ReturnType<typeof createObserver>,
+  stepObserver: ReturnType<typeof createObserver>
 ) {
   function transition({
     command,
