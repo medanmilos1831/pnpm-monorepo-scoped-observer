@@ -4,10 +4,25 @@ import {
   useWizard,
   useWizardClient,
   useWizardCommands,
+  Step,
 } from "../../wizService";
 
 const StepOne = () => {
-  return <div>StepOne</div>;
+  return (
+    <Step
+      onNext={(params) => {
+        console.log("on next", params);
+      }}
+      onPrevious={(params) => {
+        console.log("on previous", params);
+      }}
+      validate={(params) => {
+        console.log("validate", params);
+      }}
+    >
+      StepOne
+    </Step>
+  );
 };
 const StepTwo = () => {
   return <div>StepTwo</div>;

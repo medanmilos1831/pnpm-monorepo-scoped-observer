@@ -1,4 +1,4 @@
-import { createContext, type PropsWithChildren } from "react";
+import { createContext, useEffect, type PropsWithChildren } from "react";
 
 import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useSetup } from "./react-integration/useSetup";
@@ -21,6 +21,30 @@ const createWizardClient = () => {
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
+      console.log("Step", props);
+      console.log("entity", store.getEntity(id));
+      useEffect(() => {
+        const unsubscribe = store
+          .getEntity(id)
+          .addEventListener("onNext", (params) => {
+            props.onNext?.(params);
+          });
+        return () => {
+          unsubscribe();
+        };
+      });
+
+      useEffect(() => {
+        const unsubscribe = store
+          .getEntity(id)
+          .addEventListener("onPrevious", (params) => {
+            props.onPrevious?.(params);
+          });
+        return () => {
+          unsubscribe();
+        };
+      });
+
       return <>{children}</>;
     },
     useWizardCommands: () => {

@@ -1,5 +1,10 @@
 import { WizardEvents } from "../../wizard/Store/types";
-import { WizardCommands, type stepTransitionObject } from "../types";
+import {
+  commandType,
+  WizardCommands,
+  type command,
+  type stepTransitionObject,
+} from "../types";
 import { createState } from "./state";
 import { createGetters } from "./createGetters";
 import type { createObserver } from "../observer";
@@ -68,6 +73,7 @@ export function createMutations(
   }
   function transitionWrapper(obj: stepTransitionObject) {
     const transitionPlan = transition(obj);
+    console.log("transitionPlan", transitionPlan);
     const validationResult = validationHandler(obj, transitionPlan);
     if (validationResult === "validated") {
       return;
@@ -84,20 +90,23 @@ export function createMutations(
       state.isFirst = state.steps.indexOf(step) === 0;
     },
     navigate: (obj: {
-      command: "next" | "previous" | "goToStep";
+      command: `${commandType}`;
       stepName?: string;
       payload?: any;
     }) => {
-      if (obj.command === "goToStep" && !obj.stepName) {
+      if (obj.command === commandType.GO_TO_STEP && !obj.stepName) {
         return;
       }
-      if (obj.command === "goToStep" && obj.stepName === state.activeStep) {
+      if (
+        obj.command === commandType.GO_TO_STEP &&
+        obj.stepName === state.activeStep
+      ) {
         return;
       }
-      let command = obj.command;
+      let command = obj.command as `${commandType}`;
       let stepName: string | null = obj.stepName ?? null;
       let payload = obj.payload;
-      if (command === "next" || command === "previous") {
+      if (command === commandType.NEXT || command === commandType.PREVIOUS) {
         stepName = getters.getStepByCommand({ command });
       }
       let data = {
@@ -105,11 +114,11 @@ export function createMutations(
         stepName,
         payload,
         clientProp: (() => {
-          if (command === "next") {
-            return "onNext";
+          if (command === commandType.NEXT) {
+            return "onNext" as const;
           }
-          if (command === "previous") {
-            return "onPrevious";
+          if (command === commandType.PREVIOUS) {
+            return "onPrevious" as const;
           }
           const currentStepIndex = state.steps.indexOf(state.activeStep);
           const targetStepIndex = state.steps.indexOf(stepName!);

@@ -19,7 +19,17 @@ export enum WizardEvents {
   ON_FINISH = "onFinish",
 }
 
-export type events = "onFinish" | "onReset" | "onStepChange";
+export type events =
+  | "onFinish"
+  | "onReset"
+  | "onStepChange"
+  | "onNext"
+  | "onPrevious";
+export enum commandType {
+  NEXT = "next",
+  PREVIOUS = "previous",
+  GO_TO_STEP = "goToStep",
+}
 
 export type onReset = () => void;
 export type onFinish = () => void;
@@ -49,7 +59,7 @@ export interface IWizardStep {
 }
 
 export type stepTransitionObject = {
-  command: "next" | "previous" | "goToStep";
+  command: `${commandType}`;
   stepName: string | null;
   payload?: any;
   clientProp: "onNext" | "onPrevious";
