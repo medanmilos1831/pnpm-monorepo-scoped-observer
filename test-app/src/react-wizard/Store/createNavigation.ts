@@ -1,12 +1,10 @@
-import { commandType, type stepTransitionObject } from "../types";
-import { createState } from "./createState";
-import { createGetters } from "./createGetters";
 import { createObserver } from "../observer";
-import { createStep } from "./createStep";
+import { commandType, type stepTransitionObject } from "../types";
+import { createGetters } from "./createGetters";
 import { createMutations } from "./createMutations";
+import { createStep } from "./createStep";
 
 const createNavigation = (
-  state: ReturnType<typeof createState>,
   getters: ReturnType<typeof createGetters>,
   mutations: ReturnType<typeof createMutations>,
   observer: ReturnType<typeof createObserver>,
@@ -20,7 +18,7 @@ const createNavigation = (
         mutations.setActiveStep(stateData.stepName);
         observer.dispatch("onStepChange");
       } else {
-        if (stateData.command === "previous") {
+        if (stateData.command === commandType.PREVIOUS) {
           return;
         }
         observer.dispatch("onFinish");
@@ -72,26 +70,25 @@ const createNavigation = (
           if (command === commandType.PREVIOUS) {
             return "onPrevious" as const;
           }
-          const currentStepIndex = state.steps.indexOf(state.activeStep);
-          const targetStepIndex = state.steps.indexOf(stepName!);
+          const steps = getters.getSteps();
+          const currentStepIndex = steps.indexOf(getters.getActiveStep());
+          const targetStepIndex = steps.indexOf(stepName!);
           return targetStepIndex > currentStepIndex ? "onNext" : "onPrevious";
         })(),
       };
       stateData = data;
       if (step) {
         if (step.validate) {
-          if (step.validate) {
-            step.validate({
-              payload: data.payload,
-              command: data.command,
-              activeStep: state.activeStep,
-              toStep: stepName!,
-              resolve: () => {
-                this.middleware();
-                this.action();
-              },
-            });
-          }
+          step.validate({
+            payload: data.payload,
+            command: data.command,
+            activeStep: getters.getActiveStep(),
+            toStep: stepName!,
+            resolve: () => {
+              this.middleware();
+              this.action();
+            },
+          });
           return;
         }
         this.middleware();

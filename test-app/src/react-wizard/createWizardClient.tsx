@@ -1,4 +1,4 @@
-import { createContext, useEffect, type PropsWithChildren } from "react";
+import { createContext, type PropsWithChildren } from "react";
 
 import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useSetupWizard } from "./react-integration/useSetupWizard";
@@ -23,27 +23,6 @@ const createWizardClient = () => {
       const { id } = useRequiredContext(WizardContext);
       const entity = store.getEntity(id);
       entity.step.defineStep(props);
-      // useEffect(() => {
-      //   const unsubscribe = store
-      //     .getEntity(id)
-      //     .addEventListenerStep("onNext", (params) => {
-      //       props.onNext?.(params);
-      //     });
-      //   return () => {
-      //     unsubscribe();
-      //   };
-      // });
-
-      // useEffect(() => {
-      //   const unsubscribe = store
-      //     .getEntity(id)
-      //     .addEventListenerStep("onPrevious", (params) => {
-      //       props.onPrevious?.(params);
-      //     });
-      //   return () => {
-      //     unsubscribe();
-      //   };
-      // });
 
       return <>{children}</>;
     },
@@ -52,10 +31,7 @@ const createWizardClient = () => {
       const item = store.getEntity(id).mutations;
       const navigation = store.getEntity(id).navigation;
       return {
-        next: item.next,
-        previous: item.previous,
         reset: () => item.reset(),
-        goToStep: item.goToStep,
         navigate: (obj: {
           command: `${commandType}`;
           stepName?: string;
