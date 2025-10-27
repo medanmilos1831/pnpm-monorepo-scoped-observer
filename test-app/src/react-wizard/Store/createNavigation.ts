@@ -21,34 +21,24 @@ const createNavigation = (
     makeTransition: (navigationCache: navigationCacheType) => {
       if (navigationCache.stepName) {
         mutations.changeStep(navigationCache.stepName!);
+        if (navigationCache.isReset) {
+          mutations.reset();
+          observer.dispatch(WizardPublicEvents.ON_RESET);
+        }
         observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
         stepMiddleware = undefined;
-      } else {
-        if (navigationCache.command === wizardCommands.PREVIOUS) {
-          return;
-        }
-        if (
-          !navigationCache.stepName &&
-          navigationCache.command === wizardCommands.NEXT
-        ) {
-          observer.dispatch(WizardPublicEvents.ON_FINISH);
-          return;
-        }
+        return;
       }
+      observer.dispatch(WizardPublicEvents.ON_FINISH);
     },
     middleware(navigationCache: navigationCacheType) {
       if (!stepMiddleware) return;
       if (stepMiddleware[navigationCache.middleware]) {
-        stepMiddleware[navigationCache.middleware]!(
-          this.createMiddlewareParams(navigationCache)
-        );
+        stepMiddleware[navigationCache.middleware]!({
+          activeStep: getters.getActiveStep(),
+          toStep: navigationCache.stepName!,
+        });
       }
-    },
-    createMiddlewareParams(navigationCache: navigationCacheType) {
-      return {
-        activeStep: getters.getActiveStep(),
-        toStep: navigationCache.stepName!,
-      };
     },
     resolve(navigationCache: navigationCacheType) {
       this.middleware(navigationCache);
@@ -56,7 +46,7 @@ const createNavigation = (
     },
     execute(navigationCache: navigationCacheType) {
       if (stepMiddleware && stepMiddleware.validate) {
-        stepMiddleware.validate({
+        stepMiddleware!.validate!({
           payload: navigationCache.payload,
           command: navigationCache.command,
           activeStep: getters.getActiveStep(),
@@ -73,8 +63,17 @@ const createNavigation = (
       command: wizardCommandsType;
       stepName?: string;
       payload?: any;
+      isReset?: boolean;
     }) {
-      if (obj.command === wizardCommands.GO_TO_STEP && !obj.stepName) {
+      let isReset = obj.isReset ?? false;
+      if (isReset) {
+        this.makeTransition({
+          stepName: obj.stepName!,
+          command: wizardCommands.GO_TO_STEP,
+          middleware: stepMiddlewares.ON_PREVIOUS,
+          payload: undefined,
+          isReset: true,
+        });
         return;
       }
       if (
@@ -110,6 +109,7 @@ const createNavigation = (
             ? stepMiddlewares.ON_NEXT
             : stepMiddlewares.ON_PREVIOUS;
         })(),
+        isReset: false,
       };
       if (!data.stepName && command === wizardCommands.PREVIOUS) {
         return;

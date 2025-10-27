@@ -26,11 +26,17 @@ const StepTwo = () => {
     <div>
       <Step
         onNext={(params) => {
+          // updateSteps((steps) => {
+          //   return [...steps, "stepThree"];
+          // });
+        }}
+        onPrevious={(params) => {}}
+        validate={(params) => {
           updateSteps((steps) => {
             return [...steps, "stepThree"];
           });
+          params.resolve();
         }}
-        onPrevious={(params) => {}}
       >
         StepTwo
         <button
@@ -95,7 +101,7 @@ const WizNavigation = () => {
 };
 
 const Controls = () => {
-  const { next, previous } = useWizardCommands();
+  const { next, previous, reset } = useWizardCommands();
   return (
     <div>
       <button
@@ -115,7 +121,7 @@ const Controls = () => {
       </button>
       <button
         onClick={() => {
-          // reset();
+          reset();
         }}
       >
         Reset

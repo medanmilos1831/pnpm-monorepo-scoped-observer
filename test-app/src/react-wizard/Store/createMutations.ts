@@ -21,9 +21,6 @@ export function createMutations(
     },
     reset() {
       state.steps = [...state.__INTERNAL__STEPS];
-      this.changeStep(state.__INTERNAL__ACTIVE_STEP);
-      observer.dispatch(WizardPublicEvents.ON_RESET);
-      observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
     },
   };
 }

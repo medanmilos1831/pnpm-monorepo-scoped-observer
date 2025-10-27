@@ -31,7 +31,14 @@ const createWizardClient = () => {
       const item = store.getEntity(id).mutations;
       const navigation = store.getEntity(id).navigation;
       return {
-        reset: () => item.reset(),
+        reset: () => {
+          navigation.navigate({
+            command: wizardCommands.GO_TO_STEP,
+            stepName: store.getEntity(id).state.__INTERNAL__ACTIVE_STEP,
+            payload: undefined,
+            isReset: true,
+          });
+        },
         next: (payload?: any) =>
           navigation.navigate({ command: wizardCommands.NEXT, payload }),
         previous: (payload?: any) =>
@@ -42,12 +49,7 @@ const createWizardClient = () => {
             stepName,
             payload,
           }),
-        updateSteps: (callback: (steps: string[]) => string[]) => {
-          if (navigation.isLocked()) {
-            return;
-          }
-          item.updateSteps(callback);
-        },
+        updateSteps: item.updateSteps,
       };
     },
     useWizard: () => {

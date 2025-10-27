@@ -77,6 +77,7 @@ export type navigationCacheType = {
   stepName: string | null;
   payload?: any;
   middleware: stepMiddlewares;
+  isReset: boolean;
 };
 
 export enum stepMiddlewares {
