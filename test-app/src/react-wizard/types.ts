@@ -13,7 +13,7 @@ export interface IEntity {
   mutations: ReturnType<typeof createMutations>;
   mount: () => void;
   addEventListener: (
-    eventName: `${WizardEvents}`,
+    eventName: `${WizardPublicEventsType}`,
     callback: (payload: any) => void
   ) => () => void;
   navigation: ReturnType<typeof createNavigation>;
@@ -30,31 +30,35 @@ export interface IWizardConfig {
 export enum WizardStoreEvents {
   CREATE_WIZARD = "createWizard",
 }
-
-export enum WizardEvents {
+export enum WizardPublicEvents {
   ON_STEP_CHANGE = "onStepChange",
   ON_RESET = "onReset",
   ON_FINISH = "onFinish",
 }
+export enum WizardInternalEvents {
+  ON_STEPS_UPDATE = "onStepsUpdate",
+}
+export type WizardPublicEventsType = `${WizardPublicEvents}`;
+export type WizardInternalEventsType = `${WizardInternalEvents}`;
 
-export enum commandType {
+export enum wizardCommands {
   NEXT = "next",
   PREVIOUS = "previous",
   GO_TO_STEP = "goToStep",
 }
 
+export type wizardCommandsType = `${wizardCommands}`;
 export type onReset = () => void;
 export type onFinish = () => void;
 
 interface IOnNavigateParams {
   activeStep: string;
   toStep: string;
-  updateSteps: (callback: (steps: string[]) => string[]) => void;
 }
 
 interface IOnValidateParams {
   payload: any;
-  command: commandType;
+  command: wizardCommandsType;
   activeStep: string;
   toStep: string;
   resolve: () => void;
@@ -67,7 +71,7 @@ export interface IWizardStep {
 }
 
 export type navigationCacheType = {
-  command: commandType;
+  command: wizardCommandsType;
   stepName: string | null;
   payload?: any;
   clientProp: stepMiddlewares;

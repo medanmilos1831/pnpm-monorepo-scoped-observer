@@ -5,7 +5,7 @@ import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
 import { createStore } from "./Store/createStore";
-import { commandType, type IWizardConfig, type IWizardStep } from "./types";
+import { wizardCommands, type IWizardConfig, type IWizardStep } from "./types";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
@@ -33,15 +33,16 @@ const createWizardClient = () => {
       return {
         reset: () => item.reset(),
         next: (payload?: any) =>
-          navigation.navigate({ command: commandType.NEXT, payload }),
+          navigation.navigate({ command: wizardCommands.NEXT, payload }),
         previous: (payload?: any) =>
-          navigation.navigate({ command: commandType.PREVIOUS, payload }),
+          navigation.navigate({ command: wizardCommands.PREVIOUS, payload }),
         goToStep: (stepName: string, payload?: any) =>
           navigation.navigate({
-            command: commandType.GO_TO_STEP,
+            command: wizardCommands.GO_TO_STEP,
             stepName,
             payload,
           }),
+        updateSteps: item.updateSteps,
       };
     },
     useWizard: () => {

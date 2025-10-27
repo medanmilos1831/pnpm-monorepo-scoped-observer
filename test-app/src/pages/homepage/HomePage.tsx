@@ -23,12 +23,7 @@ const StepOne = () => {
 const StepTwo = () => {
   return (
     <div>
-      <Step
-        onNext={(params) => {
-          params.updateSteps((steps) => [...steps, "stepThree"]);
-        }}
-        onPrevious={(params) => {}}
-      >
+      <Step onNext={(params) => {}} onPrevious={(params) => {}}>
         StepTwo
       </Step>
     </div>

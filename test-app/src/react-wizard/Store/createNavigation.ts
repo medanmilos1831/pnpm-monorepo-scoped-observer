@@ -1,9 +1,11 @@
 import { createObserver } from "../observer";
 import {
-  commandType,
+  wizardCommands,
   stepMiddlewares,
+  WizardPublicEvents,
   type IWizardStep,
   type navigationCacheType,
+  type wizardCommandsType,
 } from "../types";
 import { createGetters } from "./createGetters";
 import { createMutations } from "./createMutations";
@@ -18,17 +20,17 @@ const createNavigation = (
     action: (navigationCache: navigationCacheType) => {
       if (navigationCache.stepName) {
         mutations.setActiveStep(navigationCache.stepName);
-        observer.dispatch("onStepChange");
+        observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
         stepMiddleware = undefined;
       } else {
-        if (navigationCache.command === commandType.PREVIOUS) {
+        if (navigationCache.command === wizardCommands.PREVIOUS) {
           return;
         }
         if (
           !navigationCache.stepName &&
-          navigationCache.command === commandType.NEXT
+          navigationCache.command === wizardCommands.NEXT
         ) {
-          observer.dispatch("onFinish");
+          observer.dispatch(WizardPublicEvents.ON_FINISH);
           return;
         }
       }
@@ -45,12 +47,6 @@ const createNavigation = (
       return {
         activeStep: getters.getActiveStep(),
         toStep: navigationCache.stepName!,
-        updateSteps: (callback: (steps: string[]) => string[]) => {
-          mutations.updateSteps([...new Set(callback(getters.getSteps()))]);
-          navigationCache.stepName = getters.getStepByCommand({
-            command: navigationCache.command,
-          });
-        },
       };
     },
     execute(navigationCache: navigationCacheType) {
@@ -71,23 +67,26 @@ const createNavigation = (
       this.action(navigationCache);
     },
     navigate(obj: {
-      command: `${commandType}`;
+      command: wizardCommandsType;
       stepName?: string;
       payload?: any;
     }) {
-      if (obj.command === commandType.GO_TO_STEP && !obj.stepName) {
+      if (obj.command === wizardCommands.GO_TO_STEP && !obj.stepName) {
         return;
       }
       if (
-        obj.command === commandType.GO_TO_STEP &&
+        obj.command === wizardCommands.GO_TO_STEP &&
         obj.stepName === getters.getActiveStep()
       ) {
         return;
       }
-      let command = obj.command as commandType;
+      let command = obj.command as wizardCommandsType;
       let stepName: string | null = obj.stepName ?? null;
       let payload = obj.payload;
-      if (command === commandType.NEXT || command === commandType.PREVIOUS) {
+      if (
+        command === wizardCommands.NEXT ||
+        command === wizardCommands.PREVIOUS
+      ) {
         stepName = getters.getStepByCommand({ command });
       }
       let data = {
@@ -95,10 +94,10 @@ const createNavigation = (
         stepName,
         payload,
         clientProp: (() => {
-          if (command === commandType.NEXT) {
+          if (command === wizardCommands.NEXT) {
             return stepMiddlewares.ON_NEXT;
           }
-          if (command === commandType.PREVIOUS) {
+          if (command === wizardCommands.PREVIOUS) {
             return stepMiddlewares.ON_PREVIOUS;
           }
           const steps = getters.getSteps();
@@ -109,7 +108,7 @@ const createNavigation = (
             : stepMiddlewares.ON_PREVIOUS;
         })(),
       };
-      if (!data.stepName && command === commandType.PREVIOUS) {
+      if (!data.stepName && command === wizardCommands.PREVIOUS) {
         return;
       }
       this.execute(data);

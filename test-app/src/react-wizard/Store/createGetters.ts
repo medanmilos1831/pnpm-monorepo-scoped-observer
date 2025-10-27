@@ -1,11 +1,11 @@
-import { commandType } from "../types";
+import { wizardCommands, type wizardCommandsType } from "../types";
 import { createState } from "./createState";
 
 export function createGetters(state: ReturnType<typeof createState>) {
   return {
-    getStepByCommand({ command }: { command: `${commandType}` }) {
+    getStepByCommand({ command }: { command: wizardCommandsType }) {
       const step =
-        command === commandType.NEXT
+        command === wizardCommands.NEXT
           ? this.getNextStep()
           : this.getPreviousStep();
       return step;
