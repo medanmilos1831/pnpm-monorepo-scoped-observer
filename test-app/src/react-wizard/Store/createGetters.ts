@@ -1,9 +1,9 @@
-import { WizardCommands } from "../types";
+import { commandType, WizardCommands } from "../types";
 import { createState } from "./createState";
 
 export function createGetters(state: ReturnType<typeof createState>) {
   return {
-    getStepByCommand({ command }: { command: "next" | "previous" }) {
+    getStepByCommand({ command }: { command: `${commandType}` }) {
       const step =
         command === "next" ? this.getNextStep() : this.getPreviousStep();
       return step;

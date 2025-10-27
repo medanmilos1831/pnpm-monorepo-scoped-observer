@@ -8,8 +8,8 @@ const createNavigation = (
   mutations: ReturnType<typeof createMutations>,
   observer: ReturnType<typeof createObserver>
 ) => {
-  let stepMiddleware: IWizardStep;
-  let stateData: {
+  let stepMiddleware: IWizardStep | undefined;
+  let navigationCache: {
     command: commandType;
     stepName: string | null;
     payload: any;
@@ -18,39 +18,48 @@ const createNavigation = (
 
   return {
     action: () => {
-      if (stateData.stepName) {
-        mutations.setActiveStep(stateData.stepName);
+      if (navigationCache.stepName) {
+        mutations.setActiveStep(navigationCache.stepName);
         observer.dispatch("onStepChange");
+        stepMiddleware = undefined;
       } else {
-        if (stateData.command === commandType.PREVIOUS) {
+        if (navigationCache.command === commandType.PREVIOUS) {
           return;
         }
-        if (!stateData.stepName && stateData.command === commandType.NEXT) {
+        if (
+          !navigationCache.stepName &&
+          navigationCache.command === commandType.NEXT
+        ) {
+          observer.dispatch("onFinish");
           return;
         }
-        observer.dispatch("onFinish");
       }
     },
     middleware() {
       if (!stepMiddleware) return;
-      if (stepMiddleware[stateData.clientProp]) {
-        stepMiddleware[stateData.clientProp]!(this.middlewareParams());
+      if (stepMiddleware[navigationCache.clientProp]) {
+        stepMiddleware[navigationCache.clientProp]!(this.middlewareParams());
       }
     },
     middlewareParams() {
       return {
         activeStep: getters.getActiveStep(),
-        toStep: stateData.stepName!,
-        updateSteps: mutations.updateSteps,
+        toStep: navigationCache.stepName!,
+        updateSteps: (callback: (steps: string[]) => string[]) => {
+          mutations.updateSteps([...new Set(callback(getters.getSteps()))]);
+          navigationCache.stepName = getters.getStepByCommand({
+            command: navigationCache.command,
+          });
+        },
       };
     },
     prosed() {
       if (stepMiddleware && stepMiddleware.validate) {
         stepMiddleware.validate({
-          payload: stateData.payload,
-          command: stateData.command,
+          payload: navigationCache.payload,
+          command: navigationCache.command,
           activeStep: getters.getActiveStep(),
-          toStep: stateData.stepName!,
+          toStep: navigationCache.stepName!,
           resolve: () => {
             this.middleware();
             this.action();
@@ -101,7 +110,7 @@ const createNavigation = (
       if (!data.stepName && command === commandType.PREVIOUS) {
         return;
       }
-      stateData = data;
+      navigationCache = data;
       this.prosed();
     },
     setStepMiddleware(props: IWizardStep) {

@@ -26,6 +26,7 @@ const StepTwo = () => {
       <Step
         onNext={(params) => {
           params.updateSteps((steps) => [...steps, "stepThree"]);
+          console.log("on next");
         }}
         onPrevious={(params) => {}}
       >
@@ -139,8 +140,12 @@ const Inner = () => {
           id="wizard-1"
           steps={["stepOne", "stepTwo"]}
           activeStep="stepOne"
-          onFinish={() => {}}
-          onReset={() => {}}
+          onFinish={() => {
+            console.log("on finish");
+          }}
+          onReset={() => {
+            console.log("on reset");
+          }}
         >
           <WizNavigation />
           <Body />
