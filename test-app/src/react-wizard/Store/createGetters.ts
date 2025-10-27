@@ -5,7 +5,9 @@ export function createGetters(state: ReturnType<typeof createState>) {
   return {
     getStepByCommand({ command }: { command: `${commandType}` }) {
       const step =
-        command === "next" ? this.getNextStep() : this.getPreviousStep();
+        command === commandType.NEXT
+          ? this.getNextStep()
+          : this.getPreviousStep();
       return step;
     },
     getNextStep: () => {

@@ -46,10 +46,6 @@ export enum commandType {
 export type onReset = () => void;
 export type onFinish = () => void;
 
-export enum WizardCommands {
-  NEXT = "next",
-  PREVIOUS = "previous",
-}
 interface IOnNavigateParams {
   activeStep: string;
   toStep: string;
