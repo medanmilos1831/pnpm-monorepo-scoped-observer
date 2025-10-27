@@ -13,10 +13,9 @@ export interface IEntity {
   mutations: ReturnType<typeof createMutations>;
   mount: () => void;
   addEventListener: (
-    eventName: eventsWizard,
+    eventName: `${WizardEvents}`,
     callback: (payload: any) => void
   ) => () => void;
-  // step: ReturnType<typeof createStep>;
   navigation: ReturnType<typeof createNavigation>;
 }
 
@@ -38,8 +37,6 @@ export enum WizardEvents {
   ON_FINISH = "onFinish",
 }
 
-export type eventsWizard = "onFinish" | "onReset" | "onStepChange";
-export type eventsStep = "onNext" | "onPrevious";
 export enum commandType {
   NEXT = "next",
   PREVIOUS = "previous",
@@ -68,8 +65,8 @@ interface IOnValidateParams {
 }
 
 export interface IWizardStep {
-  onNext?: (params: IOnNavigateParams) => void;
-  onPrevious?: (params: IOnNavigateParams) => void;
+  [stepMiddlewares.ON_NEXT]?: (params: IOnNavigateParams) => void;
+  [stepMiddlewares.ON_PREVIOUS]?: (params: IOnNavigateParams) => void;
   validate?: (params: IOnValidateParams) => void;
 }
 
@@ -79,3 +76,15 @@ export type stepTransitionObject = {
   payload?: any;
   clientProp: "onNext" | "onPrevious";
 };
+
+export type navigationCacheType = {
+  command: commandType;
+  stepName: string | null;
+  payload?: any;
+  clientProp: stepMiddlewares;
+};
+
+export enum stepMiddlewares {
+  ON_NEXT = "onNext",
+  ON_PREVIOUS = "onPrevious",
+}

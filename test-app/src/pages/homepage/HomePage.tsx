@@ -116,6 +116,9 @@ const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
   useEffect(() => {
     if (!client) return;
+    client.addEventListener("onStepChange", (payload) => {
+      console.log("on step change", payload);
+    });
   }, [client]);
   return (
     <div>

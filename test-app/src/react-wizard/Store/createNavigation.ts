@@ -1,5 +1,10 @@
 import { createObserver } from "../observer";
-import { commandType, type IWizardStep } from "../types";
+import {
+  commandType,
+  stepMiddlewares,
+  type IWizardStep,
+  type navigationCacheType,
+} from "../types";
 import { createGetters } from "./createGetters";
 import { createMutations } from "./createMutations";
 
@@ -9,15 +14,8 @@ const createNavigation = (
   observer: ReturnType<typeof createObserver>
 ) => {
   let stepMiddleware: IWizardStep | undefined;
-  let navigationCache: {
-    command: commandType;
-    stepName: string | null;
-    payload: any;
-    clientProp: "onNext" | "onPrevious";
-  };
-
   return {
-    action: () => {
+    action: (navigationCache: navigationCacheType) => {
       if (navigationCache.stepName) {
         mutations.setActiveStep(navigationCache.stepName);
         observer.dispatch("onStepChange");
@@ -35,13 +33,15 @@ const createNavigation = (
         }
       }
     },
-    middleware() {
+    middleware(navigationCache: navigationCacheType) {
       if (!stepMiddleware) return;
       if (stepMiddleware[navigationCache.clientProp]) {
-        stepMiddleware[navigationCache.clientProp]!(this.middlewareParams());
+        stepMiddleware[navigationCache.clientProp]!(
+          this.createMiddlewareParams(navigationCache)
+        );
       }
     },
-    middlewareParams() {
+    createMiddlewareParams(navigationCache: navigationCacheType) {
       return {
         activeStep: getters.getActiveStep(),
         toStep: navigationCache.stepName!,
@@ -53,7 +53,7 @@ const createNavigation = (
         },
       };
     },
-    prosed() {
+    execute(navigationCache: navigationCacheType) {
       if (stepMiddleware && stepMiddleware.validate) {
         stepMiddleware.validate({
           payload: navigationCache.payload,
@@ -61,14 +61,14 @@ const createNavigation = (
           activeStep: getters.getActiveStep(),
           toStep: navigationCache.stepName!,
           resolve: () => {
-            this.middleware();
-            this.action();
+            this.middleware(navigationCache);
+            this.action(navigationCache);
           },
         });
         return;
       }
-      this.middleware();
-      this.action();
+      this.middleware(navigationCache);
+      this.action(navigationCache);
     },
     navigate(obj: {
       command: `${commandType}`;
@@ -96,22 +96,23 @@ const createNavigation = (
         payload,
         clientProp: (() => {
           if (command === commandType.NEXT) {
-            return "onNext" as const;
+            return stepMiddlewares.ON_NEXT;
           }
           if (command === commandType.PREVIOUS) {
-            return "onPrevious" as const;
+            return stepMiddlewares.ON_PREVIOUS;
           }
           const steps = getters.getSteps();
           const currentStepIndex = steps.indexOf(getters.getActiveStep());
           const targetStepIndex = steps.indexOf(stepName!);
-          return targetStepIndex > currentStepIndex ? "onNext" : "onPrevious";
+          return targetStepIndex > currentStepIndex
+            ? stepMiddlewares.ON_NEXT
+            : stepMiddlewares.ON_PREVIOUS;
         })(),
       };
       if (!data.stepName && command === commandType.PREVIOUS) {
         return;
       }
-      navigationCache = data;
-      this.prosed();
+      this.execute(data);
     },
     setStepMiddleware(props: IWizardStep) {
       stepMiddleware = props;
