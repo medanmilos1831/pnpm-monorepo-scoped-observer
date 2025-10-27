@@ -10,7 +10,9 @@ import {
 import { createGetters } from "./createGetters";
 import { mountFn } from "./mount";
 import { createMutations } from "./createMutations";
-import { createState } from "./state";
+import { createState } from "./createState";
+import { createStep } from "./createStep";
+import { createNavigation } from "./createNavigation";
 
 const createStore = () => {
   const observer = createObserver(WIZARD_STORE_SCOPE);
@@ -26,32 +28,25 @@ const createStore = () => {
     },
     createEntity(props: IWizardConfig) {
       if (!this.entities.has(props.id)) {
-        const entityObserver = createObserver(WIZARD_OBSERVER_SCOPE);
-        const stepObserver = createObserver(WIZARD_STEP_OBSERVER_SCOPE);
+        const observer = createObserver(WIZARD_OBSERVER_SCOPE);
         const state = createState(props);
         const getters = createGetters(state);
-        const mutations = createMutations(
-          state,
-          getters,
-          entityObserver,
-          stepObserver
-        );
+        const step = createStep();
+        const mutations = createMutations(state, getters, observer, step);
+        const navigation = createNavigation(state, getters, observer, step);
         const mount = mountFn(this.entities, props, observer);
         this.entities.set(props.id, {
           state,
           getters,
           mutations,
-          addEventListenerStep: (event, callback) => {
-            return stepObserver.subscribe(event, ({ payload }) => {
-              callback(payload);
-            });
-          },
-          addEventListenerWizard: (event, callback) => {
-            return entityObserver.subscribe(event, ({ payload }) => {
+          addEventListener: (event, callback) => {
+            return observer.subscribe(event, ({ payload }) => {
               callback(payload);
             });
           },
           mount,
+          step,
+          navigation,
         });
       }
       return this.getEntity(props.id)!;

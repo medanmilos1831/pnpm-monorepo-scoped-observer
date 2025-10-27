@@ -1,5 +1,5 @@
 import { WizardCommands } from "../types";
-import { createState } from "./state";
+import { createState } from "./createState";
 
 export function createGetters(state: ReturnType<typeof createState>) {
   return {

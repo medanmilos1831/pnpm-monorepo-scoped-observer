@@ -5,8 +5,7 @@ import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
 import { createStore } from "./Store/createStore";
-import { type IWizardConfig, type IWizardStep } from "./types";
-import { useSetupStep } from "./react-integration/useSetupStep";
+import { commandType, type IWizardConfig, type IWizardStep } from "./types";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
@@ -23,7 +22,7 @@ const createWizardClient = () => {
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
       const entity = store.getEntity(id);
-      useSetupStep(store.getEntity(id), props);
+      entity.step.defineStep(props);
       // useEffect(() => {
       //   const unsubscribe = store
       //     .getEntity(id)
@@ -51,12 +50,17 @@ const createWizardClient = () => {
     useWizardCommands: () => {
       const { id } = useRequiredContext(WizardContext);
       const item = store.getEntity(id).mutations;
+      const navigation = store.getEntity(id).navigation;
       return {
         next: item.next,
         previous: item.previous,
         reset: () => item.reset(),
         goToStep: item.goToStep,
-        navigate: item.navigate,
+        navigate: (obj: {
+          command: `${commandType}`;
+          stepName?: string;
+          payload?: any;
+        }) => navigation.navigate(obj),
       };
     },
     useWizard: () => {

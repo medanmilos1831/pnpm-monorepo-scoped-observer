@@ -6,8 +6,7 @@ const useSetupWizard = (
   store: ReturnType<typeof createStore>,
   props: IWizardConfig
 ) => {
-  const { mount, addEventListenerWizard: addEventListener } =
-    store.createEntity(props);
+  const { mount, addEventListener } = store.createEntity(props);
   useEffect(mount, []);
   useEffect(() => {
     let unsubscribe = () => {};

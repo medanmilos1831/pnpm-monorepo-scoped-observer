@@ -16,9 +16,9 @@ const StepOne = () => {
       onPrevious={(params) => {
         console.log("on previous", params);
       }}
-      validate={(params) => {
-        console.log("validate", params);
-      }}
+      // validate={(params) => {
+      //   console.log("validate", params);
+      // }}
     >
       StepOne
     </Step>
@@ -91,9 +91,9 @@ const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
   useEffect(() => {
     if (!client) return;
-    const unsubscribe = client.addEventListener("onStepChange", (data: any) => {
-      console.log("on step change", data);
-    });
+    // const unsubscribe = client.addEventListener("onStepChange", (data: any) => {
+    //   console.log("on step change", data);
+    // });
     // return () => {
     //   // unsubscribe();
     // };

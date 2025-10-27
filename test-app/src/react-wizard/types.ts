@@ -1,6 +1,8 @@
 import type { createGetters } from "./Store/createGetters";
 import type { createMutations } from "./Store/createMutations";
-import type { createState } from "./Store/state";
+import type { createNavigation } from "./Store/createNavigation";
+import type { createState } from "./Store/createState";
+import type { createStep } from "./Store/createStep";
 
 export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 export const WIZARD_OBSERVER_SCOPE = "wizard-observer" as const;
@@ -11,14 +13,12 @@ export interface IEntity {
   getters: ReturnType<typeof createGetters>;
   mutations: ReturnType<typeof createMutations>;
   mount: () => void;
-  addEventListenerStep: (
+  addEventListener: (
     eventName: eventsWizard,
     callback: (payload: any) => void
   ) => () => void;
-  addEventListenerWizard: (
-    eventName: eventsWizard,
-    callback: (payload: any) => void
-  ) => () => void;
+  step: ReturnType<typeof createStep>;
+  navigation: ReturnType<typeof createNavigation>;
 }
 
 export interface IWizardConfig {
@@ -61,8 +61,8 @@ interface IOnNavigateParams {
 }
 
 interface IOnValidateParams {
-  actionType?: string;
-  command: WizardCommands;
+  payload: any;
+  command: commandType;
   activeStep: string;
   toStep: string;
   resolve: () => void;

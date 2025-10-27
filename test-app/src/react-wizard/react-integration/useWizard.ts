@@ -4,7 +4,7 @@ import { createStore } from "../Store/createStore";
 const useWizard = (store: ReturnType<typeof createStore>, id: string) => {
   const entity = store.getEntity(id);
   const [subsciber] = useState(() => (notify: () => void) => {
-    return entity.addEventListenerWizard("onStepChange", () => {
+    return entity.addEventListener("onStepChange", () => {
       notify();
     });
   });
