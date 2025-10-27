@@ -70,13 +70,6 @@ export interface IWizardStep {
   validate?: (params: IOnValidateParams) => void;
 }
 
-export type stepTransitionObject = {
-  command: `${commandType}`;
-  stepName: string | null;
-  payload?: any;
-  clientProp: "onNext" | "onPrevious";
-};
-
 export type navigationCacheType = {
   command: commandType;
   stepName: string | null;

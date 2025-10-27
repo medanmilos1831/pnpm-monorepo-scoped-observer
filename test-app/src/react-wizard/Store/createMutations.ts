@@ -1,10 +1,10 @@
-import { WizardEvents } from "../../wizard/Store/types";
 import type { createObserver } from "../observer";
 import { createState } from "./createState";
+import { WizardEvents } from "../types";
 
 export function createMutations(
   state: ReturnType<typeof createState>,
-  entityObserver: ReturnType<typeof createObserver>
+  observer: ReturnType<typeof createObserver>
 ) {
   return {
     changeStep: (step: string) => {
@@ -21,8 +21,8 @@ export function createMutations(
     reset() {
       state.steps = [...state.__INTERNAL__STEPS];
       this.changeStep(state.__INTERNAL__ACTIVE_STEP);
-      entityObserver.dispatch(WizardEvents.ON_RESET);
-      entityObserver.dispatch(WizardEvents.ON_STEP_CHANGE);
+      observer.dispatch(WizardEvents.ON_RESET);
+      observer.dispatch(WizardEvents.ON_STEP_CHANGE);
     },
   };
 }
