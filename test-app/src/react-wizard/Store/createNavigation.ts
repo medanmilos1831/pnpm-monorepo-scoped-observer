@@ -25,6 +25,9 @@ const createNavigation = (
         if (stateData.command === commandType.PREVIOUS) {
           return;
         }
+        if (!stateData.stepName && stateData.command === commandType.NEXT) {
+          return;
+        }
         observer.dispatch("onFinish");
       }
     },
@@ -98,31 +101,8 @@ const createNavigation = (
       if (!data.stepName && command === commandType.PREVIOUS) {
         return;
       }
-      // if (!data.stepName && command === commandType.NEXT) {
-      //   observer.dispatch("onFinish");
-      //   return;
-      // }
       stateData = data;
       this.prosed();
-      // if (step) {
-      //   if (step.validate) {
-      //     step.validate({
-      //       payload: data.payload,
-      //       command: data.command,
-      //       activeStep: getters.getActiveStep(),
-      //       toStep: stepName!,
-      //       resolve: () => {
-      //         this.middleware();
-      //         this.action();
-      //       },
-      //     });
-      //     return;
-      //   }
-      //   this.middleware();
-      //   this.action();
-      // } else {
-      //   this.action();
-      // }
     },
     setStepMiddleware(props: IWizardStep) {
       stepMiddleware = props;

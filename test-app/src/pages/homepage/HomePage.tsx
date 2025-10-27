@@ -10,14 +10,9 @@ import {
 const StepOne = () => {
   return (
     <Step
-      onNext={(params) => {
-        console.log("on next", params);
-      }}
-      onPrevious={(params) => {
-        console.log("on previous", params);
-      }}
+      onNext={(params) => {}}
+      onPrevious={(params) => {}}
       validate={(params) => {
-        console.log("validate", params);
         params.resolve();
       }}
     >
@@ -30,16 +25,9 @@ const StepTwo = () => {
     <div>
       <Step
         onNext={(params) => {
-          console.log("on next", params);
           params.updateSteps((steps) => [...steps, "stepThree"]);
         }}
-        onPrevious={(params) => {
-          console.log("on previous", params);
-        }}
-        // validate={(params) => {
-        //   console.log("validate", params);
-        //   params.resolve();
-        // }}
+        onPrevious={(params) => {}}
       >
         StepTwo
       </Step>
@@ -127,12 +115,6 @@ const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
   useEffect(() => {
     if (!client) return;
-    // const unsubscribe = client.addEventListener("onStepChange", (data: any) => {
-    //   console.log("on step change", data);
-    // });
-    // return () => {
-    //   // unsubscribe();
-    // };
   }, [client]);
   return (
     <div>
@@ -157,12 +139,8 @@ const Inner = () => {
           id="wizard-1"
           steps={["stepOne", "stepTwo"]}
           activeStep="stepOne"
-          onFinish={() => {
-            console.log("on finish");
-          }}
-          onReset={() => {
-            console.log("on reset");
-          }}
+          onFinish={() => {}}
+          onReset={() => {}}
         >
           <WizNavigation />
           <Body />
