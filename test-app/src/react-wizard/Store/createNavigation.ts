@@ -3,10 +3,12 @@ import { createState } from "./createState";
 import { createGetters } from "./createGetters";
 import { createObserver } from "../observer";
 import { createStep } from "./createStep";
+import { createMutations } from "./createMutations";
 
 const createNavigation = (
   state: ReturnType<typeof createState>,
   getters: ReturnType<typeof createGetters>,
+  mutations: ReturnType<typeof createMutations>,
   observer: ReturnType<typeof createObserver>,
   stepConfiguration: ReturnType<typeof createStep>
 ) => {
@@ -15,23 +17,27 @@ const createNavigation = (
   return {
     action: () => {
       if (stateData.stepName) {
-        state.activeStep = stateData.stepName;
+        mutations.setActiveStep(stateData.stepName);
         observer.dispatch("onStepChange");
       } else {
-        if (stateData.command! === "previous") {
+        if (stateData.command === "previous") {
           return;
         }
         observer.dispatch("onFinish");
       }
     },
-    pera() {
+    middleware() {
+      const step = stepConfiguration.getStep();
+      if (!step) return;
+      if (step[stateData.clientProp]) {
+        step[stateData.clientProp]!(this.middlewareParams());
+      }
+    },
+    middlewareParams() {
       return {
-        activeStep: state.activeStep,
+        activeStep: getters.getActiveStep(),
         toStep: stateData.stepName!,
-        updateSteps: (callback: (steps: string[]) => string[]) => {
-          const updatedSteps = callback(state.steps);
-          state.steps = [...new Set(updatedSteps)];
-        },
+        updateSteps: mutations.updateSteps,
       };
     },
     navigate(obj: {
@@ -45,7 +51,7 @@ const createNavigation = (
       }
       if (
         obj.command === commandType.GO_TO_STEP &&
-        obj.stepName === state.activeStep
+        obj.stepName === getters.getActiveStep()
       ) {
         return;
       }
@@ -81,32 +87,14 @@ const createNavigation = (
               activeStep: state.activeStep,
               toStep: stepName!,
               resolve: () => {
-                if (step[data.clientProp]) {
-                  step[data.clientProp]!({
-                    activeStep: state.activeStep,
-                    toStep: stepName!,
-                    updateSteps: (callback: (steps: string[]) => string[]) => {
-                      const updatedSteps = callback(state.steps);
-                      state.steps = [...new Set(updatedSteps)];
-                    },
-                  });
-                }
+                this.middleware();
                 this.action();
               },
             });
           }
           return;
         }
-        if (step[data.clientProp]) {
-          step[data.clientProp]!({
-            activeStep: state.activeStep,
-            toStep: stepName!,
-            updateSteps: (callback: (steps: string[]) => string[]) => {
-              const updatedSteps = callback(state.steps);
-              state.steps = [...new Set(updatedSteps)];
-            },
-          });
-        }
+        this.middleware();
         this.action();
       }
     },

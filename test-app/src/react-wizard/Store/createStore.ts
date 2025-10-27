@@ -32,8 +32,14 @@ const createStore = () => {
         const state = createState(props);
         const getters = createGetters(state);
         const step = createStep();
-        const mutations = createMutations(state, getters, observer, step);
-        const navigation = createNavigation(state, getters, observer, step);
+        const mutations = createMutations(state, observer);
+        const navigation = createNavigation(
+          state,
+          getters,
+          mutations,
+          observer,
+          step
+        );
         const mount = mountFn(this.entities, props, observer);
         this.entities.set(props.id, {
           state,
