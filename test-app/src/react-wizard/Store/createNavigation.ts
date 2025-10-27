@@ -18,8 +18,9 @@ const createNavigation = (
   let stepMiddleware: IWizardStep | undefined;
   return {
     action: (navigationCache: navigationCacheType) => {
+      // console.log("ACTION BEFORE DISPATCH", navigationCache);
       if (navigationCache.stepName) {
-        mutations.setActiveStep(navigationCache.stepName);
+        mutations.changeStep(navigationCache.stepName!);
         observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
         stepMiddleware = undefined;
       } else {
@@ -111,7 +112,11 @@ const createNavigation = (
       if (!data.stepName && command === wizardCommands.PREVIOUS) {
         return;
       }
-      this.execute(data);
+      this.execute({
+        ...data,
+        isLast: getters.isLast(),
+        isFirst: getters.isFirst(),
+      });
     },
     setStepMiddleware(props: IWizardStep) {
       stepMiddleware = props;

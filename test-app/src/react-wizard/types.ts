@@ -1,3 +1,4 @@
+import type { createObserver } from "./observer";
 import type { createGetters } from "./Store/createGetters";
 import type { createMutations } from "./Store/createMutations";
 import type { createNavigation } from "./Store/createNavigation";
@@ -17,6 +18,7 @@ export interface IEntity {
     callback: (payload: any) => void
   ) => () => void;
   navigation: ReturnType<typeof createNavigation>;
+  subscribe: ReturnType<typeof createObserver>["subscribe"];
 }
 
 export interface IWizardConfig {
@@ -75,6 +77,8 @@ export type navigationCacheType = {
   stepName: string | null;
   payload?: any;
   clientProp: stepMiddlewares;
+  isLast: boolean;
+  isFirst: boolean;
 };
 
 export enum stepMiddlewares {

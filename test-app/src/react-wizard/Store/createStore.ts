@@ -42,6 +42,7 @@ const createStore = () => {
               callback(payload);
             });
           },
+          subscribe: observer.subscribe,
           mount,
 
           navigation,

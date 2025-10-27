@@ -1,5 +1,5 @@
 import type { createObserver } from "../observer";
-import { WizardPublicEvents } from "../types";
+import { WizardInternalEvents, WizardPublicEvents } from "../types";
 import { createState } from "./createState";
 
 export function createMutations(
@@ -11,19 +11,20 @@ export function createMutations(
       state.activeStep = step;
       state.isLast = state.steps.length - 1 === state.steps.indexOf(step);
       state.isFirst = state.steps.indexOf(step) === 0;
+      console.log("CHANGE STEP", state);
     },
     updateSteps(callback: (steps: string[]) => string[]) {
-      state.steps = callback(state.steps);
-      observer.dispatch(WizardPublicEvents.ON_STEPS_UPDATE);
-    },
-    setActiveStep(stepName: string) {
-      state.activeStep = stepName;
+      state.steps = [...new Set(callback(state.steps))];
+      state.isLast =
+        state.steps.length - 1 === state.steps.indexOf(state.activeStep);
+      state.isFirst = state.steps.indexOf(state.activeStep) === 0;
+      observer.dispatch(WizardInternalEvents.ON_STEPS_UPDATE);
     },
     reset() {
       state.steps = [...state.__INTERNAL__STEPS];
       this.changeStep(state.__INTERNAL__ACTIVE_STEP);
       observer.dispatch(WizardPublicEvents.ON_RESET);
-      observer.dispatch(WizardPublicEvents.ON_STEPS_UPDATE);
+      observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
     },
   };
 }
