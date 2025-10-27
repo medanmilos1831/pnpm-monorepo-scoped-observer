@@ -76,9 +76,7 @@ export type navigationCacheType = {
   command: wizardCommandsType;
   stepName: string | null;
   payload?: any;
-  clientProp: stepMiddlewares;
-  isLast: boolean;
-  isFirst: boolean;
+  middleware: stepMiddlewares;
 };
 
 export enum stepMiddlewares {

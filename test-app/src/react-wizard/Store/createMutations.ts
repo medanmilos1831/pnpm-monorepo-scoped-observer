@@ -11,7 +11,6 @@ export function createMutations(
       state.activeStep = step;
       state.isLast = state.steps.length - 1 === state.steps.indexOf(step);
       state.isFirst = state.steps.indexOf(step) === 0;
-      console.log("CHANGE STEP", state);
     },
     updateSteps(callback: (steps: string[]) => string[]) {
       state.steps = [...new Set(callback(state.steps))];

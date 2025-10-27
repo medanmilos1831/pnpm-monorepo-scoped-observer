@@ -16,9 +16,9 @@ const createNavigation = (
   observer: ReturnType<typeof createObserver>
 ) => {
   let stepMiddleware: IWizardStep | undefined;
+  let locked = false;
   return {
-    action: (navigationCache: navigationCacheType) => {
-      // console.log("ACTION BEFORE DISPATCH", navigationCache);
+    makeTransition: (navigationCache: navigationCacheType) => {
       if (navigationCache.stepName) {
         mutations.changeStep(navigationCache.stepName!);
         observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
@@ -38,8 +38,8 @@ const createNavigation = (
     },
     middleware(navigationCache: navigationCacheType) {
       if (!stepMiddleware) return;
-      if (stepMiddleware[navigationCache.clientProp]) {
-        stepMiddleware[navigationCache.clientProp]!(
+      if (stepMiddleware[navigationCache.middleware]) {
+        stepMiddleware[navigationCache.middleware]!(
           this.createMiddlewareParams(navigationCache)
         );
       }
@@ -50,6 +50,10 @@ const createNavigation = (
         toStep: navigationCache.stepName!,
       };
     },
+    resolve(navigationCache: navigationCacheType) {
+      this.middleware(navigationCache);
+      this.makeTransition(navigationCache);
+    },
     execute(navigationCache: navigationCacheType) {
       if (stepMiddleware && stepMiddleware.validate) {
         stepMiddleware.validate({
@@ -58,14 +62,12 @@ const createNavigation = (
           activeStep: getters.getActiveStep(),
           toStep: navigationCache.stepName!,
           resolve: () => {
-            this.middleware(navigationCache);
-            this.action(navigationCache);
+            this.withLock(() => this.resolve(navigationCache));
           },
         });
         return;
       }
-      this.middleware(navigationCache);
-      this.action(navigationCache);
+      this.withLock(() => this.resolve(navigationCache));
     },
     navigate(obj: {
       command: wizardCommandsType;
@@ -94,7 +96,7 @@ const createNavigation = (
         command,
         stepName,
         payload,
-        clientProp: (() => {
+        middleware: (() => {
           if (command === wizardCommands.NEXT) {
             return stepMiddlewares.ON_NEXT;
           }
@@ -112,14 +114,19 @@ const createNavigation = (
       if (!data.stepName && command === wizardCommands.PREVIOUS) {
         return;
       }
-      this.execute({
-        ...data,
-        isLast: getters.isLast(),
-        isFirst: getters.isFirst(),
-      });
+      this.execute(data);
     },
     setStepMiddleware(props: IWizardStep) {
       stepMiddleware = props;
+    },
+    isLocked: () => {
+      return locked;
+    },
+    withLock(callback: () => void) {
+      if (locked) return;
+      locked = true;
+      callback();
+      locked = false;
     },
   };
 };

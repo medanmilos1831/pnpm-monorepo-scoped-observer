@@ -42,7 +42,12 @@ const createWizardClient = () => {
             stepName,
             payload,
           }),
-        updateSteps: item.updateSteps,
+        updateSteps: (callback: (steps: string[]) => string[]) => {
+          if (navigation.isLocked()) {
+            return;
+          }
+          item.updateSteps(callback);
+        },
       };
     },
     useWizard: () => {

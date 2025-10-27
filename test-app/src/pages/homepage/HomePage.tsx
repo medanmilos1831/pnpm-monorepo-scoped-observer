@@ -26,18 +26,18 @@ const StepTwo = () => {
     <div>
       <Step
         onNext={(params) => {
-          // updateSteps((steps) => {
-          //   return [...steps, "stepThree"];
-          // });
+          updateSteps((steps) => {
+            return [...steps, "stepThree"];
+          });
         }}
         onPrevious={(params) => {}}
       >
         StepTwo
         <button
           onClick={() => {
-            // updateSteps((steps) => {
-            //   return [...steps, "stepThree"];
-            // });
+            updateSteps((steps) => {
+              return [...steps, "stepThree"];
+            });
           }}
         >
           Update Steps
@@ -69,7 +69,7 @@ const Body = () => {
 
 const WizNavigation = () => {
   const wiz = useWizard();
-  console.log("wiz", wiz);
+  // console.log("wiz", wiz);
   const { goToStep } = useWizardCommands();
   return (
     <div>
