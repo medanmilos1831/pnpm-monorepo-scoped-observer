@@ -2,7 +2,6 @@ import type { createGetters } from "./Store/createGetters";
 import type { createMutations } from "./Store/createMutations";
 import type { createNavigation } from "./Store/createNavigation";
 import type { createState } from "./Store/createState";
-import type { createStep } from "./Store/createStep";
 
 export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 export const WIZARD_OBSERVER_SCOPE = "wizard-observer" as const;
@@ -17,7 +16,7 @@ export interface IEntity {
     eventName: eventsWizard,
     callback: (payload: any) => void
   ) => () => void;
-  step: ReturnType<typeof createStep>;
+  // step: ReturnType<typeof createStep>;
   navigation: ReturnType<typeof createNavigation>;
 }
 

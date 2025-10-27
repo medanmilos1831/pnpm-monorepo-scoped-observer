@@ -22,7 +22,7 @@ const createWizardClient = () => {
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
       const entity = store.getEntity(id);
-      entity.step.defineStep(props);
+      entity.navigation.setStepMiddleware(props);
 
       return <>{children}</>;
     },
@@ -32,11 +32,16 @@ const createWizardClient = () => {
       const navigation = store.getEntity(id).navigation;
       return {
         reset: () => item.reset(),
-        navigate: (obj: {
-          command: `${commandType}`;
-          stepName?: string;
-          payload?: any;
-        }) => navigation.navigate(obj),
+        next: (payload?: any) =>
+          navigation.navigate({ command: commandType.NEXT, payload }),
+        previous: (payload?: any) =>
+          navigation.navigate({ command: commandType.PREVIOUS, payload }),
+        goToStep: (stepName: string, payload?: any) =>
+          navigation.navigate({
+            command: commandType.GO_TO_STEP,
+            stepName,
+            payload,
+          }),
       };
     },
     useWizard: () => {

@@ -1,16 +1,20 @@
 import { createObserver } from "../observer";
-import { commandType, type stepTransitionObject } from "../types";
+import { commandType, type IWizardStep } from "../types";
 import { createGetters } from "./createGetters";
 import { createMutations } from "./createMutations";
-import { createStep } from "./createStep";
 
 const createNavigation = (
   getters: ReturnType<typeof createGetters>,
   mutations: ReturnType<typeof createMutations>,
-  observer: ReturnType<typeof createObserver>,
-  stepConfiguration: ReturnType<typeof createStep>
+  observer: ReturnType<typeof createObserver>
 ) => {
-  let stateData: stepTransitionObject;
+  let stepMiddleware: IWizardStep;
+  let stateData: {
+    command: commandType;
+    stepName: string | null;
+    payload: any;
+    clientProp: "onNext" | "onPrevious";
+  };
 
   return {
     action: () => {
@@ -25,10 +29,9 @@ const createNavigation = (
       }
     },
     middleware() {
-      const step = stepConfiguration.getStep();
-      if (!step) return;
-      if (step[stateData.clientProp]) {
-        step[stateData.clientProp]!(this.middlewareParams());
+      if (!stepMiddleware) return;
+      if (stepMiddleware[stateData.clientProp]) {
+        stepMiddleware[stateData.clientProp]!(this.middlewareParams());
       }
     },
     middlewareParams() {
@@ -38,12 +41,28 @@ const createNavigation = (
         updateSteps: mutations.updateSteps,
       };
     },
+    prosed() {
+      if (stepMiddleware && stepMiddleware.validate) {
+        stepMiddleware.validate({
+          payload: stateData.payload,
+          command: stateData.command,
+          activeStep: getters.getActiveStep(),
+          toStep: stateData.stepName!,
+          resolve: () => {
+            this.middleware();
+            this.action();
+          },
+        });
+        return;
+      }
+      this.middleware();
+      this.action();
+    },
     navigate(obj: {
       command: `${commandType}`;
       stepName?: string;
       payload?: any;
     }) {
-      const step = stepConfiguration.getStep();
       if (obj.command === commandType.GO_TO_STEP && !obj.stepName) {
         return;
       }
@@ -76,24 +95,37 @@ const createNavigation = (
           return targetStepIndex > currentStepIndex ? "onNext" : "onPrevious";
         })(),
       };
-      stateData = data;
-      if (step) {
-        if (step.validate) {
-          step.validate({
-            payload: data.payload,
-            command: data.command,
-            activeStep: getters.getActiveStep(),
-            toStep: stepName!,
-            resolve: () => {
-              this.middleware();
-              this.action();
-            },
-          });
-          return;
-        }
-        this.middleware();
-        this.action();
+      if (!data.stepName && command === commandType.PREVIOUS) {
+        return;
       }
+      // if (!data.stepName && command === commandType.NEXT) {
+      //   observer.dispatch("onFinish");
+      //   return;
+      // }
+      stateData = data;
+      this.prosed();
+      // if (step) {
+      //   if (step.validate) {
+      //     step.validate({
+      //       payload: data.payload,
+      //       command: data.command,
+      //       activeStep: getters.getActiveStep(),
+      //       toStep: stepName!,
+      //       resolve: () => {
+      //         this.middleware();
+      //         this.action();
+      //       },
+      //     });
+      //     return;
+      //   }
+      //   this.middleware();
+      //   this.action();
+      // } else {
+      //   this.action();
+      // }
+    },
+    setStepMiddleware(props: IWizardStep) {
+      stepMiddleware = props;
     },
   };
 };

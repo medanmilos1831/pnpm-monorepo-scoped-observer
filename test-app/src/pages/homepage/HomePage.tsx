@@ -16,16 +16,35 @@ const StepOne = () => {
       onPrevious={(params) => {
         console.log("on previous", params);
       }}
-      // validate={(params) => {
-      //   console.log("validate", params);
-      // }}
+      validate={(params) => {
+        console.log("validate", params);
+        params.resolve();
+      }}
     >
       StepOne
     </Step>
   );
 };
 const StepTwo = () => {
-  return <div>StepTwo</div>;
+  return (
+    <div>
+      <Step
+        onNext={(params) => {
+          console.log("on next", params);
+          params.updateSteps((steps) => [...steps, "stepThree"]);
+        }}
+        onPrevious={(params) => {
+          console.log("on previous", params);
+        }}
+        // validate={(params) => {
+        //   console.log("validate", params);
+        //   params.resolve();
+        // }}
+      >
+        StepTwo
+      </Step>
+    </div>
+  );
 };
 const StepThree = () => {
   return <div>StepThree</div>;
@@ -48,14 +67,39 @@ const Body = () => {
   );
 };
 
+const WizNavigation = () => {
+  const wiz = useWizard();
+  const { goToStep } = useWizardCommands();
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+        }}
+      >
+        {wiz.steps.map((step) => (
+          <button
+            key={step}
+            onClick={() => {
+              goToStep(step);
+            }}
+          >
+            {step}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const Controls = () => {
-  const { next, previous, reset, goToStep, navigate } = useWizardCommands();
+  const { next, previous } = useWizardCommands();
   return (
     <div>
       <button
         onClick={() => {
-          // previous();
-          navigate({ command: "previous" });
+          previous();
         }}
       >
         Previous
@@ -63,7 +107,7 @@ const Controls = () => {
       <button
         onClick={() => {
           // next();
-          navigate({ command: "next", payload: { name: "John" } });
+          next({ payload: { name: "John" } });
         }}
       >
         Next
@@ -74,14 +118,6 @@ const Controls = () => {
         }}
       >
         Reset
-      </button>
-      <button
-        onClick={() => {
-          // goToStep("stepTwo");
-          navigate({ command: "goToStep", stepName: "stepTwo" });
-        }}
-      >
-        Go to Step Two
       </button>
     </div>
   );
@@ -119,7 +155,7 @@ const Inner = () => {
       {count % 2 === 0 ? (
         <Wizard
           id="wizard-1"
-          steps={["stepOne", "stepTwo", "stepThree"]}
+          steps={["stepOne", "stepTwo"]}
           activeStep="stepOne"
           onFinish={() => {
             console.log("on finish");
@@ -128,6 +164,7 @@ const Inner = () => {
             console.log("on reset");
           }}
         >
+          <WizNavigation />
           <Body />
           <Controls />
         </Wizard>

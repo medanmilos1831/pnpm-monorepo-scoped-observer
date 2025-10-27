@@ -1,13 +1,6 @@
 import { WizardEvents } from "../../wizard/Store/types";
-import {
-  commandType,
-  WizardCommands,
-  type stepTransitionObject,
-} from "../types";
-import { createState } from "./createState";
-import { createGetters } from "./createGetters";
 import type { createObserver } from "../observer";
-import { createStep } from "./createStep";
+import { createState } from "./createState";
 
 export function createMutations(
   state: ReturnType<typeof createState>,

@@ -11,7 +11,6 @@ import { createGetters } from "./createGetters";
 import { mountFn } from "./mount";
 import { createMutations } from "./createMutations";
 import { createState } from "./createState";
-import { createStep } from "./createStep";
 import { createNavigation } from "./createNavigation";
 
 const createStore = () => {
@@ -31,9 +30,8 @@ const createStore = () => {
         const observer = createObserver(WIZARD_OBSERVER_SCOPE);
         const state = createState(props);
         const getters = createGetters(state);
-        const step = createStep();
         const mutations = createMutations(state, observer);
-        const navigation = createNavigation(getters, mutations, observer, step);
+        const navigation = createNavigation(getters, mutations, observer);
         const mount = mountFn(this.entities, props, observer);
         this.entities.set(props.id, {
           state,
@@ -45,7 +43,6 @@ const createStore = () => {
             });
           },
           mount,
-          step,
           navigation,
         });
       }
