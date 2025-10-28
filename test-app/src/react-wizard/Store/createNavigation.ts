@@ -52,7 +52,7 @@ const createNavigation = (
           activeStep: getters.getActiveStep(),
           toStep: navigationCache.stepName!,
           resolve: () => {
-            this.withLock(() => this.resolve(navigationCache));
+            this.resolve(navigationCache);
           },
         });
         return;

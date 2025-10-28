@@ -6,13 +6,18 @@ import {
   useWizardCommands,
   Step,
 } from "../../wizService";
+import { Modal } from "antd";
 
 const StepOne = () => {
+  const { updateSteps } = useWizardCommands();
   return (
     <Step
       onNext={(params) => {}}
       onPrevious={(params) => {}}
       validate={(params) => {
+        // updateSteps((steps) => {
+        //   return [...steps, "stepThree"];
+        // });
         params.resolve();
       }}
     >
@@ -21,22 +26,37 @@ const StepOne = () => {
   );
 };
 const StepTwo = () => {
-  const { updateSteps } = useWizardCommands();
+  const { updateSteps, next } = useWizardCommands();
+  const [open, setOpen] = useState(false);
   return (
     <div>
+      <Modal
+        open={open}
+        onCancel={() => {}}
+        onOk={() => {
+          next({
+            name: "Mark",
+          });
+          setOpen(false);
+        }}
+      >
+        <span>modal</span>
+      </Modal>
       <Step
         onNext={(params) => {
-          // updateSteps((steps) => {
-          //   return [...steps, "stepThree"];
-          // });
-        }}
-        onPrevious={(params) => {}}
-        validate={(params) => {
           updateSteps((steps) => {
             return [...steps, "stepThree"];
           });
-          params.resolve();
         }}
+        onPrevious={(params) => {}}
+        // validate={(params) => {
+        //   if (params.payload.name === "John") {
+        //     setOpen(true);
+        //     return;
+        //   }
+        //   console.log("validate", params);
+        //   params.resolve();
+        // }}
       >
         StepTwo
         <button
@@ -114,7 +134,7 @@ const Controls = () => {
       <button
         onClick={() => {
           // next();
-          next({ payload: { name: "John" } });
+          next({ name: "John" });
         }}
       >
         Next
