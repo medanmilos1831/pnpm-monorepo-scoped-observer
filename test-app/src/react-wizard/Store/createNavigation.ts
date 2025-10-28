@@ -1,11 +1,10 @@
 import { createObserver } from "../observer";
 import {
   wizardCommands,
-  stepMiddlewares,
   WizardPublicEvents,
   type IWizardStep,
-  type navigationCacheType,
-  type wizardCommandsType,
+  type navigateParamsType,
+  type stepMiddlewaresType,
 } from "../types";
 import { createGetters } from "./createGetters";
 import { createMutations } from "./createMutations";
@@ -18,103 +17,100 @@ const createNavigation = (
   let stepMiddleware: IWizardStep | undefined;
   let locked = false;
   return {
-    makeTransition: (navigationCache: navigationCacheType) => {
-      if (navigationCache.stepName) {
-        mutations.changeStep(navigationCache.stepName!);
-        if (navigationCache.isReset) {
-          mutations.reset();
-          observer.dispatch(WizardPublicEvents.ON_RESET);
-        }
-        observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
-        stepMiddleware = undefined;
-        return;
-      }
-      observer.dispatch(WizardPublicEvents.ON_FINISH);
-    },
-    middleware(navigationCache: navigationCacheType) {
-      if (!stepMiddleware) return;
-      if (stepMiddleware[navigationCache.middleware]) {
-        stepMiddleware[navigationCache.middleware]!({
-          activeStep: getters.getActiveStep(),
-          toStep: navigationCache.stepName!,
-        });
-      }
-    },
-    resolve(navigationCache: navigationCacheType) {
-      this.middleware(navigationCache);
-      this.makeTransition(navigationCache);
-    },
-    execute(navigationCache: navigationCacheType) {
-      if (stepMiddleware && stepMiddleware.validate) {
-        stepMiddleware!.validate!({
-          payload: navigationCache.payload,
-          command: navigationCache.command,
-          activeStep: getters.getActiveStep(),
-          toStep: navigationCache.stepName!,
-          resolve: () => {
-            this.resolve(navigationCache);
-          },
-        });
-        return;
-      }
-      this.withLock(() => this.resolve(navigationCache));
-    },
-    navigate(obj: {
-      command: wizardCommandsType;
-      stepName?: string;
-      payload?: any;
-      isReset?: boolean;
-    }) {
-      let isReset = obj.isReset ?? false;
+    navigate({
+      command,
+      stepName,
+      isReset,
+      payload,
+      middleware,
+    }: navigateParamsType) {
+      // Handle reset command - directly apply transition without middleware
       if (isReset) {
-        this.makeTransition({
-          stepName: obj.stepName!,
-          command: wizardCommands.GO_TO_STEP,
-          middleware: stepMiddlewares.ON_PREVIOUS,
-          payload: undefined,
+        this.applyTransition({
+          stepName,
           isReset: true,
         });
         return;
       }
+      // Prevent navigation to same step
       if (
-        obj.command === wizardCommands.GO_TO_STEP &&
-        obj.stepName === getters.getActiveStep()
+        command === wizardCommands.GO_TO_STEP &&
+        stepName === getters.getActiveStep()
       ) {
         return;
       }
-      let command = obj.command as wizardCommandsType;
-      let stepName: string | null = obj.stepName ?? null;
-      let payload = obj.payload;
-      if (
-        command === wizardCommands.NEXT ||
-        command === wizardCommands.PREVIOUS
-      ) {
-        stepName = getters.getStepByCommand({ command });
+      // Prevent previous navigation when no previous step exists
+      if (!stepName && command === wizardCommands.PREVIOUS) {
+        return;
       }
-      let data = {
-        command,
-        stepName,
-        payload,
-        middleware: (() => {
-          if (command === wizardCommands.NEXT) {
-            return stepMiddlewares.ON_NEXT;
-          }
-          if (command === wizardCommands.PREVIOUS) {
-            return stepMiddlewares.ON_PREVIOUS;
-          }
-          const steps = getters.getSteps();
-          const currentStepIndex = steps.indexOf(getters.getActiveStep());
-          const targetStepIndex = steps.indexOf(stepName!);
-          return targetStepIndex > currentStepIndex
-            ? stepMiddlewares.ON_NEXT
-            : stepMiddlewares.ON_PREVIOUS;
-        })(),
-        isReset: false,
+      // Execute navigation with lock protection
+      this.withLock(() =>
+        this.execute({ command, stepName, isReset, payload, middleware })
+      );
+    },
+    applyTransition: ({
+      stepName,
+      isReset,
+    }: {
+      stepName: string | null;
+      isReset: boolean;
+    }) => {
+      if (stepName) {
+        mutations.changeStep(stepName);
+        if (isReset) {
+          mutations.reset();
+          observer.dispatch(WizardPublicEvents.ON_RESET);
+        }
+        stepMiddleware = undefined;
+        observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
+        return;
+      }
+      observer.dispatch(WizardPublicEvents.ON_FINISH);
+    },
+    execute(params: navigateParamsType) {
+      const obj = {
+        middleware: params.middleware as stepMiddlewaresType,
+        stepName: params.stepName as string,
+        isReset: params.isReset,
       };
-      if (!data.stepName && command === wizardCommands.PREVIOUS) {
+      // Check if current step has validation middleware
+      if (stepMiddleware && stepMiddleware.validate) {
+        // Call step's validate function with resolve callback
+        stepMiddleware!.validate!({
+          payload: params.payload,
+          command: params.command,
+          activeStep: getters.getActiveStep(),
+          toStep: params.stepName!,
+          resolve: () => {
+            // Validation passed - proceed with navigation
+            this.resolve(obj);
+          },
+        });
         return;
       }
-      this.execute(data);
+      // No validation required - proceed directly with navigation
+      this.resolve(obj);
+    },
+    resolve({
+      middleware,
+      stepName,
+      isReset,
+    }: {
+      middleware: stepMiddlewaresType;
+      stepName: navigateParamsType["stepName"];
+      isReset: boolean;
+    }) {
+      if (!stepMiddleware) return;
+      if (stepMiddleware[middleware]) {
+        stepMiddleware[middleware]!({
+          activeStep: getters.getActiveStep(),
+          toStep: stepName as string,
+        });
+      }
+      this.applyTransition({
+        stepName,
+        isReset,
+      });
     },
     setStepMiddleware(props: IWizardStep) {
       stepMiddleware = props;

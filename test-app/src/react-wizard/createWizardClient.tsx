@@ -4,8 +4,9 @@ import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
+import { useWizardCommands } from "./react-integration/useWizardCommands";
 import { createStore } from "./Store/createStore";
-import { wizardCommands, type IWizardConfig, type IWizardStep } from "./types";
+import { type IWizardConfig, type IWizardStep } from "./types";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
@@ -28,29 +29,8 @@ const createWizardClient = () => {
     },
     useWizardCommands: () => {
       const { id } = useRequiredContext(WizardContext);
-      const item = store.getEntity(id).mutations;
-      const navigation = store.getEntity(id).navigation;
-      return {
-        reset: () => {
-          navigation.navigate({
-            command: wizardCommands.GO_TO_STEP,
-            stepName: store.getEntity(id).state.__INTERNAL__ACTIVE_STEP,
-            payload: undefined,
-            isReset: true,
-          });
-        },
-        next: (payload?: any) =>
-          navigation.navigate({ command: wizardCommands.NEXT, payload }),
-        previous: (payload?: any) =>
-          navigation.navigate({ command: wizardCommands.PREVIOUS, payload }),
-        goToStep: (stepName: string, payload?: any) =>
-          navigation.navigate({
-            command: wizardCommands.GO_TO_STEP,
-            stepName,
-            payload,
-          }),
-        updateSteps: item.updateSteps,
-      };
+      const entity = store.getEntity(id);
+      return useWizardCommands(entity);
     },
     useWizard: () => {
       const { id } = useRequiredContext(WizardContext);

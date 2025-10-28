@@ -72,15 +72,16 @@ export interface IWizardStep {
   validate?: (params: IOnValidateParams) => void;
 }
 
-export type navigationCacheType = {
+export type navigateParamsType = {
   command: wizardCommandsType;
   stepName: string | null;
   payload?: any;
-  middleware: stepMiddlewares;
   isReset: boolean;
+  middleware: stepMiddlewaresType | null;
 };
 
 export enum stepMiddlewares {
   ON_NEXT = "onNext",
   ON_PREVIOUS = "onPrevious",
 }
+export type stepMiddlewaresType = `${stepMiddlewares}`;

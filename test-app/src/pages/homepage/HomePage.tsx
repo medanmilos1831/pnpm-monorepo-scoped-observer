@@ -49,14 +49,13 @@ const StepTwo = () => {
           });
         }}
         onPrevious={(params) => {}}
-        // validate={(params) => {
-        //   if (params.payload.name === "John") {
-        //     setOpen(true);
-        //     return;
-        //   }
-        //   console.log("validate", params);
-        //   params.resolve();
-        // }}
+        validate={(params) => {
+          if (params.payload.name === "John") {
+            setOpen(true);
+            return;
+          }
+          params.resolve();
+        }}
       >
         StepTwo
         <button
