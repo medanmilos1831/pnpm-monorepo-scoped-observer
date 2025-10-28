@@ -1,7 +1,6 @@
 import { createObserver } from "../observer";
 import {
   WIZARD_OBSERVER_SCOPE,
-  WIZARD_STEP_OBSERVER_SCOPE,
   WIZARD_STORE_SCOPE,
   WizardStoreEvents,
   type IEntity,

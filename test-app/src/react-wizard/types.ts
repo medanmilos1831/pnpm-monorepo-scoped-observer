@@ -8,6 +8,9 @@ export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 export const WIZARD_OBSERVER_SCOPE = "wizard-observer" as const;
 export const WIZARD_STEP_OBSERVER_SCOPE = "wizard-step-observer" as const;
 
+// ===========================================
+// CONFIGURATION TYPES
+// ===========================================
 export interface IEntity {
   state: ReturnType<typeof createState>;
   getters: ReturnType<typeof createGetters>;
@@ -29,27 +32,6 @@ export interface IWizardConfig {
   onFinish?: onFinish;
 }
 
-export enum WizardStoreEvents {
-  CREATE_WIZARD = "createWizard",
-}
-export enum WizardPublicEvents {
-  ON_STEP_CHANGE = "onStepChange",
-  ON_RESET = "onReset",
-  ON_FINISH = "onFinish",
-}
-export enum WizardInternalEvents {
-  ON_STEPS_UPDATE = "onStepsUpdate",
-}
-export type WizardPublicEventsType = `${WizardPublicEvents}`;
-export type WizardInternalEventsType = `${WizardInternalEvents}`;
-
-export enum wizardCommands {
-  NEXT = "next",
-  PREVIOUS = "previous",
-  GO_TO_STEP = "goToStep",
-}
-
-export type wizardCommandsType = `${wizardCommands}`;
 export type onReset = () => void;
 export type onFinish = () => void;
 
@@ -72,6 +54,53 @@ export interface IWizardStep {
   validate?: (params: IOnValidateParams) => void;
 }
 
+export enum stepMiddlewares {
+  ON_NEXT = "onNext",
+  ON_PREVIOUS = "onPrevious",
+}
+export type stepMiddlewaresType = `${stepMiddlewares}`;
+
+// ===========================================
+// END CONFIGURATION TYPES
+// ===========================================
+
+// ===========================================
+// EVENT TYPES
+// ===========================================
+
+export enum WizardStoreEvents {
+  CREATE_WIZARD = "createWizard",
+}
+
+export enum WizardPublicEvents {
+  ON_STEP_CHANGE = "onStepChange",
+  ON_RESET = "onReset",
+  ON_FINISH = "onFinish",
+}
+
+export enum WizardInternalEvents {
+  ON_STEPS_UPDATE = "onStepsUpdate",
+}
+
+export type WizardPublicEventsType = `${WizardPublicEvents}`;
+export type WizardInternalEventsType = `${WizardInternalEvents}`;
+
+// ===========================================
+// END EVENT TYPES
+// ===========================================
+
+// ===========================================
+// COMMAND TYPES
+// ===========================================
+
+export enum wizardCommands {
+  NEXT = "next",
+  PREVIOUS = "previous",
+  GO_TO_STEP = "goToStep",
+}
+
+export type wizardCommandsType = `${wizardCommands}`;
+
 export type navigateParamsType = {
   command: wizardCommandsType;
   stepName: string | null;
@@ -80,8 +109,6 @@ export type navigateParamsType = {
   middleware: stepMiddlewaresType | null;
 };
 
-export enum stepMiddlewares {
-  ON_NEXT = "onNext",
-  ON_PREVIOUS = "onPrevious",
-}
-export type stepMiddlewaresType = `${stepMiddlewares}`;
+// ===========================================
+// END COMMAND TYPES
+// ===========================================
