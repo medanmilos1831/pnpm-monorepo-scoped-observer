@@ -15,7 +15,7 @@ const WizNavigation = () => {
           <button
             key={step}
             onClick={() => {
-              goToStep(step);
+              goToStep(step, { name: "John" });
             }}
           >
             {step}

@@ -21,6 +21,10 @@ export function createMutations(
     },
     reset() {
       state.steps = [...state.__INTERNAL__STEPS];
+      state.activeStep = state.__INTERNAL__ACTIVE_STEP;
+      state.isLast =
+        state.steps.length - 1 === state.steps.indexOf(state.activeStep);
+      state.isFirst = state.steps.indexOf(state.activeStep) === 0;
     },
   };
 }

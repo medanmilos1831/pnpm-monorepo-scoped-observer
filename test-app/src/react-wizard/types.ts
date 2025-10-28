@@ -110,7 +110,7 @@ export type wizardCommandsType = `${wizardCommands}`;
 
 export type navigateParamsType = {
   command: wizardCommandsType;
-  stepName: string | null;
+  toStep: string | null;
   payload?: any;
   isReset: boolean;
   middleware: stepMiddlewaresType | null;

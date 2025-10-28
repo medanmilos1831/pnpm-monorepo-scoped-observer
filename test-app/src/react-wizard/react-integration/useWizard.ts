@@ -13,8 +13,14 @@ const useWizard = (store: ReturnType<typeof createStore>, id: string) => {
       notify();
     });
   });
+  const [subsciberReset] = useState(() => (notify: () => void) => {
+    return entity.addEventListener("onReset", () => {
+      notify();
+    });
+  });
   useSyncExternalStore(subsciber, entity.getters.getActiveStep);
   useSyncExternalStore(subsciberUpdateSteps, entity.getters.getSteps);
+  useSyncExternalStore(subsciberReset, entity.getters.getSteps);
   return {
     activeStep: entity.getters.getActiveStep(),
     nextStep: entity.getters.getNextStep(),

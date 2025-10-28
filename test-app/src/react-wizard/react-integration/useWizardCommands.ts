@@ -9,7 +9,7 @@ const useWizardCommands = (entity: IEntity) => {
     reset: () => {
       navigation.navigate({
         command: wizardCommands.GO_TO_STEP,
-        stepName: state.__INTERNAL__ACTIVE_STEP,
+        toStep: state.__INTERNAL__ACTIVE_STEP,
         payload: undefined,
         isReset: true,
         middleware: null,
@@ -18,7 +18,7 @@ const useWizardCommands = (entity: IEntity) => {
     next: (payload?: any) => {
       navigation.navigate({
         command: wizardCommands.NEXT,
-        stepName: getters.getStepByCommand({
+        toStep: getters.getStepByCommand({
           command: wizardCommands.NEXT,
         }),
         payload,
@@ -29,7 +29,7 @@ const useWizardCommands = (entity: IEntity) => {
     previous: (payload?: any) => {
       navigation.navigate({
         command: wizardCommands.PREVIOUS,
-        stepName:
+        toStep:
           getters.getStepByCommand({ command: wizardCommands.PREVIOUS }) ??
           null,
         payload,
@@ -37,13 +37,14 @@ const useWizardCommands = (entity: IEntity) => {
         middleware: stepMiddlewares.ON_PREVIOUS,
       });
     },
-    goToStep: (stepName: string, payload?: any) => {
+    goToStep: (toStep: string, payload?: any) => {
       const steps = getters.getSteps();
       const currentStepIndex = steps.indexOf(getters.getActiveStep());
-      const targetStepIndex = steps.indexOf(stepName);
+      const targetStepIndex = steps.indexOf(toStep);
+
       navigation.navigate({
         command: wizardCommands.GO_TO_STEP,
-        stepName,
+        toStep,
         payload,
         isReset: false,
         middleware:

@@ -5,16 +5,18 @@ import { StepThree } from "../../components/StepThree";
 import { StepTwo } from "../../components/StepTwo";
 import { WizNavigation } from "../../components/WizNavigation";
 import { Wizard, useWizard } from "../../wizService";
+import { StepFour } from "../../components/StepFour";
 
 const StepsMap: any = {
   stepOne: StepOne,
   stepTwo: StepTwo,
   stepThree: StepThree,
+  stepFour: StepFour,
 };
 
 const Body = () => {
   const { activeStep } = useWizard();
-
+  console.log("ACTIVE STEP", activeStep);
   let Step = StepsMap[activeStep as keyof typeof StepsMap];
   return (
     <div>
@@ -37,10 +39,14 @@ const Inner = () => {
       {count % 2 === 0 ? (
         <Wizard
           id="wizard-1"
-          steps={["stepOne", "stepTwo"]}
+          steps={["stepOne", "stepTwo", "stepThree"]}
           activeStep="stepOne"
-          onFinish={() => {}}
-          onReset={() => {}}
+          onFinish={() => {
+            console.log("onFinish");
+          }}
+          onReset={() => {
+            console.log("onReset");
+          }}
         >
           <WizNavigation />
           <Body />

@@ -5,6 +5,7 @@ import {
   type IWizardStep,
   type navigateParamsType,
   type stepMiddlewaresType,
+  type wizardCommandsType,
 } from "../types";
 import { createGetters } from "./createGetters";
 import { createMutations } from "./createMutations";
@@ -19,7 +20,7 @@ const createNavigation = (
   return {
     navigate({
       command,
-      stepName,
+      toStep,
       isReset,
       payload,
       middleware,
@@ -27,42 +28,49 @@ const createNavigation = (
       // Handle reset command - directly apply transition without middleware
       if (isReset) {
         this.applyTransition({
-          stepName,
+          toStep,
           isReset: true,
+          command,
         });
         return;
       }
       // Prevent navigation to same step
       if (
         command === wizardCommands.GO_TO_STEP &&
-        stepName === getters.getActiveStep()
+        toStep === getters.getActiveStep()
       ) {
         return;
       }
       // Prevent previous navigation when no previous step exists
-      if (!stepName && command === wizardCommands.PREVIOUS) {
+      if (!toStep && command === wizardCommands.PREVIOUS) {
         return;
       }
       // Execute navigation with lock protection
       this.withLock(() =>
-        this.execute({ command, stepName, isReset, payload, middleware })
+        this.execute({ command, toStep, isReset, payload, middleware })
       );
     },
     applyTransition: ({
-      stepName,
+      toStep,
       isReset,
+      command,
     }: {
-      stepName: string | null;
+      toStep: string | null;
       isReset: boolean;
+      command: wizardCommandsType;
     }) => {
-      if (stepName) {
-        mutations.changeStep(stepName);
+      if (toStep) {
+        mutations.changeStep(toStep);
         if (isReset) {
           mutations.reset();
           observer.dispatch(WizardPublicEvents.ON_RESET);
         }
         stepMiddleware = undefined;
-        observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE);
+        observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE, {
+          toStep,
+          activeStep: getters.getActiveStep(),
+          command,
+        });
         return;
       }
       observer.dispatch(WizardPublicEvents.ON_FINISH);
@@ -70,8 +78,9 @@ const createNavigation = (
     execute(params: navigateParamsType) {
       const obj = {
         middleware: params.middleware as stepMiddlewaresType,
-        stepName: params.stepName as string,
+        toStep: params.toStep as string,
         isReset: params.isReset,
+        command: params.command,
       };
       // Check if current step has validation middleware
       if (stepMiddleware && stepMiddleware.validate) {
@@ -80,7 +89,7 @@ const createNavigation = (
           payload: params.payload,
           command: params.command,
           activeStep: getters.getActiveStep(),
-          toStep: params.stepName!,
+          toStep: params.toStep!,
           resolve: () => {
             // Validation passed - proceed with navigation
             this.resolve(obj);
@@ -93,23 +102,25 @@ const createNavigation = (
     },
     resolve({
       middleware,
-      stepName,
+      toStep,
       isReset,
+      command,
     }: {
       middleware: stepMiddlewaresType;
-      stepName: navigateParamsType["stepName"];
+      toStep: navigateParamsType["toStep"];
       isReset: boolean;
+      command: wizardCommandsType;
     }) {
-      if (!stepMiddleware) return;
-      if (stepMiddleware[middleware]) {
+      if (stepMiddleware && stepMiddleware[middleware]) {
         stepMiddleware[middleware]!({
           activeStep: getters.getActiveStep(),
-          toStep: stepName as string,
+          toStep: toStep as string,
         });
       }
       this.applyTransition({
-        stepName,
+        toStep,
         isReset,
+        command,
       });
     },
     setStepMiddleware(props: IWizardStep) {
