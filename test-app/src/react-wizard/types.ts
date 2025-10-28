@@ -4,9 +4,16 @@ import type { createMutations } from "./Store/createMutations";
 import type { createNavigation } from "./Store/createNavigation";
 import type { createState } from "./Store/createState";
 
+// ===========================================
+// SCOPES
+// ===========================================
 export const WIZARD_STORE_SCOPE = "wizard-store" as const;
 export const WIZARD_OBSERVER_SCOPE = "wizard-observer" as const;
 export const WIZARD_STEP_OBSERVER_SCOPE = "wizard-step-observer" as const;
+
+// ===========================================
+// END SCOPES
+// ===========================================
 
 // ===========================================
 // CONFIGURATION TYPES
