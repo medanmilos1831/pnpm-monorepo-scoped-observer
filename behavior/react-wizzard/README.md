@@ -1,365 +1,298 @@
-# react-wizzard
+# React Wizzard
 
-A powerful, flexible wizard system built with React and TypeScript that provides step-by-step navigation with validation, event handling, and state management.
+A React library for building multi-step wizards and workflows with a clean, type-safe API. Perfect for multi-page forms, onboarding flows, checkout processes, or any step-by-step user journey in your React app.
+
+## 🎯 Live Demo
+
+Check out the interactive demo to see React Wizzard in action:
+
+**[👉 View Live Demo](https://medanmilos1831.github.io/react-wizard-demo/)**
 
 ## Features
 
-- 🎯 **Step Navigation**: Next, previous, go to specific step
-- ✅ **Validation**: Built-in validation system for each step
-- 🔄 **State Management**: Reactive state updates with subscriptions
-- 🎨 **React Integration**: Hooks and components for easy React integration
-- 📡 **Event System**: Subscribe to wizard events (step change, reset, finish)
-- 🎛️ **Flexible Configuration**: Customizable wizard behavior and rendering
+- **Simple API** - React components and hooks that feel natural to use
+- **Step validation** - Validate user input before allowing navigation
+- **Middleware support** - Hook into navigation events with custom logic per step
+- **Dynamic steps** - Add or remove steps at runtime
+- **Flexible state** - Access wizard state from any component, even outside the wizard tree
+- **TypeScript** - Fully typed for better developer experience
+- **Event system** - Listen to step changes, reset, and finish events
 
-## Quick Start
+## Installation
 
-### 1. Setup Wizard Client
-
-```tsx
-import { createWizardClient, WizardClientProvider } from "./wizard";
-
-const client = createWizardClient();
-
-function App() {
-  return (
-    <WizardClientProvider client={client}>
-      {/* Your app content */}
-    </WizardClientProvider>
-  );
-}
+```bash
+npm install react-wizzard
 ```
 
-### 2. Create a Wizard
+### Peer Dependencies
 
-```tsx
-import { Wizard, useWizardStep, useWizardCommands } from "./wizard";
+This package requires the following peer dependencies:
 
-function MyWizard() {
-  return (
-    <Wizard
-      id="my-wizard"
-      steps={["stepOne", "stepTwo", "stepThree"]}
-      activeStep="stepOne"
-      onFinish={({ render, reset }) => {
-        render(); // Show success screen
-      }}
-      renderOnFinish={({ reset }) => (
-        <div>
-          <h2>Wizard Completed!</h2>
-          <button onClick={reset}>Start Over</button>
-        </div>
-      )}
-    >
-      <WizardContent />
-    </Wizard>
-  );
-}
+- `react` ^18.0.0
+- `@scoped-observer/core` ^2.3.5
+
+Make sure to install them if they're not already in your project:
+
+```bash
+npm install react @scoped-observer/core
 ```
 
-### 3. Create Step Components
+## Getting Started
+
+First, create a wizard client by calling `createWizardClient()`. This returns an object with all the components and hooks you need:
 
 ```tsx
-import { Wizard } from "./wizard";
+import { createWizardClient } from "react-wizzard";
 
-function StepOne() {
-  return (
-    <Wizard.Step
-      onNext={(params) => {
-        // Handle next step logic
-        console.log("Moving to:", params.toStep);
-      }}
-      onPrevious={(params) => {
-        // Handle previous step logic
-      }}
-      validate={(params) => {
-        // Validation logic
-        if (isValid) {
-          params.resolve(); // Allow navigation
-        }
-      }}
-    >
-      <div>
-        <h2>Step One Content</h2>
-        <p>Your step content here</p>
-      </div>
-    </Wizard.Step>
-  );
-}
+const {
+  Wizard,
+  Step,
+  useWizard,
+  useWizardCommands,
+  useWizardClient,
+  getWizardClient,
+} = createWizardClient();
+
+// Export them for use throughout your app
+export {
+  Wizard,
+  Step,
+  useWizard,
+  useWizardCommands,
+  useWizardClient,
+  getWizardClient,
+};
 ```
 
-### 4. Use Wizard Hooks
+## Setting Up a Wizard
+
+Now you can use the `Wizard` component to set up your wizard. Wrap your wizard content with it:
 
 ```tsx
-function WizardControls() {
-  const { stepName, steps, isFirst, isLast } = useWizardStep();
-  const { next, previous, reset, goToStep } = useWizardCommands();
-
-  return (
-    <div>
-      <button onClick={previous} disabled={isFirst}>
-        Previous
-      </button>
-      <button onClick={() => next({ actionType: "validate" })}>Next</button>
-      <button onClick={reset}>Reset</button>
-      <button onClick={() => goToStep("stepTwo")}>Go to Step Two</button>
-    </div>
-  );
-}
+<Wizard
+  id="wizard-1"
+  steps={["stepOne", "stepTwo", "stepThree"]}
+  activeStep="stepOne"
+  onFinish={() => {
+    console.log("Wizard completed!");
+  }}
+  onReset={() => {
+    console.log("Wizard reset");
+  }}
+>
+  {/* Your wizard content */}
+</Wizard>
 ```
 
-## API Reference
+### Wizard Props
 
-### createWizardClient()
+- **`id`** (required) - Unique identifier for the wizard instance
+- **`steps`** (required) - Array of step names (strings)
+- **`activeStep`** (required) - Initial step name (must be one of the steps)
+- **`onFinish`** (optional) - Callback fired when the wizard reaches the last step and tries to go next
+- **`onReset`** (optional) - Callback fired when the wizard is reset
 
-Creates a new wizard client instance that manages multiple wizards and provides a centralized store.
+## useWizard Hook
 
-```tsx
-import { createWizardClient } from "./wizard";
-
-const client = createWizardClient();
-```
-
-**Returns:** `Store` - A store instance with the following methods:
-
-#### Store Methods
-
-- `getClient(id: string)` - Get a wizard client by ID
-- `getEntity(id: string)` - Get wizard entity by ID
-- `removeEntity(id: string)` - Remove wizard entity by ID
-- `createEntity(props: IWizardConfig)` - Create a new wizard entity
-
-#### Wizard Client API
-
-Each wizard client (returned by `getClient()`) provides:
+The `useWizard()` hook gives you access to the current wizard state. It can only be used inside a `Wizard` component:
 
 ```tsx
-interface WizardClient {
-  // Navigation methods
-  next(obj?: { actionType?: string }): void;
-  previous(obj?: { actionType?: string }): void;
-  goToStep(stepName: string, obj?: { actionType?: string }): void;
-  reset(): void;
+const StepsMap = {
+  stepOne: StepOne,
+  stepTwo: StepTwo,
+  stepThree: StepThree,
+};
 
-  // State getters
-  getActiveStep(): string;
-  getSteps(): string[];
-  getWizardId(): string;
-  isLast(): boolean;
-  isFirst(): boolean;
-
-  // Event subscription
-  subscribe(eventName: string, callback: (payload: any) => void): () => void;
-}
-```
-
-**Navigation Methods:**
-
-- `next()` - Move to next step
-- `previous()` - Move to previous step
-- `goToStep(stepName)` - Jump to specific step
-- `reset()` - Reset wizard to initial state
-
-**State Methods:**
-
-- `getActiveStep()` - Get current active step name
-- `getSteps()` - Get array of all step names
-- `getWizardId()` - Get wizard ID
-- `isLast()` - Check if on last step
-- `isFirst()` - Check if on first step
-
-**Event System:**
-
-- `subscribe(eventName, callback)` - Subscribe to wizard events
-  - Returns unsubscribe function
-  - Events: `"onStepChange"`, `"onReset"`, `"onFinish"`
-
-### Wizard Component
-
-The main wizard component that manages the wizard state and lifecycle.
-
-```tsx
-interface IWizardConfig {
-  id: string; // Unique wizard identifier
-  steps: string[]; // Array of step names
-  activeStep: string; // Initial active step
-  onReset?: () => void; // Called when wizard resets
-  onFinish?: (params: {
-    // Called when wizard finishes
-    reset: () => void;
-    render: () => void;
-  }) => void;
-  renderOnFinish?: (params: {
-    // Custom finish screen renderer
-    reset: () => void;
-  }) => React.ReactNode;
-}
-```
-
-### Wizard.Step Component
-
-Wraps step content and provides step-specific callbacks.
-
-```tsx
-interface IWizardStep {
-  onNext?: (params: IOnNavigateParams) => void;
-  onPrevious?: (params: IOnNavigateParams) => void;
-  validate?: (params: IOnValidateParams) => void;
-}
-
-interface IOnNavigateParams {
-  activeStep: string;
-  toStep: string;
-  updateSteps: (callback: (steps: string[]) => string[]) => void;
-}
-
-interface IOnValidateParams {
-  actionType?: string;
-  command: WizardCommands;
-  activeStep: string;
-  toStep: string;
-  resolve: () => void;
-}
-```
-
-### Hooks
-
-#### useWizardStep()
-
-Returns current step information and navigation state.
-
-```tsx
-const { stepName, steps, wizardId, isLast, isFirst } = useWizardStep();
-```
-
-#### useWizardCommands()
-
-Returns wizard navigation functions.
-
-```tsx
-const { next, previous, reset, goToStep } = useWizardCommands();
-```
-
-#### useWizard(id)
-
-Returns a wizard client for a specific wizard by `id`. If the wizard hasn't been created/mounted yet, returns `undefined` until it becomes available.
-
-```tsx
-import { useWizard } from "./wizard";
-
-function ExternalControls() {
-  const wizard = useWizard("my-wizard");
-
-  if (!wizard) return <div>Loading wizard…</div>;
+const Body = () => {
+  const { activeStep } = useWizard();
+  let Step = StepsMap[activeStep as keyof typeof StepsMap];
 
   return (
     <div>
-      <button onClick={() => wizard.previous()}>Previous</button>
-      <button onClick={() => wizard.next({ actionType: "validate" })}>
-        Next
+      <Step />
+    </div>
+  );
+};
+```
+
+### Return Values
+
+The `useWizard()` hook returns an object with:
+
+- **`activeStep`** - Current active step name (string)
+- **`nextStep`** - Next step name or `null` if on last step
+- **`previousStep`** - Previous step name or `null` if on first step
+- **`isLast`** - Boolean indicating if currently on the last step
+- **`isFirst`** - Boolean indicating if currently on the first step
+- **`steps`** - Array of all step names
+- **`wizardId`** - The wizard's ID string
+
+The hook automatically re-renders when the wizard state changes (step navigation, reset, or step updates).
+
+## Setting Up Steps
+
+Use the `Step` component to wrap each step's content. The `Step` component must be used inside a `Wizard` component and accepts optional middleware props for validation and navigation hooks:
+
+```tsx
+<Step
+  onNext={(params) => {
+    console.log(`Navigating from ${params.from} to ${params.to}`);
+  }}
+  onPrevious={(params) => {
+    console.log(`Navigating back from ${params.from} to ${params.to}`);
+  }}
+  validate={(params) => {
+    // Validate before navigation
+    if (params.payload?.name === "John") {
+      // Show error or prevent navigation
+      return;
+    }
+    // Call resolve to allow navigation
+    params.resolve();
+  }}
+>
+  <h1>Step Content</h1>
+  {/* Your step content */}
+</Step>
+```
+
+### Step Props
+
+- **`onNext`** (optional) - Callback fired before navigating to the next step. Receives `{ from: string, to: string }`
+- **`onPrevious`** (optional) - Callback fired before navigating to the previous step. Receives `{ from: string, to: string }`
+- **`validate`** (optional) - Validation function that runs before navigation. Receives:
+  - `payload` - Any data passed to the navigation command
+  - `command` - The navigation command (`next`, `previous`, or `goToStep`)
+  - `activeStep` - Current step name
+  - `toStep` - Target step name
+  - `resolve()` - Call this function to allow navigation to proceed
+
+The `validate` function gives you full control over navigation. If you don't call `resolve()`, navigation will be blocked until you do.
+
+## useWizardCommands Hook
+
+The `useWizardCommands()` hook provides functions to control wizard navigation. It can only be used inside a `Wizard` component:
+
+```tsx
+const WizControls = () => {
+  const { next, previous, reset, goToStep, updateSteps } = useWizardCommands();
+
+  return (
+    <div>
+      <button onClick={() => previous()}>Previous</button>
+      <button onClick={() => next({ name: "John" })}>Next</button>
+      <button onClick={() => reset()}>Reset</button>
+      <button onClick={() => goToStep("stepThree", { data: "custom" })}>
+        Go to Step Three
       </button>
-      <div>Active step: {wizard.getActiveStep()}</div>
+      <button onClick={() => updateSteps((steps) => [...steps, "stepFour"])}>
+        Add Step
+      </button>
     </div>
   );
-}
+};
 ```
 
-– **Returns**: `WizardClient | undefined`
-– **When available**: as soon as the entity is created (e.g., mounting `<Wizard id="my-wizard" ... />`)
-– **Typical use case**: controls outside `<Wizard>` that manage the same wizard
+### Available Commands
 
-### Wizard Commands
+- **`next(payload?)`** - Navigate to the next step. Optionally pass data that will be available in validation and middleware callbacks
+- **`previous(payload?)`** - Navigate to the previous step. Optionally pass data
+- **`reset()`** - Reset the wizard to its initial state (the step defined in `activeStep`)
+- **`goToStep(toStep, payload?)`** - Jump directly to a specific step by name. Optionally pass data
+- **`updateSteps(callback)`** - Dynamically update the steps array. The callback receives the current steps array and should return the new steps array
 
-```tsx
-enum WizardCommands {
-  NEXT = "next",
-  PREVIOUS = "previous",
-}
+All navigation commands go through validation and middleware. If a step has a `validate` function, navigation will wait until you call `resolve()` to proceed.
 
-enum WizardEvents {
-  ON_STEP_CHANGE = "onStepChange",
-  ON_RESET = "onReset",
-  ON_FINISH = "onFinish",
-}
-```
+## useWizardClient Hook
 
-## Advanced Usage
-
-### Custom Step Navigation
+The `useWizardClient()` hook gives you access to a wizard client from anywhere in your component tree, even outside the `Wizard` component. **The key feature is that it's reactive** - it returns `undefined` if the wizard doesn't exist yet, and automatically updates when the wizard is created or removed.
 
 ```tsx
-function CustomNavigation() {
-  const { steps, stepName } = useWizardStep();
-  const { goToStep } = useWizardCommands();
-
-  return (
-    <div className="step-indicators">
-      {steps.map((step) => (
-        <button
-          key={step}
-          className={step === stepName ? "active" : ""}
-          onClick={() => goToStep(step, { actionType: "validate" })}
-        >
-          {step}
-        </button>
-      ))}
-    </div>
-  );
-}
-```
-
-### Step Validation
-
-```tsx
-function ValidatedStep() {
-  const [isValid, setIsValid] = useState(false);
-
-  return (
-    <Wizard.Step
-      validate={(params) => {
-        if (isValid) {
-          params.resolve();
-        } else {
-          // Show validation error
-          alert("Please complete all required fields");
-        }
-      }}
-    >
-      <form>
-        <input
-          required
-          onChange={(e) => setIsValid(e.target.value.length > 0)}
-        />
-      </form>
-    </Wizard.Step>
-  );
-}
-```
-
-### Event Subscriptions
-
-```tsx
-function WizardWithEvents() {
-  const { subscribe } = useWizard("my-wizard");
+const SomeComponent = () => {
+  const client = useWizardClient("wizard-1");
 
   useEffect(() => {
-    const unsubscribe = subscribe("onStepChange", (data) => {
-      console.log("Step changed to:", data);
+    if (!client) return;
+
+    const unsubscribe = client.addEventListener("onStepChange", (payload) => {
+      console.log("Step changed:", payload);
     });
 
-    return unsubscribe;
-  }, []);
+    return () => {
+      unsubscribe();
+    };
+  }, [client]);
+
+  if (!client) {
+    return <div>Wizard not ready yet</div>;
+  }
 
   return (
-    <Wizard id="my-wizard" steps={["step1", "step2"]} activeStep="step1" />
+    <div>
+      <button onClick={() => client.commands.next()}>Next</button>
+    </div>
   );
+};
+```
+
+### Client API
+
+The hook returns a client object (or `undefined`) with:
+
+- **`commands`** - Navigation commands object:
+  - `next(payload?)` - Navigate to next step
+  - `previous(payload?)` - Navigate to previous step
+  - `reset()` - Reset wizard
+  - `goToStep(toStep, payload?)` - Jump to specific step
+  - `updateSteps(callback)` - Update steps array
+- **`getters`** - State getters object:
+  - `getActiveStep()` - Get current step name
+  - `getSteps()` - Get all steps array
+  - `getWizardId()` - Get wizard ID
+  - `isLast()` - Check if on last step
+  - `isFirst()` - Check if on first step
+  - `getNextStep()` - Get next step name or null
+  - `getPreviousStep()` - Get previous step name or null
+- **`addEventListener(eventName, callback)`** - Listen to wizard events (`onStepChange`, `onReset`, `onFinish`). Returns unsubscribe function.
+
+The hook automatically re-renders your component when the wizard is created or destroyed.
+
+## getWizardClient Function
+
+The `getWizardClient()` function gives you access to a wizard client by its ID. It has the same API as `useWizardClient()`, but **it's not reactive** - it won't trigger re-renders when the wizard is created or destroyed. This makes it perfect for using in event handlers, regular JavaScript modules, or anywhere you need runtime access without React's reactivity.
+
+```tsx
+const MyComponent = () => {
+  const handleClick = () => {
+    const client = getWizardClient("wizard-1");
+    if (client) {
+      client.commands.next();
+      console.log("Current step:", client.getters.getActiveStep());
+    }
+  };
+
+  return <button onClick={handleClick}>Next Step</button>;
+};
+```
+
+You can also use it in non-React contexts, like plain JavaScript modules:
+
+```javascript
+// In a utility module
+export function navigateToStep(stepName) {
+  const client = getWizardClient("wizard-1");
+  if (client) {
+    client.commands.goToStep(stepName);
+  }
 }
 ```
 
-## Architecture
+### Client API
 
-The wizard system is built with a modular architecture:
+The function returns the same client object as `useWizardClient()`:
 
-- **Store**: Core state management with entities and observers
-- **React Integration**: Hooks and components for React integration
-- **Event System**: Pub/sub pattern for wizard events
-- **Validation**: Flexible validation system for step transitions
+- **`commands`** - Navigation commands (same as `useWizardClient`)
+- **`getters`** - State getters (same as `useWizardClient`)
+- **`addEventListener(eventName, callback)`** - Listen to wizard events (same as `useWizardClient`)
+
+Returns `undefined` if the wizard doesn't exist. Unlike `useWizardClient()`, this function won't trigger component re-renders when the wizard state changes.
