@@ -9,7 +9,7 @@ import {
 } from "../types";
 import type { createStateManager } from "./StateManager/createStateManager";
 
-const createNavigation = (
+const createNavigationManager = (
   stateManager: ReturnType<typeof createStateManager>,
   observer: ReturnType<typeof createObserver>
 ) => {
@@ -136,4 +136,4 @@ const createNavigation = (
   };
 };
 
-export { createNavigation };
+export { createNavigationManager };

@@ -3,18 +3,18 @@ import {
   wizardCommands,
   WizardInternalEvents,
 } from "../types";
-import { createNavigation } from "./createNavigation";
+import { createNavigationManager } from "./createNavigationManager";
 import type { createStateManager } from "./StateManager/createStateManager";
 import type { createObserver } from "../observer";
 
 const createCommands = (
   stateManager: ReturnType<typeof createStateManager>,
-  navigation: ReturnType<typeof createNavigation>,
+  navigationManager: ReturnType<typeof createNavigationManager>,
   observer: ReturnType<typeof createObserver>
 ) => {
   return {
     reset: () => {
-      navigation.navigate({
+      navigationManager.navigate({
         command: wizardCommands.GO_TO_STEP,
         toStep: stateManager.state.__INTERNAL__ACTIVE_STEP,
         payload: undefined,
@@ -23,7 +23,7 @@ const createCommands = (
       });
     },
     next: (payload?: any) => {
-      navigation.navigate({
+      navigationManager.navigate({
         command: wizardCommands.NEXT,
         toStep: stateManager.getters.getStepByCommand({
           command: wizardCommands.NEXT,
@@ -34,7 +34,7 @@ const createCommands = (
       });
     },
     previous: (payload?: any) => {
-      navigation.navigate({
+      navigationManager.navigate({
         command: wizardCommands.PREVIOUS,
         toStep:
           stateManager.getters.getStepByCommand({
@@ -52,7 +52,7 @@ const createCommands = (
       );
       const targetStepIndex = steps.indexOf(toStep);
 
-      navigation.navigate({
+      navigationManager.navigate({
         command: wizardCommands.GO_TO_STEP,
         toStep,
         payload,
@@ -64,7 +64,7 @@ const createCommands = (
       });
     },
     updateSteps: (callback: (steps: string[]) => string[]) => {
-      if (navigation.isLocked()) {
+      if (navigationManager.isLocked()) {
         console.warn("Navigation is locked");
         return;
       }

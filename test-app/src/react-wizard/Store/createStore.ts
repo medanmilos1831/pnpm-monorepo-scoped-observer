@@ -7,7 +7,8 @@ import {
   type IWizardConfig,
 } from "../types";
 import { createCommands } from "./createCommands";
-import { createNavigation } from "./createNavigation";
+import { createNavigationManager } from "./createNavigationManager";
+
 import { mountFn } from "./mount";
 import { createStateManager } from "./StateManager/createStateManager";
 
@@ -27,7 +28,7 @@ const createStore = () => {
       if (!this.entities.has(props.id)) {
         const observer = createObserver(WIZARD_OBSERVER_SCOPE);
         const stateManager = createStateManager(props);
-        const navigation = createNavigation(stateManager, observer);
+        const navigation = createNavigationManager(stateManager, observer);
         const commands = createCommands(stateManager, navigation, observer);
         const mount = mountFn(this.entities, props, observer);
         this.entities.set(props.id, {

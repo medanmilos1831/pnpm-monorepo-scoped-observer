@@ -1,6 +1,6 @@
 import type { createObserver } from "./observer";
 import type { createCommands } from "./Store/createCommands";
-import type { createNavigation } from "./Store/createNavigation";
+import type { createNavigation } from "./Store/createNavigationManager";
 import type { createStateManager } from "./Store/StateManager/createStateManager";
 
 // ===========================================
