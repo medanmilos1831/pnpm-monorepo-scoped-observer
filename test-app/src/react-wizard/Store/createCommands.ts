@@ -1,15 +1,22 @@
-import { stepMiddlewares, wizardCommands, type IEntity } from "../types";
+import {
+  stepMiddlewares,
+  wizardCommands,
+  WizardInternalEvents,
+} from "../types";
+import { createNavigation } from "./createNavigation";
+import type { createStateManager } from "./StateManager/createStateManager";
+import type { createObserver } from "../observer";
 
-const useWizardCommands = (entity: IEntity) => {
-  const state = entity.state;
-  const mutations = entity.mutations;
-  const getters = entity.getters;
-  const navigation = entity.navigation;
+const createCommands = (
+  stateManager: ReturnType<typeof createStateManager>,
+  navigation: ReturnType<typeof createNavigation>,
+  observer: ReturnType<typeof createObserver>
+) => {
   return {
     reset: () => {
       navigation.navigate({
         command: wizardCommands.GO_TO_STEP,
-        toStep: state.__INTERNAL__ACTIVE_STEP,
+        toStep: stateManager.state.__INTERNAL__ACTIVE_STEP,
         payload: undefined,
         isReset: true,
         middleware: null,
@@ -18,7 +25,7 @@ const useWizardCommands = (entity: IEntity) => {
     next: (payload?: any) => {
       navigation.navigate({
         command: wizardCommands.NEXT,
-        toStep: getters.getStepByCommand({
+        toStep: stateManager.getters.getStepByCommand({
           command: wizardCommands.NEXT,
         }),
         payload,
@@ -30,16 +37,19 @@ const useWizardCommands = (entity: IEntity) => {
       navigation.navigate({
         command: wizardCommands.PREVIOUS,
         toStep:
-          getters.getStepByCommand({ command: wizardCommands.PREVIOUS }) ??
-          null,
+          stateManager.getters.getStepByCommand({
+            command: wizardCommands.PREVIOUS,
+          }) ?? null,
         payload,
         isReset: false,
         middleware: stepMiddlewares.ON_PREVIOUS,
       });
     },
     goToStep: (toStep: string, payload?: any) => {
-      const steps = getters.getSteps();
-      const currentStepIndex = steps.indexOf(getters.getActiveStep());
+      const steps = stateManager.getters.getSteps();
+      const currentStepIndex = steps.indexOf(
+        stateManager.getters.getActiveStep()
+      );
       const targetStepIndex = steps.indexOf(toStep);
 
       navigation.navigate({
@@ -58,9 +68,10 @@ const useWizardCommands = (entity: IEntity) => {
         console.warn("Navigation is locked");
         return;
       }
-      mutations.updateSteps(callback);
+      stateManager.mutations.updateSteps(callback);
+      observer.dispatch(WizardInternalEvents.ON_STEPS_UPDATE);
     },
   };
 };
 
-export { useWizardCommands };
+export { createCommands };

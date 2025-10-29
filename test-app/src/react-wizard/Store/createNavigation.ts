@@ -7,12 +7,10 @@ import {
   type stepMiddlewaresType,
   type wizardCommandsType,
 } from "../types";
-import { createGetters } from "./createGetters";
-import { createMutations } from "./createMutations";
+import type { createStateManager } from "./StateManager/createStateManager";
 
 const createNavigation = (
-  getters: ReturnType<typeof createGetters>,
-  mutations: ReturnType<typeof createMutations>,
+  stateManager: ReturnType<typeof createStateManager>,
   observer: ReturnType<typeof createObserver>
 ) => {
   let stepMiddleware: IWizardStep | undefined;
@@ -37,7 +35,7 @@ const createNavigation = (
       // Prevent navigation to same step
       if (
         command === wizardCommands.GO_TO_STEP &&
-        toStep === getters.getActiveStep()
+        toStep === stateManager.getters.getActiveStep()
       ) {
         return;
       }
@@ -60,15 +58,15 @@ const createNavigation = (
       command: wizardCommandsType;
     }) => {
       if (toStep) {
-        mutations.changeStep(toStep);
+        stateManager.mutations.changeStep(toStep);
         if (isReset) {
-          mutations.reset();
+          stateManager.mutations.reset();
           observer.dispatch(WizardPublicEvents.ON_RESET);
         }
         stepMiddleware = undefined;
         observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE, {
           toStep,
-          activeStep: getters.getActiveStep(),
+          activeStep: stateManager.getters.getActiveStep(),
           command,
         });
         return;
@@ -88,7 +86,7 @@ const createNavigation = (
         stepMiddleware!.validate!({
           payload: params.payload,
           command: params.command,
-          activeStep: getters.getActiveStep(),
+          activeStep: stateManager.getters.getActiveStep(),
           toStep: params.toStep!,
           resolve: () => {
             // Validation passed - proceed with navigation
@@ -113,7 +111,7 @@ const createNavigation = (
     }) {
       if (stepMiddleware && stepMiddleware[middleware]) {
         stepMiddleware[middleware]!({
-          activeStep: getters.getActiveStep(),
+          activeStep: stateManager.getters.getActiveStep(),
           toStep: toStep as string,
         });
       }

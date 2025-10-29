@@ -4,7 +4,6 @@ import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
 import { useWizardClient } from "./react-integration/useWizardClient";
-import { useWizardCommands } from "./react-integration/useWizardCommands";
 import { createStore } from "./Store/createStore";
 import { type IWizardConfig, type IWizardStep } from "./types";
 
@@ -30,7 +29,7 @@ const createWizardClient = () => {
     useWizardCommands: () => {
       const { id } = useRequiredContext(WizardContext);
       const entity = store.getEntity(id);
-      return useWizardCommands(entity);
+      return entity.commands;
     },
     useWizard: () => {
       const { id } = useRequiredContext(WizardContext);

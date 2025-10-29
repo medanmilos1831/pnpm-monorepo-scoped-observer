@@ -18,7 +18,7 @@ const useWizardClient = (store: ReturnType<typeof createStore>, id: string) => {
   if (!store.getEntity(id)) return undefined;
   const entity = store.getEntity(id);
   return {
-    ...entity.getters,
+    ...entity.stateManager.getters,
     addEventListener: entity.addEventListener,
   };
 };

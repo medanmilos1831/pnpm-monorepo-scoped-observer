@@ -1,8 +1,7 @@
 import type { createObserver } from "./observer";
-import type { createGetters } from "./Store/createGetters";
-import type { createMutations } from "./Store/createMutations";
+import type { createCommands } from "./Store/createCommands";
 import type { createNavigation } from "./Store/createNavigation";
-import type { createState } from "./Store/createState";
+import type { createStateManager } from "./Store/StateManager/createStateManager";
 
 // ===========================================
 // SCOPES
@@ -19,14 +18,13 @@ export const WIZARD_STEP_OBSERVER_SCOPE = "wizard-step-observer" as const;
 // CONFIGURATION TYPES
 // ===========================================
 export interface IEntity {
-  state: ReturnType<typeof createState>;
-  getters: ReturnType<typeof createGetters>;
-  mutations: ReturnType<typeof createMutations>;
+  stateManager: ReturnType<typeof createStateManager>;
   mount: () => void;
   addEventListener: (
     eventName: `${WizardPublicEventsType}`,
     callback: (payload: any) => void
   ) => () => void;
+  commands: ReturnType<typeof createCommands>;
   navigation: ReturnType<typeof createNavigation>;
   subscribe: ReturnType<typeof createObserver>["subscribe"];
 }

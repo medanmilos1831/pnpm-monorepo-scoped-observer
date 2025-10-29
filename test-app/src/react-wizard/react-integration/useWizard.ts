@@ -18,17 +18,20 @@ const useWizard = (store: ReturnType<typeof createStore>, id: string) => {
       notify();
     });
   });
-  useSyncExternalStore(subsciber, entity.getters.getActiveStep);
-  useSyncExternalStore(subsciberUpdateSteps, entity.getters.getSteps);
-  useSyncExternalStore(subsciberReset, entity.getters.getSteps);
+  useSyncExternalStore(subsciber, entity.stateManager.getters.getActiveStep);
+  useSyncExternalStore(
+    subsciberUpdateSteps,
+    entity.stateManager.getters.getSteps
+  );
+  useSyncExternalStore(subsciberReset, entity.stateManager.getters.getSteps);
   return {
-    activeStep: entity.getters.getActiveStep(),
-    nextStep: entity.getters.getNextStep(),
-    previousStep: entity.getters.getPreviousStep(),
-    isLast: entity.getters.isLast(),
-    isFirst: entity.getters.isFirst(),
-    steps: entity.getters.getSteps(),
-    wizardId: entity.getters.getWizardId(),
+    activeStep: entity.stateManager.getters.getActiveStep(),
+    nextStep: entity.stateManager.getters.getNextStep(),
+    previousStep: entity.stateManager.getters.getPreviousStep(),
+    isLast: entity.stateManager.getters.isLast(),
+    isFirst: entity.stateManager.getters.isFirst(),
+    steps: entity.stateManager.getters.getSteps(),
+    wizardId: entity.stateManager.getters.getWizardId(),
   };
 };
 
