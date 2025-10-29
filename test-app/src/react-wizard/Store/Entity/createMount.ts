@@ -1,8 +1,8 @@
-import { WizardStoreEvents, type IWizardConfig } from "../types";
+import { WizardStoreEvents, type IWizardConfig } from "../../types";
 
-import type { createObserver } from "../observer";
+import type { createObserver } from "../../observer";
 
-export function mountFn(
+export function createMount(
   entitiesMap: Map<string, any>,
   props: IWizardConfig,
   observer: ReturnType<typeof createObserver>

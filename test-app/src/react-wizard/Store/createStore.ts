@@ -1,15 +1,11 @@
 import { createObserver } from "../observer";
 import {
-  WIZARD_OBSERVER_SCOPE,
   WIZARD_STORE_SCOPE,
   WizardStoreEvents,
   type IEntity,
   type IWizardConfig,
 } from "../types";
-import { createCommands } from "./createCommands";
-import { createNavigationManager } from "./createNavigationManager";
-import { mountFn } from "./mount";
-import { createStateManager } from "./StateManager/createStateManager";
+import { createEntity } from "./Entity/createEntity";
 
 const createStore = () => {
   const storeObserver = createObserver(WIZARD_STORE_SCOPE);
@@ -27,30 +23,10 @@ const createStore = () => {
     },
     createEntity(props: IWizardConfig) {
       if (!this.entities.has(props.id)) {
-        const observer = createObserver(WIZARD_OBSERVER_SCOPE);
-        const stateManager = createStateManager(props);
-        const navigationManager = createNavigationManager(
-          stateManager,
-          observer
+        this.entities.set(
+          props.id,
+          createEntity(props, storeObserver, this.entities)
         );
-        const commands = createCommands(
-          stateManager,
-          navigationManager,
-          observer
-        );
-        const mount = mountFn(this.entities, props, storeObserver);
-        this.entities.set(props.id, {
-          stateManager,
-          commands,
-          navigationManager,
-          addEventListener: (event, callback) => {
-            return observer.subscribe(event, ({ payload }) => {
-              callback(payload);
-            });
-          },
-          subscribeInternal: observer.subscribe,
-          mount,
-        });
       }
       return this.getEntity(props.id)!;
     },

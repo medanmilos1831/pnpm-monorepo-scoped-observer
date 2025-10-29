@@ -1,5 +1,5 @@
-import type { createObserver } from "../observer";
-import { WizardInternalEvents } from "../types";
+import type { createObserver } from "../../observer";
+import { WizardInternalEvents } from "../../types";
 import { createState } from "./createState";
 
 export function createMutations(

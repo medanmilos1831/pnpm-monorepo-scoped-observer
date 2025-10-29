@@ -2,10 +2,10 @@ import {
   stepMiddlewares,
   wizardCommands,
   WizardInternalEvents,
-} from "../types";
+} from "../../types";
 import { createNavigationManager } from "./createNavigationManager";
 import type { createStateManager } from "./StateManager/createStateManager";
-import type { createObserver } from "../observer";
+import type { createObserver } from "../../observer";
 
 const createCommands = (
   stateManager: ReturnType<typeof createStateManager>,

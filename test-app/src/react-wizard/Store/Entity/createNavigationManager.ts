@@ -1,4 +1,4 @@
-import { createObserver } from "../observer";
+import { createObserver } from "../../observer";
 import {
   wizardCommands,
   WizardPublicEvents,
@@ -6,7 +6,7 @@ import {
   type navigateParamsType,
   type stepMiddlewaresType,
   type wizardCommandsType,
-} from "../types";
+} from "../../types";
 import type { createStateManager } from "./StateManager/createStateManager";
 
 const createNavigationManager = (

@@ -1,4 +1,4 @@
-import type { IWizardConfig } from "../types";
+import type { IWizardConfig } from "../../../types";
 
 export function createState(props: IWizardConfig) {
   return {

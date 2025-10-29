@@ -1,4 +1,4 @@
-import type { IWizardConfig } from "../../types";
+import type { IWizardConfig } from "../../../types";
 import { createState } from "./createState";
 import { createMutations } from "./createMutations";
 import { createGetters } from "./createGetters";
