@@ -1,9 +1,13 @@
-import { WizardStoreEvents, type IWizardConfig } from "../../types";
+import {
+  WizardStoreEvents,
+  type IEntity,
+  type IWizardConfig,
+} from "../../types";
 
 import type { createObserver } from "../../observer";
 
 export function createMount(
-  entitiesMap: Map<string, any>,
+  entitiesMap: Map<string, IEntity>,
   props: IWizardConfig,
   observer: ReturnType<typeof createObserver>
 ) {
