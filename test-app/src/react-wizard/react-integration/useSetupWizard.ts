@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { createStore } from "../Store/createStore";
-import { type IWizardConfig } from "../types";
+import { WizardPublicEvents, type IWizardConfig } from "../types";
 
 const useSetupWizard = (
   store: ReturnType<typeof createStore>,
@@ -11,7 +11,7 @@ const useSetupWizard = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
-    unsubscribe = addEventListener("onFinish", () => {
+    unsubscribe = addEventListener(WizardPublicEvents.ON_FINISH, () => {
       props.onFinish!();
     });
     return () => {
@@ -22,7 +22,7 @@ const useSetupWizard = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onReset) return;
-    unsubscribe = addEventListener("onReset", () => {
+    unsubscribe = addEventListener(WizardPublicEvents.ON_RESET, () => {
       props.onReset!();
     });
     return () => {

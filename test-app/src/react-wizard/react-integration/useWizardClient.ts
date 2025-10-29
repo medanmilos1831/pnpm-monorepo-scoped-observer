@@ -17,6 +17,7 @@ const useWizardClient = (store: ReturnType<typeof createStore>, id: string) => {
   useSyncExternalStore(mount, snapshot);
   if (!store.getEntity(id)) return undefined;
   const entity = store.getEntity(id);
+  console.log("ENTITY", entity);
   return {
     ...entity.stateManager.getters,
     addEventListener: entity.addEventListener,

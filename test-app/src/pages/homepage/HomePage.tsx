@@ -6,6 +6,7 @@ import { StepTwo } from "../../components/StepTwo";
 import { WizNavigation } from "../../components/WizNavigation";
 import { Wizard, useWizard } from "../../wizService";
 import { StepFour } from "../../components/StepFour";
+import { SomeComponent } from "../../components/SomeComponent";
 
 const StepsMap: any = {
   stepOne: StepOne,
@@ -16,7 +17,6 @@ const StepsMap: any = {
 
 const Body = () => {
   const { activeStep } = useWizard();
-  console.log("ACTIVE STEP", activeStep);
   let Step = StepsMap[activeStep as keyof typeof StepsMap];
   return (
     <div>
@@ -60,6 +60,7 @@ const Inner = () => {
 const HomePage = () => {
   return (
     <>
+      <SomeComponent />
       <Inner />
     </>
   );

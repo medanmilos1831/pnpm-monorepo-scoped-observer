@@ -8,21 +8,22 @@ import {
 } from "../types";
 import { createCommands } from "./createCommands";
 import { createNavigationManager } from "./createNavigationManager";
-
 import { mountFn } from "./mount";
 import { createStateManager } from "./StateManager/createStateManager";
 
 const createStore = () => {
-  const observer = createObserver(WIZARD_STORE_SCOPE);
+  const storeObserver = createObserver(WIZARD_STORE_SCOPE);
   return {
     entities: new Map<string, IEntity>(),
-    subscribe: observer.subscribe,
+    subscribe: storeObserver.subscribe,
     getEntity(id: string) {
       return this.entities.get(id)!;
     },
     removeEntity(id: string) {
       this.entities.delete(id);
-      observer.dispatch(`${WizardStoreEvents.CREATE_WIZARD}-${id}`, { id });
+      storeObserver.dispatch(`${WizardStoreEvents.CREATE_WIZARD}-${id}`, {
+        id,
+      });
     },
     createEntity(props: IWizardConfig) {
       if (!this.entities.has(props.id)) {
@@ -37,7 +38,7 @@ const createStore = () => {
           navigationManager,
           observer
         );
-        const mount = mountFn(this.entities, props, observer);
+        const mount = mountFn(this.entities, props, storeObserver);
         this.entities.set(props.id, {
           stateManager,
           commands,
