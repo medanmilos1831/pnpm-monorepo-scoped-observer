@@ -1,7 +1,7 @@
 import type { createObserver } from "./observer";
-import type { createCommands } from "./Store/createCommands";
-import type { createNavigationManager } from "./Store/createNavigationManager";
-import type { createStateManager } from "./Store/StateManager/createStateManager";
+import type { createCommands } from "./Store/Entity/createCommands";
+import type { createNavigationManager } from "./Store/Entity/createNavigationManager";
+import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
 
 // ===========================================
 // SCOPES
@@ -27,6 +27,7 @@ export interface IEntity {
   commands: ReturnType<typeof createCommands>;
   navigationManager: ReturnType<typeof createNavigationManager>;
   subscribeInternal: ReturnType<typeof createObserver>["subscribe"];
+  getClient: () => void;
 }
 
 export interface IWizardConfig {

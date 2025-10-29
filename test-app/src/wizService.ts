@@ -1,6 +1,19 @@
 import { createWizardClient } from "./react-wizard/createWizardClient";
 
-const { Wizard, Step, useWizard, useWizardCommands, useWizardClient } =
-  createWizardClient();
+const {
+  Wizard,
+  Step,
+  useWizard,
+  useWizardCommands,
+  useWizardClient,
+  getWizardClient,
+} = createWizardClient();
 
-export { Wizard, Step, useWizard, useWizardCommands, useWizardClient };
+export {
+  Wizard,
+  Step,
+  useWizard,
+  useWizardCommands,
+  useWizardClient,
+  getWizardClient,
+};

@@ -31,6 +31,13 @@ const createEntity = (
         callback(payload);
       });
     },
+    getClient() {
+      return {
+        addEventListener: this.addEventListener,
+        commands: this.commands,
+        getters: this.stateManager.getters,
+      };
+    },
     subscribeInternal: observer.subscribe,
     mount,
   };

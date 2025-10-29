@@ -38,6 +38,10 @@ const createWizardClient = () => {
     useWizardClient: (id: string) => {
       return useWizardClient(store, id);
     },
+    getWizardClient: (id: string) => {
+      const entity = store.getEntity(id);
+      return entity.getClient();
+    },
   };
 };
 

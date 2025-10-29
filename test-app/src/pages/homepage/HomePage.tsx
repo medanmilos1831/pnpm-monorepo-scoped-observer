@@ -42,10 +42,10 @@ const Inner = () => {
           steps={["stepOne", "stepTwo", "stepThree"]}
           activeStep="stepOne"
           onFinish={() => {
-            console.log("onFinish");
+            // Wizard finished
           }}
           onReset={() => {
-            console.log("onReset");
+            // Wizard reset
           }}
         >
           <WizNavigation />

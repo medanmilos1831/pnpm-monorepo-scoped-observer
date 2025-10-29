@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Step, useWizardCommands } from "../wizService";
+import { getWizardClient, Step, useWizardCommands } from "../wizService";
 import { Modal } from "antd";
 
 export const StepOne = () => {
@@ -18,10 +18,9 @@ export const StepOne = () => {
       </Modal>
       <Step
         onNext={(params) => {
-          console.log("STEP ONE ON NEXT");
+          // Step one on next handler
         }}
         validate={(params) => {
-          console.log("STEP ONE VALIDATE");
           if (params.payload?.name === "John") {
             setOpen(true);
             return;
@@ -30,6 +29,13 @@ export const StepOne = () => {
         }}
       >
         StepOne
+        <button
+          onClick={() => {
+            getWizardClient("wizard-1");
+          }}
+        >
+          log client
+        </button>
       </Step>
     </>
   );

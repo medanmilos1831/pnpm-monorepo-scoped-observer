@@ -5,10 +5,10 @@ export const StepTwo = () => {
   return (
     <Step
       onNext={(params) => {
-        console.log("STEP TWO ON NEXT", params);
+        // Step two on next handler
       }}
       onPrevious={(params) => {
-        console.log("STEP TWO ON PREVIOUS", params);
+        // Step two on previous handler
       }}
     >
       <h1>StepTwo</h1>
