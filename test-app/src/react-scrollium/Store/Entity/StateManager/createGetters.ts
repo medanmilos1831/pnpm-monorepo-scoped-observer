@@ -1,6 +1,6 @@
-import { stateFn } from "./state";
+import type { createState } from "./createState";
 
-export function getters(state: ReturnType<typeof stateFn>) {
+export function createGetters(state: ReturnType<typeof createState>) {
   return {
     getAxis: () => state.axis,
     getScrollPosition: () => state.scrollPosition,
@@ -12,6 +12,5 @@ export function getters(state: ReturnType<typeof stateFn>) {
     getDirection: () => state.direction,
     getIsScrolling: () => state.isScrolling,
     getId: () => state.id,
-    subscribe: state.observer.subscribe,
   };
 }

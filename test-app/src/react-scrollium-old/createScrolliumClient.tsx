@@ -2,7 +2,7 @@ import { createContext, type PropsWithChildren } from "react";
 import { Store } from "./Store/Store";
 import { useScroll } from "./react-integration/useScroll";
 import { useScrollPosition } from "./react-integration/useScrollPosition";
-import { useSetup } from "./react-integration/useSetup";
+import { useSetup } from "../react-scrollium/react-integration/useSetup";
 import { type ScrolliumProps } from "./types";
 
 const createScrolliumClient = () => {

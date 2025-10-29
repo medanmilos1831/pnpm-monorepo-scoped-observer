@@ -1,18 +1,27 @@
 import { createObserver } from "../../observer";
-import { SCROLLIUM_SCOPE, type ScrolliumProps } from "../types";
-import { stateFn } from "./state";
 
+import { createMount } from "./createMount";
+import { createStateManager } from "./StateManager/createStateManager";
+import { SCROLLIUM_SCOPE, type ScrolliumProps } from "../../types";
 const createEntity = (
   props: ScrolliumProps,
-  storeObserver: ReturnType<typeof createObserver>
+  storeObserver: ReturnType<typeof createObserver>,
+  entitiesMap: Map<string, any>
 ) => {
   const observer = createObserver(SCROLLIUM_SCOPE);
-  const state = stateFn(props);
-  const mutations = mutationsFn(state);
-  const getters = gettersFn(state);
+  const stateManager = createStateManager(props);
+  const mount = createMount(entitiesMap, props, storeObserver);
   return {
-    state,
-    mutations,
-    getters,
+    stateManager,
+    addEventListener: observer.subscribe,
+    getClient() {
+      return {
+        addEventListener: this.addEventListener,
+        getters: this.stateManager.getters,
+      };
+    },
+    mount,
   };
 };
+
+export { createEntity };

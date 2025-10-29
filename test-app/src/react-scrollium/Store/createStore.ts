@@ -1,9 +1,11 @@
-import { createObserver } from "../../react-wizard/observer";
+import { createObserver } from "../observer";
 import {
   SCROLLIUM_STORE_SCOPE,
   ScrolliumStoreEvents,
   type ScrolliumProps,
 } from "../types";
+
+import { createEntity } from "./Entity/createEntity";
 
 const createStore = () => {
   const storeObserver = createObserver(SCROLLIUM_STORE_SCOPE);
@@ -33,3 +35,5 @@ const createStore = () => {
     },
   };
 };
+
+export { createStore };

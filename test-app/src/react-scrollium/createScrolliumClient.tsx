@@ -1,14 +1,12 @@
 import { createContext, type PropsWithChildren } from "react";
-import { Store } from "./Store/Store";
-import { useScroll } from "./react-integration/useScroll";
-import { useScrollPosition } from "./react-integration/useScrollPosition";
-import { useSetup } from "./react-integration/useSetup";
+import { createStore } from "./Store/createStore";
+
 import { type ScrolliumProps } from "./types";
-import { useRequiredContext } from "./react-integration/useRequiredContext";
+import { useSetup } from "./react-integration/useSetup";
 
 const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
-  const store = new Store();
+  const store = createStore();
 
   return {
     Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
@@ -26,9 +24,15 @@ const createScrolliumClient = () => {
         </ScrollContext.Provider>
       );
     },
+    useScroll: (id: string) => {
+      // const item = useScroll(store, id);
+      // if (!item) {
+      //   return undefined;
+      // }
+      // return item;
+    },
     useScrollPosition: () => {
-      const { id } = useRequiredContext(ScrollContext);
-      return useScrollPosition(store, id);
+      // return useScrollPosition(store, ScrollContext);
     },
   };
 };

@@ -1,7 +1,11 @@
-import { ScrolliumAxis, ScrolliumDirection, ScrolliumEvents } from "../types";
-import { stateFn } from "./state";
+import {
+  ScrolliumAxis,
+  ScrolliumDirection,
+  ScrolliumEvents,
+} from "../../../types";
+import { createState } from "./createState";
 
-export function mutations(state: ReturnType<typeof stateFn>) {
+export function createMutations(state: ReturnType<typeof createState>) {
   return {
     setScrollPosition(position: number) {
       this.calculate(position);
@@ -12,10 +16,10 @@ export function mutations(state: ReturnType<typeof stateFn>) {
       state.scrollTimeoutId = setTimeout(() => {
         state.isScrolling = false;
         state.scrollTimeoutId = null;
-        state.observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
+        // state.observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
       }, 500);
 
-      state.observer.dispatch(ScrolliumEvents.ON_SCROLL);
+      // state.observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     setAxis(axis: ScrolliumAxis) {
       state.axis = axis;
@@ -82,20 +86,6 @@ export function mutations(state: ReturnType<typeof stateFn>) {
         state.scrollSize > 0 ? state.scrollPosition / state.scrollSize : 0;
       const progress = Number((ratio * 100).toFixed(2));
       state.progress = Math.min(100, Math.max(1, progress));
-    },
-    createClient() {
-      return {
-        getScrollPosition: () => state.scrollPosition,
-        getIsStart: () => state.isStart,
-        getIsEnd: () => state.isEnd,
-        getClientSize: () => state.clientSize,
-        getScrollSize: () => state.scrollSize,
-        getProgress: () => state.progress,
-        getDirection: () => state.direction,
-        getIsScrolling: () => state.isScrolling,
-        getId: () => state.id,
-        subscribe: state.observer.subscribe,
-      };
     },
     calculate(position: number) {
       state.previousScrollPosition = state.scrollPosition;
