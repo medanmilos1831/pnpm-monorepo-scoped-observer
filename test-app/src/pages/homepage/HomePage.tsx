@@ -1,67 +1,36 @@
-import { useState } from "react";
-import { WizControls } from "../../components/Controls";
-import { StepOne } from "../../components/StepOne";
-import { StepThree } from "../../components/StepThree";
-import { StepTwo } from "../../components/StepTwo";
-import { WizNavigation } from "../../components/WizNavigation";
-import { Wizard, useWizard } from "../../wizService";
-import { StepFour } from "../../components/StepFour";
-import { SomeComponent } from "../../components/SomeComponent";
+import { Scroll, useScroll, useScrollPosition } from "../../scroll";
 
-const StepsMap: any = {
-  stepOne: StepOne,
-  stepTwo: StepTwo,
-  stepThree: StepThree,
-  stepFour: StepFour,
-};
-
-const Body = () => {
-  const { activeStep } = useWizard();
-  let Step = StepsMap[activeStep as keyof typeof StepsMap];
+const SomeComponent = () => {
+  const scroll = useScrollPosition();
+  console.log(scroll);
   return (
     <div>
-      <Step />
+      <h1>SomeComponent</h1>
     </div>
-  );
-};
-
-const Inner = () => {
-  const [count, setCount] = useState(0);
-  return (
-    <>
-      <button
-        onClick={() => {
-          setCount(count + 1);
-        }}
-      >
-        {count}
-      </button>
-      {count % 2 === 0 ? (
-        <Wizard
-          id="wizard-1"
-          steps={["stepOne", "stepTwo", "stepThree"]}
-          activeStep="stepOne"
-          onFinish={() => {
-            // Wizard finished
-          }}
-          onReset={() => {
-            // Wizard reset
-          }}
-        >
-          <WizNavigation />
-          <Body />
-          <WizControls />
-        </Wizard>
-      ) : null}
-    </>
   );
 };
 
 const HomePage = () => {
   return (
     <>
-      <SomeComponent />
-      <Inner />
+      <h1>HomePage</h1>
+      <div style={{ height: "15rem", width: "15rem" }}>
+        <Scroll id="scroll-one">
+          <>
+            <SomeComponent />
+            {Array.from({ length: 100 }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: index % 2 === 0 ? "red" : "blue",
+                }}
+              >
+                <h2>Item {index}</h2>
+              </div>
+            ))}
+          </>
+        </Scroll>
+      </div>
     </>
   );
 };

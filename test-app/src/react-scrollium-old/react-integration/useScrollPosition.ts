@@ -9,7 +9,14 @@ import type { Store } from "../Store/Store";
 import { ScrolliumEvents } from "../types";
 import { getScrolliumData } from "../utils";
 
-const useScrollPosition = (store: Store, id: string) => {
+const useScrollPosition = (
+  store: Store,
+  ScrollContext: Context<{ id: string } | undefined>
+) => {
+  const context = useContext(ScrollContext);
+  if (!context) {
+    throw new Error("ScrollContext not found");
+  }
   const getters = useScroll(store, context.id)!;
   const [subsciber] = useState(() => (notify: () => void) => {
     return getters.subscribe(ScrolliumEvents.ON_SCROLL, () => {
