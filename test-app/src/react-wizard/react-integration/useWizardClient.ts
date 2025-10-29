@@ -16,8 +16,7 @@ const useWizardClient = (store: ReturnType<typeof createStore>, id: string) => {
   });
   useSyncExternalStore(mount, snapshot);
   if (!store.getEntity(id)) return undefined;
-  const entity = store.getEntity(id);
-  return entity.getClient();
+  return store.getEntityClient(id);
 };
 
 export { useWizardClient };

@@ -1,5 +1,6 @@
 import type { createObserver } from "./observer";
 import type { createCommands } from "./Store/Entity/createCommands";
+import type { createGetters } from "./Store/Entity/createGetters";
 import type { createNavigationManager } from "./Store/Entity/createNavigationManager";
 import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
 
@@ -27,7 +28,11 @@ export interface IEntity {
   commands: ReturnType<typeof createCommands>;
   navigationManager: ReturnType<typeof createNavigationManager>;
   subscribeInternal: ReturnType<typeof createObserver>["subscribe"];
-  getClient: () => void;
+  getClient: () => {
+    addEventListener: IEntity["addEventListener"];
+    commands: IEntity["commands"];
+    getters: IEntity["stateManager"]["getters"];
+  };
 }
 
 export interface IWizardConfig {

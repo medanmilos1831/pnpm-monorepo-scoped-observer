@@ -30,6 +30,9 @@ const createStore = () => {
       }
       return this.getEntity(props.id)!;
     },
+    getEntityClient(id: string) {
+      return this.getEntity(id).getClient();
+    },
   };
 };
 
