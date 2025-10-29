@@ -1,6 +1,6 @@
 import type { createObserver } from "./observer";
 import type { createCommands } from "./Store/createCommands";
-import type { createNavigation } from "./Store/createNavigationManager";
+import type { createNavigationManager } from "./Store/createNavigationManager";
 import type { createStateManager } from "./Store/StateManager/createStateManager";
 
 // ===========================================
@@ -25,8 +25,8 @@ export interface IEntity {
     callback: (payload: any) => void
   ) => () => void;
   commands: ReturnType<typeof createCommands>;
-  navigation: ReturnType<typeof createNavigation>;
-  subscribe: ReturnType<typeof createObserver>["subscribe"];
+  navigationManager: ReturnType<typeof createNavigationManager>;
+  subscribeInternal: ReturnType<typeof createObserver>["subscribe"];
 }
 
 export interface IWizardConfig {

@@ -22,7 +22,7 @@ const createWizardClient = () => {
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
       const entity = store.getEntity(id);
-      entity.navigation.setStepMiddleware(props);
+      entity.navigationManager.setStepMiddleware(props);
 
       return <>{children}</>;
     },

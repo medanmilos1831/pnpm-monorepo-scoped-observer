@@ -28,19 +28,26 @@ const createStore = () => {
       if (!this.entities.has(props.id)) {
         const observer = createObserver(WIZARD_OBSERVER_SCOPE);
         const stateManager = createStateManager(props);
-        const navigation = createNavigationManager(stateManager, observer);
-        const commands = createCommands(stateManager, navigation, observer);
+        const navigationManager = createNavigationManager(
+          stateManager,
+          observer
+        );
+        const commands = createCommands(
+          stateManager,
+          navigationManager,
+          observer
+        );
         const mount = mountFn(this.entities, props, observer);
         this.entities.set(props.id, {
           stateManager,
           commands,
-          navigation,
+          navigationManager,
           addEventListener: (event, callback) => {
             return observer.subscribe(event, ({ payload }) => {
               callback(payload);
             });
           },
-          subscribe: observer.subscribe,
+          subscribeInternal: observer.subscribe,
           mount,
         });
       }
