@@ -1,6 +1,6 @@
 import {
+  ScrolliumAxis,
   ScrolliumDirection,
-  type ScrolliumAxis,
   type ScrolliumProps,
 } from "../../../types";
 
@@ -19,5 +19,11 @@ export function createState(props: ScrolliumProps) {
     progress: 0 as number,
     direction: ScrolliumDirection.NONE,
     element: null as HTMLElement | null,
+    style: {
+      height: "100%",
+      width: "100%",
+      overflow:
+        props.axis === ScrolliumAxis.HORIZONTAL ? "auto hidden" : "hidden auto",
+    },
   };
 }
