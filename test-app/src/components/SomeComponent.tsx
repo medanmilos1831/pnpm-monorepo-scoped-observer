@@ -3,10 +3,9 @@ import { useWizardClient } from "../wizService";
 
 export const SomeComponent = () => {
   const client = useWizardClient("wizard-1");
-  console.log("CLIENT", client);
   useEffect(() => {
     client?.addEventListener("onStepChange", (payload) => {
-      console.log("ON_STEP_CHANGE", payload);
+      // Step change handler
     });
   }, [client]);
   return (

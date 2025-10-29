@@ -3,7 +3,6 @@ import {
   type IEntity,
   type IWizardConfig,
 } from "../../types";
-
 import type { createObserver } from "../../observer";
 
 export function createMount(

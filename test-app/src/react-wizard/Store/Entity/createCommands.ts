@@ -65,7 +65,6 @@ const createCommands = (
     },
     updateSteps: (callback: (steps: string[]) => string[]) => {
       if (navigationManager.isLocked()) {
-        console.warn("Navigation is locked");
         return;
       }
       stateManager.mutations.updateSteps(callback);

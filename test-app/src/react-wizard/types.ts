@@ -1,6 +1,5 @@
 import type { createObserver } from "./observer";
 import type { createCommands } from "./Store/Entity/createCommands";
-import type { createGetters } from "./Store/Entity/createGetters";
 import type { createNavigationManager } from "./Store/Entity/createNavigationManager";
 import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
 
@@ -47,8 +46,8 @@ export type onReset = () => void;
 export type onFinish = () => void;
 
 interface IOnNavigateParams {
-  activeStep: string;
-  toStep: string;
+  from: string;
+  to: string;
 }
 
 interface IOnValidateParams {

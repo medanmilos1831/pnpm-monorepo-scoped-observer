@@ -58,6 +58,7 @@ const createNavigationManager = (
       command: wizardCommandsType;
     }) => {
       if (toStep) {
+        let activeStep = stateManager.getters.getActiveStep();
         stateManager.mutations.changeStep(toStep);
         if (isReset) {
           stateManager.mutations.reset();
@@ -65,8 +66,8 @@ const createNavigationManager = (
         }
         stepMiddleware = undefined;
         observer.dispatch(WizardPublicEvents.ON_STEP_CHANGE, {
-          toStep,
-          activeStep: stateManager.getters.getActiveStep(),
+          to: toStep,
+          from: activeStep,
           command,
         });
         return;
@@ -111,8 +112,8 @@ const createNavigationManager = (
     }) {
       if (stepMiddleware && stepMiddleware[middleware]) {
         stepMiddleware[middleware]!({
-          activeStep: stateManager.getters.getActiveStep(),
-          toStep: toStep as string,
+          from: stateManager.getters.getActiveStep(),
+          to: toStep as string,
         });
       }
       this.applyTransition({
