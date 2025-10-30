@@ -7,8 +7,9 @@ const useSetup = (
   props: ScrolliumProps
 ) => {
   store.createEntity(props);
-  const { mount, scroll, addEventListener, stateManager, client } =
-    store.getEntity(props.id)!;
+  const { mount, modules, addEventListener, stateManager } = store.getEntity(
+    props.id
+  )!;
   useEffect(mount, []);
   const elementRef = useRef<HTMLDivElement>(null);
 
@@ -20,13 +21,13 @@ const useSetup = (
     let unsubscribe = () => {};
     if (!props.onScroll) return;
     unsubscribe = addEventListener(ScrolliumPublicEvents.ON_SCROLL, () => {
-      props.onScroll!(client());
+      props.onScroll!(modules.client());
     });
     return () => {
       unsubscribe();
     };
   });
-  return { elementRef, scroll, stateManager };
+  return { elementRef, stateManager, modules };
 };
 
 export { useSetup };

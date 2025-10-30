@@ -6,9 +6,8 @@ import {
   type ScrolliumProps,
   type ScrolliumPublicEventsType,
 } from "../../types";
-import { createScroll } from "./createScoll";
-import { createCommands } from "./createCommands";
 import { createStateManager } from "./createStateManager";
+import { createModules } from "./createModules";
 const createEntity = (
   props: ScrolliumProps,
   storeObserver: ReturnType<typeof createObserver>,
@@ -16,12 +15,10 @@ const createEntity = (
 ) => {
   const stateManager = createStateManager(props);
   const mount = createMount(entitiesMap, props, storeObserver);
-  const scroll = createScroll(stateManager);
-  const commands = createCommands(stateManager);
+  const modules = createModules(stateManager);
   return {
     stateManager,
-    scroll,
-    commands,
+    modules,
     mount,
     addEventListener(
       event: `${ScrolliumPublicEventsType}`,
@@ -30,20 +27,6 @@ const createEntity = (
       return stateManager.observer.subscribe(event, ({ payload }) => {
         callback(payload);
       });
-    },
-    client() {
-      return {
-        id: stateManager.getters.getId(),
-        scrollPosition: stateManager.getters.getScrollPosition(),
-        axis: stateManager.getters.getAxis(),
-        direction: stateManager.getters.getDirection(),
-        progress: stateManager.getters.getProgress(),
-        isStart: stateManager.getters.getIsStart(),
-        isEnd: stateManager.getters.getIsEnd(),
-        clientSize: stateManager.getters.getClientSize(),
-        scrollSize: stateManager.getters.getScrollSize(),
-        isScrolling: stateManager.getters.getIsScrolling(),
-      };
     },
   };
 };

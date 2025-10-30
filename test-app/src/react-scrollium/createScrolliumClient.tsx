@@ -13,7 +13,7 @@ const createScrolliumClient = () => {
 
   return {
     Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
-      const { elementRef, scroll, stateManager } = useSetup(store, props);
+      const { elementRef, stateManager, modules } = useSetup(store, props);
       return (
         <ScrollContext.Provider
           value={{
@@ -23,7 +23,7 @@ const createScrolliumClient = () => {
           <div
             ref={elementRef}
             style={stateManager.state.style}
-            onScroll={scroll.onScroll}
+            onScroll={modules.scroll.onScroll}
           >
             {children}
           </div>
@@ -32,7 +32,7 @@ const createScrolliumClient = () => {
     },
     useScrollCommands: () => {
       const { id } = useRequiredContext(ScrollContext);
-      return store.getEntity(id).commands;
+      return store.getEntity(id).modules.commands;
     },
     useScroll: () => {
       const { id } = useRequiredContext(ScrollContext);

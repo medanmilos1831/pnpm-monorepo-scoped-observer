@@ -17,7 +17,7 @@ const useScroll = (store: ReturnType<typeof createStore>, id: string) => {
   });
   useSyncExternalStore(onScroll, getters.getScrollPosition);
   useSyncExternalStore(onScrollStop, getters.getIsScrolling);
-  return entity.client();
+  return entity.modules.client();
 };
 
 export { useScroll };

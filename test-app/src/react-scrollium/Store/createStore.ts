@@ -35,7 +35,7 @@ const createStore = () => {
       const entity = this.getEntity(id);
       return {
         addEventListener: entity.addEventListener,
-        commands: entity.commands,
+        commands: entity.modules.commands,
         getters: entity.stateManager.getters,
       };
     },
