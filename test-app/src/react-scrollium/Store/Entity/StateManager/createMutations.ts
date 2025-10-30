@@ -1,26 +1,10 @@
-import {
-  ScrolliumAxis,
-  ScrolliumDirection,
-  ScrolliumEvents,
-} from "../../../types";
+import { ScrolliumAxis, ScrolliumDirection } from "../../../types";
 import { createState } from "./createState";
 
 export function createMutations(state: ReturnType<typeof createState>) {
   return {
     setScrollPosition(position: number) {
       this.calculate(position);
-      console.log("setScrollPosition", position);
-      if (state.scrollTimeoutId) {
-        clearTimeout(state.scrollTimeoutId);
-      }
-
-      state.scrollTimeoutId = setTimeout(() => {
-        state.isScrolling = false;
-        state.scrollTimeoutId = null;
-        // state.observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
-      }, 500);
-
-      // state.observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
     setAxis(axis: ScrolliumAxis) {
       state.axis = axis;
@@ -34,6 +18,7 @@ export function createMutations(state: ReturnType<typeof createState>) {
     },
     initializeElement(element: HTMLElement) {
       if (element) {
+        console.log("initializeElement", state);
         state.element = element;
         const clientSize = Math.ceil(
           element![

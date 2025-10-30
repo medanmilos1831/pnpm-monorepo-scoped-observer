@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import type { ScrolliumAxis, ScrolliumProps } from "../types";
 import type { createStore } from "../Store/createStore";
+import type { ScrolliumProps } from "../types";
 
 const useSetup = (
   store: ReturnType<typeof createStore>,
@@ -14,9 +14,6 @@ const useSetup = (
   useEffect(() => {
     stateManager.mutations.initializeElement(elementRef.current as HTMLElement);
   }, []);
-  useEffect(() => {
-    stateManager.mutations.setAxis(props.axis as ScrolliumAxis);
-  }, [props.axis]);
   return { elementRef, scroll, stateManager };
 };
 

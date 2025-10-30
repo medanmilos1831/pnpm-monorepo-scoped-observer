@@ -6,7 +6,7 @@ import {
 
 export function createState(props: ScrolliumProps) {
   return {
-    axis: props.axis as ScrolliumAxis,
+    axis: props.axis ?? ScrolliumAxis.VERTICAL,
     scrollPosition: 0,
     previousScrollPosition: 0,
     isScrolling: false,

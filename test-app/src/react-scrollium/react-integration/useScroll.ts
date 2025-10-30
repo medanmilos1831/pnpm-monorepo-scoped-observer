@@ -7,7 +7,6 @@ const useScroll = (store: ReturnType<typeof createStore>, id: string) => {
   const getters = entity.stateManager.getters;
   const [onScroll] = useState(() => (notify: () => void) => {
     return entity.addEventListener(ScrolliumEvents.ON_SCROLL, () => {
-      console.log("onScroll");
       notify();
     });
   });
@@ -18,21 +17,17 @@ const useScroll = (store: ReturnType<typeof createStore>, id: string) => {
   });
   useSyncExternalStore(onScroll, getters.getScrollPosition);
   useSyncExternalStore(onScrollStop, getters.getIsScrolling);
-  // const entity = store.getEntity(id);
-  // const getters = entity.stateManager.getters;
-  // const [subsciber] = useState(() => (notify: () => void) => {
-  //   return getters.subscribe(ScrolliumEvents.ON_SCROLL, () => {
-  //     notify();
-  //   });
-  // });
-  // const [subsciberStop] = useState(() => (notify: () => void) => {
-  //   return getters.subscribe(ScrolliumEvents.ON_SCROLL_STOP, () => {
-  //     notify();
-  //   });
-  // });
-  // useSyncExternalStore(subsciber, getters.getScrollPosition);
-  // useSyncExternalStore(subsciberStop, getters.getIsScrolling);
-  return {};
+  return {
+    scrollPosition: getters.getScrollPosition(),
+    isScrolling: getters.getIsScrolling(),
+    axis: getters.getAxis(),
+    direction: getters.getDirection(),
+    progress: getters.getProgress(),
+    isStart: getters.getIsStart(),
+    isEnd: getters.getIsEnd(),
+    clientSize: getters.getClientSize(),
+    scrollSize: getters.getScrollSize(),
+  };
 };
 
 export { useScroll };
