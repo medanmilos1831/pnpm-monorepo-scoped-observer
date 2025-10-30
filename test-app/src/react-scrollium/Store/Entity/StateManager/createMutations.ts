@@ -5,6 +5,20 @@ export function createMutations(state: ReturnType<typeof createState>) {
   return {
     setScrollPosition(position: number) {
       this.calculate(position);
+      this.setIsScrolling();
+    },
+    setIsScrolling(callback?: () => void) {
+      if (state.scrollTimeoutId) {
+        clearTimeout(state.scrollTimeoutId);
+      }
+
+      state.scrollTimeoutId = setTimeout(() => {
+        state.isScrolling = false;
+        state.scrollTimeoutId = null;
+        if (callback) {
+          callback();
+        }
+      }, 500);
     },
     setAxis(axis: ScrolliumAxis) {
       state.axis = axis;

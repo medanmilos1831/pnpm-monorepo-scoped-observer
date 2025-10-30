@@ -13,7 +13,9 @@ const createScroll = (
           ? (e.target as HTMLDivElement).scrollTop
           : (e.target as HTMLDivElement).scrollLeft
       );
-
+      stateManager.mutations.setIsScrolling(() => {
+        observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
+      });
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
   };
