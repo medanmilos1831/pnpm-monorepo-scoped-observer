@@ -8,12 +8,12 @@ const createScroll = (
 ) => {
   return {
     onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-      console.log("onScroll", stateManager.state);
       stateManager.mutations.setScrollPosition(
         stateManager.state.axis === ScrolliumAxis.VERTICAL
           ? (e.target as HTMLDivElement).scrollTop
           : (e.target as HTMLDivElement).scrollLeft
       );
+
       observer.dispatch(ScrolliumEvents.ON_SCROLL);
     },
   };

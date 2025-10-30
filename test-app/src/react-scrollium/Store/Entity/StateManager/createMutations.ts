@@ -18,7 +18,6 @@ export function createMutations(state: ReturnType<typeof createState>) {
     },
     initializeElement(element: HTMLElement) {
       if (element) {
-        console.log("initializeElement", state);
         state.element = element;
         const clientSize = Math.ceil(
           element![
