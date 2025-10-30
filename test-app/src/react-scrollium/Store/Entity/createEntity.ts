@@ -20,22 +20,18 @@ const createEntity = (
   const mount = createMount(entitiesMap, props, storeObserver);
   const scroll = createScroll(stateManager, observer);
   const commands = createCommands(stateManager, observer);
-  function addEventListener(
-    event: `${ScrolliumPublicEventsType}`,
-    callback: (payload: any) => void
-  ) {
-    return observer.subscribe(event, ({ payload }) => {
-      callback(payload);
-    });
-  }
   return {
     stateManager,
     scroll,
     commands,
     mount,
-    addEventListener,
-    cleanup() {
-      stateManager.mutations.cleanup();
+    addEventListener(
+      event: `${ScrolliumPublicEventsType}`,
+      callback: (payload: any) => void
+    ) {
+      return observer.subscribe(event, ({ payload }) => {
+        callback(payload);
+      });
     },
     client() {
       return {
