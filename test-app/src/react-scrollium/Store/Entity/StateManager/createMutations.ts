@@ -94,5 +94,11 @@ export function createMutations(state: ReturnType<typeof createState>) {
       this.calculateScrollBounds();
       this.calculateProgress();
     },
+    cleanup() {
+      if (state.scrollTimeoutId) {
+        clearTimeout(state.scrollTimeoutId);
+        state.scrollTimeoutId = null;
+      }
+    },
   };
 }

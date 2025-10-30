@@ -34,18 +34,21 @@ const createEntity = (
     commands,
     mount,
     addEventListener,
+    cleanup() {
+      stateManager.mutations.cleanup();
+    },
     client() {
       return {
-        id: stateManager.state.id,
-        scrollPosition: stateManager.state.scrollPosition,
-        axis: stateManager.state.axis,
-        direction: stateManager.state.direction,
-        progress: stateManager.state.progress,
-        isStart: stateManager.state.isStart,
-        isEnd: stateManager.state.isEnd,
-        clientSize: stateManager.state.clientSize,
-        scrollSize: stateManager.state.scrollSize,
-        isScrolling: stateManager.state.isScrolling,
+        id: stateManager.getters.getId(),
+        scrollPosition: stateManager.getters.getScrollPosition(),
+        axis: stateManager.getters.getAxis(),
+        direction: stateManager.getters.getDirection(),
+        progress: stateManager.getters.getProgress(),
+        isStart: stateManager.getters.getIsStart(),
+        isEnd: stateManager.getters.getIsEnd(),
+        clientSize: stateManager.getters.getClientSize(),
+        scrollSize: stateManager.getters.getScrollSize(),
+        isScrolling: stateManager.getters.getIsScrolling(),
       };
     },
   };

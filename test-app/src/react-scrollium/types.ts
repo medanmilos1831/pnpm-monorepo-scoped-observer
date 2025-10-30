@@ -19,6 +19,7 @@ export interface IEntity {
     eventName: `${ScrolliumPublicEventsType}`,
     callback: (payload: any) => void
   ) => () => void;
+  cleanup: () => void;
   client: () => Pick<
     ReturnType<typeof createState>,
     | "id"

@@ -6,6 +6,16 @@ import {
   useScrollCommands,
 } from "../../scroll";
 
+const OutsideScrollComponent = () => {
+  const scroll = useScrolliumSelector("scroll-one");
+  console.log("scroll", scroll);
+  return (
+    <div>
+      <h1>OutsideScrollComponent</h1>
+    </div>
+  );
+};
+
 const SomeComponent = () => {
   const scroll = useScrollCommands();
   const client = useScroll();
@@ -60,6 +70,7 @@ const HomePage = () => {
   return (
     <>
       <h1>HomePage</h1>
+      <OutsideScrollComponent />
       <ScrollComponent />
     </>
   );

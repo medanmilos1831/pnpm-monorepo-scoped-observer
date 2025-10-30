@@ -1,7 +1,7 @@
-import { ScrolliumStoreEvents, type ScrolliumProps } from "../../types";
+import { ScrolliumStoreEvents, type ScrolliumProps, type IEntity } from "../../types";
 import type { createObserver } from "../../observer";
 export function createMount(
-  entitiesMap: Map<string, any>,
+  entitiesMap: Map<string, IEntity>,
   props: ScrolliumProps,
   observer: ReturnType<typeof createObserver>
 ) {
@@ -13,6 +13,10 @@ export function createMount(
   return () => {
     event();
     return () => {
+      const entity = entitiesMap.get(props.id);
+      if (entity) {
+        entity.cleanup();
+      }
       entitiesMap.delete(props.id);
       event();
     };
