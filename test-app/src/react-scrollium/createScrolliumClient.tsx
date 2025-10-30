@@ -30,6 +30,10 @@ const createScrolliumClient = () => {
         </ScrollContext.Provider>
       );
     },
+    useScrollCommands: () => {
+      const { id } = useRequiredContext(ScrollContext);
+      return store.getEntity(id).commands;
+    },
     useScroll: () => {
       const { id } = useRequiredContext(ScrollContext);
       return useScroll(store, id);

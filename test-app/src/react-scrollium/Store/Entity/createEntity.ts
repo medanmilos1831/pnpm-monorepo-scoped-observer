@@ -9,6 +9,7 @@ import {
   type ScrolliumPublicEventsType,
 } from "../../types";
 import { createScroll } from "./createScoll";
+import { createCommands } from "./createCommands";
 const createEntity = (
   props: ScrolliumProps,
   storeObserver: ReturnType<typeof createObserver>,
@@ -18,6 +19,7 @@ const createEntity = (
   const stateManager = createStateManager(props);
   const mount = createMount(entitiesMap, props, storeObserver);
   const scroll = createScroll(stateManager, observer);
+  const commands = createCommands(stateManager, observer);
   return {
     stateManager,
     addEventListener: (
@@ -29,9 +31,11 @@ const createEntity = (
       });
     },
     scroll,
+    commands,
     getClient() {
       return {
         addEventListener: this.addEventListener,
+        commands: this.commands,
         getters: this.stateManager.getters,
       };
     },

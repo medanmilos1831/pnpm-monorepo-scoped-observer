@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
-import { Scroll, useScroll, useScrollClient } from "../../scroll";
+import {
+  Scroll,
+  useScroll,
+  useScrollClient,
+  useScrollCommands,
+} from "../../scroll";
 
 const SomeComponent = () => {
-  const scroll = useScrollClient("scroll-one");
-  console.log(scroll);
-  useEffect(() => {
-    if (scroll) {
-      scroll.addEventListener("onScrollStop", () => {
-        console.log("onScroll", scroll.getters.getScrollPosition());
-      });
-    }
-  }, [scroll]);
+  const scroll = useScrollCommands();
   return (
     <div>
       <h1>SomeComponent</h1>
+      <button
+        onClick={() =>
+          scroll.scrollToEnd({
+            behavior: "smooth",
+          })
+        }
+      >
+        Scroll to end
+      </button>
     </div>
   );
 };
@@ -27,6 +33,7 @@ const ScrollComponent = () => {
         {count % 2 === 0 ? (
           <Scroll id="scroll-one">
             <>
+              <SomeComponent />
               {Array.from({ length: 100 }).map((_, index) => (
                 <div key={index} style={{ backgroundColor: "red" }}>
                   <h2>Item {index}</h2>
@@ -48,7 +55,6 @@ const HomePage = () => {
   return (
     <>
       <h1>HomePage</h1>
-      <SomeComponent />
       <ScrollComponent />
     </>
   );
