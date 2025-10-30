@@ -31,7 +31,10 @@ const ScrollComponent = () => {
       <button onClick={() => setCount(count + 1)}>Increment</button>
       <div style={{ height: "15rem", width: "15rem" }}>
         {count % 2 === 0 ? (
-          <Scroll id="scroll-one">
+          <Scroll
+            id="scroll-one"
+            onScroll={(params) => console.log("scroll", params)}
+          >
             <>
               <SomeComponent />
               {Array.from({ length: 100 }).map((_, index) => (

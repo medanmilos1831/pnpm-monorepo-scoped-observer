@@ -23,6 +23,15 @@ export interface IEntity {
     commands: IEntity["commands"];
     getters: IEntity["stateManager"]["getters"];
   };
+  client: () => {
+    scrollPosition: number;
+    isScrolling: boolean;
+    axis: `${ScrolliumAxis}`;
+    direction: `${ScrolliumDirection}`;
+    progress: number;
+    isStart: boolean;
+    isEnd: boolean;
+  };
 }
 
 export enum ScrolliumPublicEvents {
@@ -46,7 +55,7 @@ export enum ScrolliumAxis {
 }
 export interface ScrolliumProps {
   id: string;
-  onScroll?: (props: ScrolliumOnScrollProps) => void;
+  onScroll?: (params: ReturnType<IEntity["client"]>) => void;
   axis?: `${ScrolliumAxis}`;
 }
 

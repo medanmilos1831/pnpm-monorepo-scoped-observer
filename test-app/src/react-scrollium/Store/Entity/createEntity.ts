@@ -39,6 +39,20 @@ const createEntity = (
         getters: this.stateManager.getters,
       };
     },
+    client() {
+      const getters = this.stateManager.getters;
+      return {
+        scrollPosition: getters.getScrollPosition(),
+        isScrolling: getters.getIsScrolling(),
+        axis: getters.getAxis(),
+        direction: getters.getDirection(),
+        progress: getters.getProgress(),
+        isStart: getters.getIsStart(),
+        isEnd: getters.getIsEnd(),
+        clientSize: getters.getClientSize(),
+        scrollSize: getters.getScrollSize(),
+      };
+    },
     mount,
   };
 };
