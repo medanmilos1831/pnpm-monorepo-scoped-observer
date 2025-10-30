@@ -1,7 +1,16 @@
-import { Scroll, useScroll } from "../../scroll";
+import { useEffect, useState } from "react";
+import { Scroll, useScroll, useScrollClient } from "../../scroll";
 
 const SomeComponent = () => {
-  const scroll = useScroll();
+  const scroll = useScrollClient("scroll-one");
+  console.log(scroll);
+  useEffect(() => {
+    if (scroll) {
+      scroll.addEventListener("onScroll", () => {
+        console.log("onScroll", scroll.getters.getScrollPosition());
+      });
+    }
+  }, [scroll]);
   return (
     <div>
       <h1>SomeComponent</h1>
@@ -9,27 +18,38 @@ const SomeComponent = () => {
   );
 };
 
+const ScrollComponent = () => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <div style={{ height: "15rem", width: "15rem" }}>
+        {count % 2 === 0 ? (
+          <Scroll id="scroll-one">
+            <>
+              {Array.from({ length: 100 }).map((_, index) => (
+                <div key={index} style={{ backgroundColor: "red" }}>
+                  <h2>Item {index}</h2>
+                </div>
+              ))}
+            </>
+          </Scroll>
+        ) : (
+          <div>
+            <h1>Nema scroll</h1>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
       <h1>HomePage</h1>
-      <div style={{ height: "15rem", width: "15rem" }}>
-        <Scroll id="scroll-one">
-          <>
-            <SomeComponent />
-            {Array.from({ length: 100 }).map((_, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: index % 2 === 0 ? "red" : "blue",
-                }}
-              >
-                <h2>Item {index}</h2>
-              </div>
-            ))}
-          </>
-        </Scroll>
-      </div>
+      <SomeComponent />
+      <ScrollComponent />
     </>
   );
 };
