@@ -1,1 +1,0 @@
-export { createScrolliumClient } from "./createScrolliumClient";

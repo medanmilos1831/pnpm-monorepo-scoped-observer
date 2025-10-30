@@ -3,6 +3,8 @@ import { createStore } from "./Store/createStore";
 
 import { type ScrolliumProps } from "./types";
 import { useSetup } from "./react-integration/useSetup";
+import { useRequiredContext } from "./react-integration/useRequiredContext";
+import { useScroll } from "./react-integration/useScroll";
 
 const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
@@ -10,7 +12,7 @@ const createScrolliumClient = () => {
 
   return {
     Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
-      const { elementRef, onScroll, stateManager } = useSetup(store, props);
+      const { elementRef, scroll, stateManager } = useSetup(store, props);
       return (
         <ScrollContext.Provider
           value={{
@@ -20,14 +22,16 @@ const createScrolliumClient = () => {
           <div
             ref={elementRef}
             style={stateManager.state.style}
-            onScroll={onScroll}
+            onScroll={scroll.onScroll}
           >
             {children}
           </div>
         </ScrollContext.Provider>
       );
     },
-    useScroll: (id: string) => {
+    useScroll: () => {
+      const { id } = useRequiredContext(ScrollContext);
+      return useScroll(store, id);
       // const item = useScroll(store, id);
       // if (!item) {
       //   return undefined;

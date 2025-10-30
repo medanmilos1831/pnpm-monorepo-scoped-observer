@@ -1,7 +1,7 @@
-import { Scroll, useScroll, useScrollPosition } from "../../scroll";
+import { Scroll, useScroll } from "../../scroll";
 
 const SomeComponent = () => {
-  const scroll = useScrollPosition();
+  const scroll = useScroll();
   console.log(scroll);
   return (
     <div>

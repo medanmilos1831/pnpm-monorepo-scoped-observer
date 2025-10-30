@@ -7,7 +7,7 @@ const useSetup = (
   props: ScrolliumProps
 ) => {
   store.createEntity(props);
-  const { stateManager, mount, onScroll } = store.getEntity(props.id)!;
+  const { stateManager, mount, scroll } = store.getEntity(props.id)!;
   useEffect(mount, []);
   const elementRef = useRef<HTMLDivElement>(null);
 
@@ -17,7 +17,7 @@ const useSetup = (
   useEffect(() => {
     stateManager.mutations.setAxis(props.axis as ScrolliumAxis);
   }, [props.axis]);
-  return { elementRef, onScroll, stateManager };
+  return { elementRef, scroll, stateManager };
 };
 
 export { useSetup };

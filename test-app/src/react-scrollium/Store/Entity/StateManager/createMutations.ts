@@ -9,6 +9,7 @@ export function createMutations(state: ReturnType<typeof createState>) {
   return {
     setScrollPosition(position: number) {
       this.calculate(position);
+      console.log("setScrollPosition", position);
       if (state.scrollTimeoutId) {
         clearTimeout(state.scrollTimeoutId);
       }

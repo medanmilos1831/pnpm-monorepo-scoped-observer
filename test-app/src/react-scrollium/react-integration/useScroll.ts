@@ -1,22 +1,38 @@
 import { useState, useSyncExternalStore } from "react";
-import { ScrolliumStoreEvents } from "../types";
 import type { createStore } from "../Store/createStore";
+import { ScrolliumEvents } from "../types";
 
 const useScroll = (store: ReturnType<typeof createStore>, id: string) => {
-  const [mount] = useState(() => {
-    return (notify: () => void) => {
-      return store.subscribe(
-        `${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`,
-        notify
-      );
-    };
+  const entity = store.getEntity(id);
+  const getters = entity.stateManager.getters;
+  const [onScroll] = useState(() => (notify: () => void) => {
+    return entity.addEventListener(ScrolliumEvents.ON_SCROLL, () => {
+      console.log("onScroll");
+      notify();
+    });
   });
-  const [snapshot] = useState(() => {
-    return () => store.entities.has(id);
+  const [onScrollStop] = useState(() => (notify: () => void) => {
+    return entity.addEventListener(ScrolliumEvents.ON_SCROLL_STOP, () => {
+      notify();
+    });
   });
-  useSyncExternalStore(mount, snapshot);
-  if (!store.getEntity(id)) return undefined;
-  return store.getEntityClient(id);
+  useSyncExternalStore(onScroll, getters.getScrollPosition);
+  useSyncExternalStore(onScrollStop, getters.getIsScrolling);
+  // const entity = store.getEntity(id);
+  // const getters = entity.stateManager.getters;
+  // const [subsciber] = useState(() => (notify: () => void) => {
+  //   return getters.subscribe(ScrolliumEvents.ON_SCROLL, () => {
+  //     notify();
+  //   });
+  // });
+  // const [subsciberStop] = useState(() => (notify: () => void) => {
+  //   return getters.subscribe(ScrolliumEvents.ON_SCROLL_STOP, () => {
+  //     notify();
+  //   });
+  // });
+  // useSyncExternalStore(subsciber, getters.getScrollPosition);
+  // useSyncExternalStore(subsciberStop, getters.getIsScrolling);
+  return {};
 };
 
 export { useScroll };
