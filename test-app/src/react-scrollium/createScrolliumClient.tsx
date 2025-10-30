@@ -5,7 +5,7 @@ import { type ScrolliumProps } from "./types";
 import { useSetup } from "./react-integration/useSetup";
 import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useScroll } from "./react-integration/useScroll";
-import { useScrollClient } from "./react-integration/useScrollClient";
+import { useScrolliumSelector } from "./react-integration/useScrolliumSelector";
 
 const createScrolliumClient = () => {
   const ScrollContext = createContext<{ id: string } | undefined>(undefined);
@@ -38,8 +38,8 @@ const createScrolliumClient = () => {
       const { id } = useRequiredContext(ScrollContext);
       return useScroll(store, id);
     },
-    useScrollClient: (id: string) => {
-      return useScrollClient(store, id);
+    useScrolliumSelector: (id: string) => {
+      return useScrolliumSelector(store, id);
     },
   };
 };

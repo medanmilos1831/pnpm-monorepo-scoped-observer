@@ -1,6 +1,7 @@
-import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
-import type { createScroll } from "./Store/Entity/createScoll";
 import type { createCommands } from "./Store/Entity/createCommands";
+import type { createScroll } from "./Store/Entity/createScoll";
+import type { createState } from "./Store/Entity/StateManager/createState";
+import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
 
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",
@@ -18,20 +19,19 @@ export interface IEntity {
     eventName: `${ScrolliumPublicEventsType}`,
     callback: (payload: any) => void
   ) => () => void;
-  getClient: () => {
-    addEventListener: IEntity["addEventListener"];
-    commands: IEntity["commands"];
-    getters: IEntity["stateManager"]["getters"];
-  };
-  client: () => {
-    scrollPosition: number;
-    isScrolling: boolean;
-    axis: `${ScrolliumAxis}`;
-    direction: `${ScrolliumDirection}`;
-    progress: number;
-    isStart: boolean;
-    isEnd: boolean;
-  };
+  client: () => Pick<
+    ReturnType<typeof createState>,
+    | "id"
+    | "scrollPosition"
+    | "axis"
+    | "direction"
+    | "progress"
+    | "isStart"
+    | "isEnd"
+    | "clientSize"
+    | "scrollSize"
+    | "isScrolling"
+  >;
 }
 
 export enum ScrolliumPublicEvents {
@@ -55,7 +55,7 @@ export enum ScrolliumAxis {
 }
 export interface ScrolliumProps {
   id: string;
-  onScroll?: (params: ReturnType<IEntity["client"]>) => void;
+  onScroll?: (params: any) => void;
   axis?: `${ScrolliumAxis}`;
 }
 

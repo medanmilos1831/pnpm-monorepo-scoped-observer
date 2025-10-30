@@ -8,6 +8,8 @@ import {
 
 const SomeComponent = () => {
   const scroll = useScrollCommands();
+  const client = useScroll();
+  console.log("client", client);
   return (
     <div>
       <h1>SomeComponent</h1>
@@ -33,7 +35,7 @@ const ScrollComponent = () => {
         {count % 2 === 0 ? (
           <Scroll
             id="scroll-one"
-            onScroll={(params) => console.log("scroll", params)}
+            // onScroll={(params) => console.log("scroll", params)}
           >
             <>
               <SomeComponent />

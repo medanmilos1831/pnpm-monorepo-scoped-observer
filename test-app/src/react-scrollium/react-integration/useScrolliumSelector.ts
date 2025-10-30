@@ -2,7 +2,10 @@ import { useState, useSyncExternalStore } from "react";
 import { ScrolliumStoreEvents } from "../types";
 import type { createStore } from "../Store/createStore";
 
-const useScrollClient = (store: ReturnType<typeof createStore>, id: string) => {
+const useScrolliumSelector = (
+  store: ReturnType<typeof createStore>,
+  id: string
+) => {
   const [mount] = useState(() => {
     return (notify: () => void) => {
       return store.subscribe(
@@ -19,4 +22,4 @@ const useScrollClient = (store: ReturnType<typeof createStore>, id: string) => {
   return store.getEntityClient(id);
 };
 
-export { useScrollClient };
+export { useScrolliumSelector };

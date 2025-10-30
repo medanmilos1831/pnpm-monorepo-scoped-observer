@@ -20,40 +20,34 @@ const createEntity = (
   const mount = createMount(entitiesMap, props, storeObserver);
   const scroll = createScroll(stateManager, observer);
   const commands = createCommands(stateManager, observer);
+  function addEventListener(
+    event: `${ScrolliumPublicEventsType}`,
+    callback: (payload: any) => void
+  ) {
+    return observer.subscribe(event, ({ payload }) => {
+      callback(payload);
+    });
+  }
   return {
     stateManager,
-    addEventListener: (
-      event: `${ScrolliumPublicEventsType}`,
-      callback: (payload: any) => void
-    ) => {
-      return observer.subscribe(event, ({ payload }) => {
-        callback(payload);
-      });
-    },
     scroll,
     commands,
-    getClient() {
-      return {
-        addEventListener: this.addEventListener,
-        commands: this.commands,
-        getters: this.stateManager.getters,
-      };
-    },
-    client() {
-      const getters = this.stateManager.getters;
-      return {
-        scrollPosition: getters.getScrollPosition(),
-        isScrolling: getters.getIsScrolling(),
-        axis: getters.getAxis(),
-        direction: getters.getDirection(),
-        progress: getters.getProgress(),
-        isStart: getters.getIsStart(),
-        isEnd: getters.getIsEnd(),
-        clientSize: getters.getClientSize(),
-        scrollSize: getters.getScrollSize(),
-      };
-    },
     mount,
+    addEventListener,
+    client() {
+      return {
+        id: stateManager.state.id,
+        scrollPosition: stateManager.state.scrollPosition,
+        axis: stateManager.state.axis,
+        direction: stateManager.state.direction,
+        progress: stateManager.state.progress,
+        isStart: stateManager.state.isStart,
+        isEnd: stateManager.state.isEnd,
+        clientSize: stateManager.state.clientSize,
+        scrollSize: stateManager.state.scrollSize,
+        isScrolling: stateManager.state.isScrolling,
+      };
+    },
   };
 };
 
