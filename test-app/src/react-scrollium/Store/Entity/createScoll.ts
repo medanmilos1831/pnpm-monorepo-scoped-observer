@@ -1,11 +1,7 @@
-import { createObserver } from "../../observer";
 import { ScrolliumAxis, ScrolliumPublicEvents } from "../../types";
-import { createStateManager } from "./StateManager/createStateManager";
+import { createStateManager } from "./createStateManager";
 
-const createScroll = (
-  stateManager: ReturnType<typeof createStateManager>,
-  observer: ReturnType<typeof createObserver>
-) => {
+const createScroll = (stateManager: ReturnType<typeof createStateManager>) => {
   return {
     onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
       stateManager.mutations.setScrollPosition(
@@ -14,9 +10,9 @@ const createScroll = (
           : (e.target as HTMLDivElement).scrollLeft
       );
       stateManager.mutations.setIsScrolling(() => {
-        observer.dispatch(ScrolliumPublicEvents.ON_SCROLL_STOP);
+        stateManager.observer.dispatch(ScrolliumPublicEvents.ON_SCROLL_STOP);
       });
-      observer.dispatch(ScrolliumPublicEvents.ON_SCROLL);
+      stateManager.observer.dispatch(ScrolliumPublicEvents.ON_SCROLL);
     },
   };
 };

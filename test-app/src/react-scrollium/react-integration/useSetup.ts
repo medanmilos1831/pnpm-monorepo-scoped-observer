@@ -13,6 +13,10 @@ const useSetup = (
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    stateManager.mutations.initializeElement(elementRef.current as HTMLElement);
+  }, []);
+
+  useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onScroll) return;
     unsubscribe = addEventListener(ScrolliumPublicEvents.ON_SCROLL, () => {

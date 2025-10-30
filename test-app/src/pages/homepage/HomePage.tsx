@@ -17,20 +17,21 @@ const OutsideScrollComponent = () => {
 };
 
 const SomeComponent = () => {
-  const scroll = useScrollCommands();
+  const commands = useScrollCommands();
   const client = useScroll();
   console.log("client", client);
   return (
     <div>
       <h1>SomeComponent</h1>
       <button
-        onClick={() =>
-          scroll.scrollToEnd({
+        onClick={() => {
+          // console.log("scroll", commands);
+          commands.scrollToEnd({
             behavior: "smooth",
-          })
-        }
+          });
+        }}
       >
-        Scroll to end
+        Scroll to end Clike me
       </button>
     </div>
   );

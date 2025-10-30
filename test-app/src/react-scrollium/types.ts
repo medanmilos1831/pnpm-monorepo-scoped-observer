@@ -1,7 +1,7 @@
 import type { createCommands } from "./Store/Entity/createCommands";
 import type { createScroll } from "./Store/Entity/createScoll";
 import type { createState } from "./Store/Entity/StateManager/createState";
-import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
+import type { createStateManager } from "./Store/Entity/createStateManager";
 
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",

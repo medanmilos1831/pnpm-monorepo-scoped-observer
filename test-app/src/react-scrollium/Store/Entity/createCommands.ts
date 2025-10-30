@@ -1,10 +1,8 @@
-import type { createStateManager } from "./StateManager/createStateManager";
-import type { createObserver } from "../../observer";
+import type { createStateManager } from "./createStateManager";
 import { ScrolliumAxis } from "../../types";
 
 const createCommands = (
-  stateManager: ReturnType<typeof createStateManager>,
-  observer: ReturnType<typeof createObserver>
+  stateManager: ReturnType<typeof createStateManager>
 ) => {
   return {
     scrollTo: (options?: ScrollToOptions) => {
@@ -21,7 +19,6 @@ const createCommands = (
     scrollToEnd: (options?: ScrollOptions) => {
       const scrollPro =
         stateManager.state.axis === ScrolliumAxis.VERTICAL ? "top" : "left";
-
       stateManager.state.element?.scrollTo({
         [scrollPro]: stateManager.state.scrollSize,
         ...options,
