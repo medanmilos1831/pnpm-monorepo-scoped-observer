@@ -1,3 +1,6 @@
+import type { createStateManager } from "./Store/Entity/StateManager/createStateManager";
+import type { createScroll } from "./Store/Entity/createScoll";
+
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",
 }
@@ -5,10 +8,26 @@ export enum ScrolliumStoreEvents {
 export const SCROLLIUM_STORE_SCOPE = "scrollium-store" as const;
 export const SCROLLIUM_SCOPE = "scrollium" as const;
 
-export enum ScrolliumEvents {
+export interface IEntity {
+  stateManager: ReturnType<typeof createStateManager>;
+  scroll: ReturnType<typeof createScroll>;
+  mount: () => void;
+  addEventListener: (
+    eventName: `${ScrolliumPublicEventsType}`,
+    callback: (payload: any) => void
+  ) => () => void;
+  getClient: () => {
+    addEventListener: IEntity["addEventListener"];
+    getters: IEntity["stateManager"]["getters"];
+  };
+}
+
+export enum ScrolliumPublicEvents {
   ON_SCROLL = "onScroll",
   ON_SCROLL_STOP = "onScrollStop",
 }
+
+export type ScrolliumPublicEventsType = `${ScrolliumPublicEvents}`;
 
 export enum ScrolliumDirection {
   UP = "up",

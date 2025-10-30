@@ -6,7 +6,7 @@ const SomeComponent = () => {
   console.log(scroll);
   useEffect(() => {
     if (scroll) {
-      scroll.addEventListener("onScroll", () => {
+      scroll.addEventListener("onScrollStop", () => {
         console.log("onScroll", scroll.getters.getScrollPosition());
       });
     }

@@ -1,5 +1,5 @@
 import { createObserver } from "../../observer";
-import { ScrolliumAxis, ScrolliumEvents } from "../../types";
+import { ScrolliumAxis, ScrolliumPublicEvents } from "../../types";
 import { createStateManager } from "./StateManager/createStateManager";
 
 const createScroll = (
@@ -14,9 +14,9 @@ const createScroll = (
           : (e.target as HTMLDivElement).scrollLeft
       );
       stateManager.mutations.setIsScrolling(() => {
-        observer.dispatch(ScrolliumEvents.ON_SCROLL_STOP);
+        observer.dispatch(ScrolliumPublicEvents.ON_SCROLL_STOP);
       });
-      observer.dispatch(ScrolliumEvents.ON_SCROLL);
+      observer.dispatch(ScrolliumPublicEvents.ON_SCROLL);
     },
   };
 };

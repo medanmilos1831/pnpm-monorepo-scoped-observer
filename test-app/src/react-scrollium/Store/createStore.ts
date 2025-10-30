@@ -2,6 +2,7 @@ import { createObserver } from "../observer";
 import {
   SCROLLIUM_STORE_SCOPE,
   ScrolliumStoreEvents,
+  type IEntity,
   type ScrolliumProps,
 } from "../types";
 
@@ -10,7 +11,7 @@ import { createEntity } from "./Entity/createEntity";
 const createStore = () => {
   const storeObserver = createObserver(SCROLLIUM_STORE_SCOPE);
   return {
-    entities: new Map<string, any>(),
+    entities: new Map<string, IEntity>(),
     subscribe: storeObserver.subscribe,
     getEntity(id: string) {
       return this.entities.get(id)!;
