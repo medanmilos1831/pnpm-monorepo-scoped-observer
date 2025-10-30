@@ -2,7 +2,6 @@ import { Scroll, useScroll } from "../../scroll";
 
 const SomeComponent = () => {
   const scroll = useScroll();
-  console.log(scroll);
   return (
     <div>
       <h1>SomeComponent</h1>
