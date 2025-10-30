@@ -10,7 +10,7 @@ const createCommands = (
     scrollTo: (options?: ScrollToOptions) => {
       stateManager.state.element?.scrollTo(options);
     },
-    scrollToStart: (options?: ScrollToOptions) => {
+    scrollToStart: (options?: ScrollOptions) => {
       const scrollPro =
         stateManager.state.axis === ScrolliumAxis.VERTICAL ? "top" : "left";
       stateManager.state.element?.scrollTo({
@@ -18,7 +18,7 @@ const createCommands = (
         ...options,
       });
     },
-    scrollToEnd: (options?: ScrollToOptions) => {
+    scrollToEnd: (options?: ScrollOptions) => {
       const scrollPro =
         stateManager.state.axis === ScrolliumAxis.VERTICAL ? "top" : "left";
 
