@@ -1,4 +1,4 @@
-import { createObserver } from "../observer";
+import { createObserver } from "./observer";
 
 function createEntityBase<
   S,

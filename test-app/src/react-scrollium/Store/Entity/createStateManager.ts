@@ -3,7 +3,7 @@ import {
   ScrolliumDirection,
   type ScrolliumProps,
 } from "../../types";
-import { createEntityBase } from "../createEntityBase";
+import { createEntityBase } from "../../core/createEntityBase";
 
 export function createStateManager(props: ScrolliumProps) {
   return createEntityBase({

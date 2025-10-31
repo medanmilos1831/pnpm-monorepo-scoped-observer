@@ -7,14 +7,6 @@ const createEntity = (props: ScrolliumProps) => {
   return {
     stateManager,
     modules,
-    // addEventListener(
-    //   event: `${ScrolliumPublicEventsType}`,
-    //   callback: (payload: any) => void
-    // ) {
-    //   return stateManager.observer.subscribe(event, ({ payload }) => {
-    //     callback(payload);
-    //   });
-    // },
   };
 };
 

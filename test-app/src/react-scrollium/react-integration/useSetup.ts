@@ -1,21 +1,18 @@
 import { useEffect, useRef } from "react";
-import type { createStore } from "../Store/createStore";
 import {
   ScrolliumPublicEvents,
   type IEntity,
   type ScrolliumProps,
 } from "../types";
-import type { createStoreNew } from "../Store/createStoreNew";
 import { createEntity } from "../Store/Entity/createEntity";
+import type { createStore } from "../Store/createStore";
 
 const useSetup = (
-  // store: ReturnType<typeof createStore>,
-  storeNew: ReturnType<typeof createStoreNew<IEntity>>,
+  store: ReturnType<typeof createStore<IEntity>>,
   props: ScrolliumProps
 ) => {
-  storeNew.mutations.createEntity(props, createEntity(props));
-  // store.createEntity(props);
-  const { modules, stateManager } = storeNew.getters.getEntityById(props.id)!;
+  store.mutations.createEntity(props, createEntity(props));
+  const { modules, stateManager } = store.getters.getEntityById(props.id)!;
   // useEffect(mount, []);
   const elementRef = useRef<HTMLDivElement>(null);
 

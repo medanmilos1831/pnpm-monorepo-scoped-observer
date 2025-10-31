@@ -1,9 +1,9 @@
 import { useState, useSyncExternalStore } from "react";
-import type { createStoreNew } from "../Store/createStoreNew";
+import type { createStore } from "../Store/createStore";
 import { ScrolliumStoreEvents, type IEntity } from "../types";
 
 const useScrolliumSelector = (
-  storeNew: ReturnType<typeof createStoreNew<IEntity>>,
+  storeNew: ReturnType<typeof createStore<IEntity>>,
   id: string
 ) => {
   const [mount] = useState(() => {

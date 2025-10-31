@@ -1,12 +1,13 @@
 import { useState, useSyncExternalStore } from "react";
-import type { createStoreNew } from "../Store/createStoreNew";
+
 import { type IEntity, ScrolliumPublicEvents } from "../types";
+import type { createStore } from "../Store/createStore";
 
 const useScroll = (
-  storeNew: ReturnType<typeof createStoreNew<IEntity>>,
+  store: ReturnType<typeof createStore<IEntity>>,
   id: string
 ) => {
-  const entity = storeNew.getters.getEntityById(id);
+  const entity = store.getters.getEntityById(id);
   const getters = entity.stateManager.getters;
   const [onScroll] = useState(() => (notify: () => void) => {
     return entity.modules.addEventListener(

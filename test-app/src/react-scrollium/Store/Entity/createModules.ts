@@ -3,7 +3,7 @@ import {
   ScrolliumPublicEvents,
   type ScrolliumPublicEventsType,
 } from "../../types";
-import { createModulesBase } from "../createModulesBase";
+import { createModulesBase } from "../../core/createModulesBase";
 import type { createStateManager } from "./createStateManager";
 
 const createModules = (state: ReturnType<typeof createStateManager>) => {

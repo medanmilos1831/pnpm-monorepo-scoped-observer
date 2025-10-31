@@ -1,45 +1,32 @@
-import { createObserver } from "../observer";
-import {
-  SCROLLIUM_STORE_SCOPE,
-  ScrolliumStoreEvents,
-  type IEntity,
-  type ScrolliumProps,
-} from "../types";
+import { SCROLLIUM_STORE_SCOPE } from "../types";
+import { createEntityBase } from "../core/createEntityBase";
 
-import { createEntity } from "./Entity/createEntity";
-
-const createStore = () => {
-  const storeObserver = createObserver(SCROLLIUM_STORE_SCOPE);
-  return {
-    entities: new Map<string, IEntity>(),
-    subscribe: storeObserver.subscribe,
-    getEntity(id: string) {
-      return this.entities.get(id)!;
-    },
-    removeEntity(id: string) {
-      this.entities.delete(id);
-      storeObserver.dispatch(`${ScrolliumStoreEvents.CREATE_SCROLLIUM}-${id}`, {
-        id,
-      });
-    },
-    createEntity(props: ScrolliumProps) {
-      if (!this.entities.has(props.id)) {
-        this.entities.set(
-          props.id,
-          createEntity(props, storeObserver, this.entities)
-        );
-      }
-      return this.getEntity(props.id)!;
-    },
-    getEntityClient(id: string) {
-      const entity = this.getEntity(id);
+function createStore<T>() {
+  return createEntityBase({
+    id: SCROLLIUM_STORE_SCOPE,
+    state: new Map<string, T>(),
+    mutations(state) {
       return {
-        addEventListener: entity.addEventListener,
-        commands: entity.modules.commands,
-        getters: entity.stateManager.getters,
+        createEntity<P extends { id: string }>(props: P, entity: T) {
+          if (!state.has(props.id)) {
+            state.set(props.id, entity);
+          }
+        },
+        removeEntity: (id: string) => {
+          state.delete(id);
+        },
       };
     },
-  };
-};
+    getters(state) {
+      return {
+        getEntityById: (id: string) => state.get(id)!,
+        getEntity: (id: string) => state.get(id),
+        hasEntity: (id: string) => state.has(id),
+        getAllEntities: () => state.values(),
+        getEntityCount: () => state.size,
+      };
+    },
+  });
+}
 
 export { createStore };

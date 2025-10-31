@@ -11,11 +11,6 @@ export const SCROLLIUM_SCOPE = "scrollium" as const;
 export interface IEntity {
   stateManager: ReturnType<typeof createStateManager>;
   modules: ReturnType<typeof createModules>;
-  // mount: () => void;
-  // addEventListener: (
-  //   eventName: `${ScrolliumPublicEventsType}`,
-  //   callback: (payload: any) => void
-  // ) => () => void;
 }
 
 export enum ScrolliumPublicEvents {
