@@ -1,6 +1,5 @@
-import type { createStateManager } from "./Store/Entity/createStateManager";
 import type { createModules } from "./Store/Entity/createModules";
-import type { createEntityBase } from "./Store/createEntityBase";
+import type { createStateManager } from "./Store/Entity/createStateManager";
 
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",
@@ -12,11 +11,11 @@ export const SCROLLIUM_SCOPE = "scrollium" as const;
 export interface IEntity {
   stateManager: ReturnType<typeof createStateManager>;
   modules: ReturnType<typeof createModules>;
-  mount: () => void;
-  addEventListener: (
-    eventName: `${ScrolliumPublicEventsType}`,
-    callback: (payload: any) => void
-  ) => () => void;
+  // mount: () => void;
+  // addEventListener: (
+  //   eventName: `${ScrolliumPublicEventsType}`,
+  //   callback: (payload: any) => void
+  // ) => () => void;
 }
 
 export enum ScrolliumPublicEvents {

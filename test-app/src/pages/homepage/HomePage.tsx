@@ -8,7 +8,6 @@ import {
 
 const OutsideScrollComponent = () => {
   const scroll = useScrolliumSelector("scroll-one");
-  console.log("scroll", scroll);
   return (
     <div>
       <h1>OutsideScrollComponent</h1>
@@ -44,7 +43,9 @@ const ScrollComponent = () => {
         {count % 2 === 0 ? (
           <Scroll
             id="scroll-one"
-            onScroll={(params) => console.log("scroll", params)}
+            onScroll={(params) => {
+              // Scroll event handler
+            }}
           >
             <>
               <SomeComponent />

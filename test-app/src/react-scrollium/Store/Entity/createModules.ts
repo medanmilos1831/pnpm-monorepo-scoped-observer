@@ -1,4 +1,8 @@
-import { ScrolliumAxis, ScrolliumPublicEvents } from "../../types";
+import {
+  ScrolliumAxis,
+  ScrolliumPublicEvents,
+  type ScrolliumPublicEventsType,
+} from "../../types";
 import { createModulesBase } from "../createModulesBase";
 import type { createStateManager } from "./createStateManager";
 
@@ -42,19 +46,36 @@ const createModules = (state: ReturnType<typeof createStateManager>) => {
         },
       };
     },
-    client(state) {
+    addEventListener(state) {
+      return (
+        event: `${ScrolliumPublicEventsType}`,
+        callback: (payload: any) => void
+      ) => {
+        return state.observer.subscribe(event, ({ payload }) => {
+          callback(payload);
+        });
+      };
+    },
+    clientApi(state) {
       return () => {
         return {
-          id: state.getters.getId(),
-          scrollPosition: state.getters.getScrollPosition(),
-          axis: state.getters.getAxis(),
-          direction: state.getters.getDirection(),
-          progress: state.getters.getProgress(),
-          isStart: state.getters.getIsStart(),
-          isEnd: state.getters.getIsEnd(),
-          clientSize: state.getters.getClientSize(),
-          scrollSize: state.getters.getScrollSize(),
-          isScrolling: state.getters.getIsScrolling(),
+          client: {
+            id: state.getters.getId(),
+            scrollPosition: state.getters.getScrollPosition(),
+            axis: state.getters.getAxis(),
+            direction: state.getters.getDirection(),
+            progress: state.getters.getProgress(),
+            isStart: state.getters.getIsStart(),
+            isEnd: state.getters.getIsEnd(),
+            clientSize: state.getters.getClientSize(),
+            scrollSize: state.getters.getScrollSize(),
+            isScrolling: state.getters.getIsScrolling(),
+          },
+          clientEntity: {
+            addEventListener: this.addEventListener,
+            commands: this.commands,
+            getters: state.getters,
+          },
         };
       };
     },

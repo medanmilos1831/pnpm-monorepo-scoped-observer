@@ -23,7 +23,7 @@ const nesto = createModule(
     moduleOne(state) {
       return {
         printName(s: string, age: number) {
-          console.log(state.fname);
+          // Print name handler
         },
       };
     },

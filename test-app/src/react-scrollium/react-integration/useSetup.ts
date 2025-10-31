@@ -1,16 +1,22 @@
 import { useEffect, useRef } from "react";
 import type { createStore } from "../Store/createStore";
-import { ScrolliumPublicEvents, type ScrolliumProps } from "../types";
+import {
+  ScrolliumPublicEvents,
+  type IEntity,
+  type ScrolliumProps,
+} from "../types";
+import type { createStoreNew } from "../Store/createStoreNew";
+import { createEntity } from "../Store/Entity/createEntity";
 
 const useSetup = (
-  store: ReturnType<typeof createStore>,
+  // store: ReturnType<typeof createStore>,
+  storeNew: ReturnType<typeof createStoreNew<IEntity>>,
   props: ScrolliumProps
 ) => {
-  store.createEntity(props);
-  const { mount, modules, addEventListener, stateManager } = store.getEntity(
-    props.id
-  )!;
-  useEffect(mount, []);
+  storeNew.mutations.createEntity(props, createEntity(props));
+  // store.createEntity(props);
+  const { modules, stateManager } = storeNew.getters.getEntityById(props.id)!;
+  // useEffect(mount, []);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -20,9 +26,12 @@ const useSetup = (
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onScroll) return;
-    unsubscribe = addEventListener(ScrolliumPublicEvents.ON_SCROLL, () => {
-      props.onScroll!(modules.client());
-    });
+    unsubscribe = modules.addEventListener(
+      ScrolliumPublicEvents.ON_SCROLL,
+      () => {
+        props.onScroll!(modules.clientApi().client);
+      }
+    );
     return () => {
       unsubscribe();
     };
