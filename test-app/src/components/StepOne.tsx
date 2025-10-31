@@ -29,13 +29,6 @@ export const StepOne = () => {
         }}
       >
         StepOne
-        <button
-          onClick={() => {
-            getWizardClient("wizard-1");
-          }}
-        >
-          log client
-        </button>
       </Step>
     </>
   );
