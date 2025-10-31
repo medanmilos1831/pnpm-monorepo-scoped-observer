@@ -74,7 +74,7 @@ const createScrolliumModules = (
             isScrolling: state.getters.getIsScrolling(),
           },
           clientEntity: {
-            addEventListener: this.addEventListener,
+            addEventListener: this.addEventListener(state),
             commands: this.commands,
             getters: state.getters,
           },

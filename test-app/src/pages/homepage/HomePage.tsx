@@ -8,6 +8,13 @@ import {
 
 const OutsideScrollComponent = () => {
   const scroll = useScrolliumSelector("scroll-one");
+  // console.log("scroll", scroll);
+  useEffect(() => {
+    if (!scroll) return;
+    scroll.addEventListener("onScroll", () => {
+      // console.log("scroll", scroll.getters.getScrollPosition());
+    });
+  }, [scroll]);
   return (
     <div>
       <h1>OutsideScrollComponent</h1>
@@ -18,6 +25,7 @@ const OutsideScrollComponent = () => {
 const SomeComponent = () => {
   const commands = useScrollCommands();
   const client = useScroll();
+  console.log("client", client);
   return (
     <div>
       <h1>SomeComponent</h1>

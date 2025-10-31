@@ -1,5 +1,5 @@
-import type { createModules } from "./Store/Entity/createScrolliumModules";
-import type { createStateManager } from "./Store/Entity/createScrolliumState";
+import type { createScrolliumModules } from "./Store/Entity/createScrolliumModules";
+import type { createScrolliumState } from "./Store/Entity/createScrolliumState";
 
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",
@@ -9,8 +9,8 @@ export const SCROLLIUM_STORE_SCOPE = "scrollium-store" as const;
 export const SCROLLIUM_SCOPE = "scrollium" as const;
 
 export interface IEntity {
-  stateManager: ReturnType<typeof createStateManager>;
-  modules: ReturnType<typeof createModules>;
+  stateManager: ReturnType<typeof createScrolliumState>;
+  modules: ReturnType<typeof createScrolliumModules>;
 }
 
 export enum ScrolliumPublicEvents {
