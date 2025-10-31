@@ -25,7 +25,7 @@ const OutsideScrollComponent = () => {
 const SomeComponent = () => {
   const commands = useScrollCommands();
   const client = useScroll();
-  console.log("client", client);
+  // console.log("client", client);
   return (
     <div>
       <h1>SomeComponent</h1>
@@ -53,6 +53,7 @@ const ScrollComponent = () => {
             id="scroll-one"
             onScroll={(params) => {
               // Scroll event handler
+              console.log("params", params);
             }}
           >
             <>

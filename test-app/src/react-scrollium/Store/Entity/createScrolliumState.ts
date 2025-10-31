@@ -90,9 +90,9 @@ export function createScrolliumState(props: ScrolliumProps) {
             }
           } else {
             if (state.scrollPosition < state.previousScrollPosition) {
-              state.direction = ScrolliumDirection.DOWN;
-            } else {
               state.direction = ScrolliumDirection.UP;
+            } else {
+              state.direction = ScrolliumDirection.DOWN;
             }
           }
         },

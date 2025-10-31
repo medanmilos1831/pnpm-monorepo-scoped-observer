@@ -13,7 +13,6 @@ const useSetup = (
 ) => {
   store.mutations.createEntity(props, createEntity(props));
   const { modules, stateManager } = store.getters.getEntityById(props.id)!;
-  // useEffect(mount, []);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
