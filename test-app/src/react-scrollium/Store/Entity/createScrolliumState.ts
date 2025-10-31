@@ -6,6 +6,33 @@ import {
 } from "../../types";
 import { createStoreInstance } from "../../core/createStoreInstance";
 
+/**
+ * Creates a scrollium state manager instance with scroll tracking logic.
+ * 
+ * Manages scroll position, direction, progress, boundaries, and scrolling state
+ * with debounce mechanism. Provides pure mutations for state transformations
+ * and getters for read-only access.
+ * 
+ * @param props - Scrollium configuration props
+ * @param props.id - Unique identifier for the scroll instance
+ * @param props.axis - Scroll axis direction (vertical or horizontal)
+ * 
+ * @returns Store instance with state, mutations, getters, and observer
+ * 
+ * @example
+ * ```ts
+ * const stateManager = createScrolliumState({
+ *   id: "scroll-one",
+ *   axis: "vertical"
+ * });
+ * 
+ * // Update scroll position
+ * stateManager.mutations.setScrollPosition(100);
+ * 
+ * // Get current progress
+ * const progress = stateManager.getters.getProgress();
+ * ```
+ */
 export function createScrolliumState(props: ScrolliumProps) {
   return createStoreInstance({
     id: SCROLLIUM_SCOPE,
@@ -34,10 +61,22 @@ export function createScrolliumState(props: ScrolliumProps) {
     },
     mutations(state) {
       return {
+        /**
+         * Sets the scroll position and triggers calculation pipeline.
+         * Automatically calculates direction, bounds, progress, and scrolling state.
+         * 
+         * @param position - The new scroll position in pixels
+         */
         setScrollPosition(position: number) {
           this.calculate(position);
           this.setIsScrolling();
         },
+        /**
+         * Manages the scrolling debounce state with 500ms timeout.
+         * Clears previous timeout if called multiple times during scrolling.
+         * 
+         * @param callback - Optional callback to execute when scrolling stops
+         */
         setIsScrolling(callback?: () => void) {
           if (state.scrollTimeoutId) {
             clearTimeout(state.scrollTimeoutId);
@@ -51,16 +90,37 @@ export function createScrolliumState(props: ScrolliumProps) {
             }
           }, 500);
         },
+        /**
+         * Changes the scroll axis and recalculates current position.
+         * 
+         * @param axis - New scroll axis (vertical or horizontal)
+         */
         setAxis(axis: ScrolliumAxis) {
           state.axis = axis;
           this.calculate(state.scrollPosition);
         },
+        /**
+         * Sets the visible client size (viewport size).
+         * 
+         * @param size - Client size in pixels
+         */
         setClientSize: (size: number) => {
           state.clientSize = size;
         },
+        /**
+         * Sets the maximum scrollable size.
+         * 
+         * @param size - Maximum scroll size in pixels
+         */
         setScrollSize: (size: number) => {
           state.scrollSize = size;
         },
+        /**
+         * Initializes the DOM element and calculates initial scroll metrics.
+         * Reads element dimensions and sets up clientSize and scrollSize.
+         * 
+         * @param element - The DOM element to track
+         */
         initializeElement(element: HTMLElement) {
           if (element) {
             state.element = element;
@@ -82,6 +142,10 @@ export function createScrolliumState(props: ScrolliumProps) {
             this.setScrollSize(maxScroll);
           }
         },
+        /**
+         * Calculates scroll direction based on position change.
+         * Compares current position with previous to determine UP/DOWN/LEFT/RIGHT.
+         */
         calculateDirection() {
           if (state.axis === ScrolliumAxis.HORIZONTAL) {
             if (state.scrollPosition < state.previousScrollPosition) {
@@ -97,6 +161,10 @@ export function createScrolliumState(props: ScrolliumProps) {
             }
           }
         },
+        /**
+         * Determines if scroll is at start (0) or end (max scroll) boundaries.
+         * Updates isStart and isEnd flags accordingly.
+         */
         calculateScrollBounds() {
           if (state.scrollPosition === 0) {
             state.isStart = true;
@@ -114,12 +182,24 @@ export function createScrolliumState(props: ScrolliumProps) {
             state.isEnd = false;
           }
         },
+        /**
+         * Calculates scroll progress percentage (0-100%).
+         * Ensures progress stays between 1% and 100% for UI consistency.
+         * 
+         * Formula: (scrollPosition / scrollSize) * 100
+         */
         calculateProgress() {
           const ratio =
             state.scrollSize > 0 ? state.scrollPosition / state.scrollSize : 0;
           const progress = Number((ratio * 100).toFixed(2));
           state.progress = Math.min(100, Math.max(1, progress));
         },
+        /**
+         * Main calculation pipeline for scroll position updates.
+         * Executes direction, bounds, and progress calculations.
+         * 
+         * @param position - New scroll position in pixels
+         */
         calculate(position: number) {
           state.previousScrollPosition = state.scrollPosition;
           state.scrollPosition = Math.ceil(position as number);
@@ -128,6 +208,10 @@ export function createScrolliumState(props: ScrolliumProps) {
           this.calculateScrollBounds();
           this.calculateProgress();
         },
+        /**
+         * Cleans up pending timeouts and resets timeout ID.
+         * Should be called on component unmount to prevent memory leaks.
+         */
         cleanup() {
           if (state.scrollTimeoutId) {
             clearTimeout(state.scrollTimeoutId);
@@ -138,15 +222,25 @@ export function createScrolliumState(props: ScrolliumProps) {
     },
     getters(state) {
       return {
+        /** @returns Current scroll axis (vertical or horizontal) */
         getAxis: () => state.axis,
+        /** @returns Current scroll position in pixels */
         getScrollPosition: () => state.scrollPosition,
+        /** @returns True if scroll is at the start (position 0) */
         getIsStart: () => state.isStart,
+        /** @returns True if scroll is at the end (max scroll) */
         getIsEnd: () => state.isEnd,
+        /** @returns Visible client/viewport size in pixels */
         getClientSize: () => state.clientSize,
+        /** @returns Maximum scrollable size in pixels */
         getScrollSize: () => state.scrollSize,
+        /** @returns Scroll progress percentage (1-100) */
         getProgress: () => state.progress,
+        /** @returns Current scroll direction (up, down, left, right, none) */
         getDirection: () => state.direction,
+        /** @returns True if currently scrolling (debounced 500ms) */
         getIsScrolling: () => state.isScrolling,
+        /** @returns Entity identifier */
         getId: () => state.id,
       };
     },
