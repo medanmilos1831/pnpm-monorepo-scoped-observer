@@ -37,14 +37,3 @@ export interface ScrolliumProps {
   onScroll?: (params: any) => void;
   axis?: `${ScrolliumAxis}`;
 }
-
-export interface ScrolliumOnScrollProps {
-  scrollPosition: number;
-  isStart: boolean;
-  isEnd: boolean;
-  clientSize: number;
-  scrollSize: number;
-  progress: number;
-  direction: ScrolliumDirection;
-  id: string;
-}

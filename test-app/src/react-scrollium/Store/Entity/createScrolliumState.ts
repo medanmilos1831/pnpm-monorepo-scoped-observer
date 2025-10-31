@@ -1,4 +1,5 @@
 import {
+  SCROLLIUM_SCOPE,
   ScrolliumAxis,
   ScrolliumDirection,
   type ScrolliumProps,
@@ -7,7 +8,7 @@ import { createStoreInstance } from "../../core/createStoreInstance";
 
 export function createScrolliumState(props: ScrolliumProps) {
   return createStoreInstance({
-    id: props.id,
+    id: SCROLLIUM_SCOPE,
     state: {
       axis: props.axis ?? ScrolliumAxis.VERTICAL,
       scrollPosition: 0,
