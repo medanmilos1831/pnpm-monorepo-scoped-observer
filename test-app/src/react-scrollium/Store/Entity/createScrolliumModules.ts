@@ -3,11 +3,13 @@ import {
   ScrolliumPublicEvents,
   type ScrolliumPublicEventsType,
 } from "../../types";
-import { createModulesBase } from "../../core/createModulesBase";
-import type { createStateManager } from "./createStateManager";
+import { createModuleInstance } from "../../core/createModuleInstance";
+import type { createScrolliumState } from "./createScrolliumState";
 
-const createModules = (state: ReturnType<typeof createStateManager>) => {
-  return createModulesBase(state, {
+const createScrolliumModules = (
+  state: ReturnType<typeof createScrolliumState>
+) => {
+  return createModuleInstance(state, {
     scroll(state) {
       return {
         onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -82,4 +84,4 @@ const createModules = (state: ReturnType<typeof createStateManager>) => {
   });
 };
 
-export { createModules };
+export { createScrolliumModules };

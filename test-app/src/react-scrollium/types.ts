@@ -1,5 +1,5 @@
-import type { createModules } from "./Store/Entity/createModules";
-import type { createStateManager } from "./Store/Entity/createStateManager";
+import type { createModules } from "./Store/Entity/createScrolliumModules";
+import type { createStateManager } from "./Store/Entity/createScrolliumState";
 
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",

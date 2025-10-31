@@ -1,6 +1,6 @@
 import { createObserver } from "./observer";
 
-function createEntityBase<
+function createStoreInstance<
   S,
   M extends Record<string, (...args: any[]) => any>,
   G extends Record<string, (...args: any[]) => any>
@@ -19,4 +19,4 @@ function createEntityBase<
   };
 }
 
-export { createEntityBase };
+export { createStoreInstance };

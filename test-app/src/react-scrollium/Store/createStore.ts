@@ -1,8 +1,8 @@
 import { SCROLLIUM_STORE_SCOPE } from "../types";
-import { createEntityBase } from "../core/createEntityBase";
+import { createStoreInstance } from "../core/createStoreInstance";
 
 function createStore<T>() {
-  return createEntityBase({
+  return createStoreInstance({
     id: SCROLLIUM_STORE_SCOPE,
     state: new Map<string, T>(),
     mutations(state) {

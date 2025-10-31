@@ -1,7 +1,7 @@
 type ModuleFactory<S, T> = (state: S) => T;
 type ModuleMap<S> = Record<string, ModuleFactory<S, any>>;
 
-function createModulesBase<S, M extends ModuleMap<S>>(state: S, modules: M) {
+function createModuleInstance<S, M extends ModuleMap<S>>(state: S, modules: M) {
   type Built = { [K in keyof M]: ReturnType<M[K]> };
 
   const built = {} as Built;
@@ -12,4 +12,4 @@ function createModulesBase<S, M extends ModuleMap<S>>(state: S, modules: M) {
   return built;
 }
 
-export { createModulesBase };
+export { createModuleInstance };

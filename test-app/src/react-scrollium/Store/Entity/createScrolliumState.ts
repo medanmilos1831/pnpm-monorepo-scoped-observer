@@ -3,10 +3,10 @@ import {
   ScrolliumDirection,
   type ScrolliumProps,
 } from "../../types";
-import { createEntityBase } from "../../core/createEntityBase";
+import { createStoreInstance } from "../../core/createStoreInstance";
 
-export function createStateManager(props: ScrolliumProps) {
-  return createEntityBase({
+export function createScrolliumState(props: ScrolliumProps) {
+  return createStoreInstance({
     id: props.id,
     state: {
       axis: props.axis ?? ScrolliumAxis.VERTICAL,
