@@ -8,23 +8,23 @@ import type { createScrolliumState } from "./createScrolliumState";
 
 /**
  * Creates scrollium modules for orchestration and side-effects.
- * 
+ *
  * Composes scroll event handlers, commands API, event listeners, and client API.
  * Modules handle side-effects (DOM interaction, event dispatching) while mutations
  * remain pure functions.
- * 
+ *
  * @param state - The scrollium state manager instance
- * 
+ *
  * @returns Module instance with scroll, commands, addEventListener, and clientApi
- * 
+ *
  * @example
  * ```ts
  * const stateManager = createScrolliumState({ id: "scroll-one" });
  * const modules = createScrolliumModules(stateManager);
- * 
+ *
  * // Handle scroll events
  * <div onScroll={modules.scroll.onScroll} />
- * 
+ *
  * // Programmatic control
  * modules.commands.scrollToEnd({ behavior: "smooth" });
  * ```
@@ -42,7 +42,7 @@ const createScrolliumModules = (
         /**
          * Handles scroll events from DOM elements.
          * Updates scroll position, manages debounce, and dispatches events.
-         * 
+         *
          * @param e - React scroll event from DOM element
          */
         onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -66,7 +66,7 @@ const createScrolliumModules = (
       return {
         /**
          * Scrolls to a specific position using native scrollTo API.
-         * 
+         *
          * @param options - ScrollToOptions (top, left, behavior)
          */
         scrollTo: (options?: ScrollToOptions) => {
@@ -74,7 +74,7 @@ const createScrolliumModules = (
         },
         /**
          * Scrolls to the start of the container (position 0).
-         * 
+         *
          * @param options - Additional scroll options (behavior, etc.)
          */
         scrollToStart: (options?: ScrollOptions) => {
@@ -87,7 +87,7 @@ const createScrolliumModules = (
         },
         /**
          * Scrolls to the end of the container (max scroll position).
-         * 
+         *
          * @param options - Additional scroll options (behavior, etc.)
          */
         scrollToEnd: (options?: ScrollOptions) => {
@@ -107,7 +107,7 @@ const createScrolliumModules = (
     addEventListener(state) {
       /**
        * Subscribes to scrollium public events.
-       * 
+       *
        * @param event - Event name (onScroll, onScrollStop)
        * @param callback - Callback function to execute on event
        * @returns Unsubscribe function
@@ -128,7 +128,7 @@ const createScrolliumModules = (
     clientApi(state) {
       /**
        * Returns client API with serialized state and entity access.
-       * 
+       *
        * @returns Object with client (POJO state) and clientEntity (methods)
        */
       return () => {
