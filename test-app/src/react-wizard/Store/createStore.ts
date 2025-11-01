@@ -1,39 +1,72 @@
-import { createObserver } from "../observer";
-import {
-  WIZARD_STORE_SCOPE,
-  WizardStoreEvents,
-  type IEntity,
-  type IWizardConfig,
-} from "../types";
-import { createEntity } from "./Entity/createEntity";
+// import { createObserver } from "../observer";
+// import {
+//   WIZARD_STORE_SCOPE,
+//   WizardStoreEvents,
+//   type IEntity,
+//   type IWizardConfig,
+// } from "../types";
+// import { createEntity } from "./Entity/createEntity";
 
-const createStore = () => {
-  const storeObserver = createObserver(WIZARD_STORE_SCOPE);
-  return {
-    entities: new Map<string, IEntity>(),
-    subscribe: storeObserver.subscribe,
-    getEntity(id: string) {
-      return this.entities.get(id)!;
+// const createStore = () => {
+//   const storeObserver = createObserver(WIZARD_STORE_SCOPE);
+//   return {
+//     entities: new Map<string, IEntity>(),
+//     subscribe: storeObserver.subscribe,
+//     getEntity(id: string) {
+//       return this.entities.get(id)!;
+//     },
+//     removeEntity(id: string) {
+//       this.entities.delete(id);
+//       storeObserver.dispatch(`${WizardStoreEvents.CREATE_WIZARD}-${id}`, {
+//         id,
+//       });
+//     },
+//     createEntity(props: IWizardConfig) {
+//       if (!this.entities.has(props.id)) {
+//         this.entities.set(
+//           props.id,
+//           createEntity(props, storeObserver, this.entities)
+//         );
+//       }
+//       return this.getEntity(props.id)!;
+//     },
+//     getEntityClient(id: string) {
+//       return this.getEntity(id).getClient();
+//     },
+//   };
+// };
+
+// export { createStore };
+
+import { createStoreInstance } from "../core/createStoreInstance";
+import { WIZARD_STORE_SCOPE } from "../types";
+
+function createStore<T>() {
+  return createStoreInstance({
+    id: WIZARD_STORE_SCOPE,
+    state: new Map<string, T>(),
+    mutations(state) {
+      return {
+        createEntity<P extends { id: string }>(props: P, entity: T) {
+          if (!state.has(props.id)) {
+            state.set(props.id, entity);
+          }
+        },
+        removeEntity: (id: string) => {
+          state.delete(id);
+        },
+      };
     },
-    removeEntity(id: string) {
-      this.entities.delete(id);
-      storeObserver.dispatch(`${WizardStoreEvents.CREATE_WIZARD}-${id}`, {
-        id,
-      });
+    getters(state) {
+      return {
+        getEntityById: (id: string) => state.get(id)!,
+        getEntity: (id: string) => state.get(id),
+        hasEntity: (id: string) => state.has(id),
+        getAllEntities: () => state.values(),
+        getEntityCount: () => state.size,
+      };
     },
-    createEntity(props: IWizardConfig) {
-      if (!this.entities.has(props.id)) {
-        this.entities.set(
-          props.id,
-          createEntity(props, storeObserver, this.entities)
-        );
-      }
-      return this.getEntity(props.id)!;
-    },
-    getEntityClient(id: string) {
-      return this.getEntity(id).getClient();
-    },
-  };
-};
+  });
+}
 
 export { createStore };

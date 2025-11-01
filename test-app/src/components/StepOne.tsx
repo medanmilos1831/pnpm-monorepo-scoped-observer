@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { getWizardClient, Step, useWizardCommands } from "../wizService";
 import { Modal } from "antd";
+import { useState } from "react";
+import { Step, useWizardCommands } from "../wizService";
 
 export const StepOne = () => {
   const [open, setOpen] = useState(false);
