@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import type { createStore } from "../Store/createStore";
-import { WizardPublicEvents, type IEntity, type IWizardConfig } from "../types";
 import { createEntity } from "../Store/Entity/createEntity";
+import {
+  WizardPublicEvents,
+  type IWizardConfig,
+  type StoreReturnType,
+} from "../types";
 
-const useSetupWizard = (
-  store: ReturnType<typeof createStore<IEntity>>,
-  props: IWizardConfig
-) => {
-  store.mutations.createEntity(props, createEntity(props));
-  const { modules, stateManager } = store.getters.getEntityById(props.id)!;
-  // useEffect(mount, []);
+const useSetupWizard = (store: StoreReturnType, props: IWizardConfig) => {
+  store.mutations.createEntity(props, () => createEntity(props));
+  const { modules } = store.getters.getEntityById(props.id)!;
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;

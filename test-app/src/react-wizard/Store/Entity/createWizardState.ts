@@ -1,4 +1,4 @@
-import { createStoreInstance } from "../../core/createStoreInstance";
+import { createStateManager } from "../../core/createStateManager";
 import {
   WIZARD_STORE_SCOPE,
   wizardCommands,
@@ -7,7 +7,7 @@ import {
 } from "../../types";
 
 export function createWizardState(props: IWizardConfig) {
-  return createStoreInstance({
+  return createStateManager({
     id: WIZARD_STORE_SCOPE,
     state: {
       id: props.id,

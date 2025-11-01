@@ -1,3 +1,4 @@
+import type { createStore } from "./Store/createStore";
 import type { createWizardModules } from "./Store/Entity/createWizardModules";
 import type { createWizardState } from "./Store/Entity/createWizardState";
 
@@ -108,3 +109,5 @@ export type navigateParamsType = {
 // ===========================================
 // END COMMAND TYPES
 // ===========================================
+
+export type StoreReturnType = ReturnType<typeof createStore<IEntity>>;

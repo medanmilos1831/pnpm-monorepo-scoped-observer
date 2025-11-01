@@ -1,15 +1,15 @@
-import { createStoreInstance } from "../core/createStoreInstance";
+import { createStateManager } from "../core/createStateManager";
 import { WIZARD_STORE_SCOPE } from "../types";
 
 function createStore<T>() {
-  return createStoreInstance({
+  return createStateManager({
     id: WIZARD_STORE_SCOPE,
     state: new Map<string, T>(),
     mutations(state) {
       return {
-        createEntity<P extends { id: string }>(props: P, entity: T) {
+        createEntity<P extends { id: string }>(props: P, entity: () => T) {
           if (!state.has(props.id)) {
-            state.set(props.id, entity);
+            state.set(props.id, entity());
           }
         },
         removeEntity: (id: string) => {

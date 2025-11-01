@@ -1,15 +1,11 @@
 import { useState, useSyncExternalStore } from "react";
-import { createStore } from "../Store/createStore";
 import {
   WizardInternalEvents,
   WizardPublicEvents,
-  type IEntity,
+  type StoreReturnType,
 } from "../types";
 
-const useWizard = (
-  store: ReturnType<typeof createStore<IEntity>>,
-  id: string
-) => {
+const useWizard = (store: StoreReturnType, id: string) => {
   const entity = store.getters.getEntityById(id);
   const getters = entity.stateManager.getters;
   const [subsciber] = useState(() => (notify: () => void) => {
