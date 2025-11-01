@@ -18,19 +18,6 @@ export const WIZARD_STEP_OBSERVER_SCOPE = "wizard-step-observer" as const;
 export interface IEntity {
   stateManager: ReturnType<typeof createWizardState>;
   modules: ReturnType<typeof createWizardModules>;
-  // mount: () => void;
-  // addEventListener: (
-  //   eventName: `${WizardPublicEventsType}`,
-  //   callback: (payload: any) => void
-  // ) => () => void;
-  // commands: ReturnType<typeof createCommands>;
-  // navigationManager: ReturnType<typeof createNavigationManager>;
-  // subscribeInternal: ReturnType<typeof createObserver>["subscribe"];
-  // getClient: () => {
-  //   addEventListener: IEntity["addEventListener"];
-  //   commands: IEntity["commands"];
-  //   getters: IEntity["stateManager"]["getters"];
-  // };
 }
 
 export interface IWizardConfig {
