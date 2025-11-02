@@ -22,8 +22,8 @@ const createWizardClient = () => {
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
-      const entity = store.getters.getEntityById(id)!.modules.navigationManager;
-      entity.setStepMiddleware(props);
+      const entity = store.getters.getEntityById(id)!.stateManager;
+      entity.mutations.setStepMiddleware(props);
 
       return <>{children}</>;
     },

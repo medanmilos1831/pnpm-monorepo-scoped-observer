@@ -3,6 +3,7 @@ import {
   WIZARD_STORE_SCOPE,
   wizardCommands,
   type IWizardConfig,
+  type IWizardStep,
   type wizardCommandsType,
 } from "../../types";
 
@@ -17,9 +18,17 @@ export function createWizardState(props: IWizardConfig) {
       isFirst: props.steps.indexOf(props.activeStep) === 0,
       __INTERNAL__STEPS: [...props.steps],
       __INTERNAL__ACTIVE_STEP: props.activeStep,
+      stepMiddleware: undefined as IWizardStep | undefined,
+      locked: false,
     },
     mutations(state) {
       return {
+        setStepMiddleware: (stepMiddleware: IWizardStep | undefined) => {
+          state.stepMiddleware = stepMiddleware;
+        },
+        setLocked: (locked: boolean) => {
+          state.locked = locked;
+        },
         changeStep: (step: string) => {
           state.activeStep = step;
           state.isLast = state.steps.length - 1 === state.steps.indexOf(step);

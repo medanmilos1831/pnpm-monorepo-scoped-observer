@@ -5,7 +5,7 @@ const {
   Step,
   useWizard,
   useWizardCommands,
-  useWizardClient,
+  useWizardSelector,
   getWizardClient,
 } = createWizardClient();
 
@@ -14,6 +14,6 @@ export {
   Step,
   useWizard,
   useWizardCommands,
-  useWizardClient,
+  useWizardSelector,
   getWizardClient,
 };
