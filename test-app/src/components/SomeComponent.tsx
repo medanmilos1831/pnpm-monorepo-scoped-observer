@@ -1,10 +1,12 @@
 import { useEffect } from "react";
-import { useWizardClient } from "../wizService";
+import { useWizardSelector } from "../wizService";
 
 export const SomeComponent = () => {
-  const client = useWizardClient("wizard-1");
+  const client = useWizardSelector("wizard-1");
+  console.log(client);
   useEffect(() => {
     client?.addEventListener("onStepChange", (payload) => {
+      console.log(payload);
       // Step change handler
     });
   }, [client]);

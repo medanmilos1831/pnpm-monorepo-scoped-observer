@@ -5,12 +5,21 @@ import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
 
 import { createStore } from "./Store/createStore";
-import { type IEntity, type IWizardConfig, type IWizardStep } from "./types";
+import {
+  WIZARD_STORE_SCOPE,
+  type IEntity,
+  type IWizardConfig,
+  type IWizardStep,
+} from "./types";
 import { useWizardSelector } from "./react-integration/useWizardSelector";
+import { createObserver } from "./core/observer";
+import { createModuleInstance } from "./core/createModuleInstance";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
+
   const store = createStore<IEntity>();
+  const observer = createObserver(WIZARD_STORE_SCOPE);
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
       useSetupWizard(store, props);
@@ -36,7 +45,13 @@ const createWizardClient = () => {
       return useWizard(store, id);
     },
     useWizardSelector: (id: string) => {
-      return useWizardSelector(store, id);
+      return useWizardSelector(
+        {
+          store,
+          observer,
+        },
+        id
+      );
     },
     getWizardClient: (id: string) => {
       return store.getters.getEntityById(id).api.getClientEntity();

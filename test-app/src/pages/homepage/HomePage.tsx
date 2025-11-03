@@ -1,4 +1,5 @@
 import { WizControls } from "../../components/Controls";
+import { SomeComponent } from "../../components/SomeComponent";
 import { StepFour } from "../../components/StepFour";
 import { StepOne } from "../../components/StepOne";
 import { StepThree } from "../../components/StepThree";
@@ -21,6 +22,7 @@ const HomePage = () => {
   return (
     <>
       <h1>HomePage</h1>
+      <SomeComponent />
       <Wizard
         id="wizard-1"
         steps={["stepOne", "stepTwo", "stepThree"]}
