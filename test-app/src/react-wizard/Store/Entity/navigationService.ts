@@ -45,8 +45,6 @@ export const navigationService = (value: {
   observer: ReturnType<typeof createObserver>;
 }) => {
   const { stateManager, observer } = value;
-  const stepMiddleware = stateManager.state.stepMiddleware;
-  const locked = stateManager.state.locked;
 
   return {
     /**
@@ -156,9 +154,12 @@ export const navigationService = (value: {
         command: params.command,
       };
       // Check if current step has validation middleware
-      if (stepMiddleware && stepMiddleware.validate) {
+      if (
+        stateManager.state.stepMiddleware &&
+        stateManager.state.stepMiddleware.validate
+      ) {
         // Call step's validate function with resolve callback
-        stepMiddleware!.validate!({
+        stateManager.state.stepMiddleware!.validate!({
           payload: params.payload,
           command: params.command,
           activeStep: stateManager.getters.getActiveStep(),
@@ -197,8 +198,11 @@ export const navigationService = (value: {
       isReset: boolean;
       command: wizardCommandsType;
     }) {
-      if (stepMiddleware && stepMiddleware[middleware]) {
-        stepMiddleware[middleware]!({
+      if (
+        stateManager.state.stepMiddleware &&
+        stateManager.state.stepMiddleware[middleware]
+      ) {
+        stateManager.state.stepMiddleware![middleware]!({
           from: stateManager.getters.getActiveStep(),
           to: toStep as string,
         });
@@ -216,7 +220,7 @@ export const navigationService = (value: {
      * @returns True if navigation is locked, false otherwise
      */
     isLocked: () => {
-      return locked;
+      return stateManager.state.locked;
     },
 
     /**
@@ -228,7 +232,7 @@ export const navigationService = (value: {
      * @param callback - Function to execute with lock protection
      */
     withLock(callback: () => void) {
-      if (locked) return;
+      if (stateManager.state.locked) return;
       stateManager.mutations.setLocked(true);
       callback();
       stateManager.mutations.setLocked(false);
