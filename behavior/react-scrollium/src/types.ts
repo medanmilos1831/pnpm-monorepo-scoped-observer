@@ -1,34 +1,38 @@
-type ScrollApi = {
-  getPosition: () => number;
-  getDirection: () => 'up' | 'down' | 'none';
-  isTop: () => boolean;
-  isBottom: () => boolean;
-  isScrolling: () => boolean;
-  scrollTop: (options?: ScrollToOptions) => void;
-  elementHeight: () => number;
-  scrollableHeight: () => number;
-  scrollHeight: () => number;
-  getProgress: () => number;
-};
+import type { createStore } from "./Store/createStore";
+import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
 
-enum SCROLL_EVENTS {
-  ON_SCROLL = 'onScroll',
-  ON_SCROLL_STOP = 'onScrollStop',
-  ON_TOP = 'onTop',
-  ON_BOTTOM = 'onBottom',
+export enum ScrolliumStoreEvents {
+  CREATE_SCROLLIUM = "createScrollium",
 }
 
-type configType = {
-  scrollPosition?: number;
-  behaviour?: ScrollBehavior;
-  throttle?: number;
-  stopDelay?: number;
-};
-type configDefaultType = {
-  scrollPosition: number;
-  behaviour: ScrollBehavior;
-  throttle: number;
-  stopDelay: number;
-};
+export const SCROLLIUM_STORE_SCOPE = "scrollium-store" as const;
+export const SCROLLIUM_SCOPE = "scrollium" as const;
 
-export { ScrollApi, SCROLL_EVENTS, configType, configDefaultType };
+export type IEntity = ReturnType<typeof createEntityApiClient>;
+
+export enum ScrolliumPublicEvents {
+  ON_SCROLL = "onScroll",
+  ON_SCROLL_STOP = "onScrollStop",
+}
+
+export type ScrolliumPublicEventsType = `${ScrolliumPublicEvents}`;
+
+export enum ScrolliumDirection {
+  UP = "up",
+  DOWN = "down",
+  NONE = "none",
+  LEFT = "left",
+  RIGHT = "right",
+}
+
+export enum ScrolliumAxis {
+  HORIZONTAL = "horizontal",
+  VERTICAL = "vertical",
+}
+export interface ScrolliumProps {
+  id: string;
+  onScroll?: (params: any) => void;
+  axis?: `${ScrolliumAxis}`;
+}
+
+export type StoreReturnType = ReturnType<typeof createStore<IEntity>>;
