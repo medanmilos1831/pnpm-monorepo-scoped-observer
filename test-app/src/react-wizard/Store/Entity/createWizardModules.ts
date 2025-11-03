@@ -80,27 +80,6 @@ const createWizardModules = (state: ReturnType<typeof createWizardState>) => {
         },
       };
     },
-    clientApi(state) {
-      return () => {
-        return {
-          client: {
-            activeStep: state.getters.getActiveStep(),
-            nextStep: state.getters.getNextStep(),
-            previousStep: state.getters.getPreviousStep(),
-            isLast: state.getters.isLast(),
-            isFirst: state.getters.isFirst(),
-            steps: state.getters.getSteps(),
-            wizardId: state.getters.getWizardId(),
-          },
-          clientEntity: {
-            addEventListener: this.addEventListener,
-            commands: this.commands,
-            getters: state.getters,
-          },
-          subscribeInternal: state.observer.subscribe,
-        };
-      };
-    },
   });
 };
 

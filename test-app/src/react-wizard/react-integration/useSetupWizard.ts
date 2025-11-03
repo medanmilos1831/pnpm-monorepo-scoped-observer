@@ -8,11 +8,13 @@ import {
 
 const useSetupWizard = (store: StoreReturnType, props: IWizardConfig) => {
   store.mutations.createEntity(props, () => createEntity(props));
-  const { modules } = store.getters.getEntityById(props.id)!;
+  const addEventListener = store.getters
+    .getEntityById(props.id)!
+    .api.getAddEventListener();
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
-    unsubscribe = modules.addEventListener(WizardPublicEvents.ON_FINISH, () => {
+    unsubscribe = addEventListener(WizardPublicEvents.ON_FINISH, () => {
       props.onFinish!();
     });
     return () => {
@@ -23,7 +25,7 @@ const useSetupWizard = (store: StoreReturnType, props: IWizardConfig) => {
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onReset) return;
-    unsubscribe = modules.addEventListener(WizardPublicEvents.ON_RESET, () => {
+    unsubscribe = addEventListener(WizardPublicEvents.ON_RESET, () => {
       props.onReset!();
     });
     return () => {

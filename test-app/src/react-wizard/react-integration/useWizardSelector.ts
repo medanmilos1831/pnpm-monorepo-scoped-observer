@@ -15,7 +15,7 @@ const useWizardSelector = (store: StoreReturnType, id: string) => {
   });
   useSyncExternalStore(mount, snapshot);
   if (!store.getters.hasEntity(id)) return undefined;
-  return store.getters.getEntityById(id).modules.clientApi().clientEntity;
+  return store.getters.getEntityById(id).api.getClientEntity();
 };
 
 export { useWizardSelector };

@@ -1,6 +1,5 @@
 import type { createStore } from "./Store/createStore";
-import type { createWizardModules } from "./Store/Entity/createWizardModules";
-import type { createWizardState } from "./Store/Entity/createWizardState";
+import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
 
 // ===========================================
 // SCOPES
@@ -16,10 +15,8 @@ export const WIZARD_STEP_OBSERVER_SCOPE = "wizard-step-observer" as const;
 // ===========================================
 // CONFIGURATION TYPES
 // ===========================================
-export interface IEntity {
-  stateManager: ReturnType<typeof createWizardState>;
-  modules: ReturnType<typeof createWizardModules>;
-}
+
+export type IEntity = ReturnType<typeof createEntityApiClient>;
 
 export interface IWizardConfig {
   id: string;

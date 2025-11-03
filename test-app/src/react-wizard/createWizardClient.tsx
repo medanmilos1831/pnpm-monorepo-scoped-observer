@@ -22,14 +22,14 @@ const createWizardClient = () => {
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
-      const entity = store.getters.getEntityById(id)!.stateManager;
-      entity.mutations.setStepMiddleware(props);
+      const entity = store.getters.getEntityById(id)!.api.getMutations();
+      entity.setStepMiddleware(props);
 
       return <>{children}</>;
     },
     useWizardCommands: () => {
       const { id } = useRequiredContext(WizardContext);
-      return store.getters.getEntityById(id).modules.commands;
+      return store.getters.getEntityById(id).api.getCommands();
     },
     useWizard: () => {
       const { id } = useRequiredContext(WizardContext);
@@ -39,7 +39,7 @@ const createWizardClient = () => {
       return useWizardSelector(store, id);
     },
     getWizardClient: (id: string) => {
-      return store.getters.getEntityById(id).modules.clientApi().clientEntity;
+      return store.getters.getEntityById(id).api.getClientEntity();
     },
   };
 };
