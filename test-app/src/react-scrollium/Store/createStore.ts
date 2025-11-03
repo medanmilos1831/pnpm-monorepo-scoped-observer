@@ -1,8 +1,8 @@
 import { SCROLLIUM_STORE_SCOPE } from "../types";
-import { createStoreInstance } from "../core/createStateManager";
+import { createStateManager } from "../core/createStateManager";
 
 function createStore<T>() {
-  return createStoreInstance({
+  return createStateManager({
     id: SCROLLIUM_STORE_SCOPE,
     state: new Map<string, T>(),
     mutations(state) {

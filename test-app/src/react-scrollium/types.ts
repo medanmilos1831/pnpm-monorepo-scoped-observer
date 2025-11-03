@@ -1,7 +1,5 @@
 import type { createStore } from "./Store/createStore";
 import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
-import type { createScrolliumModules } from "./Store/Entity/createScrolliumModules";
-import type { createScrolliumState } from "./Store/Entity/createScrolliumState";
 
 export enum ScrolliumStoreEvents {
   CREATE_SCROLLIUM = "createScrollium",
