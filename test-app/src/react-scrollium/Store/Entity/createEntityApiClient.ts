@@ -26,13 +26,26 @@ const createEntityApiClient = (props: ScrolliumProps) => {
       const state = value.stateManager;
       const getters = state.getters;
       const commands = value.modules.commands;
-
+      function getClient() {
+        return {
+          id: state.getters.getId(),
+          scrollPosition: state.getters.getScrollPosition(),
+          axis: state.getters.getAxis(),
+          direction: state.getters.getDirection(),
+          progress: state.getters.getProgress(),
+          isStart: state.getters.getIsStart(),
+          isEnd: state.getters.getIsEnd(),
+          clientSize: state.getters.getClientSize(),
+          scrollSize: state.getters.getScrollSize(),
+          isScrolling: state.getters.getIsScrolling(),
+        };
+      }
       const addEventListener = (
         event: `${ScrolliumPublicEventsType}`,
         callback: (payload: any) => void
       ) => {
-        return value.observer.subscribe(event, ({ payload }) => {
-          callback(payload);
+        return value.observer.subscribe(event, () => {
+          callback(getClient());
         });
       };
 
@@ -42,7 +55,6 @@ const createEntityApiClient = (props: ScrolliumProps) => {
         getScroll: () => value.modules.scroll,
         getCommands: () => value.modules.commands,
         addEventListener,
-        getSubscribeInternal: () => value.observer.subscribe,
         getClientEntity: () => {
           return {
             addEventListener,
@@ -50,20 +62,7 @@ const createEntityApiClient = (props: ScrolliumProps) => {
             getters,
           };
         },
-        getClient: () => {
-          return {
-            id: state.getters.getId(),
-            scrollPosition: state.getters.getScrollPosition(),
-            axis: state.getters.getAxis(),
-            direction: state.getters.getDirection(),
-            progress: state.getters.getProgress(),
-            isStart: state.getters.getIsStart(),
-            isEnd: state.getters.getIsEnd(),
-            clientSize: state.getters.getClientSize(),
-            scrollSize: state.getters.getScrollSize(),
-            isScrolling: state.getters.getIsScrolling(),
-          };
-        },
+        getClient: getClient,
       };
     },
   });

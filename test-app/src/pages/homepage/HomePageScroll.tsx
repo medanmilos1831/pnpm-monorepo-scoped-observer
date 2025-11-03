@@ -1,4 +1,19 @@
-import { Scroll } from "../../scroll";
+import { Scroll, useScrolliumSelector } from "../../scroll";
+import { useEffect } from "react";
+
+const SomeComponent = () => {
+  const client = useScrolliumSelector("scroll-1");
+  useEffect(() => {
+    client?.addEventListener("onScroll", (payload) => {
+      console.log("scroll", payload);
+    });
+  }, [client]);
+  return (
+    <div>
+      <h1>Some Component</h1>
+    </div>
+  );
+};
 
 const HomePageScroll = () => {
   return (
@@ -6,12 +21,13 @@ const HomePageScroll = () => {
       <div>
         <h1>Home Page Scroll</h1>
       </div>
+      <SomeComponent />
       <div style={{ height: "10rem" }}>
         <Scroll
           id="scroll-1"
           axis="vertical"
           onScroll={(payload) => {
-            console.log("scroll", payload);
+            // console.log("scroll", payload);
           }}
         >
           {new Array(50).fill(0).map((_, index) => (
