@@ -1,3 +1,5 @@
+import type { createStore } from "./Store/createStore";
+import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
 import type { createScrolliumModules } from "./Store/Entity/createScrolliumModules";
 import type { createScrolliumState } from "./Store/Entity/createScrolliumState";
 
@@ -8,10 +10,7 @@ export enum ScrolliumStoreEvents {
 export const SCROLLIUM_STORE_SCOPE = "scrollium-store" as const;
 export const SCROLLIUM_SCOPE = "scrollium" as const;
 
-export interface IEntity {
-  stateManager: ReturnType<typeof createScrolliumState>;
-  modules: ReturnType<typeof createScrolliumModules>;
-}
+export type IEntity = ReturnType<typeof createEntityApiClient>;
 
 export enum ScrolliumPublicEvents {
   ON_SCROLL = "onScroll",
@@ -37,3 +36,5 @@ export interface ScrolliumProps {
   onScroll?: (params: any) => void;
   axis?: `${ScrolliumAxis}`;
 }
+
+export type StoreReturnType = ReturnType<typeof createStore<IEntity>>;

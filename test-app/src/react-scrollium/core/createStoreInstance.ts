@@ -1,5 +1,3 @@
-import { createObserver } from "./observer";
-
 function createStoreInstance<
   S,
   M extends Record<string, (...args: any[]) => any>,
@@ -10,12 +8,10 @@ function createStoreInstance<
   mutations(state: S): M;
   getters(state: S): G;
 }) {
-  const observer = createObserver(props.id);
   return {
     state: props.state,
     mutations: props.mutations(props.state),
     getters: props.getters(props.state),
-    observer,
   };
 }
 

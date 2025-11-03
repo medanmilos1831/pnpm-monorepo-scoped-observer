@@ -8,26 +8,21 @@ const useScroll = (
   id: string
 ) => {
   const entity = store.getters.getEntityById(id);
-  const getters = entity.stateManager.getters;
+  const getters = entity.api.getGetters();
+  const addEventListener = entity.api.addEventListener;
   const [onScroll] = useState(() => (notify: () => void) => {
-    return entity.modules.addEventListener(
-      ScrolliumPublicEvents.ON_SCROLL,
-      () => {
-        notify();
-      }
-    );
+    return addEventListener(ScrolliumPublicEvents.ON_SCROLL, () => {
+      notify();
+    });
   });
   const [onScrollStop] = useState(() => (notify: () => void) => {
-    return entity.modules.addEventListener(
-      ScrolliumPublicEvents.ON_SCROLL_STOP,
-      () => {
-        notify();
-      }
-    );
+    return addEventListener(ScrolliumPublicEvents.ON_SCROLL_STOP, () => {
+      notify();
+    });
   });
   useSyncExternalStore(onScroll, getters.getScrollPosition);
   useSyncExternalStore(onScrollStop, getters.getIsScrolling);
-  return entity.modules.clientApi().client;
+  return entity.api.getClient();
 };
 
 export { useScroll };
