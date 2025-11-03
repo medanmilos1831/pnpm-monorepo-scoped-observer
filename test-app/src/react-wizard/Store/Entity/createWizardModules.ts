@@ -1,32 +1,26 @@
 import { createModuleInstance } from "../../core/createModuleInstance";
+import type { createObserver } from "../../core/observer";
 import {
   stepMiddlewares,
   wizardCommands,
   WizardInternalEvents,
-  type WizardPublicEventsType,
 } from "../../types";
 import type { createWizardState } from "./createWizardState";
 import { navigationService } from "./navigationService";
 
-const createWizardModules = (state: ReturnType<typeof createWizardState>) => {
-  return createModuleInstance(state, {
-    addEventListener(state) {
-      return (
-        event: `${WizardPublicEventsType}`,
-        callback: (payload: any) => void
-      ) => {
-        return state.observer.subscribe(event, ({ payload }) => {
-          callback(payload);
-        });
-      };
-    },
-    commands(state) {
-      const service = navigationService(state);
+const createWizardModules = (props: {
+  stateManager: ReturnType<typeof createWizardState>;
+  observer: ReturnType<typeof createObserver>;
+}) => {
+  return createModuleInstance(props, {
+    commands(value) {
+      const service = navigationService(value);
+      const { stateManager, observer } = value;
       return {
         reset: () => {
           service.navigate({
             command: wizardCommands.GO_TO_STEP,
-            toStep: state.state.__INTERNAL__ACTIVE_STEP,
+            toStep: stateManager.state.__INTERNAL__ACTIVE_STEP,
             payload: undefined,
             isReset: true,
             middleware: null,
@@ -35,7 +29,7 @@ const createWizardModules = (state: ReturnType<typeof createWizardState>) => {
         next: (payload?: any) => {
           service.navigate({
             command: wizardCommands.NEXT,
-            toStep: state.getters.getStepByCommand({
+            toStep: stateManager.getters.getStepByCommand({
               command: wizardCommands.NEXT,
             }),
             payload,
@@ -47,7 +41,7 @@ const createWizardModules = (state: ReturnType<typeof createWizardState>) => {
           service.navigate({
             command: wizardCommands.PREVIOUS,
             toStep:
-              state.getters.getStepByCommand({
+              stateManager.getters.getStepByCommand({
                 command: wizardCommands.PREVIOUS,
               }) ?? null,
             payload,
@@ -56,8 +50,10 @@ const createWizardModules = (state: ReturnType<typeof createWizardState>) => {
           });
         },
         goToStep: (toStep: string, payload?: any) => {
-          const steps = state.getters.getSteps();
-          const currentStepIndex = steps.indexOf(state.getters.getActiveStep());
+          const steps = stateManager.getters.getSteps();
+          const currentStepIndex = steps.indexOf(
+            stateManager.getters.getActiveStep()
+          );
           const targetStepIndex = steps.indexOf(toStep);
 
           service.navigate({
@@ -75,8 +71,8 @@ const createWizardModules = (state: ReturnType<typeof createWizardState>) => {
           if (service.isLocked()) {
             return;
           }
-          state.mutations.updateSteps(callback);
-          state.observer.dispatch(WizardInternalEvents.ON_STEPS_UPDATE);
+          stateManager.mutations.updateSteps(callback);
+          observer.dispatch(WizardInternalEvents.ON_STEPS_UPDATE);
         },
       };
     },

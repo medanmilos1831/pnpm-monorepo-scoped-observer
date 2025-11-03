@@ -8,7 +8,7 @@ import {
 const useWizard = (store: StoreReturnType, id: string) => {
   const entity = store.getters.getEntityById(id);
   const getters = entity.api.getGetters();
-  const addEventListener = entity.api.getAddEventListener();
+  const addEventListener = entity.api.addEventListener;
   const [subsciber] = useState(() => (notify: () => void) => {
     return addEventListener(WizardPublicEvents.ON_STEP_CHANGE, () => {
       notify();

@@ -8,9 +8,8 @@ import { createEntityApiClient } from "../Store/Entity/createEntityApiClient";
 
 const useSetupWizard = (store: StoreReturnType, props: IWizardConfig) => {
   store.mutations.createEntity(props, () => createEntityApiClient(props));
-  const addEventListener = store.getters
-    .getEntityById(props.id)!
-    .api.getAddEventListener();
+  const addEventListener = store.getters.getEntityById(props.id)!.api
+    .addEventListener;
   useEffect(() => {
     let unsubscribe = () => {};
     if (!props.onFinish) return;
