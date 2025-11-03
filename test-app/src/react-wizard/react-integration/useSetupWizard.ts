@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { createEntity } from "../Store/Entity/createEntity";
 import {
   WizardPublicEvents,
   type IWizardConfig,
   type StoreReturnType,
 } from "../types";
+import { createEntityApiClient } from "../Store/Entity/createEntityApiClient";
 
 const useSetupWizard = (store: StoreReturnType, props: IWizardConfig) => {
-  store.mutations.createEntity(props, () => createEntity(props));
+  store.mutations.createEntity(props, () => createEntityApiClient(props));
   const addEventListener = store.getters
     .getEntityById(props.id)!
     .api.getAddEventListener();

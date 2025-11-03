@@ -1,12 +1,17 @@
+import { createWizardState } from "./createWizardState";
+import { createWizardModules } from "./createWizardModules";
+import type { IWizardConfig } from "../../types";
 import { createModuleInstance } from "../../core/createModuleInstance";
-import type { createWizardModules } from "./createWizardModules";
-import type { createWizardState } from "./createWizardState";
 
-const createEntityApiClient = (entity: {
-  stateManager: ReturnType<typeof createWizardState>;
-  modules: ReturnType<typeof createWizardModules>;
-}) => {
-  return createModuleInstance(entity, {
+const createEntityApiClient = (props: IWizardConfig) => {
+  const stateManager = createWizardState(props);
+  const modules = createWizardModules(stateManager);
+  const obj = {
+    stateManager,
+    modules,
+  };
+
+  return createModuleInstance(obj, {
     api(value) {
       const state = value.stateManager;
       const getters = state.getters;
