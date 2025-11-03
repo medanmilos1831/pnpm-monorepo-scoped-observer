@@ -1,4 +1,4 @@
-function createStoreInstance<
+function createStateManager<
   S,
   M extends Record<string, (...args: any[]) => any>,
   G extends Record<string, (...args: any[]) => any>
@@ -15,4 +15,4 @@ function createStoreInstance<
   };
 }
 
-export { createStoreInstance };
+export { createStateManager };

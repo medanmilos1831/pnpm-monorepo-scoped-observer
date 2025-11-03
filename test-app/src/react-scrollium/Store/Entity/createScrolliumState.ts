@@ -4,10 +4,10 @@ import {
   ScrolliumDirection,
   type ScrolliumProps,
 } from "../../types";
-import { createStoreInstance } from "../../core/createStoreInstance";
+import { createStateManager } from "../../core/createStateManager";
 
 export function createScrolliumState(props: ScrolliumProps) {
-  return createStoreInstance({
+  return createStateManager({
     id: SCROLLIUM_SCOPE,
     state: {
       axis: props.axis ?? ScrolliumAxis.VERTICAL,

@@ -1,5 +1,5 @@
 import { SCROLLIUM_STORE_SCOPE } from "../types";
-import { createStoreInstance } from "../core/createStoreInstance";
+import { createStoreInstance } from "../core/createStateManager";
 
 function createStore<T>() {
   return createStoreInstance({
