@@ -1,22 +1,26 @@
 import { useState, useSyncExternalStore } from "react";
-import { createStore } from "../Store/createStore";
-import { WizardInternalEvents, WizardPublicEvents } from "../types";
+import {
+  WizardInternalEvents,
+  WizardPublicEvents,
+  type StoreReturnType,
+} from "../types";
 
-const useWizard = (store: ReturnType<typeof createStore>, id: string) => {
-  const entity = store.getEntity(id);
-  const getters = entity.stateManager.getters;
+const useWizard = (store: StoreReturnType, id: string) => {
+  const entity = store.getters.getEntityById(id);
+  const getters = entity.api.getGetters();
+  const addEventListener = entity.api.addEventListener;
   const [subsciber] = useState(() => (notify: () => void) => {
-    return entity.addEventListener(WizardPublicEvents.ON_STEP_CHANGE, () => {
+    return addEventListener(WizardPublicEvents.ON_STEP_CHANGE, () => {
       notify();
     });
   });
   const [subsciberReset] = useState(() => (notify: () => void) => {
-    return entity.addEventListener(WizardPublicEvents.ON_RESET, () => {
+    return addEventListener(WizardPublicEvents.ON_RESET, () => {
       notify();
     });
   });
   const [subsciberUpdateSteps] = useState(() => (notify: () => void) => {
-    return entity.subscribeInternal(
+    return entity.api.getSubscribeInternal()(
       WizardInternalEvents.ON_STEPS_UPDATE,
       () => {
         notify();
@@ -26,15 +30,7 @@ const useWizard = (store: ReturnType<typeof createStore>, id: string) => {
   useSyncExternalStore(subsciber, getters.getActiveStep);
   useSyncExternalStore(subsciberUpdateSteps, getters.getSteps);
   useSyncExternalStore(subsciberReset, getters.getSteps);
-  return {
-    activeStep: getters.getActiveStep(),
-    nextStep: getters.getNextStep(),
-    previousStep: getters.getPreviousStep(),
-    isLast: getters.isLast(),
-    isFirst: getters.isFirst(),
-    steps: getters.getSteps(),
-    wizardId: getters.getWizardId(),
-  };
+  return entity.api.getClient();
 };
 
 export { useWizard };

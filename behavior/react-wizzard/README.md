@@ -49,7 +49,7 @@ const {
   Step,
   useWizard,
   useWizardCommands,
-  useWizardClient,
+  useWizardSelector,
   getWizardClient,
 } = createWizardClient();
 
@@ -59,7 +59,7 @@ export {
   Step,
   useWizard,
   useWizardCommands,
-  useWizardClient,
+  useWizardSelector,
   getWizardClient,
 };
 ```
@@ -203,13 +203,13 @@ const WizControls = () => {
 
 All navigation commands go through validation and middleware. If a step has a `validate` function, navigation will wait until you call `resolve()` to proceed.
 
-## useWizardClient Hook
+## useWizardSelector Hook
 
-The `useWizardClient()` hook gives you access to a wizard client from anywhere in your component tree, even outside the `Wizard` component. **The key feature is that it's reactive** - it returns `undefined` if the wizard doesn't exist yet, and automatically updates when the wizard is created or removed.
+The `useWizardSelector()` hook gives you access to a wizard client from anywhere in your component tree, even outside the `Wizard` component. **The key feature is that it's reactive** - it returns `undefined` if the wizard doesn't exist yet, and automatically updates when the wizard is created or removed.
 
 ```tsx
 const SomeComponent = () => {
-  const client = useWizardClient("wizard-1");
+  const client = useWizardSelector("wizard-1");
 
   useEffect(() => {
     if (!client) return;
@@ -259,7 +259,7 @@ The hook automatically re-renders your component when the wizard is created or d
 
 ## getWizardClient Function
 
-The `getWizardClient()` function gives you access to a wizard client by its ID. It has the same API as `useWizardClient()`, but **it's not reactive** - it won't trigger re-renders when the wizard is created or destroyed. This makes it perfect for using in event handlers, regular JavaScript modules, or anywhere you need runtime access without React's reactivity.
+The `getWizardClient()` function gives you access to a wizard client by its ID. It has the same API as `useWizardSelector()`, but **it's not reactive** - it won't trigger re-renders when the wizard is created or destroyed. This makes it perfect for using in event handlers, regular JavaScript modules, or anywhere you need runtime access without React's reactivity.
 
 ```tsx
 const MyComponent = () => {
@@ -289,10 +289,10 @@ export function navigateToStep(stepName) {
 
 ### Client API
 
-The function returns the same client object as `useWizardClient()`:
+The function returns the same client object as `useWizardSelector()`:
 
-- **`commands`** - Navigation commands (same as `useWizardClient`)
-- **`getters`** - State getters (same as `useWizardClient`)
-- **`addEventListener(eventName, callback)`** - Listen to wizard events (same as `useWizardClient`)
+- **`commands`** - Navigation commands (same as `useWizardSelector`)
+- **`getters`** - State getters (same as `useWizardSelector`)
+- **`addEventListener(eventName, callback)`** - Listen to wizard events (same as `useWizardSelector`)
 
-Returns `undefined` if the wizard doesn't exist. Unlike `useWizardClient()`, this function won't trigger component re-renders when the wizard state changes.
+Returns `undefined` if the wizard doesn't exist. Unlike `useWizardSelector()`, this function won't trigger component re-renders when the wizard state changes.

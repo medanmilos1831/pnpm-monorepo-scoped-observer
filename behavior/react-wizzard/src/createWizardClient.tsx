@@ -3,13 +3,22 @@ import { createContext, type PropsWithChildren } from "react";
 import { useRequiredContext } from "./react-integration/useRequiredContext";
 import { useSetupWizard } from "./react-integration/useSetupWizard";
 import { useWizard } from "./react-integration/useWizard";
-import { useWizardClient } from "./react-integration/useWizardClient";
+
 import { createStore } from "./Store/createStore";
-import { type IWizardConfig, type IWizardStep } from "./types";
+import {
+  WIZARD_STORE_SCOPE,
+  type IEntity,
+  type IWizardConfig,
+  type IWizardStep,
+} from "./types";
+import { useWizardSelector } from "./react-integration/useWizardSelector";
+import { createObserver } from "./core/observer";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
-  const store = createStore();
+
+  const store = createStore<IEntity>();
+  const observer = createObserver(WIZARD_STORE_SCOPE);
   return {
     Wizard: ({ children, ...props }: PropsWithChildren<IWizardConfig>) => {
       useSetupWizard(store, props);
@@ -21,25 +30,30 @@ const createWizardClient = () => {
     },
     Step: ({ children, ...props }: PropsWithChildren<IWizardStep>) => {
       const { id } = useRequiredContext(WizardContext);
-      const entity = store.getEntity(id);
-      entity.navigationManager.setStepMiddleware(props);
+      const entity = store.getters.getEntityById(id)!.api.getMutations();
+      entity.setStepMiddleware(props);
 
       return <>{children}</>;
     },
     useWizardCommands: () => {
       const { id } = useRequiredContext(WizardContext);
-      const entity = store.getEntity(id);
-      return entity.commands;
+      return store.getters.getEntityById(id).api.getCommands();
     },
     useWizard: () => {
       const { id } = useRequiredContext(WizardContext);
       return useWizard(store, id);
     },
-    useWizardClient: (id: string) => {
-      return useWizardClient(store, id);
+    useWizardSelector: (id: string) => {
+      return useWizardSelector(
+        {
+          store,
+          observer,
+        },
+        id
+      );
     },
     getWizardClient: (id: string) => {
-      return store.getEntityClient(id);
+      return store.getters.getEntityById(id).api.getClientEntity();
     },
   };
 };
