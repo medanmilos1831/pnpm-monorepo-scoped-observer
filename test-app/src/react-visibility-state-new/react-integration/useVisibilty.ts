@@ -1,33 +1,26 @@
+import { useState, useSyncExternalStore } from "react";
 import type { createStore } from "../Store/createStore";
 import { createEntityApiClient } from "../Store/Entity/createEntityApiClient";
-import type { VisibilityProps } from "../types";
+import { VisibilityPublicEvents, type VisibilityProps } from "../types";
 
 const useVisibilty = (
   store: ReturnType<typeof createStore<any>>,
   props: VisibilityProps
 ) => {
-  console.log("useVisibilty", props);
   store.mutations.createEntity({ id: props.id }, () => {
     return createEntityApiClient(props);
   });
-  // const entity = store.getters.getEntityById(id);
-  // console.log("entity", entity);
-  // const getters = entity.api.getGetters();
-  // const addEventListener = entity.api.addEventListener;
-  // const [onScroll] = useState(() => (notify: () => void) => {
-  //   return addEventListener(ScrolliumPublicEvents.ON_SCROLL, () => {
-  //     notify();
-  //   });
-  // });
-  // const [onScrollStop] = useState(() => (notify: () => void) => {
-  //   return addEventListener(ScrolliumPublicEvents.ON_SCROLL_STOP, () => {
-  //     notify();
-  //   });
-  // });
-  // useSyncExternalStore(onScroll, getters.getScrollPosition);
-  // useSyncExternalStore(onScrollStop, getters.getIsScrolling);
-  // return entity.api.getClient();
-  return {};
+  const entity = store.getters.getEntityById(props.id);
+  const getters = entity.api.getters();
+  const getClient = entity.api.getClient;
+  const addEventListener = entity.api.addEventListener;
+  const [onChange] = useState(() => (notify: () => void) => {
+    return addEventListener(VisibilityPublicEvents.ON_VISIBILITY_CHANGE, () => {
+      notify();
+    });
+  });
+  useSyncExternalStore(onChange, getters.getVisibility);
+  return getClient();
 };
 
 export { useVisibilty };

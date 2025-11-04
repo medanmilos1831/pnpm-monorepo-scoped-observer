@@ -10,6 +10,9 @@ const createVisibility = () => {
     useVisibility: (props: VisibilityProps) => {
       return useVisibilty(store, props);
     },
+    useCommands: (id: string) => {
+      return store.getters.getEntityById(id).api.getCommands();
+    },
   };
 };
 

@@ -1,5 +1,5 @@
 import { createVisibility } from "./react-visibility-state-new/createVisibility";
 
-const { useVisibility } = createVisibility();
+const { useVisibility, useCommands } = createVisibility();
 
-export { useVisibility };
+export { useVisibility, useCommands };
