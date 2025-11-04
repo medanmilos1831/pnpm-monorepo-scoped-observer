@@ -1,34 +1,29 @@
-/**
- * Engine state enumeration representing the power state of the visibility engine
- *
- * This enum defines the two possible states that an engine can be in:
- * - ON: Engine is active and running
- * - OFF: Engine is inactive and stopped
- */
-export enum ENGINE_STATE {
-  /** Engine is active and running */
+import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
+
+export type VisibilityProps = {
+  id: string;
+  initState: initialStateType;
+};
+
+export enum INITIAL_STATE {
   ON = "on",
-  /** Engine is inactive and stopped */
   OFF = "off",
 }
 
-/**
- * Configuration object for creating a visibility engine
- *
- * This type defines the required parameters when initializing a new
- * visibility engine instance.
- *
- * @example
- * ```typescript
- * const config: VisibilityConfig = {
- *   name: "my-visibility-engine",
- *   initState: ENGINE_STATE.OFF
- * };
- * ```
- */
-export type VisibilityConfig = {
-  /** Unique identifier for the engine instance */
-  name: string;
-  /** Initial state of the engine when created */
-  initState: ENGINE_STATE;
-};
+export type initialStateType = `${INITIAL_STATE}`;
+
+export const STORE_OBSERVER = "store-observer" as const;
+export const ENTITY_OBSERVER = "entity-observer" as const;
+
+export type IEntity = ReturnType<typeof createEntityApiClient>;
+
+export enum VisibilityPublicEvents {
+  ON_VISIBILITY_CHANGE = "onVisibilityChange",
+}
+
+export enum VisibilityStoreEvents {
+  CREATE_VISIBILITY = "createVisibility",
+}
+
+export type VisibilityPublicEventsType = `${VisibilityPublicEvents}`;
+export type VisibilityStoreEventsType = `${VisibilityStoreEvents}`;

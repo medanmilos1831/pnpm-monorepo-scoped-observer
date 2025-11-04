@@ -1,4 +1,4 @@
-import { createVisibility } from "./react-visibility-state-new/createVisibility";
+import { createVisibility } from "./react-visibility-state/createVisibility";
 
 const {
   useVisibility,

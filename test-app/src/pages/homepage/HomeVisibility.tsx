@@ -1,14 +1,13 @@
 import { useEffect } from "react";
 import {
-  getVisibilityClient,
-  useVisibilitySelector,
   useCommands,
   useVisibility,
+  useVisibilitySelector,
 } from "../../visibilityService";
 const Inner = () => {
   const visibility = useVisibility({
     id: "test",
-    initState: "on",
+    initState: "off",
   });
   const commands = useCommands("test");
   console.log("visibility", visibility);
@@ -49,7 +48,7 @@ const SomeComponent = () => {
   }, [visibility]);
   return (
     <div>
-      <h1>Some Component</h1>
+      <h1>Visibility selector</h1>
     </div>
   );
 };
