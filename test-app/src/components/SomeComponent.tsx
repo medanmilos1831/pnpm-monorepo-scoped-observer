@@ -3,10 +3,8 @@ import { useWizardSelector } from "../wizService";
 
 export const SomeComponent = () => {
   const client = useWizardSelector("wizard-1");
-  console.log(client);
   useEffect(() => {
     client?.addEventListener("onStepChange", (payload) => {
-      console.log(payload);
       // Step change handler
     });
   }, [client]);

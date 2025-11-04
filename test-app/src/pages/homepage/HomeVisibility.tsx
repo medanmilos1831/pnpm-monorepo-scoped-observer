@@ -10,7 +10,6 @@ const Inner = () => {
     initState: "off",
   });
   const commands = useCommands("test");
-  console.log("visibility", visibility);
   return (
     <div>
       <h1>Visibility: {visibility.visibility}</h1>
@@ -43,7 +42,7 @@ const SomeComponent = () => {
   useEffect(() => {
     if (!visibility) return;
     visibility?.addEventListener("onVisibilityChange", () => {
-      console.log("visibility");
+      // Visibility changed
     });
   }, [visibility]);
   return (

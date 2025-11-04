@@ -21,7 +21,6 @@ export const StepOne = () => {
           // Step one on next handler
         }}
         validate={(params) => {
-          console.log(params);
           if (params.payload?.name === "John") {
             setOpen(true);
             return;

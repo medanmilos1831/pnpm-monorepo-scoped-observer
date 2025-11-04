@@ -5,7 +5,7 @@ const SomeComponent = () => {
   const client = useScrolliumSelector("scroll-1");
   useEffect(() => {
     client?.addEventListener("onScroll", (payload) => {
-      console.log("scroll", payload);
+      // Scroll event
     });
   }, [client]);
   return (
