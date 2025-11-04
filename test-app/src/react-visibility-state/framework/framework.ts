@@ -1,13 +1,14 @@
 import { createScopedObserver } from "@scoped-observer/core";
 import {
   ENTITY_OBSERVER,
+  INITIAL_STATE,
   STORE_OBSERVER,
+  VisibilityPublicEvents,
   type IEntity,
   type initialStateType,
   type VisibilityProps,
   type VisibilityPublicEventsType,
 } from "../types";
-import { createVisibilityModules } from "../Store/Entity/createVisibilityModules";
 
 type ModuleFactory<S, T> = (state: S) => T;
 type ModuleMap<S> = Record<string, ModuleFactory<S, any>>;
@@ -128,10 +129,42 @@ export const frameworkAPI = (() => {
         },
       });
       const observer = framework.createObserver(ENTITY_OBSERVER);
-      const modules = createVisibilityModules({
-        stateManager: stateManager,
-        observer,
-      });
+      function dispatchVisibilityChange(value: initialStateType) {
+        observer.dispatch(VisibilityPublicEvents.ON_VISIBILITY_CHANGE, {
+          payload: {
+            visibility: value,
+          },
+        });
+      }
+      const modules = framework.createModuleInstance(
+        {
+          stateManager,
+          observer,
+        },
+        {
+          commands(value) {
+            const { stateManager } = value;
+            return {
+              on: () => {
+                stateManager.mutations.setVisibility(INITIAL_STATE.ON);
+                dispatchVisibilityChange(INITIAL_STATE.ON);
+              },
+              off: () => {
+                stateManager.mutations.setVisibility(INITIAL_STATE.OFF);
+                dispatchVisibilityChange(INITIAL_STATE.OFF);
+              },
+              toggle: () => {
+                const value =
+                  stateManager.getters.getVisibility() === INITIAL_STATE.ON
+                    ? INITIAL_STATE.OFF
+                    : INITIAL_STATE.ON;
+                stateManager.mutations.setVisibility(value);
+                dispatchVisibilityChange(value);
+              },
+            };
+          },
+        }
+      );
       return framework.createModuleInstance(
         {
           stateManager,
