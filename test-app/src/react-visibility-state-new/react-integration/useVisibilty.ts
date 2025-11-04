@@ -1,7 +1,17 @@
 import type { createStore } from "../Store/createStore";
+import { createEntityApiClient } from "../Store/Entity/createEntityApiClient";
+import type { VisibilityProps } from "../types";
 
-const useScroll = (store: ReturnType<typeof createStore<any>>, id: string) => {
+const useVisibilty = (
+  store: ReturnType<typeof createStore<any>>,
+  props: VisibilityProps
+) => {
+  console.log("useVisibilty", props);
+  store.mutations.createEntity({ id: props.id }, () => {
+    return createEntityApiClient(props);
+  });
   // const entity = store.getters.getEntityById(id);
+  // console.log("entity", entity);
   // const getters = entity.api.getGetters();
   // const addEventListener = entity.api.addEventListener;
   // const [onScroll] = useState(() => (notify: () => void) => {
@@ -20,4 +30,4 @@ const useScroll = (store: ReturnType<typeof createStore<any>>, id: string) => {
   return {};
 };
 
-export { useScroll };
+export { useVisibilty };

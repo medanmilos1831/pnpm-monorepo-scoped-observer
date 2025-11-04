@@ -1,8 +1,9 @@
 import { createStateManager } from "../core/createStateManager";
+import { STORE_OBSERVER } from "../types";
 
 function createStore<T>() {
   return createStateManager({
-    id: "visibility-store",
+    id: STORE_OBSERVER,
     state: new Map<string, T>(),
     mutations(state) {
       return {

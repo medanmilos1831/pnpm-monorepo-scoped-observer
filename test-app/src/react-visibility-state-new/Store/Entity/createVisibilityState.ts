@@ -1,14 +1,23 @@
 import { createStateManager } from "../../core/createStateManager";
+import type { initialStateType } from "../../types";
 
 export function createVisibilityState(props: any) {
   return createStateManager({
-    id: "visibility-state",
-    state: {},
+    id: props.id,
+    state: {
+      visibility: props.initState,
+    },
     mutations(state) {
-      return {};
+      return {
+        setVisibility: (visibility: initialStateType) => {
+          state.visibility = visibility;
+        },
+      };
     },
     getters(state) {
-      return {};
+      return {
+        getVisibility: () => state.visibility,
+      };
     },
   });
 }
