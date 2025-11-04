@@ -1,5 +1,11 @@
-import { useCommands, useVisibility } from "../../visibilityService";
-const HomeVisibility = () => {
+import { useEffect } from "react";
+import {
+  getVisibilityClient,
+  useVisibilitySelector,
+  useCommands,
+  useVisibility,
+} from "../../visibilityService";
+const Inner = () => {
   const visibility = useVisibility({
     id: "test",
     initState: "on",
@@ -31,6 +37,28 @@ const HomeVisibility = () => {
         Toggle
       </button>
     </div>
+  );
+};
+const SomeComponent = () => {
+  const visibility = useVisibilitySelector("test");
+  useEffect(() => {
+    if (!visibility) return;
+    visibility?.addEventListener("onVisibilityChange", () => {
+      console.log("visibility");
+    });
+  }, [visibility]);
+  return (
+    <div>
+      <h1>Some Component</h1>
+    </div>
+  );
+};
+const HomeVisibility = () => {
+  return (
+    <>
+      <SomeComponent />
+      <Inner />
+    </>
   );
 };
 

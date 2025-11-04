@@ -43,6 +43,13 @@ const createEntityApiClient = (props: VisibilityProps) => {
             visibility: getters.getVisibility(),
           };
         },
+        getClientEntity: () => {
+          return {
+            addEventListener,
+            commands,
+            getters,
+          };
+        },
       };
     },
   });
