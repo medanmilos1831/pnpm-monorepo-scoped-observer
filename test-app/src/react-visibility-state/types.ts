@@ -1,3 +1,5 @@
+import type { createObserver } from "./core/observer";
+import type { frameworkAPI } from "./framework/framework";
 import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
 
 export type VisibilityProps = {
