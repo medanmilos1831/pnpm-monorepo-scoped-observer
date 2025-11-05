@@ -4,7 +4,8 @@ import { frameworkApi } from "../framework/frameworkApi";
 import { type VisibilityProps } from "../types";
 
 const useVisibilty = (props: VisibilityProps) => {
-  const entity = frameworkApi.createEntityApiClient(props);
+  frameworkApi.createEntityApiClient(props);
+  let entity = frameworkApi.getEntityApiClientById(props.id);
 
   useSyncExternalStore(
     entity.watchVisibilityChange.subscribe,

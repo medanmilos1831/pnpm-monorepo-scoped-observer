@@ -143,7 +143,6 @@ export const frameworkApi = (() => {
       store.mutations.createEntity({ id: props.id }, () => {
         return createEntityApiClient(props);
       });
-      return store.getters.getEntityById("test").api;
     },
     getEntityApiClientById: (id: string) => {
       return store.getters.getEntityById(id).api;
