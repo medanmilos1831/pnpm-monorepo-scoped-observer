@@ -1,7 +1,5 @@
 import { createScopedObserver } from "@scoped-observer/core";
 
-type ModuleFactory<S, T> = (state: S) => T;
-type ModuleMap<S> = Record<string, ModuleFactory<S, any>>;
 const STORE_OBSERVER = "STORE_OBSERVER";
 
 export const framework = (() => {
@@ -20,17 +18,6 @@ export const framework = (() => {
       mutations: props.mutations(props.state),
       getters: props.getters(props.state),
     };
-  }
-  function createModuleInstance<S, M extends ModuleMap<S>>(
-    state: S,
-    modules: M
-  ) {
-    type Built = { [K in keyof M]: ReturnType<M[K]> };
-    const built = {} as Built;
-    (Object.keys(modules) as Array<keyof M>).forEach((key) => {
-      built[key] = modules[key](state);
-    });
-    return built;
   }
   function createObserver(scope: string) {
     const observer = createScopedObserver([
@@ -56,76 +43,73 @@ export const framework = (() => {
     };
   }
 
+  const store = createStateManager({
+    id: "STORE",
+    state: new Map<string, any>(),
+    mutations(state) {
+      return {
+        createEntity<P extends { id: string }>(props: P, entity: () => any) {
+          if (!state.has(props.id)) {
+            state.set(props.id, entity());
+          }
+        },
+        removeEntity: (id: string) => {
+          state.delete(id);
+        },
+      };
+    },
+    getters(state) {
+      return {
+        getEntityById: (id: string) => state.get(id)!,
+
+        getEntity: (id: string) => state.get(id),
+
+        hasEntity: (id: string) => state.has(id),
+
+        getAllEntities: () => state.values(),
+
+        getEntityCount: () => state.size,
+      };
+    },
+  });
+  const observer = createObserver(STORE_OBSERVER);
   return {
-    createStateManager,
-    createModuleInstance,
+    // createStateManager,
     createObserver,
-    createStore: function <T>() {
-      return this.createStateManager({
-        id: STORE_OBSERVER,
-        state: new Map<string, T>(),
-        mutations(state) {
-          return {
-            createEntity<P extends { id: string }>(props: P, entity: () => T) {
-              if (!state.has(props.id)) {
-                state.set(props.id, entity());
-              }
-            },
-            removeEntity: (id: string) => {
-              state.delete(id);
-            },
-          };
-        },
-        getters(state) {
-          return {
-            getEntityById: (id: string) => state.get(id)!,
-
-            getEntity: (id: string) => state.get(id),
-
-            hasEntity: (id: string) => state.has(id),
-
-            getAllEntities: () => state.values(),
-
-            getEntityCount: () => state.size,
-          };
-        },
+    createModule: function <S, C>(
+      stateManager: S,
+      callback: (
+        state: S,
+        context: {
+          getStore: () => ReturnType<typeof createStateManager>;
+          getObserver: () => ReturnType<typeof createObserver>;
+        }
+      ) => C
+    ) {
+      return callback(stateManager, {
+        getStore: () => store,
+        getObserver: () => observer,
       });
     },
-    storeComposition: function <T>() {
-      const store = this.createStateManager({
-        id: STORE_OBSERVER,
-        state: new Map<string, T>(),
-        mutations(state) {
-          return {
-            createEntity<P extends { id: string }>(props: P, entity: () => T) {
-              if (!state.has(props.id)) {
-                state.set(props.id, entity());
-              }
-            },
-            removeEntity: (id: string) => {
-              state.delete(id);
-            },
-          };
-        },
-        getters(state) {
-          return {
-            getEntityById: (id: string) => state.get(id)!,
-
-            getEntity: (id: string) => state.get(id),
-
-            hasEntity: (id: string) => state.has(id),
-
-            getAllEntities: () => state.values(),
-
-            getEntityCount: () => state.size,
-          };
-        },
+    createStateManager: function <
+      S,
+      M extends Record<string, (...args: any[]) => any>,
+      G extends Record<string, (...args: any[]) => any>
+    >(props: {
+      id: string;
+      state: S;
+      mutations(state: S): M;
+      getters(state: S): G;
+    }) {
+      store.mutations.createEntity({ id: props.id }, () => {
+        return createStateManager(props);
       });
-      const observer = createObserver(STORE_OBSERVER);
       return {
-        store,
-        observer,
+        createModule(callback: (state: S) => any) {
+          return callback(store.getters.getEntity(props.id));
+        },
       };
+      // return stateManager;
     },
   };
 })();

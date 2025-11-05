@@ -18,7 +18,7 @@ const Inner = () => {
   console.log("RENDERED HOME VISIBILITY");
   return (
     <div>
-      <h1>Visibility: {visibility}</h1>
+      {/* <h1>Visibility: {visibility}</h1> */}
       <h1>Count: {count}</h1>
       <button
         onClick={() => {
@@ -43,7 +43,7 @@ const Inner = () => {
       </button>
       <button
         onClick={() => {
-          commands.toggle();
+          // commands.toggle();
         }}
       >
         Toggle
@@ -61,7 +61,7 @@ const HomeVisibility = () => {
   return (
     <>
       <Inner />
-      <Selector />
+      {/* <Selector /> */}
     </>
   );
 };

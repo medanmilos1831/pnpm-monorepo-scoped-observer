@@ -10,8 +10,8 @@ const createVisibility = () => {
     },
     useCommands: (id: string) => {
       const entity = frameworkApi.getEntityApiClientById(id);
-      const commands = entity.getCommands();
-      return commands;
+      // const commands = entity.getCommands();
+      // return commands;
     },
     useVisibilitySelector: (id: string) => {
       return useVisibilitySelector(id);
