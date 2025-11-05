@@ -51,6 +51,7 @@ export const framework = (() => {
         },
       ]);
       return {
+        scope,
         dispatch: (eventName: string, payload?: any) => {
           observer.dispatch({
             scope,
@@ -102,13 +103,11 @@ export const framework = (() => {
 })();
 
 export const frameworkAPI = (() => {
+  const store = framework.createStore<IEntity>();
+  const storeObserver = framework.createObserver(STORE_OBSERVER);
   return {
-    storeComposition: (() => {
-      return {
-        store: framework.createStore<IEntity>(),
-        observer: framework.createObserver(STORE_OBSERVER),
-      };
-    })(),
+    getStore: () => store,
+    getStoreObserver: () => storeObserver,
     createEntityApiClient: function (props: VisibilityProps) {
       const stateManager = framework.createStateManager({
         id: props.id,
@@ -165,7 +164,7 @@ export const frameworkAPI = (() => {
           },
         }
       );
-      return framework.createModuleInstance(
+      const entity = framework.createModuleInstance(
         {
           stateManager,
           modules,
@@ -180,12 +179,13 @@ export const frameworkAPI = (() => {
               event: `${VisibilityPublicEventsType}`,
               callback: () => void
             ) => {
-              return value.observer.subscribe(event, () => {
+              return observer.subscribe(event, () => {
                 callback();
               });
             };
 
             return {
+              scope: observer.scope,
               getCommands: () => value.modules.commands,
               getters: () => value.stateManager.getters,
               addEventListener,
@@ -205,6 +205,10 @@ export const frameworkAPI = (() => {
           },
         }
       );
+      store.mutations.createEntity({ id: props.id }, () => {
+        return entity;
+      });
+      return store.getters.getEntity(props.id)!;
     },
   };
 })();

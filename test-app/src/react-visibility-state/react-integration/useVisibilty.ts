@@ -1,25 +1,9 @@
 import { useState, useSyncExternalStore } from "react";
-import { frameworkAPI, type framework } from "../framework/framework";
-import {
-  VisibilityPublicEvents,
-  type IEntity,
-  type VisibilityProps,
-} from "../types";
+import { frameworkAPI } from "../framework/framework";
+import { VisibilityPublicEvents, type VisibilityProps } from "../types";
 
-const useVisibilty = (
-  {
-    store,
-    observer,
-  }: {
-    store: ReturnType<typeof framework.createStore<IEntity>>;
-    observer: ReturnType<typeof framework.createObserver>;
-  },
-  props: VisibilityProps
-) => {
-  store.mutations.createEntity({ id: props.id }, () => {
-    return frameworkAPI.createEntityApiClient(props);
-  });
-  const entity = store.getters.getEntityById(props.id);
+const useVisibilty = (props: VisibilityProps) => {
+  const entity = frameworkAPI.createEntityApiClient(props);
   const getters = entity.api.getters();
   const getClient = entity.api.getClient();
   const addEventListener = entity.api.addEventListener;

@@ -9,7 +9,12 @@ const Inner = () => {
     id: "test",
     initState: "off",
   });
+  const visibilityTwo = useVisibility({
+    id: "testtwo",
+    initState: "off",
+  });
   const commands = useCommands("test");
+  console.log("RENDER", visibility);
   return (
     <div>
       <h1>Visibility: {visibility.visibility}</h1>

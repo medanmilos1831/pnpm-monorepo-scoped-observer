@@ -1,11 +1,10 @@
 import { useState, useSyncExternalStore } from "react";
 import { VisibilityStoreEvents } from "../types";
+import { frameworkAPI } from "../framework/framework";
 
-const useVisibilitySelector = (
-  { store, observer }: any,
-
-  id: string
-) => {
+const useVisibilitySelector = (id: string) => {
+  const store = frameworkAPI.getStore();
+  const observer = frameworkAPI.getStoreObserver();
   const [mount] = useState(() => {
     return (notify: () => void) => {
       return observer.subscribe(
