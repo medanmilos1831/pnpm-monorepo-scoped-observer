@@ -1,4 +1,4 @@
-import { frameworkBase } from "./base";
+import { framework } from ".";
 import {
   INITIAL_STATE,
   VisibilityPublicEvents,
@@ -6,10 +6,10 @@ import {
   type VisibilityProps,
 } from "../types";
 export const frameworkApi = (() => {
-  const store =
-    frameworkBase.createStore<ReturnType<typeof createEntityApiClient>>();
+  const { store, observer } =
+    framework.storeComposition<ReturnType<typeof createEntityApiClient>>();
   function createEntityApiClient(props: VisibilityProps) {
-    const entityStateManager = frameworkBase.createStateManager({
+    const entityStateManager = framework.createStateManager({
       id: props.id,
       state: {
         visibility: props.initState,
@@ -27,8 +27,9 @@ export const frameworkApi = (() => {
         };
       },
     });
-    const entityObserver = frameworkBase.createObserver("ENTITY_OBSERVER");
-    const entityModules = frameworkBase.createModuleInstance(
+
+    const entityObserver = framework.createObserver("ENTITY_OBSERVER");
+    const entityModules = framework.createModuleInstance(
       {
         stateManager: entityStateManager,
         observer: entityObserver,
@@ -72,7 +73,7 @@ export const frameworkApi = (() => {
       }
     );
 
-    const entityApi = frameworkBase.createModuleInstance(
+    const entityApi = framework.createModuleInstance(
       {
         stateManager: entityStateManager,
         observer: entityObserver,
@@ -104,6 +105,29 @@ export const frameworkApi = (() => {
                 return value.stateManager.getters.getVisibility();
               },
             },
+            onMount: {
+              subscribe: (notify: () => void) => {
+                return observer.subscribe(
+                  `${VisibilityPublicEvents.ON_VISIBILITY_CHANGE}-${props.id}`,
+                  () => {
+                    notify();
+                  }
+                );
+              },
+              snapshot: () => {
+                return store.getters.hasEntity(props.id);
+              },
+              getValue: (id: string) => {
+                return {
+                  visibility: store.getters
+                    .getEntityById(props.id)
+                    .api.getVisibility(),
+                  commands: store.getters
+                    .getEntityById(props.id)
+                    .api.getCommands(),
+                };
+              },
+            },
           };
         },
       }
@@ -112,6 +136,9 @@ export const frameworkApi = (() => {
   }
 
   return {
+    createStore: () => {
+      return framework.createStore<ReturnType<typeof createEntityApiClient>>();
+    },
     createEntityApiClient: (props: VisibilityProps) => {
       store.mutations.createEntity({ id: props.id }, () => {
         return createEntityApiClient(props);
@@ -121,5 +148,37 @@ export const frameworkApi = (() => {
     getEntityApiClientById: (id: string) => {
       return store.getters.getEntityById(id).api;
     },
+    // onMount: {
+    //   subscribe: (notify: () => void) => {
+    //     return observer.subscribe(
+    //       `${VisibilityPublicEvents.ON_VISIBILITY_CHANGE}-${id}`,
+    //       () => {
+    //         notify();
+    //       }
+    //     );
+    //   },
+    //   snapshot: (id: string) => {
+    //     return store.getters.getEntityById(id).api;
+    //   },
+    //   getValue: (id: string) => {
+    //     return store.getters.getEntityById(id).api;
+    //   },
+    // },
+    // getStoreComposition: () => {
+    //   return {
+    //     store,
+    //     observer,
+    //     onMount(){
+    //       return (notify: () => void) => {
+    //         return observer.subscribe(
+    //           VisibilityPublicEvents.ON_VISIBILITY_CHANGE,
+    //           () => {
+    //             notify();
+    //           }
+    //         );
+    //       };
+    //     }
+    //   };
+    // },
   };
 })();

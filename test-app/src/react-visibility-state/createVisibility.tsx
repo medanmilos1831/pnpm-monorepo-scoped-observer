@@ -1,5 +1,5 @@
-import { frameworkAPI } from "./framework/framework";
 import { frameworkApi } from "./framework/frameworkApi";
+import { useVisibilitySelector } from "./react-integration/useVisibilitySelector";
 import { useVisibilty } from "./react-integration/useVisibilty";
 import { type VisibilityProps } from "./types";
 
@@ -14,7 +14,7 @@ const createVisibility = () => {
       return commands;
     },
     useVisibilitySelector: (id: string) => {
-      // return useVisibilitySelector(id);
+      return useVisibilitySelector(id);
     },
     getVisibilityClient: (id: string) => {
       // return frameworkAPI

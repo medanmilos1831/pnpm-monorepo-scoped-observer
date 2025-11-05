@@ -2,8 +2,9 @@ import { createScopedObserver } from "@scoped-observer/core";
 
 type ModuleFactory<S, T> = (state: S) => T;
 type ModuleMap<S> = Record<string, ModuleFactory<S, any>>;
+const STORE_OBSERVER = "STORE_OBSERVER";
 
-export const frameworkBase = (() => {
+export const framework = (() => {
   function createStateManager<
     S,
     M extends Record<string, (...args: any[]) => any>,
@@ -38,7 +39,6 @@ export const frameworkBase = (() => {
       },
     ]);
     return {
-      scope,
       dispatch: (eventName: string, payload?: any) => {
         observer.dispatch({
           scope,
@@ -55,39 +55,14 @@ export const frameworkBase = (() => {
       },
     };
   }
-  function createEntity(props: any) {
-    const observer = frameworkBase.createObserver("ENTITY_OBSERVER");
-    const stateManager = frameworkBase.createStateManager({
-      id: props.id,
-      state: {
-        visibility: props.initState,
-      },
-      mutations(state) {
-        return {
-          setVisibility: (visibility: any) => {
-            state.visibility = visibility;
-          },
-        };
-      },
-      getters(state) {
-        return {
-          getVisibility: () => state.visibility,
-        };
-      },
-    });
-    const entity = {
-      observer,
-      stateManager,
-    };
-    return entity;
-  }
+
   return {
     createStateManager,
     createModuleInstance,
     createObserver,
     createStore: function <T>() {
       return this.createStateManager({
-        id: "STORE_OBSERVER",
+        id: STORE_OBSERVER,
         state: new Map<string, T>(),
         mutations(state) {
           return {
@@ -116,6 +91,41 @@ export const frameworkBase = (() => {
         },
       });
     },
-    createEntity,
+    storeComposition: function <T>() {
+      const store = this.createStateManager({
+        id: STORE_OBSERVER,
+        state: new Map<string, T>(),
+        mutations(state) {
+          return {
+            createEntity<P extends { id: string }>(props: P, entity: () => T) {
+              if (!state.has(props.id)) {
+                state.set(props.id, entity());
+              }
+            },
+            removeEntity: (id: string) => {
+              state.delete(id);
+            },
+          };
+        },
+        getters(state) {
+          return {
+            getEntityById: (id: string) => state.get(id)!,
+
+            getEntity: (id: string) => state.get(id),
+
+            hasEntity: (id: string) => state.has(id),
+
+            getAllEntities: () => state.values(),
+
+            getEntityCount: () => state.size,
+          };
+        },
+      });
+      const observer = createObserver(STORE_OBSERVER);
+      return {
+        store,
+        observer,
+      };
+    },
   };
 })();
