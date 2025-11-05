@@ -148,37 +148,5 @@ export const frameworkApi = (() => {
     getEntityApiClientById: (id: string) => {
       return store.getters.getEntityById(id).api;
     },
-    // onMount: {
-    //   subscribe: (notify: () => void) => {
-    //     return observer.subscribe(
-    //       `${VisibilityPublicEvents.ON_VISIBILITY_CHANGE}-${id}`,
-    //       () => {
-    //         notify();
-    //       }
-    //     );
-    //   },
-    //   snapshot: (id: string) => {
-    //     return store.getters.getEntityById(id).api;
-    //   },
-    //   getValue: (id: string) => {
-    //     return store.getters.getEntityById(id).api;
-    //   },
-    // },
-    // getStoreComposition: () => {
-    //   return {
-    //     store,
-    //     observer,
-    //     onMount(){
-    //       return (notify: () => void) => {
-    //         return observer.subscribe(
-    //           VisibilityPublicEvents.ON_VISIBILITY_CHANGE,
-    //           () => {
-    //             notify();
-    //           }
-    //         );
-    //       };
-    //     }
-    //   };
-    // },
   };
 })();
