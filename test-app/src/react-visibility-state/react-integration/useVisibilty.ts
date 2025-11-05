@@ -1,19 +1,16 @@
-import { useState, useSyncExternalStore } from "react";
-import { frameworkAPI } from "../framework/framework";
-import { VisibilityPublicEvents, type VisibilityProps } from "../types";
+import { useSyncExternalStore } from "react";
+
+import { frameworkApi } from "../framework/frameworkApi";
+import { type VisibilityProps } from "../types";
 
 const useVisibilty = (props: VisibilityProps) => {
-  const entity = frameworkAPI.createEntityApiClient(props);
-  const getters = entity.api.getters();
-  const getClient = entity.api.getClient();
-  const addEventListener = entity.api.addEventListener;
-  const [onChange] = useState(() => (notify: () => void) => {
-    return addEventListener(VisibilityPublicEvents.ON_VISIBILITY_CHANGE, () => {
-      notify();
-    });
-  });
-  useSyncExternalStore(onChange, getters.getVisibility);
-  return getClient;
+  const entity = frameworkApi.createEntityApiClient(props);
+
+  useSyncExternalStore(
+    entity.watchVisibilityChange.subscribe,
+    entity.watchVisibilityChange.snapshot
+  );
+  return entity.watchVisibilityChange.getValue();
 };
 
 export { useVisibilty };

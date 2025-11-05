@@ -1,33 +1,38 @@
-import { useEffect } from "react";
-import {
-  useCommands,
-  useVisibility,
-  useVisibilitySelector,
-} from "../../visibilityService";
+import { useEffect, useState } from "react";
+import { useCommands, useVisibility } from "../../visibilityService";
 const Inner = () => {
+  const [count, setCount] = useState(0);
   const visibility = useVisibility({
     id: "test",
     initState: "off",
   });
-  const visibilityTwo = useVisibility({
-    id: "testtwo",
-    initState: "off",
-  });
+  // const visibilityTwo = useVisibility({
+  //   id: "testtwo",
+  //   initState: "off",
+  // });
   const commands = useCommands("test");
-  console.log("RENDER", visibility);
+  console.log("RENDERED HOME VISIBILITY");
   return (
     <div>
-      <h1>Visibility: {visibility.visibility}</h1>
+      <h1>Visibility: {visibility}</h1>
+      <h1>Count: {count}</h1>
       <button
         onClick={() => {
-          commands.on();
+          setCount(count + 1);
+        }}
+      >
+        Increment
+      </button>
+      <button
+        onClick={() => {
+          // commands.on();
         }}
       >
         On
       </button>
       <button
         onClick={() => {
-          commands.off();
+          // commands.off();
         }}
       >
         Off
@@ -42,25 +47,9 @@ const Inner = () => {
     </div>
   );
 };
-const SomeComponent = () => {
-  // const visibility = useVisibilitySelector("test");
-  // useEffect(() => {
-  //   if (!visibility) return;
-  //   visibility?.addEventListener("onVisibilityChange", (payload: any) => {
-  //     // Visibility changed
-  //     console.log("Visibility changed", payload);
-  //   });
-  // }, [visibility]);
-  return (
-    <div>
-      <h1>Visibility selector</h1>
-    </div>
-  );
-};
 const HomeVisibility = () => {
   return (
     <>
-      <SomeComponent />
       <Inner />
     </>
   );

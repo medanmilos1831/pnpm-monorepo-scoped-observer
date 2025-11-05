@@ -1,4 +1,3 @@
-import { createScopedObserver } from "@scoped-observer/core";
 import {
   ENTITY_OBSERVER,
   INITIAL_STATE,
@@ -9,107 +8,16 @@ import {
   type VisibilityProps,
   type VisibilityPublicEventsType,
 } from "../types";
-
-type ModuleFactory<S, T> = (state: S) => T;
-type ModuleMap<S> = Record<string, ModuleFactory<S, any>>;
-
-export const framework = (() => {
-  return {
-    createStateManager: function <
-      S,
-      M extends Record<string, (...args: any[]) => any>,
-      G extends Record<string, (...args: any[]) => any>
-    >(props: {
-      id: string;
-      state: S;
-      mutations(state: S): M;
-      getters(state: S): G;
-    }) {
-      return {
-        state: props.state,
-        mutations: props.mutations(props.state),
-        getters: props.getters(props.state),
-      };
-    },
-    createModuleInstance: function <S, M extends ModuleMap<S>>(
-      state: S,
-      modules: M
-    ) {
-      type Built = { [K in keyof M]: ReturnType<M[K]> };
-
-      const built = {} as Built;
-      (Object.keys(modules) as Array<keyof M>).forEach((key) => {
-        built[key] = modules[key](state);
-      });
-
-      return built;
-    },
-    createObserver(scope: string) {
-      const observer = createScopedObserver([
-        {
-          scope,
-        },
-      ]);
-      return {
-        scope,
-        dispatch: (eventName: string, payload?: any) => {
-          observer.dispatch({
-            scope,
-            eventName,
-            payload: payload || undefined,
-          });
-        },
-        subscribe: (eventName: string, callback: (payload: any) => void) => {
-          return observer.subscribe({
-            scope,
-            eventName,
-            callback,
-          });
-        },
-      };
-    },
-    createStore: function <T>() {
-      return this.createStateManager({
-        id: STORE_OBSERVER,
-        state: new Map<string, T>(),
-        mutations(state) {
-          return {
-            createEntity<P extends { id: string }>(props: P, entity: () => T) {
-              if (!state.has(props.id)) {
-                state.set(props.id, entity());
-              }
-            },
-            removeEntity: (id: string) => {
-              state.delete(id);
-            },
-          };
-        },
-        getters(state) {
-          return {
-            getEntityById: (id: string) => state.get(id)!,
-
-            getEntity: (id: string) => state.get(id),
-
-            hasEntity: (id: string) => state.has(id),
-
-            getAllEntities: () => state.values(),
-
-            getEntityCount: () => state.size,
-          };
-        },
-      });
-    },
-  };
-})();
+import { frameworkBase } from "./base";
 
 export const frameworkAPI = (() => {
-  const store = framework.createStore<IEntity>();
-  const storeObserver = framework.createObserver(STORE_OBSERVER);
+  const store = frameworkBase.createStore<IEntity>();
+  const storeObserver = frameworkBase.createObserver(STORE_OBSERVER);
   return {
     getStore: () => store,
     getStoreObserver: () => storeObserver,
     createEntityApiClient: function (props: VisibilityProps) {
-      const stateManager = framework.createStateManager({
+      const stateManager = frameworkBase.createStateManager({
         id: props.id,
         state: {
           visibility: props.initState,
@@ -127,7 +35,7 @@ export const frameworkAPI = (() => {
           };
         },
       });
-      const observer = framework.createObserver(ENTITY_OBSERVER);
+      const observer = frameworkBase.createObserver(ENTITY_OBSERVER);
       function dispatchVisibilityChange(value: initialStateType) {
         observer.dispatch(VisibilityPublicEvents.ON_VISIBILITY_CHANGE, {
           payload: {
@@ -135,7 +43,7 @@ export const frameworkAPI = (() => {
           },
         });
       }
-      const modules = framework.createModuleInstance(
+      const modules = frameworkBase.createModuleInstance(
         {
           stateManager,
           observer,
@@ -164,7 +72,7 @@ export const frameworkAPI = (() => {
           },
         }
       );
-      const entity = framework.createModuleInstance(
+      const entity = frameworkBase.createModuleInstance(
         {
           stateManager,
           modules,

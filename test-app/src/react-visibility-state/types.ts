@@ -1,5 +1,3 @@
-import { framework } from "./framework/framework";
-
 export type VisibilityProps = {
   id: string;
   initState: initialStateType;
@@ -15,7 +13,7 @@ export type initialStateType = `${INITIAL_STATE}`;
 export const STORE_OBSERVER = "store-observer" as const;
 export const ENTITY_OBSERVER = "entity-observer" as const;
 
-export type IEntity = ReturnType<typeof framework.createModuleInstance>;
+export type IEntity = ReturnType<any>;
 
 export enum VisibilityPublicEvents {
   ON_VISIBILITY_CHANGE = "onVisibilityChange",

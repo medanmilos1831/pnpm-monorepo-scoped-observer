@@ -1,5 +1,5 @@
 import { frameworkAPI } from "./framework/framework";
-import { useVisibilitySelector } from "./react-integration/useVisibilitySelector";
+import { frameworkApi } from "./framework/frameworkApi";
 import { useVisibilty } from "./react-integration/useVisibilty";
 import { type VisibilityProps } from "./types";
 
@@ -9,19 +9,18 @@ const createVisibility = () => {
       return useVisibilty(props);
     },
     useCommands: (id: string) => {
-      return frameworkAPI
-        .getStore()
-        .getters.getEntityById(id)
-        .api.getCommands();
+      const entity = frameworkApi.getEntityApiClientById(id);
+      const commands = entity.getCommands();
+      return commands;
     },
     useVisibilitySelector: (id: string) => {
-      return useVisibilitySelector(id);
+      // return useVisibilitySelector(id);
     },
     getVisibilityClient: (id: string) => {
-      return frameworkAPI
-        .getStore()
-        .getters.getEntityById(id)
-        .api.getClientEntity();
+      // return frameworkAPI
+      //   .getStore()
+      //   .getters.getEntityById(id)
+      //   .api.getClientEntity();
     },
   };
 };
