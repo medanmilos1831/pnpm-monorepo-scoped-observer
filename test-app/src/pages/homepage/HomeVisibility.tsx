@@ -38,13 +38,14 @@ const Inner = () => {
   );
 };
 const SomeComponent = () => {
-  const visibility = useVisibilitySelector("test");
-  useEffect(() => {
-    if (!visibility) return;
-    visibility?.addEventListener("onVisibilityChange", () => {
-      // Visibility changed
-    });
-  }, [visibility]);
+  // const visibility = useVisibilitySelector("test");
+  // useEffect(() => {
+  //   if (!visibility) return;
+  //   visibility?.addEventListener("onVisibilityChange", (payload: any) => {
+  //     // Visibility changed
+  //     console.log("Visibility changed", payload);
+  //   });
+  // }, [visibility]);
   return (
     <div>
       <h1>Visibility selector</h1>

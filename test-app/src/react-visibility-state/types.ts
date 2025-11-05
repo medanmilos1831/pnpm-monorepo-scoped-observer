@@ -1,6 +1,4 @@
-import type { createObserver } from "./core/observer";
-import type { frameworkAPI } from "./framework/framework";
-import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
+import { framework } from "./framework/framework";
 
 export type VisibilityProps = {
   id: string;
@@ -17,7 +15,7 @@ export type initialStateType = `${INITIAL_STATE}`;
 export const STORE_OBSERVER = "store-observer" as const;
 export const ENTITY_OBSERVER = "entity-observer" as const;
 
-export type IEntity = ReturnType<typeof createEntityApiClient>;
+export type IEntity = ReturnType<typeof framework.createModuleInstance>;
 
 export enum VisibilityPublicEvents {
   ON_VISIBILITY_CHANGE = "onVisibilityChange",

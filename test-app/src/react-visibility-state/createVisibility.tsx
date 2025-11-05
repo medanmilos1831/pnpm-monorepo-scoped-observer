@@ -7,13 +7,7 @@ const createVisibility = () => {
   const { store, observer } = frameworkAPI.storeComposition;
   return {
     useVisibility: (props: VisibilityProps) => {
-      return useVisibilty(
-        {
-          store,
-          observer,
-        },
-        props
-      );
+      return useVisibilty({ store, observer }, props);
     },
     useCommands: (id: string) => {
       return store.getters.getEntityById(id).api.getCommands();

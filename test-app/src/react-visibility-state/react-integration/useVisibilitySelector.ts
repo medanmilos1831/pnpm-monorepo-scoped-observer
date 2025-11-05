@@ -1,16 +1,9 @@
 import { useState, useSyncExternalStore } from "react";
-import { createObserver } from "../core/observer";
-import type { createStore } from "../Store/createStore";
-import { VisibilityStoreEvents, type IEntity } from "../types";
+import { VisibilityStoreEvents } from "../types";
 
 const useVisibilitySelector = (
-  {
-    store,
-    observer,
-  }: {
-    store: ReturnType<typeof createStore<IEntity>>;
-    observer: ReturnType<typeof createObserver>;
-  },
+  { store, observer }: any,
+
   id: string
 ) => {
   const [mount] = useState(() => {
