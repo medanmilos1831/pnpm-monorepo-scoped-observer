@@ -136,13 +136,11 @@ export const frameworkApi = (() => {
   }
 
   return {
-    createStore: () => {
-      return framework.createStore<ReturnType<typeof createEntityApiClient>>();
-    },
     createEntityApiClient: (props: VisibilityProps) => {
       store.mutations.createEntity({ id: props.id }, () => {
         return createEntityApiClient(props);
       });
+      console.log("createEntityApiClient", store);
     },
     getEntityApiClientById: (id: string) => {
       return store.getters.getEntityById(id).api;
