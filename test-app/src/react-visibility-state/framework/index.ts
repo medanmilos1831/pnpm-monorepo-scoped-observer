@@ -12,6 +12,7 @@ const framework = (function () {
       entity: (props: any) => CreateStateManagerProps<S>;
     }) {
       app.mutations.createContext(name, entity);
+      console.log("APP", app);
       return app.getters.getContext(name) as IContext<S, M, G>;
     },
   };

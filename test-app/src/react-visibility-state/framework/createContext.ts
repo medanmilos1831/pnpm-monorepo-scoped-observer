@@ -14,6 +14,7 @@ export function createContext(
         createEntity: (props: any) => {
           if (!state.has(props.id)) {
             state.set(props.id, core.createStateManager(entity(props)));
+            console.log("created entity", props.id);
           }
         },
         removeEntity: (id: string) => {
