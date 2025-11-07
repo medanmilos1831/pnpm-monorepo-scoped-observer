@@ -6,9 +6,26 @@ function createObserver(scope: string) {
       scope,
     },
   ]);
+
+  const dispatch = (eventName: string, payload?: any) => {
+    observer.dispatch({
+      scope,
+      eventName,
+      payload: payload || undefined,
+    });
+  };
+  const subscribe = (eventName: string, callback: (payload: any) => void) => {
+    return observer.subscribe({
+      scope,
+      eventName,
+      callback,
+    });
+  };
+
   return {
     scope,
-    observer,
+    dispatch,
+    subscribe,
   };
 }
 

@@ -1,11 +1,11 @@
-import { createVisibility } from "./react-visibility-state/createVisibility";
+import { createVisibilityClient } from "./react-visibility-state/createVisibilityClient";
 
 const {
   useVisibility,
   useCommands,
   getVisibilityClient,
   useVisibilitySelector,
-} = createVisibility();
+} = createVisibilityClient();
 
 export {
   useVisibility,

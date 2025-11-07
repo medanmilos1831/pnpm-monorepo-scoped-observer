@@ -19,10 +19,13 @@ import { createApp } from "./framework/createApp";
 //   };
 // };
 
-const createVisibility = createApp((app) => {
+const createVisibilityClient = createApp((app) => {
+  console.log("createVisibilityClient");
   return () => {
     return {
-      useVisibility: (props: VisibilityProps) => {},
+      useVisibility: (props: VisibilityProps) => {
+        app.createEntity();
+      },
       useCommands: (id: string) => {
         // const commands = entity.getCommands();
         // return commands;
@@ -38,4 +41,4 @@ const createVisibility = createApp((app) => {
   };
 });
 
-export { createVisibility };
+export { createVisibilityClient };
