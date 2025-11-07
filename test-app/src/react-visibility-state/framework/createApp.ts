@@ -1,33 +1,31 @@
 import { framework } from "./framework";
+import type {
+  CreateStateManagerProps,
+  IApp,
+  StateManagerInstance,
+} from "./types";
 
-type StateManagerInstance<E> = ReturnType<
-  typeof framework.createStateManager<E, any, any>
->;
-
-type CreateStateManagerProps<E> = {
-  id: string;
-  state: E;
-  mutations: (state: E) => Record<string, (...args: any[]) => any>;
-  getters: (state: E) => Record<string, (...args: any[]) => any>;
-};
-
-interface IApp<E = any> {
-  createEntity: (p: CreateStateManagerProps<E>) => any;
-  removeEntity: (id: string) => any;
-  getEntityById: (id: string) => StateManagerInstance<E>;
-  createStateManager: typeof framework.createStateManager;
-}
-
-function createApp<E = any>(client: (app: IApp<E>) => any) {
+function createApp<S = any, M = any, G = any>(
+  client: (app: IApp<S, M, G>) => any,
+  config: {
+    entity(props: any): CreateStateManagerProps<S>;
+    appName: string;
+  }
+) {
   const observer = framework.createObserver("APP_OBSERVER");
   const appStateManager = framework.createStateManager({
     id: "APP_STATE_MANAGER",
-    state: new Map<string, StateManagerInstance<E>>(),
+    state: new Map<string, StateManagerInstance<S, M, G>>(),
     mutations(state) {
       return {
-        createEntity: (props: CreateStateManagerProps<E>) => {
+        createEntity: (props: CreateStateManagerProps<S>) => {
           if (!state.has(props.id)) {
-            state.set(props.id, framework.createStateManager(props));
+            state.set(
+              props.id,
+              framework.createStateManager(
+                config.entity(props)
+              ) as StateManagerInstance<S, M, G>
+            );
           }
         },
         removeEntity: (id: string) => {
@@ -53,7 +51,7 @@ function createApp<E = any>(client: (app: IApp<E>) => any) {
   });
 
   return client({
-    createEntity(props: CreateStateManagerProps<E>) {
+    createEntity(props: any) {
       appStateManager.mutations.createEntity(props);
     },
     removeEntity: (id: string) => {
@@ -62,7 +60,6 @@ function createApp<E = any>(client: (app: IApp<E>) => any) {
     getEntityById: (id: string) => {
       return appStateManager.getters.getEntityById(id);
     },
-    createStateManager: framework.createStateManager,
   });
 }
 

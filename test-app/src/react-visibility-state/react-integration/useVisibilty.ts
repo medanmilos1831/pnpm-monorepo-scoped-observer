@@ -1,9 +1,9 @@
 import { useSyncExternalStore } from "react";
 
-import { frameworkApi } from "../ovojekita/frameworkApi";
 import { type VisibilityProps } from "../types";
 
 const useVisibilty = (props: VisibilityProps) => {
+  // const entity = frameworkApi.getEntityApiClientById(props.id);
   // frameworkApi.createEntityApiClient(props);
   // let entity = frameworkApi.getEntityApiClientById(props.id);
   // useSyncExternalStore(
