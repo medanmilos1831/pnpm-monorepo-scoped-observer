@@ -1,23 +1,29 @@
 import { framework } from "./framework";
 
-interface IApp {
-  createEntity: (props: { id: string }, entity: () => any) => any;
+interface IApp<E = any> {
+  // createEntity: (props: { id: string }, entity: () => any) => any;
+  createEntity: (p: any) => any;
   removeEntity: (id: string) => any;
-  getEntityById: (id: string) => any;
+  getEntityById: (
+    id: string
+  ) => ReturnType<typeof framework.createStateManager>;
 }
 
-function createApp(client: (app: IApp) => any) {
+function createApp<E = any>(client: (app: IApp<E>) => any) {
   const observer = framework.createObserver("APP_OBSERVER");
   const appStateManager = framework.createStateManager({
     id: "APP_STATE_MANAGER",
-    state: new Map<string, any>(),
+    state: new Map<string, ReturnType<typeof framework.createStateManager>>(),
     mutations(state) {
       return {
-        createEntity<P extends { id: string }>(props: P, entity: () => any) {
-          if (!state.has(props.id)) {
-            state.set(props.id, entity());
-          }
+        createEntity: (props: any) => {
+          state.set(props.id, props);
         },
+        // createEntity<P extends { id: string }>(props: P, entity: () => any) {
+        //   if (!state.has(props.id)) {
+        //     state.set(props.id, entity());
+        //   }
+        // },
         removeEntity: (id: string) => {
           state.delete(id);
         },
@@ -34,14 +40,22 @@ function createApp(client: (app: IApp) => any) {
         getAllEntities: () => state.values(),
 
         getEntityCount: () => state.size,
+
+        getState: () => state,
       };
     },
   });
 
   return client({
-    createEntity(props: { id: string }, entity: () => any) {
-      appStateManager.mutations.createEntity(props, () => entity());
+    createEntity<P extends { id: string }>(props: P) {
+      appStateManager.mutations.createEntity(props);
+      // appStateManager.mutations.createEntity(props, () => {
+      // });
+      console.log(appStateManager.getters.getState());
     },
+    // createEntity(props: { id: string }, entity: () => any) {
+    //   // appStateManager.mutations.createEntity(props, () => entity());
+    // },
     removeEntity: (id: string) => {
       appStateManager.mutations.removeEntity(id);
     },
