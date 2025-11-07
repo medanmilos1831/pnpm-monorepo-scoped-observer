@@ -1,1 +1,1 @@
-export { createVisibility } from "./createVisibilityClient";
+export { createVisibility } from "./client/createVisibilityClient";

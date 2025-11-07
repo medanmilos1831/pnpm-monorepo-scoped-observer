@@ -1,4 +1,4 @@
-import type { createVisibility } from "../createVisibilityClient";
+import type { createVisibility } from "../client/createVisibilityClient";
 
 const useSetup = (store: ReturnType<typeof createVisibility>, props: any) => {
   return {};

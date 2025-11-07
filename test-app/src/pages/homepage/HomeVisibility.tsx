@@ -1,20 +1,22 @@
-import { useEffect, useState } from "react";
-import {
-  useCommands,
-  useVisibility,
-  useVisibilitySelector,
-} from "../../visibilityService";
+import { createContext, useEffect, useState } from "react";
+import { useVisibility } from "../../visibilityService";
+
 const Inner = () => {
   const [count, setCount] = useState(0);
   const visibility = useVisibility({
     id: "test",
     initState: "off",
   });
+
+  const visibilityTwo = useVisibility({
+    id: "testtwo",
+    initState: "on",
+  });
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
   //   initState: "off",
   // });
-  const commands = useCommands("test");
+  // const commands = useCommands("test");
   return (
     <div>
       {/* <h1>Visibility: {visibility}</h1> */}
@@ -52,7 +54,7 @@ const Inner = () => {
 };
 
 const Selector = () => {
-  const visibility = useVisibilitySelector("test");
+  // const visibility = useVisibilitySelector("test");
   return <>selector</>;
 };
 const HomeVisibility = () => {
