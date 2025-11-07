@@ -18,7 +18,7 @@ function createApp<S = any, M = any, G = any>(
     state: new Map<string, StateManagerInstance<S, M, G>>(),
     mutations(state) {
       return {
-        createEntity: (props: CreateStateManagerProps<S>) => {
+        createEntity: (props: any) => {
           if (!state.has(props.id)) {
             state.set(
               props.id,
