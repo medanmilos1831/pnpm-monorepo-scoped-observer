@@ -5,30 +5,36 @@ interface IEntity {
   visibility: "on" | "off";
 }
 
-// const createVisibility = () => {
-//   console.log("createVisibility", framework);
-//   return {
-//     useVisibility: (props: VisibilityProps) => {},
-//     useCommands: (id: string) => {
-//       // const commands = entity.getCommands();
-//       // return commands;
-//     },
-//     useVisibilitySelector: (id: string) => {},
-//     getVisibilityClient: (id: string) => {
-//       // return frameworkAPI
-//       //   .getStore()
-//       //   .getters.getEntityById(id)
-//       //   .api.getClientEntity();
-//     },
-//   };
-// };
+const entity = (props: VisibilityProps) => {
+  return {
+    id: "pera",
+    state: {
+      visibility: "on",
+    },
+    mutations(state: any) {
+      return {
+        setVisibility: (visibility: "on" | "off") => {
+          // app.mutations.setVisibility(visibility);
+        },
+      };
+    },
+    getters(state: any) {
+      return {
+        getVisibility: () => {
+          // return app.getters.getVisibility();
+          return state.visibility;
+        },
+      };
+    },
+  };
+};
 
 const createVisibilityClient = createApp<IEntity>((app) => {
   return () => {
     return {
       useVisibility: (props: VisibilityProps) => {
         app.createEntity({
-          id: props.id,
+          id: "pera",
           state: {
             visibility: "on",
           },
@@ -48,7 +54,7 @@ const createVisibilityClient = createApp<IEntity>((app) => {
             };
           },
         });
-        app.getEntityById("pera");
+        app.getEntityById("pera").getters;
       },
       useCommands: (id: string) => {
         // const commands = entity.getCommands();

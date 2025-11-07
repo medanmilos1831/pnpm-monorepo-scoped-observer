@@ -15,6 +15,7 @@ interface IApp<E = any> {
   createEntity: (p: CreateStateManagerProps<E>) => any;
   removeEntity: (id: string) => any;
   getEntityById: (id: string) => StateManagerInstance<E>;
+  createStateManager: typeof framework.createStateManager;
 }
 
 function createApp<E = any>(client: (app: IApp<E>) => any) {
@@ -61,6 +62,7 @@ function createApp<E = any>(client: (app: IApp<E>) => any) {
     getEntityById: (id: string) => {
       return appStateManager.getters.getEntityById(id);
     },
+    createStateManager: framework.createStateManager,
   });
 }
 
