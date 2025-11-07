@@ -28,26 +28,27 @@ const createVisibilityClient = createApp<IEntity>((app) => {
     return {
       useVisibility: (props: VisibilityProps) => {
         app.createEntity({
-          id: "pera",
+          id: props.id,
           state: {
             visibility: "on",
           },
-          mutations(state: any) {
+          mutations(state) {
             return {
               setVisibility: (visibility: "on" | "off") => {
                 // app.mutations.setVisibility(visibility);
               },
             };
           },
-          getters(state: any) {
+          getters(state) {
             return {
               getVisibility: () => {
                 // return app.getters.getVisibility();
+                return state.visibility;
               },
             };
           },
         });
-        let nesto = app.getEntityById("pera");
+        app.getEntityById("pera");
       },
       useCommands: (id: string) => {
         // const commands = entity.getCommands();
