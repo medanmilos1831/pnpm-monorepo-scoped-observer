@@ -1,4 +1,4 @@
-import { app } from "../framework/createApp";
+import { framework } from "../framework";
 import type { VisibilityProps } from "../types";
 
 interface IEntityState {
@@ -12,7 +12,7 @@ interface IEntityMutations {
 interface IEntityGetters {
   getVisibility: () => "on" | "off";
 }
-export const visibilityContext = app.createContext<
+export const visibilityContext = framework.createContext<
   IEntityState,
   IEntityMutations,
   IEntityGetters

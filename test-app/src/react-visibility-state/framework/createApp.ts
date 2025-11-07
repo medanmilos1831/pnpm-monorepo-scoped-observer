@@ -1,20 +1,32 @@
-import { framework } from "./framework";
-import type { CreateStateManagerProps, IContext } from "./types";
+import { core } from "../core/core";
+import { createContext } from "./createContext";
+import type { CreateStateManagerProps } from "./types";
 
-const app = (function () {
-  const context = framework.app();
-  return {
-    createContext<S = any, M = any, G = any>({
-      name,
-      entity,
-    }: {
-      name: string;
-      entity: (props: any) => CreateStateManagerProps<S>;
-    }) {
-      context.mutations.createContext(name, entity);
-      return context.getters.getContext(name) as IContext<S, M, G>;
+function createApp() {
+  const app = core.createStateManager({
+    id: "APP",
+    state: {
+      contexts: new Map<string, ReturnType<typeof createContext>>(),
     },
-  };
-})();
+    mutations(state) {
+      return {
+        createContext: (
+          name: string,
+          entity: (props: any) => CreateStateManagerProps<any>
+        ) => {
+          if (!state.contexts.has(name)) {
+            state.contexts.set(name, createContext(name, entity));
+          }
+        },
+      };
+    },
+    getters(state) {
+      return {
+        getContext: (name: string) => state.contexts.get(name)!,
+      };
+    },
+  });
+  return app;
+}
 
-export { app };
+export { createApp };
