@@ -1,4 +1,5 @@
 import { createApp } from "./createApp";
+import { createContextInstance } from "./createContextInstance";
 import type { CreateStateManagerProps, IContext } from "./types";
 
 const framework = (function () {
@@ -11,8 +12,9 @@ const framework = (function () {
       name: string;
       entity: (props: any) => CreateStateManagerProps<S>;
     }) {
-      app.mutations.createContext(name, entity);
-      console.log("APP", app);
+      app.mutations.createContext(name, () => {
+        return createContextInstance(name, entity);
+      });
       return app.getters.getContext(name) as IContext<S, M, G>;
     },
   };

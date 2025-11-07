@@ -1,21 +1,22 @@
 import { core } from "../core/core";
-import { createContext } from "./createContext";
-import type { CreateStateManagerProps } from "./types";
+import { createContextInstance } from "./createContextInstance";
 
 function createApp() {
   const app = core.createStateManager({
     id: "APP",
     state: {
-      contexts: new Map<string, ReturnType<typeof createContext>>(),
+      contexts: new Map<string, ReturnType<typeof createContextInstance>>(),
     },
     mutations(state) {
       return {
         createContext: (
           name: string,
-          entity: (props: any) => CreateStateManagerProps<any>
+          createContextInstanceCallback: () => ReturnType<
+            typeof createContextInstance
+          >
         ) => {
           if (!state.contexts.has(name)) {
-            state.contexts.set(name, createContext(name, entity));
+            state.contexts.set(name, createContextInstanceCallback());
           }
         },
       };

@@ -1,20 +1,19 @@
 import { core } from "../core/core";
 import type { CreateStateManagerProps } from "./types";
 
-export function createContext(
+export function createContextInstance(
   id: string,
   entity: (props: any) => CreateStateManagerProps<any>
 ) {
   const contextObserver = core.createObserver("CONTEXT_OBSERVER");
   const contextStateManager = core.createStateManager({
     id,
-    state: new Map<string, any>(),
+    state: new Map<string, ReturnType<typeof core.createStateManager>>(),
     mutations(state) {
       return {
         createEntity: (props: any) => {
           if (!state.has(props.id)) {
             state.set(props.id, core.createStateManager(entity(props)));
-            console.log("created entity", props.id);
           }
         },
         removeEntity: (id: string) => {
