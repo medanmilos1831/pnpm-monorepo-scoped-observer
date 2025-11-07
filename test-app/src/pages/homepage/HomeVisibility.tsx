@@ -15,7 +15,6 @@ const Inner = () => {
   //   initState: "off",
   // });
   const commands = useCommands("test");
-  console.log("RENDERED HOME VISIBILITY");
   return (
     <div>
       {/* <h1>Visibility: {visibility}</h1> */}
@@ -54,7 +53,6 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useVisibilitySelector("test");
-  console.log("selector", visibility);
   return <>selector</>;
 };
 const HomeVisibility = () => {

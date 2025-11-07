@@ -163,8 +163,6 @@ export const frameworkApi = (() => {
     return {};
   });
 
-  console.log("hehehhhe", entityStateManager);
-
   return {
     createEntityApiClient: createEntityApiClient,
     getEntityApiClientById: (id: string) => {

@@ -27,7 +27,6 @@ const HomePageScroll = () => {
           id="scroll-1"
           axis="vertical"
           onScroll={(payload) => {
-            // console.log("scroll", payload);
           }}
         >
           {new Array(50).fill(0).map((_, index) => (

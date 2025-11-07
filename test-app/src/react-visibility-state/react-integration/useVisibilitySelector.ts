@@ -1,13 +1,12 @@
 import { useState, useSyncExternalStore } from "react";
 import { VisibilityStoreEvents } from "../types";
-import { frameworkApi } from "../framework/frameworkApi";
+import { frameworkApi } from "../ovojekita/frameworkApi";
 
 const useVisibilitySelector = (id: string) => {
   const { subscribe, snapshot, getValue } =
     frameworkApi.getEntityApiClientById(id).onMount;
   // const { store, observer } = frameworkApi.getStoreComposition();
   // const entity = store.getters.getEntityById(id);
-  // console.log("selector", entity, store);
   // return store;
   // const observer = frameworkAPI.getStoreObserver();
   // const [mount] = useState(() => {
