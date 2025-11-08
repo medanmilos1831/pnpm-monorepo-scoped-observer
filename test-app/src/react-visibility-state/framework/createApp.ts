@@ -1,29 +1,32 @@
 import { core } from "../core/core";
 import { createContextInstance } from "./createContextInstance";
+import type { CreateModuleProps } from "./types";
 
-function createApp() {
+function createApp({
+  createModule,
+}: {
+  createModule: (props: any) => ReturnType<typeof createContextInstance>;
+}) {
   const app = core.createStateManager({
     id: "APP",
     state: {
-      contexts: new Map<string, ReturnType<typeof createContextInstance>>(),
+      modules: new Map<string, ReturnType<typeof createContextInstance>>(),
     },
     mutations(state) {
       return {
-        createContext: (
-          name: string,
-          createContextInstanceCallback: () => ReturnType<
-            typeof createContextInstance
-          >
-        ) => {
-          if (!state.contexts.has(name)) {
-            state.contexts.set(name, createContextInstanceCallback());
+        createModule<S = any, M = any, G = any, A = any, L = any>(
+          props: CreateModuleProps<S, M, G, A, L>
+        ) {
+          if (!state.modules.has(props.name)) {
+            state.modules.set(props.name, createModule(props));
           }
+          return state.modules.get(props.name)!;
         },
       };
     },
     getters(state) {
       return {
-        getContext: (name: string) => state.contexts.get(name)!,
+        getModuleByName: (name: string) => state.modules.get(name)!,
       };
     },
   });
