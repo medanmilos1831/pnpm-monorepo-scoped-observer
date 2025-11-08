@@ -11,8 +11,11 @@ export type CreateStateManagerProps<S> = {
   getters: (state: S) => Record<string, (...args: any[]) => any>;
 };
 
-export interface IContext<S = any, M = any, G = any> {
+export interface IContext<S = any, M = any, G = any, A = any> {
   createEntity: (props: any) => any;
   removeEntity: (id: string) => any;
-  getEntityById: (id: string) => StateManagerInstance<S, M, G>;
+  getEntityById: (id: string) => {
+    stateManager: StateManagerInstance<S, M, G>;
+    actions: A;
+  };
 }

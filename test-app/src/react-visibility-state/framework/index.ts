@@ -1,21 +1,28 @@
 import { createApp } from "./createApp";
 import { createContextInstance } from "./createContextInstance";
-import type { CreateStateManagerProps, IContext } from "./types";
+import type {
+  CreateStateManagerProps,
+  IContext,
+  StateManagerInstance,
+} from "./types";
 
 const framework = (function () {
   const app = createApp();
   return {
-    createContext<S = any, M = any, G = any>({
+    createContext<S = any, M = any, G = any, A = any>({
       name,
       entity,
+      actions,
     }: {
       name: string;
       entity: (props: any) => CreateStateManagerProps<S>;
+      actions: (props: StateManagerInstance<S, M, G>, observer: any) => A;
     }) {
       app.mutations.createContext(name, () => {
-        return createContextInstance(name, entity);
+        return createContextInstance(name, entity, actions);
       });
-      return app.getters.getContext(name) as IContext<S, M, G>;
+      const context = app.getters.getContext(name) as IContext<S, M, G, A>;
+      return context;
     },
   };
 })();

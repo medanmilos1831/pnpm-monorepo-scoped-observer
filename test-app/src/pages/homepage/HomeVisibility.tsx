@@ -8,10 +8,10 @@ const Inner = () => {
     initState: "off",
   });
 
-  const visibilityTwo = useVisibility({
-    id: "testtwo",
-    initState: "on",
-  });
+  // const visibilityTwo = useVisibility({
+  //   id: "testtwo",
+  //   initState: "on",
+  // });
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
   //   initState: "off",

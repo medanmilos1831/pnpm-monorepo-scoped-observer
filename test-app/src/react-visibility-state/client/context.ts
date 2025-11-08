@@ -12,10 +12,15 @@ interface IEntityMutations {
 interface IEntityGetters {
   getVisibility: () => "on" | "off";
 }
+
+interface IEntityActions {
+  setVisibilityAction: (params: any) => void;
+}
 export const visibilityContext = framework.createContext<
   IEntityState,
   IEntityMutations,
-  IEntityGetters
+  IEntityGetters,
+  IEntityActions
 >({
   name: "VISIBILITY_CLIENT",
   entity: function (props: VisibilityProps) {
@@ -38,4 +43,17 @@ export const visibilityContext = framework.createContext<
       },
     };
   },
+  actions(stateManager, dispatchAction) {
+    return {
+      setVisibilityAction: (params: any) => {
+        dispatchAction({
+          eventName: "setVisibility",
+          payload: {
+            visibility: 1,
+          },
+        });
+      },
+    };
+  },
+  // CREATE SUBSCRIBER FOR VISIBILITY CHANGE
 });
