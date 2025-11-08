@@ -1,36 +1,24 @@
 import { core } from "../core/core";
-import type { CreateStateManagerProps } from "./types";
+import type { CreateModuleProps, ModuleEntityType } from "./types";
 
-export function createModuleInstance(
-  id: string,
-  entity: (props: any) => CreateStateManagerProps<any>,
-  actions: any,
-  listeners: any
-) {
+export function createModuleInstance(props: CreateModuleProps) {
   const { dispatch, subscribe } = core.createObserver("CONTEXT_OBSERVER");
   function dispatchAction(params: { eventName: string; payload: any }) {
     const { eventName, payload } = params;
     dispatch(eventName, payload);
   }
-  const contextStateManager = core.createStateManager({
-    id,
-    state: new Map<
-      string,
-      {
-        stateManager: ReturnType<typeof core.createStateManager>;
-        actions: any;
-        listeners: any;
-      }
-    >(),
+  const moduleStateManager = core.createStateManager({
+    id: props.name,
+    state: new Map<string, ModuleEntityType>(),
     mutations(state) {
       return {
-        createEntity: (props: any) => {
-          if (!state.has(props.id)) {
-            const stateManager = core.createStateManager(entity(props));
-            state.set(props.id, {
+        createEntity: (params: any) => {
+          if (!state.has(params.id)) {
+            const stateManager = core.createStateManager(props.entity(params));
+            state.set(params.id, {
               stateManager,
-              actions: actions(stateManager, dispatchAction),
-              listeners: listeners(stateManager, subscribe),
+              actions: props.actions(stateManager, dispatchAction),
+              listeners: props.listeners(stateManager, subscribe),
             });
           }
         },
@@ -51,11 +39,11 @@ export function createModuleInstance(
     },
   });
   return {
-    createEntity: (props: any) =>
-      contextStateManager.mutations.createEntity(props),
-    removeEntity: (id: string) =>
-      contextStateManager.mutations.removeEntity(id),
-    getEntityById: (id: string) =>
-      contextStateManager.getters.getEntityById(id),
+    createEntity: (props: any) => {
+      // udveri da li postoji entity sa tim id-jem isto kao sto sam uradio za app tj mutacija treba samo da postavi item
+      moduleStateManager.mutations.createEntity(props);
+    },
+    removeEntity: (id: string) => moduleStateManager.mutations.removeEntity(id),
+    getEntityById: (id: string) => moduleStateManager.getters.getEntityById(id),
   };
 }

@@ -12,12 +12,7 @@ const framework = (function () {
       props: CreateModuleProps<S, M, G, A, L>
     ) {
       if (!hasModule(props.name)) {
-        const item = createModuleInstance(
-          props.name,
-          props.entity,
-          props.actions,
-          props.listeners
-        );
+        const item = createModuleInstance(props);
         createModule(props.name, item);
       }
       return getModuleByName(props.name);

@@ -1,3 +1,4 @@
+import type { core } from "../core/core";
 import type { createModuleInstance } from "./createModuleInstance";
 
 export type StateManagerInstance<E, M = any, G = any> = {
@@ -31,3 +32,8 @@ export type CreateModuleProps<S = any, M = any, G = any, A = any, L = any> = {
 };
 
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;
+export type ModuleEntityType = {
+  stateManager: ReturnType<typeof core.createStateManager>;
+  actions: any;
+  listeners: any;
+};
