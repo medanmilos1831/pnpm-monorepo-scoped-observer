@@ -8,6 +8,14 @@ const createVisibilityClient = () => {
       visibilityContext.createEntity(props);
       return useVisibilty(props);
     },
+    useVisibilityCommands: (id: string) => {
+      const entity = visibilityContext.getEntityById(id);
+      return {
+        on: entity.actions.on,
+        off: entity.actions.off,
+        toggle: entity.actions.toggle,
+      };
+    },
   };
 };
 

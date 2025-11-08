@@ -2,6 +2,7 @@ import { createVisibilityClient } from "./react-visibility-state/client/createVi
 
 const {
   useVisibility,
+  useVisibilityCommands,
   // useCommands,
   // getVisibilityClient,
   // useVisibilitySelector,
@@ -9,6 +10,7 @@ const {
 
 export {
   useVisibility,
+  useVisibilityCommands,
   // useCommands,
   // getVisibilityClient,
   // useVisibilitySelector,

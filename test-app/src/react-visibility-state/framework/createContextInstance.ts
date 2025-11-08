@@ -4,12 +4,12 @@ import type { CreateStateManagerProps } from "./types";
 export function createContextInstance(
   id: string,
   entity: (props: any) => CreateStateManagerProps<any>,
-  actions: any
+  actions: any,
+  listeners: any
 ) {
-  const { dispatch } = core.createObserver("CONTEXT_OBSERVER");
+  const { dispatch, subscribe } = core.createObserver("CONTEXT_OBSERVER");
   function dispatchAction(params: { eventName: string; payload: any }) {
     const { eventName, payload } = params;
-    console.log("eventName", eventName, payload);
     dispatch(eventName, payload);
   }
   const contextStateManager = core.createStateManager({
@@ -19,6 +19,7 @@ export function createContextInstance(
       {
         stateManager: ReturnType<typeof core.createStateManager>;
         actions: any;
+        listeners: any;
       }
     >(),
     mutations(state) {
@@ -29,6 +30,7 @@ export function createContextInstance(
             state.set(props.id, {
               stateManager,
               actions: actions(stateManager, dispatchAction),
+              listeners: listeners(stateManager, subscribe),
             });
           }
         },

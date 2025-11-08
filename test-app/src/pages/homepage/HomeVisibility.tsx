@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { useVisibility } from "../../visibilityService";
+import { useVisibility, useVisibilityCommands } from "../../visibilityService";
 
 const Inner = () => {
   const [count, setCount] = useState(0);
@@ -7,6 +7,8 @@ const Inner = () => {
     id: "test",
     initState: "off",
   });
+
+  console.log("visibility", visibility);
 
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
@@ -16,7 +18,7 @@ const Inner = () => {
   //   id: "testtwo",
   //   initState: "off",
   // });
-  // const commands = useCommands("test");
+  const commands = useVisibilityCommands("test");
   return (
     <div>
       {/* <h1>Visibility: {visibility}</h1> */}
@@ -30,21 +32,21 @@ const Inner = () => {
       </button>
       <button
         onClick={() => {
-          // commands.on();
+          commands.on();
         }}
       >
         On
       </button>
       <button
         onClick={() => {
-          // commands.off();
+          commands.off();
         }}
       >
         Off
       </button>
       <button
         onClick={() => {
-          // commands.toggle();
+          commands.toggle();
         }}
       >
         Toggle

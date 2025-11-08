@@ -14,7 +14,9 @@ interface IEntityGetters {
 }
 
 interface IEntityActions {
-  setVisibilityAction: (params: any) => void;
+  on: () => void;
+  off: () => void;
+  toggle: () => void;
 }
 export const visibilityContext = framework.createContext<
   IEntityState,
@@ -45,15 +47,49 @@ export const visibilityContext = framework.createContext<
   },
   actions(stateManager, dispatchAction) {
     return {
-      setVisibilityAction: (params: any) => {
+      on: () => {
+        stateManager.mutations.setVisibility("on");
         dispatchAction({
           eventName: "setVisibility",
           payload: {
-            visibility: 1,
+            visibility: stateManager.getters.getVisibility(),
+          },
+        });
+      },
+      off: () => {
+        stateManager.mutations.setVisibility("off");
+        dispatchAction({
+          eventName: "setVisibility",
+          payload: {
+            visibility: stateManager.getters.getVisibility(),
+          },
+        });
+      },
+      toggle: () => {
+        stateManager.mutations.setVisibility(
+          stateManager.getters.getVisibility() === "on" ? "off" : "on"
+        );
+        dispatchAction({
+          eventName: "setVisibility",
+          payload: {
+            visibility: stateManager.getters.getVisibility(),
           },
         });
       },
     };
   },
-  // CREATE SUBSCRIBER FOR VISIBILITY CHANGE
+  listeners(stateManager, subscribe) {
+    return {
+      onChange: {
+        subscriber: (notify: () => void) => {
+          return subscribe("setVisibility", () => {
+            notify();
+          });
+        },
+        snapshot: () => {
+          return stateManager.getters.getVisibility();
+        },
+      },
+    };
+  },
 });
