@@ -1,7 +1,7 @@
 import { core } from "../core/core";
 import type { CreateStateManagerProps } from "./types";
 
-export function createContextInstance(
+export function createModuleInstance(
   id: string,
   entity: (props: any) => CreateStateManagerProps<any>,
   actions: any,

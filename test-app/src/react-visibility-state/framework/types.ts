@@ -1,3 +1,5 @@
+import type { createModuleInstance } from "./createModuleInstance";
+
 export type StateManagerInstance<E, M = any, G = any> = {
   state: E;
   mutations: M;
@@ -27,3 +29,5 @@ export type CreateModuleProps<S = any, M = any, G = any, A = any, L = any> = {
   actions: (stateManager: StateManagerInstance<S, M, G>, observer: any) => A;
   listeners: (stateManager: StateManagerInstance<S, M, G>, observer: any) => L;
 };
+
+export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;
