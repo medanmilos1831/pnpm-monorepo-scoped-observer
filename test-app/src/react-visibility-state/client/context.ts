@@ -18,7 +18,7 @@ interface IEntityActions {
   off: () => void;
   toggle: () => void;
 }
-export const visibilityContext = framework.createContext<
+export const visibilityContext = framework.createModule<
   IEntityState,
   IEntityMutations,
   IEntityGetters,
