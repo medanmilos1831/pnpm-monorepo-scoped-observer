@@ -80,15 +80,10 @@ export const visibilityContext = framework.createModule<
   },
   listeners(stateManager, subscribe) {
     return {
-      onChange: {
-        subscriber: (notify: () => void) => {
-          return subscribe("setVisibility", () => {
-            notify();
-          });
-        },
-        snapshot: () => {
-          return stateManager.getters.getVisibility();
-        },
+      onChange: (notify: () => void) => {
+        return subscribe("setVisibility", () => {
+          notify();
+        });
       },
     };
   },

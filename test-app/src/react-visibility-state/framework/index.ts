@@ -1,6 +1,6 @@
 import { createApp } from "./createApp";
 import { createModuleInstance } from "./createModuleInstance";
-import type { CreateModuleProps } from "./types";
+import type { CreateModuleProps, IModule, ModuleInstanceType } from "./types";
 
 const framework = (function () {
   const { getters, mutations } = createApp();
@@ -15,7 +15,7 @@ const framework = (function () {
         const item = createModuleInstance(props);
         createModule(props.name, item);
       }
-      return getModuleByName(props.name);
+      return getModuleByName(props.name) as IModule<S, M, G, A, L>;
     },
   };
 })();

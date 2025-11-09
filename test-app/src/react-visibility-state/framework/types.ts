@@ -15,8 +15,8 @@ export type CreateStateManagerProps<S> = {
 };
 
 export interface IModule<S = any, M = any, G = any, A = any, L = any> {
-  createEntity: (props: any) => any;
-  removeEntity: (id: string) => any;
+  createEntity: (props: any) => void;
+  removeEntity: (id: string) => void;
   getEntityById: (id: string) => {
     stateManager: StateManagerInstance<S, M, G>;
     actions: A;
