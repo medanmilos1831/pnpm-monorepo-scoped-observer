@@ -14,7 +14,7 @@ export type CreateStateManagerProps<S> = {
   getters: (state: S) => Record<string, (...args: any[]) => any>;
 };
 
-export interface IModule<S = any, M = any, G = any, A = any, L = any> {
+export interface IModuleClientAPI<S = any, M = any, G = any, A = any, L = any> {
   createEntity: (props: any) => void;
   removeEntity: (id: string) => void;
   getEntityById: (id: string) => {

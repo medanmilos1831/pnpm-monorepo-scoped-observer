@@ -5,14 +5,14 @@ export function createModuleInstance(props: CreateModuleProps) {
   const scope = "MODULE_OBSERVER";
   const { dispatch, subscribe } = core.createObserver(scope);
 
-  function dispatchAction(params: { eventName: string; payload: any }) {
-    const { eventName, payload } = params;
-    dispatch(eventName, payload);
-  }
   const moduleStateManager = core.createStateManager({
     id: props.name,
     state: {
       modules: new Map<string, ModuleEntityType>(),
+      dispatch: (params: { eventName: string; payload: any }) => {
+        const { eventName, payload } = params;
+        dispatch(eventName, payload);
+      },
     },
     mutations(state) {
       return {
@@ -32,6 +32,7 @@ export function createModuleInstance(props: CreateModuleProps) {
         getAllEntities: () => state.modules.values(),
         getEntityCount: () => state.modules.size,
         getState: () => state,
+        getDispatch: () => state.dispatch,
       };
     },
   });
@@ -41,7 +42,10 @@ export function createModuleInstance(props: CreateModuleProps) {
         const stateManager = core.createStateManager(props.entity(params));
         const item = {
           stateManager,
-          actions: props.actions(stateManager, dispatchAction),
+          actions: props.actions(
+            stateManager,
+            moduleStateManager.getters.getDispatch()
+          ),
           listeners: props.listeners(stateManager, subscribe),
         };
         moduleStateManager.mutations.createEntity(params.id, item);
