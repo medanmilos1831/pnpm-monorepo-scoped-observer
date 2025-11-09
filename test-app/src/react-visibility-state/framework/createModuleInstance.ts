@@ -1,7 +1,7 @@
 import { core } from "../core/core";
-import type { CreateModuleProps, ModuleEntityType } from "./types";
+import type { CreateModuleConfigType, ModuleEntityType } from "./types";
 
-export function createModuleInstance(props: CreateModuleProps) {
+export function createModuleInstance(props: CreateModuleConfigType) {
   const scope = "MODULE_OBSERVER";
   const { dispatch, subscribe } = core.createObserver(scope);
 
@@ -16,42 +16,44 @@ export function createModuleInstance(props: CreateModuleProps) {
     },
     mutations(state) {
       return {
-        createEntity(name: string, item: ModuleEntityType) {
+        createContext(name: string, item: ModuleEntityType) {
           state.modules.set(name, item);
         },
-        removeEntity(id: string) {
+        removeContext(id: string) {
           state.modules.delete(id);
         },
       };
     },
     getters(state) {
       return {
-        getEntityById: (id: string) => state.modules.get(id)!,
-        getEntity: (id: string) => state.modules.get(id),
-        hasEntity: (id: string) => state.modules.has(id),
-        getAllEntities: () => state.modules.values(),
-        getEntityCount: () => state.modules.size,
+        getContextById: (id: string) => state.modules.get(id)!,
+        getContext: (id: string) => state.modules.get(id),
+        hasContext: (id: string) => state.modules.has(id),
+        getAllContexts: () => state.modules.values(),
+        getContextCount: () => state.modules.size,
         getState: () => state,
         getDispatch: () => state.dispatch,
       };
     },
   });
   return {
-    createEntity<T extends { id: string }>(params: T) {
-      if (!moduleStateManager.getters.hasEntity(params.id)) {
+    createContext<T extends { id: string }>(params: T) {
+      if (!moduleStateManager.getters.hasContext(params.id)) {
         const stateManager = core.createStateManager(props.entity(params));
         const item = {
-          stateManager,
+          entity: stateManager,
           actions: props.actions(
             stateManager,
             moduleStateManager.getters.getDispatch()
           ),
           listeners: props.listeners(stateManager, subscribe),
         };
-        moduleStateManager.mutations.createEntity(params.id, item);
+        moduleStateManager.mutations.createContext(params.id, item);
       }
     },
-    removeEntity: (id: string) => moduleStateManager.mutations.removeEntity(id),
-    getEntityById: (id: string) => moduleStateManager.getters.getEntityById(id),
+    removeContext: (id: string) =>
+      moduleStateManager.mutations.removeContext(id),
+    getContextById: (id: string) =>
+      moduleStateManager.getters.getContextById(id),
   };
 }

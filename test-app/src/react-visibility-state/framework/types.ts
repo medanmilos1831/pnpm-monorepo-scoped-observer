@@ -1,39 +1,44 @@
-import type { core } from "../core/core";
 import type { createModuleInstance } from "./createModuleInstance";
 
-export type StateManagerInstance<E, M = any, G = any> = {
-  state: E;
+export type CreateModuleConfigType<
+  S = any,
+  M = any,
+  G = any,
+  A = any,
+  L = any
+> = {
+  name: string;
+  entity: (props: any) => EntityStateManagerType<S, G, M>;
+  actions: (stateManager: ContextEntityPropType<S, M, G>, observer: any) => A;
+  listeners: (stateManager: ContextEntityPropType<S, M, G>, observer: any) => L;
+};
+
+export type ContextEntityPropType<S, M = any, G = any> = {
+  state: S;
   mutations: M;
   getters: G;
 };
 
-export type CreateStateManagerProps<S> = {
+export type EntityStateManagerType<S, G, M> = {
   id: string;
   state: S;
-  mutations: (state: S) => Record<string, (...args: any[]) => any>;
-  getters: (state: S) => Record<string, (...args: any[]) => any>;
+  mutations: (state: S) => M;
+  getters: (state: S) => G;
 };
 
-export interface IModuleClientAPI<S = any, M = any, G = any, A = any, L = any> {
-  createEntity: (props: any) => void;
-  removeEntity: (id: string) => void;
-  getEntityById: (id: string) => {
-    stateManager: StateManagerInstance<S, M, G>;
-    actions: A;
-    listeners: L;
+export interface IModuleClientAPI<S = any, M = any, G = any> {
+  createContext: (props: any) => void;
+  removeContext: (id: string) => void;
+  getContextById: (id: string) => {
+    entity: ContextEntityPropType<S, M, G>;
+    actions: any;
+    listeners: any;
   };
 }
 
-export type CreateModuleProps<S = any, M = any, G = any, A = any, L = any> = {
-  name: string;
-  entity: (props: any) => CreateStateManagerProps<S>;
-  actions: (stateManager: StateManagerInstance<S, M, G>, observer: any) => A;
-  listeners: (stateManager: StateManagerInstance<S, M, G>, observer: any) => L;
-};
-
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;
-export type ModuleEntityType = {
-  stateManager: ReturnType<typeof core.createStateManager>;
+export type ModuleEntityType<S = any, M = any, G = any> = {
+  entity: ContextEntityPropType<S, M, G>;
   actions: any;
   listeners: any;
 };

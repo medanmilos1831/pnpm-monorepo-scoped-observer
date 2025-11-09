@@ -5,11 +5,11 @@ import { visibilityContext } from "./context";
 const createVisibilityClient = () => {
   return {
     useVisibility: (props: VisibilityProps) => {
-      visibilityContext.createEntity(props);
+      visibilityContext.createContext(props);
       return useVisibilty(props);
     },
     useVisibilityCommands: (id: string) => {
-      const entity = visibilityContext.getEntityById(id);
+      const entity = visibilityContext.getContextById(id);
       return {
         on: entity.actions.on,
         off: entity.actions.off,
