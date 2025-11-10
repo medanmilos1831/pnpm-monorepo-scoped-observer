@@ -20,7 +20,7 @@ const createVisibilityClient = () => {
     useModelSelector: (id: string) => {
       const [mount] = useState(() => {
         return (notify: () => void) => {
-          return visibilityModule.moduleSubscribe(`onLoad-${id}`, () => {
+          return visibilityModule.moduleSubscribe(`onModelLoad-${id}`, () => {
             notify();
           });
         };

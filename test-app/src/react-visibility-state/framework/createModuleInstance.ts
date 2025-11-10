@@ -13,8 +13,8 @@ export function createModuleInstance(props: CreateModuleConfigType) {
     },
     mutations(state) {
       return {
-        createModel(name: string, item: any) {
-          state.modules.set(name, item);
+        createModel(name: string, model: any) {
+          state.modules.set(name, model);
         },
         removeModel(id: string) {
           state.modules.delete(id);
@@ -38,6 +38,7 @@ export function createModuleInstance(props: CreateModuleConfigType) {
       if (!moduleStateManager.getters.hasModel(params.id)) {
         const model = createModel(props, params);
         moduleStateManager.mutations.createModel(params.id, model);
+        dispatch(`onModelLoad-${params.id}`);
       }
     },
     removeModel: (id: string) => moduleStateManager.mutations.removeModel(id),

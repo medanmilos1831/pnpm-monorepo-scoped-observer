@@ -12,16 +12,6 @@ const Inner = () => {
     initState: "off",
   });
 
-  // console.log("visibility", visibility);
-
-  // const visibilityTwo = useVisibility({
-  //   id: "testtwo",
-  //   initState: "on",
-  // });
-  // const visibilityTwo = useVisibility({
-  //   id: "testtwo",
-  //   initState: "off",
-  // });
   const commands = useVisibilityCommands("test");
   return (
     <div>
@@ -61,6 +51,7 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useModelSelector("test");
+  console.log("visibility", visibility);
   useEffect(() => {
     if (!visibility) return;
     visibility.subscribe("onChange", ({ payload }) => {
@@ -74,11 +65,21 @@ const Selector = () => {
     </>
   );
 };
+const Wrapper = () => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      {count % 2 === 0 ? <Inner /> : "nema"}
+    </>
+  );
+};
 const HomeVisibility = () => {
   return (
     <>
       <Selector />
-      <Inner />
+      <Wrapper />
     </>
   );
 };
