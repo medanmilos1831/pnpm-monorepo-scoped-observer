@@ -14,9 +14,7 @@ interface IEntityGetters {
 }
 
 interface IEntityActions {
-  on: () => void;
-  off: () => void;
-  toggle: () => void;
+  onChange: () => void;
 }
 export const visibilityContext = framework.createModule<
   IEntityState,
@@ -45,43 +43,21 @@ export const visibilityContext = framework.createModule<
       },
     };
   },
-  actions(stateManager, dispatchAction) {
+  actions(stateManager) {
     return {
-      on: () => {
-        stateManager.mutations.setVisibility("on");
-        dispatchAction({
-          eventName: "setVisibility",
-          payload: {
-            visibility: stateManager.getters.getVisibility(),
-          },
-        });
-      },
-      off: () => {
-        stateManager.mutations.setVisibility("off");
-        dispatchAction({
-          eventName: "setVisibility",
-          payload: {
-            visibility: stateManager.getters.getVisibility(),
-          },
-        });
-      },
-      toggle: () => {
+      onChange: () => {
         stateManager.mutations.setVisibility(
           stateManager.getters.getVisibility() === "on" ? "off" : "on"
         );
-        dispatchAction({
-          eventName: "setVisibility",
-          payload: {
-            visibility: stateManager.getters.getVisibility(),
-          },
-        });
+        return "nesto za payload";
       },
     };
   },
   listeners(stateManager, subscribe) {
     return {
       onChange: (notify: () => void) => {
-        return subscribe("setVisibility", () => {
+        return subscribe("onChange" as keyof IEntityActions, (payload: any) => {
+          console.log("payload", payload);
           notify();
         });
       },

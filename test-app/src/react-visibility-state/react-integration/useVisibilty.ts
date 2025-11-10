@@ -5,11 +5,12 @@ import { visibilityContext } from "../client/context";
 
 const useVisibilty = (props: VisibilityProps) => {
   const context = visibilityContext.getContextById(props.id);
-  context.entity.getters;
-  useSyncExternalStore(
+
+  const visibility = useSyncExternalStore(
     context.listeners.onChange,
     context.entity.getters.getVisibility
   );
+  console.log("visibility", visibility);
   return context.entity.getters.getVisibility();
 };
 

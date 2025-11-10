@@ -9,10 +9,6 @@ export function createModuleInstance(props: CreateModuleConfigType) {
     id: props.name,
     state: {
       modules: new Map<string, ModuleEntityType>(),
-      dispatch: (params: { eventName: string; payload: any }) => {
-        const { eventName, payload } = params;
-        dispatch(eventName, payload);
-      },
     },
     mutations(state) {
       return {
@@ -32,21 +28,45 @@ export function createModuleInstance(props: CreateModuleConfigType) {
         getAllContexts: () => state.modules.values(),
         getContextCount: () => state.modules.size,
         getState: () => state,
-        getDispatch: () => state.dispatch,
       };
     },
   });
+  function dispatchFn(params: { eventName: string; payload: any }) {
+    const { eventName, payload } = params;
+    dispatch(eventName, payload);
+  }
+
+  function withAutoEvents(actions: Record<string, (...args: any[]) => any>) {
+    const wrapped: any = {};
+    Object.keys(actions).forEach((key) => {
+      wrapped[key] = (...args: any[]) => {
+        const result = actions[key](...args);
+        dispatchFn({
+          eventName: key,
+          payload: result,
+        });
+      };
+    });
+    return wrapped;
+  }
+
   return {
     createContext<T extends { id: string }>(params: T) {
       if (!moduleStateManager.getters.hasContext(params.id)) {
         const stateManager = core.createStateManager(props.entity(params));
+        const wrappedActions = withAutoEvents(props.actions(stateManager));
         const item = {
           entity: stateManager,
-          actions: props.actions(
+          actions: wrappedActions,
+          listeners: props.listeners(
             stateManager,
-            moduleStateManager.getters.getDispatch()
+            (
+              eventName: keyof typeof wrappedActions,
+              callback: (payload: any) => void
+            ) => {
+              return subscribe(eventName, callback);
+            }
           ),
-          listeners: props.listeners(stateManager, subscribe),
         };
         moduleStateManager.mutations.createContext(params.id, item);
       }

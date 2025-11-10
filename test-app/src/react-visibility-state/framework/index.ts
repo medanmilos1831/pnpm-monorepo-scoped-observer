@@ -48,7 +48,7 @@ const framework = (function () {
        *   Safe to call even if entity doesn't exist (no-op).
        */
 
-      return getModuleByName(moduleConfig.name) as IModuleClientAPI<S, M, G>;
+      return getModuleByName(moduleConfig.name) as IModuleClientAPI<S, M, G, A>;
     },
   };
 })();

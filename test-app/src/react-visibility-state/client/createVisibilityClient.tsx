@@ -11,9 +11,7 @@ const createVisibilityClient = () => {
     useVisibilityCommands: (id: string) => {
       const entity = visibilityContext.getContextById(id);
       return {
-        on: entity.actions.on,
-        off: entity.actions.off,
-        toggle: entity.actions.toggle,
+        onChange: entity.actions.onChange,
       };
     },
   };

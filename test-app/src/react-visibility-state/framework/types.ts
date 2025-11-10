@@ -9,8 +9,11 @@ export type CreateModuleConfigType<
 > = {
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
-  actions: (stateManager: ContextEntityPropType<S, M, G>, observer: any) => A;
-  listeners: (stateManager: ContextEntityPropType<S, M, G>, observer: any) => L;
+  actions: (stateManager: ContextEntityPropType<S, M, G>) => A;
+  listeners: (
+    stateManager: ContextEntityPropType<S, M, G>,
+    subscribe: (eventName: keyof A, callback: (payload: any) => void) => void
+  ) => L;
 };
 
 export type ContextEntityPropType<S, M = any, G = any> = {
@@ -26,12 +29,12 @@ export type EntityStateManagerType<S, G, M> = {
   getters: (state: S) => G;
 };
 
-export interface IModuleClientAPI<S = any, M = any, G = any> {
+export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
   createContext: (props: any) => void;
   removeContext: (id: string) => void;
   getContextById: (id: string) => {
     entity: ContextEntityPropType<S, M, G>;
-    actions: any;
+    actions: A;
     listeners: any;
   };
 }

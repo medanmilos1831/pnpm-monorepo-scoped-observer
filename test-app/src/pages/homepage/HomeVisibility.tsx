@@ -8,7 +8,7 @@ const Inner = () => {
     initState: "off",
   });
 
-  console.log("visibility", visibility);
+  // console.log("HOMEVISIBILITY RENDERED", visibility);
 
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
@@ -32,24 +32,17 @@ const Inner = () => {
       </button>
       <button
         onClick={() => {
-          commands.on();
+          commands.onChange();
         }}
       >
-        On
+        open
       </button>
       <button
         onClick={() => {
-          commands.off();
+          commands.onChange();
         }}
       >
-        Off
-      </button>
-      <button
-        onClick={() => {
-          commands.toggle();
-        }}
-      >
-        Toggle
+        close
       </button>
     </div>
   );
