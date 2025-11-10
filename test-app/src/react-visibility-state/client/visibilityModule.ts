@@ -28,6 +28,10 @@ interface IContextApiClientType {
   getVisibility: () => "on" | "off";
   commands: CommandsType;
   subscribe: SubscribeType;
+  onChangeSync: {
+    snapshot: () => "on" | "off";
+    subscribe: (notify: () => void) => () => void;
+  };
 }
 const visibilityModule = framework.createModule<
   IEntityState,
@@ -83,6 +87,14 @@ const visibilityModule = framework.createModule<
       commands,
       subscribe,
       getVisibility: () => entity.getters.getVisibility(),
+      onChangeSync: {
+        snapshot: () => entity.getters.getVisibility(),
+        subscribe: (notify: () => void) => {
+          return subscribe("onChange", () => {
+            notify();
+          });
+        },
+      },
     };
   },
 });

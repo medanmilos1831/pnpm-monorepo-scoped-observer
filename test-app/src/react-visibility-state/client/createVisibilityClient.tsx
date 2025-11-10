@@ -7,19 +7,17 @@ const createVisibilityClient = () => {
     useVisibility: (props: VisibilityProps) => {
       visibilityModule.createContext(props);
       const context = visibilityModule.getContextById(props.id);
-      const [subsciber] = useState(() => (notify: () => void) => {
-        return context.subscribe("onChange", () => {
-          notify();
-        });
-      });
-      const visibility = useSyncExternalStore(subsciber, context.getVisibility);
+      const visibility = useSyncExternalStore(
+        context.onChangeSync.subscribe,
+        context.onChangeSync.snapshot
+      );
       return visibility;
     },
     useVisibilityCommands: (id: string) => {
       const context = visibilityModule.getContextById(id);
       return context.commands;
     },
-    useVisibilitySelector: (id: string) => {
+    useContextSelector: (id: string) => {
       const [mount] = useState(() => {
         return (notify: () => void) => {
           return visibilityModule.moduleSubscribe(`onLoad-${id}`, () => {
