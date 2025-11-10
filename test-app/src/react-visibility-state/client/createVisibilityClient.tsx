@@ -12,10 +12,7 @@ const createVisibilityClient = () => {
           notify();
         });
       });
-      const visibility = useSyncExternalStore(
-        subsciber,
-        context.visibilityClient.getVisibility
-      );
+      const visibility = useSyncExternalStore(subsciber, context.getVisibility);
       return visibility;
     },
     useVisibilityCommands: (id: string) => {
@@ -36,10 +33,10 @@ const createVisibilityClient = () => {
       useSyncExternalStore(mount, snapshot);
       if (!visibilityModule.hasContext(id)) return undefined;
 
-      return visibilityModule.getContextById(id).visibilityClient;
+      return visibilityModule.getContextById(id);
     },
     getVisibilityClient: (id: string) => {
-      return visibilityModule.getContextById(id).visibilityClient;
+      return visibilityModule.getContextById(id);
     },
   };
 };

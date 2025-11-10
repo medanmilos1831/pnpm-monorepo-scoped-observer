@@ -25,13 +25,9 @@ type SubscribeType = (
 ) => () => void;
 
 interface IContextApiClientType {
+  getVisibility: () => "on" | "off";
   commands: CommandsType;
   subscribe: SubscribeType;
-  visibilityClient: {
-    getVisibility: () => "on" | "off";
-    getCommands: () => CommandsType;
-    subscribe: SubscribeType;
-  };
 }
 const visibilityModule = framework.createModule<
   IEntityState,
@@ -86,11 +82,7 @@ const visibilityModule = framework.createModule<
     return {
       commands,
       subscribe,
-      visibilityClient: {
-        getVisibility: () => entity.getters.getVisibility(),
-        getCommands: () => commands,
-        subscribe,
-      },
+      getVisibility: () => entity.getters.getVisibility(),
     };
   },
 });

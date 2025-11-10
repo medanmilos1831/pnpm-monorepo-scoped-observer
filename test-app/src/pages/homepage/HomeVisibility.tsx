@@ -61,7 +61,6 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useVisibilitySelector("test");
-  const commands = visibility?.getCommands();
   useEffect(() => {
     if (!visibility) return;
     visibility.subscribe("onChange", ({ payload }) => {
@@ -71,7 +70,7 @@ const Selector = () => {
   return (
     <>
       <h1>Selector</h1>
-      <button onClick={() => commands?.onToggle()}>toggle</button>
+      <button onClick={() => visibility?.commands?.onToggle()}>toggle</button>
     </>
   );
 };
