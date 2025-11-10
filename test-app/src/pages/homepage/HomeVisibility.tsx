@@ -11,6 +11,7 @@ const Inner = () => {
     id: "test",
     initState: "off",
   });
+  console.log("visibility", visibility);
 
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",

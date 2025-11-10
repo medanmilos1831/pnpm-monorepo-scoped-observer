@@ -1,6 +1,6 @@
 import { core } from "../core/core";
 import { createContext } from "./createContext";
-import type { CreateModuleConfigType, ModuleEntityType } from "./types";
+import type { CreateModuleConfigType, ModuleContextType } from "./types";
 
 export function createModuleInstance(props: CreateModuleConfigType) {
   const scope = "MODULE_OBSERVER";
@@ -9,11 +9,11 @@ export function createModuleInstance(props: CreateModuleConfigType) {
   const moduleStateManager = core.createStateManager({
     id: props.name,
     state: {
-      modules: new Map<string, ModuleEntityType>(),
+      modules: new Map<string, ModuleContextType>(),
     },
     mutations(state) {
       return {
-        createContext(name: string, item: ModuleEntityType) {
+        createContext(name: string, item: ModuleContextType) {
           state.modules.set(name, item);
         },
         removeContext(id: string) {

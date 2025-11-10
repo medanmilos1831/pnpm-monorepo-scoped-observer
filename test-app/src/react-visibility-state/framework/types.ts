@@ -10,10 +10,6 @@ export type CreateModuleConfigType<
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
   actions: (stateManager: ContextEntityPropType<S, M, G>) => A;
-  listeners: (
-    stateManager: ContextEntityPropType<S, M, G>,
-    subscribe: (eventName: keyof A, callback: (payload: any) => void) => void
-  ) => L;
 };
 
 export type ContextEntityPropType<S, M = any, G = any> = {
@@ -32,11 +28,7 @@ export type EntityStateManagerType<S, G, M> = {
 export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
   createContext: (props: any) => void;
   removeContext: (id: string) => void;
-  getContextById: (id: string) => {
-    entity: ContextEntityPropType<S, M, G>;
-    actions: A;
-    listeners: any;
-  };
+  getContextById: (id: string) => ModuleContextType<S, M, G, A>;
   hasContext: (id: string) => boolean;
   subscribe: (
     eventName: string,
@@ -45,8 +37,11 @@ export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
 }
 
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;
-export type ModuleEntityType<S = any, M = any, G = any> = {
+export type ModuleContextType<S = any, M = any, G = any, A = any> = {
   entity: ContextEntityPropType<S, M, G>;
-  actions: any;
-  listeners: any;
+  actions: A;
+  subscribe: (
+    eventName: string,
+    callback: (payload: any) => void
+  ) => () => void;
 };

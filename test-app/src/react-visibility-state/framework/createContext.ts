@@ -33,15 +33,9 @@ function createContext<T extends { id: string }>(
   return {
     entity: stateManager,
     actions: wrappedActions,
-    listeners: contextConfigParams.listeners(
-      stateManager,
-      (
-        eventName: keyof typeof wrappedActions,
-        callback: (payload: any) => void
-      ) => {
-        return contextObserver.subscribe(eventName, callback);
-      }
-    ),
+    subscribe: (eventName: string, callback: (payload: any) => void) => {
+      return contextObserver.subscribe(eventName, callback);
+    },
   };
 }
 

@@ -16,8 +16,8 @@ const framework = (function () {
      * acts as a factory for creating entity instances with their state managers,
      * actions, and event subscriptions.
      */
-    createModule<S = any, M = any, G = any, A = any, L = any>(
-      moduleConfig: CreateModuleConfigType<S, M, G, A, L>
+    createModule<S = any, M = any, G = any, A = any>(
+      moduleConfig: CreateModuleConfigType<S, M, G, A>
     ) {
       if (!hasModule(moduleConfig.name)) {
         const moduleInstance = createModuleInstance(moduleConfig);

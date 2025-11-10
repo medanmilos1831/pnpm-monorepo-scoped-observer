@@ -5,20 +5,23 @@ import { visibilityModule } from "./visibilityModule";
 const createVisibilityClient = () => {
   return {
     useVisibility: (props: VisibilityProps) => {
+      console.log("MODULE", visibilityModule);
       visibilityModule.createContext(props);
-      console.log(
-        "createVisibilityClient",
-        visibilityModule.getContextById(props.id)
-      );
       const context = visibilityModule.getContextById(props.id);
-      useSyncExternalStore(
-        context.listeners.onChange,
+      const [subsciber] = useState(() => (notify: () => void) => {
+        return context.subscribe("onChange", () => {
+          console.log("SUBSCRIBER", context);
+          notify();
+        });
+      });
+      const visibility = useSyncExternalStore(
+        subsciber,
         context.entity.getters.getVisibility
       );
-      return context.entity.getters.getVisibility();
+      return visibility;
     },
     useVisibilityCommands: (id: string) => {
-      // const entity = visibilityModule.getContextById(id);
+      const context = visibilityModule.getContextById(id);
       return {
         onChange: () => {
           // entity.entity.mutations.setVisibility(
@@ -27,12 +30,12 @@ const createVisibilityClient = () => {
           // entity.actions.onChange();
         },
         onOpen: () => {
-          // entity.entity.mutations.setVisibility("on");
-          // entity.actions.onChange();
+          context.entity.mutations.setVisibility("on");
+          context.actions.onChange();
         },
         onClose: () => {
-          // entity.entity.mutations.setVisibility("off");
-          // entity.actions.onChange();
+          context.entity.mutations.setVisibility("off");
+          context.actions.onChange();
         },
       };
     },

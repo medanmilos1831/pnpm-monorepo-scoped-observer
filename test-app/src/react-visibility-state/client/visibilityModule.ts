@@ -46,19 +46,20 @@ export const visibilityModule = framework.createModule<
   actions(stateManager) {
     return {
       onChange: () => {
+        console.log("ACTIONS CALLBACK");
         return "nesto za payload";
       },
     };
   },
-  listeners(stateManager, subscribe) {
-    return {
-      onChange: (notify: () => void) => {
-        console.log("LISTENER CALLBACK", notify);
-        return subscribe("onChange", (payload: any) => {
-          console.log("LISTENER", payload);
-          notify();
-        });
-      },
-    };
-  },
+  // listeners(stateManager, subscribe) {
+  //   return {
+  //     onChange: (notify: () => void) => {
+  //       console.log("LISTENER CALLBACK", notify);
+  //       return subscribe("onChange", (payload: any) => {
+  //         console.log("LISTENER", payload);
+  //         notify();
+  //       });
+  //     },
+  //   };
+  // },
 });
