@@ -46,9 +46,6 @@ export const visibilityContext = framework.createModule<
   actions(stateManager) {
     return {
       onChange: () => {
-        stateManager.mutations.setVisibility(
-          stateManager.getters.getVisibility() === "on" ? "off" : "on"
-        );
         return "nesto za payload";
       },
     };
