@@ -1,5 +1,5 @@
 import { core } from "../core/core";
-import { createContext } from "./createContext";
+import { createModel } from "./createModel";
 import type { CreateModuleConfigType } from "./types";
 
 export function createModuleInstance(props: CreateModuleConfigType) {
@@ -13,38 +13,36 @@ export function createModuleInstance(props: CreateModuleConfigType) {
     },
     mutations(state) {
       return {
-        createContext(name: string, item: any) {
+        createModel(name: string, item: any) {
           state.modules.set(name, item);
         },
-        removeContext(id: string) {
+        removeModel(id: string) {
           state.modules.delete(id);
         },
       };
     },
     getters(state) {
       return {
-        getContextById: (id: string) => state.modules.get(id)!,
-        getContext: (id: string) => state.modules.get(id),
-        hasContext: (id: string) => state.modules.has(id),
-        getAllContexts: () => state.modules.values(),
-        getContextCount: () => state.modules.size,
+        getModelById: (id: string) => state.modules.get(id)!,
+        getModel: (id: string) => state.modules.get(id),
+        hasModel: (id: string) => state.modules.has(id),
+        getAllModels: () => state.modules.values(),
+        getModelCount: () => state.modules.size,
         getState: () => state,
       };
     },
   });
 
   return {
-    createContext<T extends { id: string }>(params: T) {
-      if (!moduleStateManager.getters.hasContext(params.id)) {
-        const context = createContext(props, params);
-        moduleStateManager.mutations.createContext(params.id, context);
+    createModel<T extends { id: string }>(params: T) {
+      if (!moduleStateManager.getters.hasModel(params.id)) {
+        const model = createModel(props, params);
+        moduleStateManager.mutations.createModel(params.id, model);
       }
     },
-    removeContext: (id: string) =>
-      moduleStateManager.mutations.removeContext(id),
-    getContextById: (id: string) =>
-      moduleStateManager.getters.getContextById(id),
-    hasContext: (id: string) => moduleStateManager.getters.hasContext(id),
+    removeModel: (id: string) => moduleStateManager.mutations.removeModel(id),
+    getModelById: (id: string) => moduleStateManager.getters.getModelById(id),
+    hasModel: (id: string) => moduleStateManager.getters.hasModel(id),
     moduleSubscribe: subscribe,
   };
 }

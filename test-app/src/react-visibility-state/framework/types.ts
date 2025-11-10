@@ -8,14 +8,14 @@ type SubscribeType = (
 export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
-  contextApiClient: (
-    entity: ContextEntityPropType<S, M, G>,
+  modelApiClient: (
+    entity: ModelEntityPropType<S, M, G>,
     dispatch: (eventName: string, payload: any) => void,
     subscribe: SubscribeType
   ) => A;
 };
 
-export type ContextEntityPropType<S, M = any, G = any> = {
+export type ModelEntityPropType<S, M = any, G = any> = {
   state: S;
   mutations: M;
   getters: G;
@@ -29,10 +29,10 @@ export type EntityStateManagerType<S, G, M> = {
 };
 
 export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
-  createContext: (props: any) => void;
-  removeContext: (id: string) => void;
-  getContextById: (id: string) => A;
-  hasContext: (id: string) => boolean;
+  createModel: (props: any) => void;
+  removeModel: (id: string) => void;
+  getModelById: (id: string) => A;
+  hasModel: (id: string) => boolean;
   moduleSubscribe: SubscribeType;
 }
 

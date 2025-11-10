@@ -24,7 +24,7 @@ type SubscribeType = (
   callback: (payload: any) => void
 ) => () => void;
 
-interface IContextApiClientType {
+interface IModelApiClient {
   getVisibility: () => "on" | "off";
   commands: CommandsType;
   subscribe: SubscribeType;
@@ -37,7 +37,7 @@ const visibilityModule = framework.createModule<
   IEntityState,
   IEntityMutations,
   IEntityGetters,
-  IContextApiClientType
+  IModelApiClient
 >({
   name: "VISIBILITY_CLIENT",
   entity: function (props: VisibilityProps) {
@@ -60,7 +60,7 @@ const visibilityModule = framework.createModule<
       },
     };
   },
-  contextApiClient(entity, dispatch, subscribe) {
+  modelApiClient(entity, dispatch, subscribe) {
     const commands = {
       onOpen: () => {
         entity.mutations.setVisibility("on");

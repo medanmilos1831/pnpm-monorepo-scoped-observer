@@ -5,19 +5,19 @@ import { visibilityModule } from "./visibilityModule";
 const createVisibilityClient = () => {
   return {
     useVisibility: (props: VisibilityProps) => {
-      visibilityModule.createContext(props);
-      const context = visibilityModule.getContextById(props.id);
+      visibilityModule.createModel(props);
+      const model = visibilityModule.getModelById(props.id);
       const visibility = useSyncExternalStore(
-        context.onChangeSync.subscribe,
-        context.onChangeSync.snapshot
+        model.onChangeSync.subscribe,
+        model.onChangeSync.snapshot
       );
       return visibility;
     },
     useVisibilityCommands: (id: string) => {
-      const context = visibilityModule.getContextById(id);
-      return context.commands;
+      const model = visibilityModule.getModelById(id);
+      return model.commands;
     },
-    useContextSelector: (id: string) => {
+    useModelSelector: (id: string) => {
       const [mount] = useState(() => {
         return (notify: () => void) => {
           return visibilityModule.moduleSubscribe(`onLoad-${id}`, () => {
@@ -26,15 +26,15 @@ const createVisibilityClient = () => {
         };
       });
       const [snapshot] = useState(() => {
-        return () => visibilityModule.hasContext(id);
+        return () => visibilityModule.hasModel(id);
       });
       useSyncExternalStore(mount, snapshot);
-      if (!visibilityModule.hasContext(id)) return undefined;
+      if (!visibilityModule.hasModel(id)) return undefined;
 
-      return visibilityModule.getContextById(id);
+      return visibilityModule.getModelById(id);
     },
     getVisibilityClient: (id: string) => {
-      return visibilityModule.getContextById(id);
+      return visibilityModule.getModelById(id);
     },
   };
 };

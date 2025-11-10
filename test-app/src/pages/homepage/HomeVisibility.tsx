@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import {
   useVisibility,
   useVisibilityCommands,
-  useContextSelector,
+  useModelSelector,
 } from "../../visibilityService";
 
 const Inner = () => {
@@ -60,7 +60,7 @@ const Inner = () => {
 };
 
 const Selector = () => {
-  const visibility = useContextSelector("test");
+  const visibility = useModelSelector("test");
   useEffect(() => {
     if (!visibility) return;
     visibility.subscribe("onChange", ({ payload }) => {

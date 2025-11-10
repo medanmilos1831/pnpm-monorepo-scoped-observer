@@ -3,14 +3,14 @@ import { createVisibilityClient } from "./react-visibility-state/client/createVi
 const {
   useVisibility,
   useVisibilityCommands,
-  useContextSelector,
+  useModelSelector,
   // getVisibilityClient,
 } = createVisibilityClient();
 
 export {
   useVisibility,
   useVisibilityCommands,
-  useContextSelector,
+  useModelSelector,
   // getVisibilityClient,
   // useVisibilitySelector,
 };
