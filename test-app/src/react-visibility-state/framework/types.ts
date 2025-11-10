@@ -37,7 +37,11 @@ export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
     actions: A;
     listeners: any;
   };
-  onContextLoad: () => void;
+  hasContext: (id: string) => boolean;
+  subscribe: (
+    eventName: string,
+    callback: (payload: any) => void
+  ) => () => void;
 }
 
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;

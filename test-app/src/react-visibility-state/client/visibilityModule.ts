@@ -16,7 +16,7 @@ interface IEntityGetters {
 interface IEntityActions {
   onChange: () => void;
 }
-export const visibilityContext = framework.createModule<
+export const visibilityModule = framework.createModule<
   IEntityState,
   IEntityMutations,
   IEntityGetters,
@@ -54,7 +54,6 @@ export const visibilityContext = framework.createModule<
     return {
       onChange: (notify: () => void) => {
         return subscribe("onChange", (payload: any) => {
-          console.log("payload", payload);
           notify();
         });
       },

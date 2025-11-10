@@ -12,8 +12,6 @@ const Inner = () => {
     initState: "off",
   });
 
-  // console.log("HOMEVISIBILITY RENDERED", visibility);
-
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
   //   initState: "on",
@@ -54,7 +52,7 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useVisibilitySelector("test");
-  console.log("render selector");
+  console.log("selector", visibility);
   return <>selector</>;
 };
 const HomeVisibility = () => {

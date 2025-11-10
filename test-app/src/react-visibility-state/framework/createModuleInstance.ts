@@ -44,8 +44,7 @@ export function createModuleInstance(props: CreateModuleConfigType) {
       moduleStateManager.mutations.removeContext(id),
     getContextById: (id: string) =>
       moduleStateManager.getters.getContextById(id),
-    onContextLoad() {
-      console.log("onContextLoad");
-    },
+    hasContext: (id: string) => moduleStateManager.getters.hasContext(id),
+    subscribe,
   };
 }

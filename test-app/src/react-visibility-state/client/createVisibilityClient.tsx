@@ -1,12 +1,12 @@
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { type VisibilityProps } from "../types";
-import { visibilityContext } from "./context";
+import { visibilityModule } from "./visibilityModule";
 
 const createVisibilityClient = () => {
   return {
     useVisibility: (props: VisibilityProps) => {
-      visibilityContext.createContext(props);
-      const context = visibilityContext.getContextById(props.id);
+      visibilityModule.createContext(props);
+      const context = visibilityModule.getContextById(props.id);
       useSyncExternalStore(
         context.listeners.onChange,
         context.entity.getters.getVisibility
@@ -14,7 +14,7 @@ const createVisibilityClient = () => {
       return context.entity.getters.getVisibility();
     },
     useVisibilityCommands: (id: string) => {
-      const entity = visibilityContext.getContextById(id);
+      const entity = visibilityModule.getContextById(id);
       return {
         onChange: () => {
           entity.entity.mutations.setVisibility(
@@ -33,11 +33,19 @@ const createVisibilityClient = () => {
       };
     },
     useVisibilitySelector: (id: string) => {
-      // const entity = visibilityContext.onContextLoad();
-      visibilityContext.onContextLoad();
-      return undefined;
-      // return entity;
-      // return entity.entity.getters.getVisibility();
+      const [mount] = useState(() => {
+        return (notify: () => void) => {
+          return visibilityModule.subscribe(`onLoad-${id}`, () => {
+            notify();
+          });
+        };
+      });
+      const [snapshot] = useState(() => {
+        return () => visibilityModule.hasContext(id);
+      });
+      useSyncExternalStore(mount, snapshot);
+      if (!visibilityModule.hasContext(id)) return undefined;
+      return visibilityModule.getContextById(id).entity.getters.getVisibility();
     },
   };
 };

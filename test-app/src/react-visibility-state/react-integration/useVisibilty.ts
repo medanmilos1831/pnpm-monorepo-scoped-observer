@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 
 import { type VisibilityProps } from "../types";
-import { visibilityContext } from "../client/context";
+import { visibilityContext } from "../client/visibilityModule";
 
 const useVisibilty = (props: VisibilityProps) => {
   const context = visibilityContext.getContextById(props.id);
