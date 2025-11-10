@@ -33,7 +33,7 @@ interface IContextApiClientType {
     subscribe: SubscribeType;
   };
 }
-export const visibilityModule = framework.createModule<
+const visibilityModule = framework.createModule<
   IEntityState,
   IEntityMutations,
   IEntityGetters,
@@ -94,3 +94,5 @@ export const visibilityModule = framework.createModule<
     };
   },
 });
+
+export { visibilityModule };

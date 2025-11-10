@@ -64,10 +64,10 @@ const Selector = () => {
   const commands = visibility?.getCommands();
   useEffect(() => {
     if (!visibility) return;
-    visibility.subscribe("onChange", (payload) => {
+    visibility.subscribe("onChange", ({ payload }) => {
       console.log("PAYLOAD", payload);
     });
-  }, []);
+  });
   return (
     <>
       <h1>Selector</h1>

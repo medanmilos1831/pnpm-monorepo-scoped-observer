@@ -7,7 +7,6 @@ const createVisibilityClient = () => {
     useVisibility: (props: VisibilityProps) => {
       visibilityModule.createContext(props);
       const context = visibilityModule.getContextById(props.id);
-      console.log("CONTEXT");
       const [subsciber] = useState(() => (notify: () => void) => {
         return context.subscribe("onChange", () => {
           notify();

@@ -10,12 +10,9 @@ function createContext<T extends { id: string }>(
     contextConfigParams.entity(contextProps)
   );
   const contextObserver = core.createObserver(contextScope);
-  function dispatchFn(eventName: string, payload: any) {
-    contextObserver.dispatch(eventName, payload);
-  }
   return contextConfigParams.contextApiClient(
     stateManager,
-    dispatchFn,
+    contextObserver.dispatch,
     contextObserver.subscribe
   );
 }
