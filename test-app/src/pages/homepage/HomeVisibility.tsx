@@ -11,7 +11,6 @@ const Inner = () => {
     id: "test",
     initState: "off",
   });
-  console.log("visibility", visibility);
 
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
@@ -35,14 +34,14 @@ const Inner = () => {
       </button>
       <button
         onClick={() => {
-          commands.onChange();
+          commands.onOpen();
         }}
       >
         open
       </button>
       <button
         onClick={() => {
-          commands.onChange();
+          commands.onClose();
         }}
       >
         close

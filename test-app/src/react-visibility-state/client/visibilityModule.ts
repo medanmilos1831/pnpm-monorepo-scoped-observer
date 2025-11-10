@@ -46,7 +46,6 @@ export const visibilityModule = framework.createModule<
   actions(stateManager) {
     return {
       onChange: () => {
-        console.log("ACTIONS CALLBACK");
         return "nesto za payload";
       },
     };

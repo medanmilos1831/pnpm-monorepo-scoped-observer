@@ -5,12 +5,10 @@ import { visibilityModule } from "./visibilityModule";
 const createVisibilityClient = () => {
   return {
     useVisibility: (props: VisibilityProps) => {
-      console.log("MODULE", visibilityModule);
       visibilityModule.createContext(props);
       const context = visibilityModule.getContextById(props.id);
       const [subsciber] = useState(() => (notify: () => void) => {
         return context.subscribe("onChange", () => {
-          console.log("SUBSCRIBER", context);
           notify();
         });
       });
