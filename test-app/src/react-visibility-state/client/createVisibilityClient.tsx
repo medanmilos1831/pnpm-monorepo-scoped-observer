@@ -20,7 +20,7 @@ const createVisibilityClient = () => {
     },
     useVisibilityCommands: (id: string) => {
       const context = visibilityModule.getContextById(id);
-      return context.actions.commands;
+      return context.contextApiClient.commands;
     },
     useVisibilitySelector: (id: string) => {
       const [mount] = useState(() => {
@@ -36,7 +36,7 @@ const createVisibilityClient = () => {
       useSyncExternalStore(mount, snapshot);
       if (!visibilityModule.hasContext(id)) return undefined;
 
-      return visibilityModule.getContextById(id).actions.selectorApi;
+      return visibilityModule.getContextById(id).contextApiClient.selectorApi;
     },
   };
 };

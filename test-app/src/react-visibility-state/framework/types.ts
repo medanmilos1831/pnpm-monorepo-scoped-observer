@@ -1,15 +1,9 @@
 import type { createModuleInstance } from "./createModuleInstance";
 
-export type CreateModuleConfigType<
-  S = any,
-  M = any,
-  G = any,
-  A = any,
-  L = any
-> = {
+export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
-  actions: (
+  contextApiClient: (
     stateManager: ContextEntityPropType<S, M, G>,
     dispatch: (eventName: string, payload: any) => void
   ) => A;
@@ -42,7 +36,7 @@ export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;
 export type ModuleContextType<S = any, M = any, G = any, A = any> = {
   entity: ContextEntityPropType<S, M, G>;
-  actions: A;
+  contextApiClient: A;
   subscribe: (
     eventName: string,
     callback: (payload: any) => void

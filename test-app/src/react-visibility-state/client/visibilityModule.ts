@@ -19,7 +19,7 @@ type CommandsType = {
   onToggle: () => void;
 };
 
-interface IEntityActions {
+interface IContextApiClientType {
   commands: CommandsType;
   selectorApi: {
     getVisibility: () => "on" | "off";
@@ -30,7 +30,7 @@ export const visibilityModule = framework.createModule<
   IEntityState,
   IEntityMutations,
   IEntityGetters,
-  IEntityActions
+  IContextApiClientType
 >({
   name: "VISIBILITY_CLIENT",
   entity: function (props: VisibilityProps) {
@@ -53,7 +53,7 @@ export const visibilityModule = framework.createModule<
       },
     };
   },
-  actions(stateManager, dispatch) {
+  contextApiClient(stateManager, dispatch) {
     const commands = {
       onOpen: () => {
         stateManager.mutations.setVisibility("on");

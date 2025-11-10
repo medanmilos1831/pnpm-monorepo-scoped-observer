@@ -13,26 +13,12 @@ function createContext<T extends { id: string }>(
   function dispatchFn(eventName: string, payload: any) {
     contextObserver.dispatch(eventName, payload);
   }
-  function withAutoEvents(
-    actions: Record<string, (...args: any[]) => any>,
-    dispatch: (eventName: string, payload: any) => void
-  ) {
-    const wrapped: any = {};
-    Object.keys(actions).forEach((key) => {
-      wrapped[key] = (...args: any[]) => {
-        const result = actions[key](...args);
-        dispatch(key, result);
-      };
-    });
-    return wrapped;
-  }
-  // const wrappedActions = withAutoEvents(
-  //   contextConfigParams.actions(stateManager),
-  //   dispatchFn
-  // );
   return {
     entity: stateManager,
-    actions: contextConfigParams.actions(stateManager, dispatchFn),
+    contextApiClient: contextConfigParams.contextApiClient(
+      stateManager,
+      dispatchFn
+    ),
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return contextObserver.subscribe(eventName, callback);
     },
