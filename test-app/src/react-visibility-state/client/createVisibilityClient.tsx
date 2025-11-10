@@ -3,6 +3,7 @@ import { type VisibilityProps } from "../types";
 import { visibilityModule } from "./visibilityModule";
 
 const createVisibilityClient = () => {
+  console.log("VISIBILITY MODULE", visibilityModule);
   return {
     useVisibility: (props: VisibilityProps) => {
       visibilityModule.createContext(props);
@@ -25,7 +26,7 @@ const createVisibilityClient = () => {
     useVisibilitySelector: (id: string) => {
       const [mount] = useState(() => {
         return (notify: () => void) => {
-          return visibilityModule.subscribe(`onLoad-${id}`, () => {
+          return visibilityModule.moduleSubscribe(`onLoad-${id}`, () => {
             notify();
           });
         };
@@ -36,7 +37,12 @@ const createVisibilityClient = () => {
       useSyncExternalStore(mount, snapshot);
       if (!visibilityModule.hasContext(id)) return undefined;
 
-      return visibilityModule.getContextById(id).contextApiClient.selectorApi;
+      return visibilityModule.getContextById(id).contextApiClient
+        .visibilityClient;
+    },
+    getVisibilityClient: (id: string) => {
+      return visibilityModule.getContextById(id).contextApiClient
+        .visibilityClient;
     },
   };
 };

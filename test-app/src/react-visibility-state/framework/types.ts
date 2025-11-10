@@ -5,7 +5,11 @@ export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   entity: (props: any) => EntityStateManagerType<S, G, M>;
   contextApiClient: (
     stateManager: ContextEntityPropType<S, M, G>,
-    dispatch: (eventName: string, payload: any) => void
+    dispatch: (eventName: string, payload: any) => void,
+    subscribe: (
+      eventName: string,
+      callback: (payload: any) => void
+    ) => () => void
   ) => A;
 };
 
@@ -27,7 +31,7 @@ export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
   removeContext: (id: string) => void;
   getContextById: (id: string) => ModuleContextType<S, M, G, A>;
   hasContext: (id: string) => boolean;
-  subscribe: (
+  moduleSubscribe: (
     eventName: string,
     callback: (payload: any) => void
   ) => () => void;

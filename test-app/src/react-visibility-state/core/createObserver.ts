@@ -14,7 +14,7 @@ function createObserver(scope: string) {
       payload: payload || undefined,
     });
   };
-  const subscribe = (eventName: any, callback: (payload: any) => void) => {
+  const subscribe = (eventName: string, callback: (payload: any) => void) => {
     return observer.subscribe({
       scope,
       eventName,

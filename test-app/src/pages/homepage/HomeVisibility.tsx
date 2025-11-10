@@ -12,7 +12,7 @@ const Inner = () => {
     initState: "off",
   });
 
-  console.log("visibility", visibility);
+  // console.log("visibility", visibility);
 
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
@@ -25,7 +25,7 @@ const Inner = () => {
   const commands = useVisibilityCommands("test");
   return (
     <div>
-      {/* <h1>Visibility: {visibility}</h1> */}
+      <h1>Visibility: {visibility}</h1>
       <h1>Count: {count}</h1>
       <button
         onClick={() => {
@@ -61,15 +61,19 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useVisibilitySelector("test");
-  console.log("selector", visibility);
-  // console.log("selector", visibility);
-  // useEffect(() => {
-  //   if (!visibility) return;
-  //   visibility.listeners.onChange(() => {
-  //     console.log("SELECTOR", visibility);
-  //   });
-  // }, []);
-  return <>selector</>;
+  const commands = visibility?.getCommands();
+  useEffect(() => {
+    if (!visibility) return;
+    visibility.subscribe("onChange", (payload) => {
+      console.log("PAYLOAD", payload);
+    });
+  }, []);
+  return (
+    <>
+      <h1>Selector</h1>
+      <button onClick={() => commands?.onToggle()}>toggle</button>
+    </>
+  );
 };
 const HomeVisibility = () => {
   return (

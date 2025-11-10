@@ -21,9 +21,13 @@ type CommandsType = {
 
 interface IContextApiClientType {
   commands: CommandsType;
-  selectorApi: {
+  visibilityClient: {
     getVisibility: () => "on" | "off";
     getCommands: () => CommandsType;
+    subscribe: (
+      eventName: string,
+      callback: (payload: any) => void
+    ) => () => void;
   };
 }
 export const visibilityModule = framework.createModule<
@@ -53,7 +57,7 @@ export const visibilityModule = framework.createModule<
       },
     };
   },
-  contextApiClient(stateManager, dispatch) {
+  contextApiClient(stateManager, dispatch, subscribe) {
     const commands = {
       onOpen: () => {
         stateManager.mutations.setVisibility("on");
@@ -79,9 +83,10 @@ export const visibilityModule = framework.createModule<
     };
     return {
       commands,
-      selectorApi: {
+      visibilityClient: {
         getVisibility: () => stateManager.getters.getVisibility(),
         getCommands: () => commands,
+        subscribe,
       },
     };
   },

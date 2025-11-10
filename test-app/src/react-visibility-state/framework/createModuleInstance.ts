@@ -45,6 +45,6 @@ export function createModuleInstance(props: CreateModuleConfigType) {
     getContextById: (id: string) =>
       moduleStateManager.getters.getContextById(id),
     hasContext: (id: string) => moduleStateManager.getters.hasContext(id),
-    subscribe,
+    moduleSubscribe: subscribe,
   };
 }

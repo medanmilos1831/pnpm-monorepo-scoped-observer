@@ -17,7 +17,8 @@ function createContext<T extends { id: string }>(
     entity: stateManager,
     contextApiClient: contextConfigParams.contextApiClient(
       stateManager,
-      dispatchFn
+      dispatchFn,
+      contextObserver.subscribe
     ),
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return contextObserver.subscribe(eventName, callback);
