@@ -43,7 +43,9 @@ export function createModuleInstance(props: CreateModuleConfigType) {
     },
     removeModel: (id: string) => {
       moduleStateManager.mutations.removeModel(id);
-      dispatch(`onModelLoad-${id}`);
+      setTimeout(() => {
+        dispatch(`onModelLoad-${id}`);
+      }, 200);
     },
     getModelById: (id: string) => moduleStateManager.getters.getModelById(id),
     hasModel: (id: string) => moduleStateManager.getters.hasModel(id),

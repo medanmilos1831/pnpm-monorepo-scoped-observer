@@ -6,7 +6,6 @@ import {
 } from "../../visibilityService";
 
 const Inner = () => {
-  const [count, setCount] = useState(0);
   const visibility = useVisibility({
     id: "test",
     initState: "off",
@@ -16,14 +15,7 @@ const Inner = () => {
   return (
     <div>
       <h1>Visibility: {visibility}</h1>
-      <h1>Count: {count}</h1>
-      <button
-        onClick={() => {
-          setCount(count + 1);
-        }}
-      >
-        Increment
-      </button>
+
       <button
         onClick={() => {
           commands.onOpen();
@@ -51,7 +43,6 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useModelSelector("test");
-  console.log("visibility", visibility);
   useEffect(() => {
     if (!visibility) return;
     visibility.subscribe("onChange", ({ payload }) => {
