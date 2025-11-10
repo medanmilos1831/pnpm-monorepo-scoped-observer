@@ -10,7 +10,6 @@ const createVisibilityClient = () => {
       useEffect(() => {
         return () => {
           visibilityModule.removeModel(props.id);
-          console.log("REMOVE MODEL", visibilityModule);
         };
       }, []);
       const visibility = useSyncExternalStore(

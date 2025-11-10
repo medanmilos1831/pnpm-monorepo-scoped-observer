@@ -28,7 +28,7 @@ export type EntityStateManagerType<S, G, M> = {
   getters: (state: S) => G;
 };
 
-export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
+export interface IModuleClientAPI<A = any> {
   createModel: (props: any) => void;
   removeModel: (id: string) => void;
   getModelById: (id: string) => A;

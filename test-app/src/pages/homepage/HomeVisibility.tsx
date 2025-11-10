@@ -45,9 +45,12 @@ const Selector = () => {
   const visibility = useModelSelector("test");
   useEffect(() => {
     if (!visibility) return;
-    visibility.subscribe("onChange", ({ payload }) => {
+    const unsubscribe = visibility.subscribe("onChange", ({ payload }) => {
       console.log("PAYLOAD", payload);
     });
+    return () => {
+      unsubscribe();
+    };
   });
   return (
     <>

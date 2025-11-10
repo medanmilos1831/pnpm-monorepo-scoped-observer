@@ -48,7 +48,7 @@ const framework = (function () {
        * @property {Function} onModelLoad - Called when a model is loaded.
        */
 
-      return getModuleByName(moduleConfig.name) as IModuleClientAPI<S, M, G, A>;
+      return getModuleByName(moduleConfig.name) as IModuleClientAPI<A>;
     },
   };
 })();
