@@ -23,7 +23,6 @@ const framework = (function () {
         const moduleInstance = createModuleInstance(moduleConfig);
         createModule(moduleConfig.name, moduleInstance);
       }
-
       /**
        * Returns the module client API for managing entities within this module.
        *

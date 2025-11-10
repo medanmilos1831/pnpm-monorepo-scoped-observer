@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { type VisibilityProps } from "../types";
 import { visibilityModule } from "./visibilityModule";
 
@@ -7,6 +7,11 @@ const createVisibilityClient = () => {
     useVisibility: (props: VisibilityProps) => {
       visibilityModule.createModel(props);
       const model = visibilityModule.getModelById(props.id);
+      useEffect(() => {
+        return () => {
+          visibilityModule.removeModel(props.id);
+        };
+      }, []);
       const visibility = useSyncExternalStore(
         model.onChangeSync.subscribe,
         model.onChangeSync.snapshot
@@ -21,6 +26,7 @@ const createVisibilityClient = () => {
       const [mount] = useState(() => {
         return (notify: () => void) => {
           return visibilityModule.moduleSubscribe(`onModelLoad-${id}`, () => {
+            console.log("ON MODEL LOAD");
             notify();
           });
         };

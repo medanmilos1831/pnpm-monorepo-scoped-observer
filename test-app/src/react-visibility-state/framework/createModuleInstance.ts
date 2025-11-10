@@ -41,7 +41,10 @@ export function createModuleInstance(props: CreateModuleConfigType) {
         dispatch(`onModelLoad-${params.id}`);
       }
     },
-    removeModel: (id: string) => moduleStateManager.mutations.removeModel(id),
+    removeModel: (id: string) => {
+      moduleStateManager.mutations.removeModel(id);
+      dispatch(`onModelLoad-${id}`);
+    },
     getModelById: (id: string) => moduleStateManager.getters.getModelById(id),
     hasModel: (id: string) => moduleStateManager.getters.hasModel(id),
     moduleSubscribe: subscribe,
