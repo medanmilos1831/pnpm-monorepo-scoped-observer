@@ -20,37 +20,23 @@ const createVisibilityClient = () => {
     },
     useVisibilityCommands: (id: string) => {
       const context = visibilityModule.getContextById(id);
-      return {
-        onChange: () => {
-          // entity.entity.mutations.setVisibility(
-          //   entity.entity.getters.getVisibility() === "on" ? "off" : "on"
-          // );
-          // entity.actions.onChange();
-        },
-        onOpen: () => {
-          context.entity.mutations.setVisibility("on");
-          context.actions.onChange();
-        },
-        onClose: () => {
-          context.entity.mutations.setVisibility("off");
-          context.actions.onChange();
-        },
-      };
+      return context.actions.commands;
     },
     useVisibilitySelector: (id: string) => {
-      // const [mount] = useState(() => {
-      //   return (notify: () => void) => {
-      //     return visibilityModule.subscribe(`onLoad-${id}`, () => {
-      //       notify();
-      //     });
-      //   };
-      // });
-      // const [snapshot] = useState(() => {
-      //   return () => visibilityModule.hasContext(id);
-      // });
-      // useSyncExternalStore(mount, snapshot);
-      // if (!visibilityModule.hasContext(id)) return undefined;
-      // return visibilityModule.getContextById(id);
+      const [mount] = useState(() => {
+        return (notify: () => void) => {
+          return visibilityModule.subscribe(`onLoad-${id}`, () => {
+            notify();
+          });
+        };
+      });
+      const [snapshot] = useState(() => {
+        return () => visibilityModule.hasContext(id);
+      });
+      useSyncExternalStore(mount, snapshot);
+      if (!visibilityModule.hasContext(id)) return undefined;
+
+      return visibilityModule.getContextById(id).actions.selectorApi;
     },
   };
 };

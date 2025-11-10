@@ -9,7 +9,10 @@ export type CreateModuleConfigType<
 > = {
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
-  actions: (stateManager: ContextEntityPropType<S, M, G>) => A;
+  actions: (
+    stateManager: ContextEntityPropType<S, M, G>,
+    dispatch: (eventName: string, payload: any) => void
+  ) => A;
 };
 
 export type ContextEntityPropType<S, M = any, G = any> = {

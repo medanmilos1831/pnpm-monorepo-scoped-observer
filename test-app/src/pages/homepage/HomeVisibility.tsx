@@ -12,6 +12,8 @@ const Inner = () => {
     initState: "off",
   });
 
+  console.log("visibility", visibility);
+
   // const visibilityTwo = useVisibility({
   //   id: "testtwo",
   //   initState: "on",
@@ -46,12 +48,20 @@ const Inner = () => {
       >
         close
       </button>
+      <button
+        onClick={() => {
+          commands.onToggle();
+        }}
+      >
+        toggle
+      </button>
     </div>
   );
 };
 
 const Selector = () => {
   const visibility = useVisibilitySelector("test");
+  console.log("selector", visibility);
   // console.log("selector", visibility);
   // useEffect(() => {
   //   if (!visibility) return;
@@ -64,7 +74,7 @@ const Selector = () => {
 const HomeVisibility = () => {
   return (
     <>
-      {/* <Selector /> */}
+      <Selector />
       <Inner />
     </>
   );

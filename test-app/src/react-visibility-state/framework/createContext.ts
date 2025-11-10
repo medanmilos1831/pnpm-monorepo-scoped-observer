@@ -26,13 +26,13 @@ function createContext<T extends { id: string }>(
     });
     return wrapped;
   }
-  const wrappedActions = withAutoEvents(
-    contextConfigParams.actions(stateManager),
-    dispatchFn
-  );
+  // const wrappedActions = withAutoEvents(
+  //   contextConfigParams.actions(stateManager),
+  //   dispatchFn
+  // );
   return {
     entity: stateManager,
-    actions: wrappedActions,
+    actions: contextConfigParams.actions(stateManager, dispatchFn),
     subscribe: (eventName: string, callback: (payload: any) => void) => {
       return contextObserver.subscribe(eventName, callback);
     },

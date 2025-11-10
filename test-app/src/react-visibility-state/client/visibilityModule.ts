@@ -13,8 +13,18 @@ interface IEntityGetters {
   getVisibility: () => "on" | "off";
 }
 
+type CommandsType = {
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+};
+
 interface IEntityActions {
-  onChange: () => void;
+  commands: CommandsType;
+  selectorApi: {
+    getVisibility: () => "on" | "off";
+    getCommands: () => CommandsType;
+  };
 }
 export const visibilityModule = framework.createModule<
   IEntityState,
@@ -43,10 +53,35 @@ export const visibilityModule = framework.createModule<
       },
     };
   },
-  actions(stateManager) {
+  actions(stateManager, dispatch) {
+    const commands = {
+      onOpen: () => {
+        stateManager.mutations.setVisibility("on");
+        dispatch("onChange", {
+          visibility: "on",
+        });
+      },
+      onClose: () => {
+        stateManager.mutations.setVisibility("off");
+        dispatch("onChange", {
+          visibility: "off",
+        });
+      },
+      onToggle: () => {
+        stateManager.mutations.setVisibility(
+          stateManager.getters.getVisibility() === "on" ? "off" : "on"
+        );
+        dispatch("onChange", {
+          visibility:
+            stateManager.getters.getVisibility() === "on" ? "off" : "on",
+        });
+      },
+    };
     return {
-      onChange: () => {
-        return "nesto za payload";
+      commands,
+      selectorApi: {
+        getVisibility: () => stateManager.getters.getVisibility(),
+        getCommands: () => commands,
       },
     };
   },
