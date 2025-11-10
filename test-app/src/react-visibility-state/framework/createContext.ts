@@ -13,17 +13,11 @@ function createContext<T extends { id: string }>(
   function dispatchFn(eventName: string, payload: any) {
     contextObserver.dispatch(eventName, payload);
   }
-  return {
-    entity: stateManager,
-    contextApiClient: contextConfigParams.contextApiClient(
-      stateManager,
-      dispatchFn,
-      contextObserver.subscribe
-    ),
-    subscribe: (eventName: string, callback: (payload: any) => void) => {
-      return contextObserver.subscribe(eventName, callback);
-    },
-  };
+  return contextConfigParams.contextApiClient(
+    stateManager,
+    dispatchFn,
+    contextObserver.subscribe
+  );
 }
 
 export { createContext };

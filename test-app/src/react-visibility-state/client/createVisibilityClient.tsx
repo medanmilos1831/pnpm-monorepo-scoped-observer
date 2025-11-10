@@ -3,11 +3,11 @@ import { type VisibilityProps } from "../types";
 import { visibilityModule } from "./visibilityModule";
 
 const createVisibilityClient = () => {
-  console.log("VISIBILITY MODULE", visibilityModule);
   return {
     useVisibility: (props: VisibilityProps) => {
       visibilityModule.createContext(props);
       const context = visibilityModule.getContextById(props.id);
+      console.log("CONTEXT");
       const [subsciber] = useState(() => (notify: () => void) => {
         return context.subscribe("onChange", () => {
           notify();
@@ -15,13 +15,13 @@ const createVisibilityClient = () => {
       });
       const visibility = useSyncExternalStore(
         subsciber,
-        context.entity.getters.getVisibility
+        context.visibilityClient.getVisibility
       );
       return visibility;
     },
     useVisibilityCommands: (id: string) => {
       const context = visibilityModule.getContextById(id);
-      return context.contextApiClient.commands;
+      return context.commands;
     },
     useVisibilitySelector: (id: string) => {
       const [mount] = useState(() => {
@@ -37,12 +37,10 @@ const createVisibilityClient = () => {
       useSyncExternalStore(mount, snapshot);
       if (!visibilityModule.hasContext(id)) return undefined;
 
-      return visibilityModule.getContextById(id).contextApiClient
-        .visibilityClient;
+      return visibilityModule.getContextById(id).visibilityClient;
     },
     getVisibilityClient: (id: string) => {
-      return visibilityModule.getContextById(id).contextApiClient
-        .visibilityClient;
+      return visibilityModule.getContextById(id).visibilityClient;
     },
   };
 };

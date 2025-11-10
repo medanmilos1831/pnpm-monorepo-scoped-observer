@@ -19,15 +19,18 @@ type CommandsType = {
   onToggle: () => void;
 };
 
+type SubscribeType = (
+  eventName: string,
+  callback: (payload: any) => void
+) => () => void;
+
 interface IContextApiClientType {
   commands: CommandsType;
+  subscribe: SubscribeType;
   visibilityClient: {
     getVisibility: () => "on" | "off";
     getCommands: () => CommandsType;
-    subscribe: (
-      eventName: string,
-      callback: (payload: any) => void
-    ) => () => void;
+    subscribe: SubscribeType;
   };
 }
 export const visibilityModule = framework.createModule<
@@ -57,34 +60,34 @@ export const visibilityModule = framework.createModule<
       },
     };
   },
-  contextApiClient(stateManager, dispatch, subscribe) {
+  contextApiClient(entity, dispatch, subscribe) {
     const commands = {
       onOpen: () => {
-        stateManager.mutations.setVisibility("on");
+        entity.mutations.setVisibility("on");
         dispatch("onChange", {
           visibility: "on",
         });
       },
       onClose: () => {
-        stateManager.mutations.setVisibility("off");
+        entity.mutations.setVisibility("off");
         dispatch("onChange", {
           visibility: "off",
         });
       },
       onToggle: () => {
-        stateManager.mutations.setVisibility(
-          stateManager.getters.getVisibility() === "on" ? "off" : "on"
+        entity.mutations.setVisibility(
+          entity.getters.getVisibility() === "on" ? "off" : "on"
         );
         dispatch("onChange", {
-          visibility:
-            stateManager.getters.getVisibility() === "on" ? "off" : "on",
+          visibility: entity.getters.getVisibility() === "on" ? "off" : "on",
         });
       },
     };
     return {
       commands,
+      subscribe,
       visibilityClient: {
-        getVisibility: () => stateManager.getters.getVisibility(),
+        getVisibility: () => entity.getters.getVisibility(),
         getCommands: () => commands,
         subscribe,
       },
