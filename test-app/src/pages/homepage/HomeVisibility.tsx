@@ -52,13 +52,19 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useVisibilitySelector("test");
-  console.log("selector", visibility);
+  // console.log("selector", visibility);
+  // useEffect(() => {
+  //   if (!visibility) return;
+  //   visibility.listeners.onChange(() => {
+  //     console.log("SELECTOR", visibility);
+  //   });
+  // }, []);
   return <>selector</>;
 };
 const HomeVisibility = () => {
   return (
     <>
-      <Selector />
+      {/* <Selector /> */}
       <Inner />
     </>
   );

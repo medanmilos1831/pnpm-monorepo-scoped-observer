@@ -53,7 +53,9 @@ export const visibilityModule = framework.createModule<
   listeners(stateManager, subscribe) {
     return {
       onChange: (notify: () => void) => {
+        console.log("LISTENER CALLBACK", notify);
         return subscribe("onChange", (payload: any) => {
+          console.log("LISTENER", payload);
           notify();
         });
       },

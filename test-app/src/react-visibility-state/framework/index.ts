@@ -47,7 +47,6 @@ const framework = (function () {
        *   This permanently removes the entity and all its associated state, actions, and subscriptions.
        *   Safe to call even if entity doesn't exist (no-op).
        * @property {Function} onContextLoad - Called when a context is loaded.
-       *   This is useful for initializing the context.
        */
 
       return getModuleByName(moduleConfig.name) as IModuleClientAPI<S, M, G, A>;

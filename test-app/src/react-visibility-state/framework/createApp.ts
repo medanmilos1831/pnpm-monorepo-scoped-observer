@@ -10,13 +10,15 @@ function createApp() {
     mutations(state) {
       return {
         createModule(name: string, item: ModuleInstanceType) {
-          state.modules.set(name, item);
+          return state.modules.set(name, item);
         },
       };
     },
     getters(state) {
       return {
-        getModuleByName: (name: string) => state.modules.get(name)!,
+        getModuleByName: (name: string) => {
+          return state.modules.get(name)!;
+        },
         hasModule: (name: string) => state.modules.has(name),
       };
     },
