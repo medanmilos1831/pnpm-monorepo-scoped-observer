@@ -56,7 +56,7 @@ export const visibilityContext = framework.createModule<
   listeners(stateManager, subscribe) {
     return {
       onChange: (notify: () => void) => {
-        return subscribe("onChange" as keyof IEntityActions, (payload: any) => {
+        return subscribe("onChange", (payload: any) => {
           console.log("payload", payload);
           notify();
         });
