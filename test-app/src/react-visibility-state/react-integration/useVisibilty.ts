@@ -10,7 +10,6 @@ const useVisibilty = (props: VisibilityProps) => {
     context.listeners.onChange,
     context.entity.getters.getVisibility
   );
-  console.log("visibility", visibility);
   return context.entity.getters.getVisibility();
 };
 

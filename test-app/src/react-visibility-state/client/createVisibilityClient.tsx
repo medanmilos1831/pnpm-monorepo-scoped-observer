@@ -1,4 +1,4 @@
-import { useVisibilty } from "../react-integration/useVisibilty";
+import { useSyncExternalStore } from "react";
 import { type VisibilityProps } from "../types";
 import { visibilityContext } from "./context";
 
@@ -6,7 +6,12 @@ const createVisibilityClient = () => {
   return {
     useVisibility: (props: VisibilityProps) => {
       visibilityContext.createContext(props);
-      return useVisibilty(props);
+      const context = visibilityContext.getContextById(props.id);
+      useSyncExternalStore(
+        context.listeners.onChange,
+        context.entity.getters.getVisibility
+      );
+      return context.entity.getters.getVisibility();
     },
     useVisibilityCommands: (id: string) => {
       const entity = visibilityContext.getContextById(id);
@@ -26,6 +31,13 @@ const createVisibilityClient = () => {
           entity.actions.onChange();
         },
       };
+    },
+    useVisibilitySelector: (id: string) => {
+      // const entity = visibilityContext.onContextLoad();
+      visibilityContext.onContextLoad();
+      return undefined;
+      // return entity;
+      // return entity.entity.getters.getVisibility();
     },
   };
 };

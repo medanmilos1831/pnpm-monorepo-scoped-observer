@@ -37,6 +37,7 @@ export interface IModuleClientAPI<S = any, M = any, G = any, A = any> {
     actions: A;
     listeners: any;
   };
+  onContextLoad: () => void;
 }
 
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;

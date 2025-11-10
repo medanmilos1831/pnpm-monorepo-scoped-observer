@@ -1,5 +1,9 @@
 import { createContext, useEffect, useState } from "react";
-import { useVisibility, useVisibilityCommands } from "../../visibilityService";
+import {
+  useVisibility,
+  useVisibilityCommands,
+  useVisibilitySelector,
+} from "../../visibilityService";
 
 const Inner = () => {
   const [count, setCount] = useState(0);
@@ -49,14 +53,15 @@ const Inner = () => {
 };
 
 const Selector = () => {
-  // const visibility = useVisibilitySelector("test");
+  const visibility = useVisibilitySelector("test");
+  console.log("render selector");
   return <>selector</>;
 };
 const HomeVisibility = () => {
   return (
     <>
+      <Selector />
       <Inner />
-      {/* <Selector /> */}
     </>
   );
 };
