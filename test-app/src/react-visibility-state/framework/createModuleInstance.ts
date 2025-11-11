@@ -38,17 +38,16 @@ export function createModuleInstance(props: CreateModuleConfigType) {
       if (!moduleStateManager.getters.hasModel(params.id)) {
         const model = createModel(props, params);
         moduleStateManager.mutations.createModel(params.id, model);
-        setTimeout(() => {
-          dispatch(`onModelLoad-${params.id}`);
-        }, 0);
       }
     },
     removeModel: (id: string) => {
       moduleStateManager.mutations.removeModel(id);
+    },
+    lifeCycle: (id: string) => {
       dispatch(`onModelLoad-${id}`);
     },
     getModelById: (id: string) => moduleStateManager.getters.getModelById(id),
     hasModel: (id: string) => moduleStateManager.getters.hasModel(id),
-    moduleSubscribe: subscribe,
+    subscribe,
   };
 }

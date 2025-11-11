@@ -43,6 +43,7 @@ const Inner = () => {
 
 const Selector = () => {
   const visibility = useModelSelector("test");
+  console.log("VISIBILITY", visibility);
   useEffect(() => {
     if (!visibility) return;
     const unsubscribe = visibility.subscribe("onChange", ({ payload }) => {

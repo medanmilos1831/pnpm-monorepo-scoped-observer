@@ -33,7 +33,8 @@ export interface IModuleClientAPI<A = any> {
   removeModel: (id: string) => void;
   getModelById: (id: string) => A;
   hasModel: (id: string) => boolean;
-  moduleSubscribe: SubscribeType;
+  subscribe: SubscribeType;
+  lifeCycle: (id: string) => void;
 }
 
 export type ModuleInstanceType = ReturnType<typeof createModuleInstance>;

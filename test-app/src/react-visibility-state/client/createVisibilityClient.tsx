@@ -8,8 +8,10 @@ const createVisibilityClient = () => {
       visibilityModule.createModel(props);
       const model = visibilityModule.getModelById(props.id);
       useEffect(() => {
+        visibilityModule.lifeCycle(props.id);
         return () => {
           visibilityModule.removeModel(props.id);
+          visibilityModule.lifeCycle(props.id);
         };
       }, []);
       const visibility = useSyncExternalStore(
@@ -25,7 +27,7 @@ const createVisibilityClient = () => {
     useModelSelector: (id: string) => {
       const [mount] = useState(() => {
         return (notify: () => void) => {
-          return visibilityModule.moduleSubscribe(`onModelLoad-${id}`, () => {
+          return visibilityModule.subscribe(`onModelLoad-${id}`, () => {
             notify();
           });
         };
