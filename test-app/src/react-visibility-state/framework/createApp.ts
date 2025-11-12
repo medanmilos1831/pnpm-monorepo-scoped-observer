@@ -23,6 +23,7 @@ function createApp() {
       };
     },
   });
+  console.log("APP", app);
   return app;
 }
 

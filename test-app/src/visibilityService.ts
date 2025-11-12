@@ -1,16 +1,6 @@
 import { createVisibilityClient } from "./react-visibility-state/client/createVisibilityClient";
 
-const {
-  useVisibility,
-  useVisibilityCommands,
-  useModelSelector,
-  // getVisibilityClient,
-} = createVisibilityClient();
+const { useVisibility, useVisibilityCommands, useModelSelector } =
+  createVisibilityClient();
 
-export {
-  useVisibility,
-  useVisibilityCommands,
-  useModelSelector,
-  // getVisibilityClient,
-  // useVisibilitySelector,
-};
+export { useVisibility, useVisibilityCommands, useModelSelector };
