@@ -1,221 +1,343 @@
-# 🔄 Quantum UI
+# 🔄 Quantum Toggle
 
-A powerful, modular state management framework for React applications. Built on top of `@med1802/scoped-observer`, Quantum UI provides a structured approach to managing application state, modules, and models with built-in reactivity and lifecycle management.
+A modern React hook-based library for managing toggle/visibility state in your applications. Built on top of `@med1802/quantum-ui`, Quantum Toggle provides a clean and type-safe API for controlling on/off states with automatic lifecycle management and React's `useSyncExternalStore` for optimal performance.
+
+Perfect for managing modals, drawers, tooltips, accordions, and any component that needs toggle functionality.
 
 ---
 
 ## 🚀 Features
 
-- ✅ **Module-based architecture** — Organize your application into reusable modules
-- ✅ **Model management** — Create and manage multiple model instances per module
-- ✅ **State management** — Built-in state manager with mutations and getters
-- ✅ **Event system** — Integrated event dispatching and subscriptions
-- ✅ **Lifecycle hooks** — Manage model lifecycle events
-- ✅ **TypeScript support** — Fully typed API for better developer experience
+- ✅ **React Hooks API** — Simple, intuitive hooks for managing toggle state
+- ✅ **Automatic Lifecycle** — Models are automatically created and cleaned up
+- ✅ **Type-Safe** — Full TypeScript support with exported types
+- ✅ **Performance Optimized** — Uses React's `useSyncExternalStore` for efficient updates
+- ✅ **Command Pattern** — Clean API with `onOpen`, `onClose`, and `onToggle` commands
+- ✅ **Built on Quantum UI** — Leverages the powerful quantum-ui framework
 
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install @med1802/quantum-ui
+npm install @med1802/quantum-toggle
 ```
 
 **Peer Dependencies:**
 
 - `react` ^18.0.0
 - `@med1802/scoped-observer` ^1.0.0
+- `@med1802/quantum-ui` ^1.0.1
 
 ---
 
 ## ⚙️ Quick Start
 
-### 1. Create a Module
-
-First, define your module configuration:
+### 1. Create the Visibility Client
 
 ```typescript
-import { framework } from "@med1802/quantum-ui";
+import { createVisibilityClient } from "@med1802/quantum-toggle";
 
-// Define your entity state manager
-const userEntity = (props: { id: string; name: string }) => ({
-  id: props.id,
-  state: {
-    name: props.name,
-    email: "",
-    isActive: false,
-  },
-  mutations(state) {
-    return {
-      setName(name: string) {
-        state.name = name;
-      },
-      setEmail(email: string) {
-        state.email = email;
-      },
-      toggleActive() {
-        state.isActive = !state.isActive;
-      },
-    };
-  },
-  getters(state) {
-    return {
-      getFullInfo: () => `${state.name} (${state.email})`,
-      isActive: () => state.isActive,
-    };
-  },
-});
+const visibilityClient = createVisibilityClient();
+```
 
-// Create model API client
-const userModelApi = (entity, dispatch, subscribe) => {
-  return {
-    // Expose entity methods
-    ...entity,
+### 2. Use the Visibility Hook
 
-    // Custom methods
-    activate() {
-      entity.mutations.toggleActive();
-      dispatch("userActivated", { id: entity.state.id });
-    },
+```tsx
+import React from "react";
+import { createVisibilityClient, INITIAL_STATE } from "@med1802/quantum-toggle";
 
-    subscribeToChanges(callback) {
-      return subscribe("userChanged", callback);
-    },
-  };
+const visibilityClient = createVisibilityClient();
+
+const MyComponent = () => {
+  // Get the current visibility state
+  const visibility = visibilityClient.useVisibility({
+    id: "my-modal",
+    initState: INITIAL_STATE.OFF,
+  });
+
+  // Get commands to control visibility
+  const commands = visibilityClient.useVisibilityCommands("my-modal");
+
+  return (
+    <div>
+      <p>Visibility: {visibility}</p>
+      <button onClick={commands.onOpen}>Open</button>
+      <button onClick={commands.onClose}>Close</button>
+      <button onClick={commands.onToggle}>Toggle</button>
+    </div>
+  );
+};
+```
+
+### 3. Complete Example: Modal Component
+
+```tsx
+import React from "react";
+import { createVisibilityClient, INITIAL_STATE } from "@med1802/quantum-toggle";
+
+const visibilityClient = createVisibilityClient();
+
+const Modal = ({ children }: { children: React.ReactNode }) => {
+  const isOpen = visibilityClient.useVisibility({
+    id: "modal",
+    initState: INITIAL_STATE.OFF,
+  });
+
+  const { onOpen, onClose, onToggle } =
+    visibilityClient.useVisibilityCommands("modal");
+
+  if (isOpen === "off") return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button onClick={onClose}>×</button>
+        {children}
+      </div>
+    </div>
+  );
 };
 
-// Create the module
-const userModule = framework.createModule({
-  name: "user",
-  entity: userEntity,
-  modelApiClient: userModelApi,
-});
-```
+const App = () => {
+  const { onOpen } = visibilityClient.useVisibilityCommands("modal");
 
-### 2. Create Model Instances
-
-```typescript
-// Create a new user model
-userModule.createModel({ id: "user-1", name: "John Doe" });
-
-// Check if model exists
-if (userModule.hasModel("user-1")) {
-  // Get the model instance
-  const user = userModule.getModelById("user-1");
-
-  // Use the model API
-  user.mutations.setEmail("john@example.com");
-  user.activate();
-
-  // Access getters
-  console.log(user.getters.getFullInfo());
-}
-```
-
-### 3. Subscribe to Events
-
-```typescript
-// Subscribe to module-level events
-const unsubscribe = userModule.subscribe("onModelLoad-user-1", (payload) => {
-  console.log("Model loaded:", payload);
-});
-
-// Subscribe to model-specific events (in model API)
-const user = userModule.getModelById("user-1");
-const unsubscribeModel = user.subscribeToChanges((payload) => {
-  console.log("User changed:", payload);
-});
-
-// Clean up
-unsubscribe();
-unsubscribeModel();
-```
-
-### 4. Manage Model Lifecycle
-
-```typescript
-// Trigger lifecycle event
-userModule.lifeCycle("user-1");
-
-// Remove model when done
-userModule.removeModel("user-1");
+  return (
+    <div>
+      <button onClick={onOpen}>Open Modal</button>
+      <Modal>Modal Content</Modal>
+    </div>
+  );
+};
 ```
 
 ---
 
 ## 📚 API Reference
 
-### `framework.createModule<S, M, G, A>(config)`
+### `createVisibilityClient()`
 
-Creates a new module with the specified configuration.
+Creates a new visibility client instance. You typically create one instance and reuse it throughout your application.
+
+**Returns:** `VisibilityClient`
+
+```typescript
+const visibilityClient = createVisibilityClient();
+```
+
+### `visibilityClient.useVisibility(props)`
+
+React hook that returns the current visibility state for a given ID. Automatically creates the model if it doesn't exist and manages its lifecycle.
 
 **Parameters:**
 
-- `config.name` (string) - Unique module name
-- `config.entity` (function) - Entity factory function that returns state manager config
-- `config.modelApiClient` (function) - Factory function that creates the model API
+- `props.id` (string) - Unique identifier for the visibility instance
+- `props.initState` (`"on" | "off"`) - Initial state
 
-**Returns:** `IModuleClientAPI<A>`
+**Returns:** `"on" | "off"`
 
-### Module API
+```typescript
+const visibility = visibilityClient.useVisibility({
+  id: "my-component",
+  initState: INITIAL_STATE.OFF,
+});
+```
 
-#### `createModel<T>(props: T)`
+### `visibilityClient.useVisibilityCommands(id)`
 
-Creates a new model instance. The props must include an `id` field.
+React hook that returns command functions to control visibility state.
 
-#### `removeModel(id: string)`
+**Parameters:**
 
-Removes a model instance by ID.
+- `id` (string) - Unique identifier for the visibility instance
 
-#### `getModelById(id: string): A`
+**Returns:** `{ onOpen: () => void; onClose: () => void; onToggle: () => void }`
 
-Retrieves a model instance by ID.
+```typescript
+const { onOpen, onClose, onToggle } =
+  visibilityClient.useVisibilityCommands("my-component");
+```
 
-#### `hasModel(id: string): boolean`
+**Commands:**
 
-Checks if a model with the given ID exists.
+- `onOpen()` - Sets visibility to "on"
+- `onClose()` - Sets visibility to "off"
+- `onToggle()` - Toggles between "on" and "off"
 
-#### `subscribe(eventName: string, callback: (payload: any) => void): () => void`
+### `visibilityClient.useModelSelector(id)`
 
-Subscribes to module-level events. Returns an unsubscribe function.
+React hook that returns the model instance if it exists, or `undefined` if it doesn't. Useful for accessing the full model API.
 
-#### `lifeCycle(id: string)`
+**Parameters:**
 
-Triggers a lifecycle event for a specific model.
+- `id` (string) - Unique identifier for the visibility instance
+
+**Returns:** `IModelApiClient | undefined`
+
+```typescript
+const model = visibilityClient.useModelSelector("my-component");
+
+if (model) {
+  // Access full API
+  const currentState = model.getVisibility();
+  model.subscribe("onChange", (payload) => {
+    console.log("State changed:", payload);
+  });
+}
+```
+
+### `visibilityClient.getVisibilityClient(id)`
+
+Non-hook function to get the model instance directly. Use this outside of React components.
+
+**Parameters:**
+
+- `id` (string) - Unique identifier for the visibility instance
+
+**Returns:** `IModelApiClient`
+
+```typescript
+const model = visibilityClient.getVisibilityClient("my-component");
+const state = model.getVisibility();
+model.commands.onToggle();
+```
 
 ---
 
-## 🏗️ Architecture
+## 🎯 Use Cases
 
-Quantum UI follows a hierarchical architecture:
+### Modals and Dialogs
 
+```tsx
+const Modal = () => {
+  const isOpen = visibilityClient.useVisibility({
+    id: "modal",
+    initState: INITIAL_STATE.OFF,
+  });
+  const { onClose } = visibilityClient.useVisibilityCommands("modal");
+
+  if (isOpen === "off") return null;
+
+  return (
+    <div className="modal">
+      <button onClick={onClose}>Close</button>
+      {/* Modal content */}
+    </div>
+  );
+};
 ```
-App
-└── Modules (framework.createModule)
-    └── Models (module.createModel)
-        └── Entity (state, mutations, getters)
+
+### Accordions
+
+```tsx
+const AccordionItem = ({ id, title, content }) => {
+  const isOpen = visibilityClient.useVisibility({
+    id,
+    initState: INITIAL_STATE.OFF,
+  });
+  const { onToggle } = visibilityClient.useVisibilityCommands(id);
+
+  return (
+    <div>
+      <button onClick={onToggle}>{title}</button>
+      {isOpen === "on" && <div>{content}</div>}
+    </div>
+  );
+};
 ```
 
-- **App**: Global application state manager that tracks all modules
-- **Module**: Container for related models with shared configuration
-- **Model**: Individual instance with its own state and API
-- **Entity**: State manager with mutations and getters
+### Tooltips
+
+```tsx
+const Tooltip = ({ id, children, content }) => {
+  const isVisible = visibilityClient.useVisibility({
+    id,
+    initState: INITIAL_STATE.OFF,
+  });
+  const { onOpen, onClose } = visibilityClient.useVisibilityCommands(id);
+
+  return (
+    <div onMouseEnter={onOpen} onMouseLeave={onClose}>
+      {children}
+      {isVisible === "on" && <div className="tooltip">{content}</div>}
+    </div>
+  );
+};
+```
+
+---
+
+## 🔧 Advanced Usage
+
+### Accessing Full Model API
+
+```typescript
+const model = visibilityClient.getVisibilityClient("my-component");
+
+// Get current state
+const state = model.getVisibility();
+
+// Subscribe to changes
+const unsubscribe = model.subscribe("onChange", (payload) => {
+  console.log("Visibility changed:", payload);
+});
+
+// Use commands
+model.commands.onOpen();
+model.commands.onClose();
+model.commands.onToggle();
+
+// Use onChangeSync for React integration
+const unsubscribeSync = model.onChangeSync.subscribe(() => {
+  // React to changes
+});
+const currentState = model.onChangeSync.snapshot();
+```
+
+### Multiple Instances
+
+```tsx
+const App = () => {
+  // Each instance has its own independent state
+  const modal1 = visibilityClient.useVisibility({
+    id: "modal-1",
+    initState: INITIAL_STATE.OFF,
+  });
+  const modal2 = visibilityClient.useVisibility({
+    id: "modal-2",
+    initState: INITIAL_STATE.OFF,
+  });
+
+  const commands1 = visibilityClient.useVisibilityCommands("modal-1");
+  const commands2 = visibilityClient.useVisibilityCommands("modal-2");
+
+  return (
+    <div>
+      <button onClick={commands1.onToggle}>Toggle Modal 1</button>
+      <button onClick={commands2.onToggle}>Toggle Modal 2</button>
+      {modal1 === "on" && <div>Modal 1 Content</div>}
+      {modal2 === "on" && <div>Modal 2 Content</div>}
+    </div>
+  );
+};
+```
 
 ---
 
 ## 💡 Best Practices
 
-1. **Module Naming**: Use descriptive, unique names for modules
-2. **Model IDs**: Always use unique IDs for model instances
-3. **Event Cleanup**: Always unsubscribe from events to prevent memory leaks
-4. **Type Safety**: Leverage TypeScript generics for better type inference
-5. **Lifecycle Management**: Use `lifeCycle()` to notify when models are ready
+1. **Single Client Instance**: Create one `visibilityClient` instance and reuse it throughout your app
+2. **Unique IDs**: Always use unique IDs for each visibility instance
+3. **Initial State**: Set appropriate initial states based on your use case
+4. **Lifecycle Management**: The library handles lifecycle automatically, but ensure IDs are consistent
+5. **Type Safety**: Use `INITIAL_STATE` enum for better type safety
 
 ---
 
 ## 🔗 Related Packages
 
-- [`@med1802/scoped-observer`](../scoped-observer) - Event system used by Quantum UI
+- [`@med1802/quantum-ui`](../quantum-ui) - Core framework used by Quantum Toggle
+- [`@med1802/scoped-observer`](../../med1802/scoped-observer) - Event system used internally
 
 ---
 
