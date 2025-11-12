@@ -1,46 +1,58 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { visibilityModule, VisibilityProps } from "./scrolliumModule";
+import {
+  createContext,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+  type PropsWithChildren,
+} from "react";
+import type { ScrolliumProps } from "./types";
 
 const createScrolliumClient = () => {
-  return {
-    useVisibility: (props: VisibilityProps) => {
-      visibilityModule.createModel(props);
-      const model = visibilityModule.getModelById(props.id);
-      useEffect(() => {
-        visibilityModule.lifeCycle(props.id);
-        return () => {
-          visibilityModule.removeModel(props.id);
-          visibilityModule.lifeCycle(props.id);
-        };
-      }, []);
-      const visibility = useSyncExternalStore(
-        model.onChangeSync.subscribe,
-        model.onChangeSync.snapshot
-      );
-      return visibility;
-    },
-    useVisibilityCommands: (id: string) => {
-      const model = visibilityModule.getModelById(id);
-      return model.commands;
-    },
-    useModelSelector: (id: string) => {
-      const [mount] = useState(() => {
-        return (notify: () => void) => {
-          return visibilityModule.subscribe(`onModelLoad-${id}`, () => {
-            notify();
-          });
-        };
-      });
-      const [snapshot] = useState(() => {
-        return () => visibilityModule.hasModel(id);
-      });
-      useSyncExternalStore(mount, snapshot);
-      if (!visibilityModule.hasModel(id)) return undefined;
+  const ScrollContext = createContext<{ id: string } | undefined>(undefined);
+  const store = createStore<IEntity>();
+  const observer = createObserver(SCROLLIUM_STORE_SCOPE);
 
-      return visibilityModule.getModelById(id);
+  return {
+    Scroll: ({ children, ...props }: PropsWithChildren<ScrolliumProps>) => {
+      const { elementRef } = useSetup(store, props);
+      const getters = store.getters.getEntityById(props.id)!.api.getGetters();
+      const scroll = store.getters.getEntityById(props.id)!.api.getScroll();
+
+      return (
+        <ScrollContext.Provider
+          value={{
+            id: props.id,
+          }}
+        >
+          <div
+            ref={elementRef}
+            style={getters.getStyle()}
+            onScroll={scroll.onScroll}
+          >
+            {children}
+          </div>
+        </ScrollContext.Provider>
+      );
     },
-    getVisibilityClient: (id: string) => {
-      return visibilityModule.getModelById(id);
+    useScrollCommands: () => {
+      const { id } = useRequiredContext(ScrollContext);
+      return store.getters.getEntityById(id).api.getCommands();
+    },
+    useScroll: () => {
+      const { id } = useRequiredContext(ScrollContext);
+      return useScroll(store, id);
+    },
+    useScrolliumSelector: (id: string) => {
+      return useScrolliumSelector(
+        {
+          store,
+          observer,
+        },
+        id
+      );
+    },
+    getScrolliumClient: (id: string) => {
+      return store.getters.getEntityById(id).api.getClientEntity();
     },
   };
 };
