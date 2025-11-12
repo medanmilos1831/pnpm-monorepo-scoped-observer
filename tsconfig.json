@@ -22,5 +22,6 @@
     { "path": "./behavior/react-scrollium" },
     { "path": "./med1802/scoped-observer" },
     { "path": "./med1802/quantum-ui" },
+    { "path": "./med1802/quantum-toggle" },
   ]
 }

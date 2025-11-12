@@ -61,6 +61,21 @@ importers:
         specifier: ^5.0.0
         version: 5.8.3
 
+  med1802/quantum-toggle:
+    devDependencies:
+      '@med1802/quantum-ui':
+        specifier: workspace:*
+        version: link:../quantum-ui
+      '@med1802/scoped-observer':
+        specifier: workspace:*
+        version: link:../scoped-observer
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.23
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+
   med1802/quantum-ui:
     devDependencies:
       '@med1802/scoped-observer':
@@ -140,6 +155,9 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
+      '@med1802/quantum-ui':
+        specifier: ^1.0.1
+        version: 1.0.1(@med1802/scoped-observer@1.0.0)(react@18.3.1)
       '@mui/icons-material':
         specifier: ^7.3.1
         version: 7.3.1(@mui/material@7.3.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
@@ -554,6 +572,15 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
+
+  '@med1802/quantum-ui@1.0.1':
+    resolution: {integrity: sha512-uasnaCAzZ+P+BlH6OM0FtXwLQ4O8FMoAJogn5aq/+bzcVNoeKK50ajVYjMo5DiEU17BDk9cMuLmQwkGVQtHv8A==}
+    peerDependencies:
+      '@med1802/scoped-observer': ^1.0.0
+      react: ^18.0.0
+
+  '@med1802/scoped-observer@1.0.0':
+    resolution: {integrity: sha512-XiazS5i83Ui6x+G8f/bvaiQN9ynzb0oj/osLMiu88uzENxdQrpWv/5AwPXPzEHhvURGQ/Lo9QrQRCoMf0HFPUA==}
 
   '@mui/core-downloads-tracker@7.3.1':
     resolution: {integrity: sha512-+mIK1Z0BhOaQ0vCgOkT1mSrIpEHLo338h4/duuL4TBLXPvUMit732mnwJY3W40Avy30HdeSfwUAAGRkKmwRaEQ==}
@@ -1927,6 +1954,13 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.0.0)(react@18.3.1)':
+    dependencies:
+      '@med1802/scoped-observer': 1.0.0
+      react: 18.3.1
+
+  '@med1802/scoped-observer@1.0.0': {}
 
   '@mui/core-downloads-tracker@7.3.1': {}
 
