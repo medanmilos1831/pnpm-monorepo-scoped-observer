@@ -8,8 +8,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/medanmilos1831/quantum-ui.git",
+    "url": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages.git",
     "directory": "med1802/quantum-ui"
   },
-  "homepage": "https://github.com/medanmilos1831/med1802/tree/main/quantum-ui/quantum-ui#readme"
+  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/quantum-ui"
 }
