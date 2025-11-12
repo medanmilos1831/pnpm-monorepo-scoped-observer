@@ -1,10 +1,19 @@
 {
   "name": "@med1802/quantum-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "@med1802/scoped-observer": "^1.0.0"
+  },
+  "devDependencies": {
+    "@med1802/scoped-observer": "workspace:*",
+    "react": "^18.0.0",
+    "@types/react": "^18.0.0"
   },
   "repository": {
     "type": "git",

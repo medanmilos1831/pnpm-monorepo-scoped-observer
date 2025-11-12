@@ -61,6 +61,20 @@ importers:
         specifier: ^5.0.0
         version: 5.8.3
 
+  med1802/quantum-ui:
+    devDependencies:
+      '@med1802/scoped-observer':
+        specifier: workspace:*
+        version: link:../scoped-observer
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.23
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+
+  med1802/scoped-observer: {}
+
   scoped-observer/core: {}
 
   scoped-observer/react:
@@ -163,8 +177,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1)
       react-wizzard:
-        specifier: ^2.0.0
-        version: 2.0.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1)
+        specifier: ^3.0.0
+        version: 3.0.3(@scoped-observer/core@2.3.5)(react@18.3.1)
       xstate:
         specifier: ^5.20.2
         version: 5.20.2
@@ -1404,10 +1418,10 @@ packages:
       '@scoped-observer/react-state-machine': ^3.0.7
       react: ^18.0.0
 
-  react-wizzard@2.0.0:
-    resolution: {integrity: sha512-3Z80QPL/zEqu92ubWODsFB7sAAq5MZudr3MIDWCAc3fXK7OCgU5DmHXbpnPo+ktuxUltPxbgeXiuCDkwjuIO/w==}
+  react-wizzard@3.0.3:
+    resolution: {integrity: sha512-OX/oqzWP50JDut4An7CR6TQ+da9npvWkK3M/bxJOw4S+Inbb8yFFD+6tJCmopMos2rDlYJT3hxNvdf4LRKG32A==}
     peerDependencies:
-      '@scoped-observer/react-state-machine': ^3.0.7
+      '@scoped-observer/core': ^2.3.5
       react: ^18.0.0
 
   react@18.3.1:
@@ -2888,9 +2902,9 @@ snapshots:
       '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1)
       react: 18.3.1
 
-  react-wizzard@2.0.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1):
+  react-wizzard@3.0.3(@scoped-observer/core@2.3.5)(react@18.3.1):
     dependencies:
-      '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1)
+      '@scoped-observer/core': 2.3.5
       react: 18.3.1
 
   react@18.3.1:
