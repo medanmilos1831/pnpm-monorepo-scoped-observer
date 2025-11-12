@@ -1,6 +1,6 @@
-import { visibilityModule } from "@med1802/quantum-toggle";
+import { createVisibilityClient } from "@med1802/quantum-toggle";
 
 const { useVisibility, useVisibilityCommands, useModelSelector } =
-  visibilityModule;
+  createVisibilityClient();
 
 export { useVisibility, useVisibilityCommands, useModelSelector };
