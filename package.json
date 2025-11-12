@@ -32,6 +32,8 @@
         "test-app:dev": "pnpm --filter test-app run dev",
         "test-app:build": "pnpm --filter test-app run build",
         "test-app:preview": "pnpm --filter test-app run preview",
-        "test-app:install": "pnpm --filter test-app install"
+        "test-app:install": "pnpm --filter test-app install",
+        "build:medeni1802-scoped-observer": "pnpm --filter @medeni1802/scoped-observer run build",
+        "publish:medeni1802-scoped-observer": "pnpm publish --filter @medeni1802/scoped-observer --access public"
     }
 }
