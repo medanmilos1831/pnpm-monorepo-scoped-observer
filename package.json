@@ -35,6 +35,8 @@
         "test-app:preview": "pnpm --filter test-app run preview",
         "test-app:install": "pnpm --filter test-app install",
         "build:med1802-scoped-observer": "pnpm --filter @med1802/scoped-observer run build",
-        "publish:med1802-scoped-observer": "pnpm publish --filter @med1802/scoped-observer --access public"
+        "publish:med1802-scoped-observer": "pnpm publish --filter @med1802/scoped-observer --access public",
+        "build:med1802-quantum-ui": "pnpm --filter @med1802/quantum-ui run build",
+        "publish:med1802-quantum-ui": "pnpm publish --filter @med1802/quantum-ui --access public"
     }
 }
