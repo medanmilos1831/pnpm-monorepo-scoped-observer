@@ -18,7 +18,9 @@ const createQuantumScrolliumClient = () => {
       scrolliumModule.createModel(props);
       const model = scrolliumModule.getModelById(props.id);
       const elementRef = useRef<HTMLDivElement>(null);
-      model.initializeElement(elementRef.current as HTMLElement);
+      useEffect(() => {
+        model.initializeElement(elementRef.current as HTMLElement);
+      }, []);
       useEffect(() => {
         let unsubscribe = () => {};
         if (!props.onScroll) return;
@@ -51,7 +53,29 @@ const createQuantumScrolliumClient = () => {
     },
     useScroll: () => {
       const { id } = useRequiredContext(ScrollContext);
-      return useScroll(store, id);
+      const model = scrolliumModule.getModelById(id);
+      useSyncExternalStore(model.onScrollWatcher, model.getScrollPosition);
+      useSyncExternalStore(model.onScrollStopWatcher, model.getIsScrolling);
+      return model.getClient();
+    },
+    useScrolliumSelector: (id: string) => {
+      const [mount] = useState(() => {
+        return (notify: () => void) => {
+          return scrolliumModule.subscribe(`onModelLoad-${id}`, () => {
+            notify();
+          });
+        };
+      });
+      const [snapshot] = useState(() => {
+        return () => scrolliumModule.hasModel(id);
+      });
+      useSyncExternalStore(mount, snapshot);
+      if (!scrolliumModule.hasModel(id)) return undefined;
+
+      return {
+        commands: scrolliumModule.getModelById(id).commands,
+        getClient: scrolliumModule.getModelById(id).getClient,
+      };
     },
     // useScrolliumSelector: (id: string) => {
     //   return useScrolliumSelector(

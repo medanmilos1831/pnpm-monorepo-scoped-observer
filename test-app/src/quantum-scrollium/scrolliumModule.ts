@@ -49,6 +49,7 @@ interface IEntityGetters {
   getIsScrolling: () => boolean;
   getId: () => string;
   getStyle: () => React.CSSProperties;
+  getElement: () => HTMLElement | null;
 }
 
 export interface IModelApiClient {
@@ -63,6 +64,21 @@ export interface IModelApiClient {
     scrollTo: (options?: ScrollToOptions) => void;
     scrollToStart: (options?: ScrollOptions) => void;
     scrollToEnd: (options?: ScrollOptions) => void;
+  };
+  onScrollWatcher: (notify: () => void) => () => void;
+  getScrollPosition: () => number;
+  onScrollStopWatcher: (notify: () => void) => () => void;
+  getIsScrolling: () => boolean;
+  getClient: () => {
+    id: string;
+    scrollPosition: number;
+    axis: ScrolliumAxis;
+    direction: ScrolliumDirection;
+    progress: number;
+    isStart: boolean;
+    isEnd: boolean;
+    clientSize: number;
+    scrollSize: number;
   };
 }
 const scrolliumModule = framework.createModule<
@@ -228,6 +244,7 @@ const scrolliumModule = framework.createModule<
           /** @returns Entity identifier */
           getId: () => state.id,
           getStyle: () => state.style,
+          getElement: () => state.element,
         };
       },
     };
@@ -259,20 +276,47 @@ const scrolliumModule = framework.createModule<
           entity.state.element?.scrollTo(options);
         },
         scrollToStart: (options?: ScrollOptions) => {
-          entity.state.element?.scrollTo({
+          entity.getters.getElement()?.scrollTo({
             top: 0,
             left: 0,
             ...options,
           });
         },
         scrollToEnd: (options?: ScrollOptions) => {
-          entity.state.element?.scrollTo({
+          console.log(entity.getters.getElement());
+          entity.getters.getElement()?.scrollTo({
             top: entity.state.scrollSize,
             left: entity.state.scrollSize,
             ...options,
           });
         },
       },
+      getClient: () => {
+        return {
+          id: entity.getters.getId(),
+          scrollPosition: entity.getters.getScrollPosition(),
+          axis: entity.getters.getAxis(),
+          direction: entity.getters.getDirection(),
+          progress: entity.getters.getProgress(),
+          isStart: entity.getters.getIsStart(),
+          isEnd: entity.getters.getIsEnd(),
+          clientSize: entity.getters.getClientSize(),
+          scrollSize: entity.getters.getScrollSize(),
+          isScrolling: entity.getters.getIsScrolling(),
+        };
+      },
+      onScrollWatcher: (notify: () => void) => {
+        return subscribe(ScrolliumPublicEvents.ON_SCROLL, () => {
+          notify();
+        });
+      },
+      getScrollPosition: entity.getters.getScrollPosition,
+      onScrollStopWatcher: (notify: () => void) => {
+        return subscribe(ScrolliumPublicEvents.ON_SCROLL_STOP, () => {
+          notify();
+        });
+      },
+      getIsScrolling: entity.getters.getIsScrolling,
     };
   },
 });
