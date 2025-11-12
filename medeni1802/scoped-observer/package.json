@@ -1,5 +1,5 @@
 {
-  "name": "@medeni1802/core",
+  "name": "@medeni1802/scoped-observer",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,5 +11,5 @@
     "url": "https://github.com/medanmilos1831/scoped-observer.git",
     "directory": "medeni1802/scoped-observer"
   },
-  "homepage": "https://github.com/medanmilos1831/medeni1802/tree/main/scoped-observer/core#readme"
+  "homepage": "https://github.com/medanmilos1831/medeni1802/tree/main/scoped-observer/scoped-observer#readme"
 }
