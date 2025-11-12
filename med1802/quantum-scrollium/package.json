@@ -1,0 +1,26 @@
+{
+  "name": "@med1802/quantum-scrollium",
+  "version": "1.0.2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "@med1802/scoped-observer": "^1.0.0",
+    "@med1802/quantum-ui": "^1.0.1"
+  },
+  "devDependencies": {
+    "@med1802/scoped-observer": "workspace:*",
+    "@med1802/quantum-ui": "workspace:*",
+    "react": "^18.0.0",
+    "@types/react": "^18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages.git",
+    "directory": "med1802/quantum-scrollium"
+  },
+  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/quantum-scrollium"
+}

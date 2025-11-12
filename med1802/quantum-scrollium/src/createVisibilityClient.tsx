@@ -1,6 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { type VisibilityProps } from "../types";
-import { visibilityModule } from "./visibilityModule";
+import { visibilityModule, VisibilityProps } from "./visibilityModule";
 
 const createVisibilityClient = () => {
   return {

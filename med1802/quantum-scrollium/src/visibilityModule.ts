@@ -35,7 +35,7 @@ type SubscribeType = (
   callback: (payload: any) => void
 ) => () => void;
 
-interface IModelApiClient {
+export interface IModelApiClient {
   getVisibility: () => "on" | "off";
   commands: CommandsType;
   subscribe: SubscribeType;
