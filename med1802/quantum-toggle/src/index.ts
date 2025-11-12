@@ -1,3 +1,3 @@
-import { visibilityModule } from "./visibilityModule";
+import { createVisibilityClient } from "./createVisibilityClient";
 
-export { visibilityModule };
+export { createVisibilityClient };

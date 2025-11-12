@@ -1,6 +1,6 @@
-import { createVisibilityClient } from "./react-visibility-state/client/createVisibilityClient";
+import { visibilityModule } from "@med1802/quantum-toggle";
 
 const { useVisibility, useVisibilityCommands, useModelSelector } =
-  createVisibilityClient();
+  visibilityModule;
 
 export { useVisibility, useVisibilityCommands, useModelSelector };
