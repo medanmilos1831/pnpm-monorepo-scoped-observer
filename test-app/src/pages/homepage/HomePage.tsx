@@ -1,10 +1,10 @@
-import HomeVisibility from "./HomeVisibility";
+import { HomePageScroll } from "./HomePageScroll";
+
 const HomePage = () => {
   return (
     <>
-      <HomeVisibility />
       {/* <HomePageWizard /> */}
-      {/* <HomePageScroll /> */}
+      <HomePageScroll />
     </>
   );
 };

@@ -2,6 +2,7 @@ import { framework } from "@med1802/quantum-ui";
 import {
   ScrolliumAxis,
   ScrolliumDirection,
+  ScrolliumPublicEvents,
   type ScrolliumProps,
 } from "./types";
 
@@ -50,7 +51,20 @@ interface IEntityGetters {
   getStyle: () => React.CSSProperties;
 }
 
-export interface IModelApiClient {}
+export interface IModelApiClient {
+  initializeElement: IEntityMutations["initializeElement"];
+  style: IEntityGetters["getStyle"];
+  onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
+  subscribe: (
+    eventName: string,
+    callback: (payload: any) => void
+  ) => () => void;
+  commands: {
+    scrollTo: (options?: ScrollToOptions) => void;
+    scrollToStart: (options?: ScrollOptions) => void;
+    scrollToEnd: (options?: ScrollOptions) => void;
+  };
+}
 const scrolliumModule = framework.createModule<
   IEntityState,
   IEntityMutations,
@@ -219,7 +233,47 @@ const scrolliumModule = framework.createModule<
     };
   },
   modelApiClient(entity, dispatch, subscribe) {
-    return {};
+    return {
+      initializeElement: entity.mutations.initializeElement,
+      style: entity.getters.getStyle,
+      subscribe,
+      onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+        entity.mutations.setScrollPosition(
+          entity.state.axis === ScrolliumAxis.VERTICAL
+            ? (e.target as HTMLDivElement).scrollTop
+            : (e.target as HTMLDivElement).scrollLeft
+        );
+        entity.mutations.setIsScrolling(() => {
+          dispatch(
+            ScrolliumPublicEvents.ON_SCROLL_STOP,
+            entity.getters.getScrollPosition()
+          );
+        });
+        dispatch(
+          ScrolliumPublicEvents.ON_SCROLL,
+          entity.getters.getScrollPosition()
+        );
+      },
+      commands: {
+        scrollTo: (options?: ScrollToOptions) => {
+          entity.state.element?.scrollTo(options);
+        },
+        scrollToStart: (options?: ScrollOptions) => {
+          entity.state.element?.scrollTo({
+            top: 0,
+            left: 0,
+            ...options,
+          });
+        },
+        scrollToEnd: (options?: ScrollOptions) => {
+          entity.state.element?.scrollTo({
+            top: entity.state.scrollSize,
+            left: entity.state.scrollSize,
+            ...options,
+          });
+        },
+      },
+    };
   },
 });
 

@@ -1,3 +1,3 @@
-import { createScrolliumClient } from "./createScrolliumClient";
+import { createQuantumScrolliumClient } from "./createQuantumScrolliumClient";
 
-export { createScrolliumClient };
+export { createQuantumScrolliumClient };

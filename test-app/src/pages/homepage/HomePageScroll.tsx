@@ -1,3 +1,5 @@
+import { Scroll } from "../../scroll";
+
 const HomePageScroll = () => {
   return (
     <>
@@ -5,7 +7,13 @@ const HomePageScroll = () => {
         <h1>Home Page Scroll</h1>
       </div>
       <div style={{ height: "10rem" }}>
-        {/* <Scroll id="scroll-1" axis="vertical" onScroll={(payload) => {}}>
+        <Scroll
+          id="scroll-1"
+          axis="vertical"
+          onScroll={(payload) => {
+            console.log(payload);
+          }}
+        >
           {new Array(50).fill(0).map((_, index) => (
             <div
               key={index}
@@ -16,7 +24,7 @@ const HomePageScroll = () => {
               <h1>Item {index}</h1>
             </div>
           ))}
-        </Scroll> */}
+        </Scroll>
       </div>
     </>
   );

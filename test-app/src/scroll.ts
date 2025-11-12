@@ -1,4 +1,5 @@
-import { createScrolliumClient } from "./react-scrollium";
+import { createQuantumScrolliumClient } from "./quantum-scrollium";
 
-export const { Scroll, useScroll, useScrolliumSelector, useScrollCommands } =
-  createScrolliumClient();
+// useScroll, useScrolliumSelector, useScrollCommands
+
+export const { Scroll } = createQuantumScrolliumClient();
