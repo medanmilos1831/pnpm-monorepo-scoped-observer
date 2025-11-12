@@ -1,5 +1,5 @@
 packages:
   - "scoped-observer/*"
   - "behavior/*"
-  - "medeni1802/*"
+  - "med1802/*"
   - "test-app"
