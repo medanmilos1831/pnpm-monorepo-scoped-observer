@@ -39,6 +39,9 @@ scoped-observer/*/node_modules/
 behavior/*/dist/
 behavior/*/build/
 behavior/*/node_modules/
+medeni1802/*/dist/
+medeni1802/*/build/
+medeni1802/*/node_modules/
 
 # Optional: IDEs
 .idea/
