@@ -13,7 +13,6 @@ import {
 } from "./types";
 import { useWizardSelector } from "./react-integration/useWizardSelector";
 import { createObserver } from "./core/observer";
-import { createModuleInstance } from "./core/createModuleInstance";
 
 const createWizardClient = () => {
   const WizardContext = createContext<{ id: string } | undefined>(undefined);
