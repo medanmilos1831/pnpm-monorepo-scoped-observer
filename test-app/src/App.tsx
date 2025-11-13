@@ -41,6 +41,12 @@ scopedObserver.dispatch({
     name: "John",
   },
 });
+const unsubscribe = scopedObserver.subscribe({
+  eventName: "name",
+  callback: (payload) => {
+    console.log("SUBSCRIBED", payload);
+  },
+});
 
 function App() {
   return (

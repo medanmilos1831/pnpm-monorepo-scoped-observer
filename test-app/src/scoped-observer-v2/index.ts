@@ -7,7 +7,7 @@ export const createScopedObserver = (props: ScopeNode[]) => {
     const scope = buildScopeHierarchy(node);
     root.subScopes.set(node.scope, scope);
   });
-  const buildScopeHierarchy = (node: ScopeNode): EventScope => {
+  function buildScopeHierarchy(node: ScopeNode): EventScope {
     const eventScope = new EventScope(node.scope);
 
     if (node.subScopes && node.subScopes.length > 0) {
@@ -18,9 +18,9 @@ export const createScopedObserver = (props: ScopeNode[]) => {
     }
 
     return eventScope;
-  };
+  }
 
-  const find = (scope?: string): EventScope | undefined => {
+  function find(scope?: string): EventScope | undefined {
     if (!scope || scope.trim() === "") {
       return root;
     }
@@ -37,7 +37,7 @@ export const createScopedObserver = (props: ScopeNode[]) => {
     }
 
     return current;
-  };
+  }
 
   return {
     dispatch: ({
@@ -61,6 +61,11 @@ export const createScopedObserver = (props: ScopeNode[]) => {
       scope?: string;
       eventName: string;
       callback: (payload: any) => void;
-    }) => {},
+    }) => {
+      const scopeEntity = find(scope);
+      if (!scopeEntity) return;
+      const unsubscribe = scopeEntity.subscribe(eventName, callback);
+      return unsubscribe;
+    },
   };
 };

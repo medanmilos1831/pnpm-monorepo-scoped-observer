@@ -21,7 +21,19 @@ class EventScope extends EventTarget {
     });
     this.dispatchEvent(event);
   };
-  subscribe = (eventName: string, callback: (e: any) => void) => {};
+  subscribe = (eventName: string, callback: (e: any) => void) => {
+    const callbackWrapper = (e: any) => {
+      callback({
+        payload: e.detail.payload,
+        scope: this.scopeName,
+        eventName,
+      });
+    };
+    this.addEventListener(eventName, callbackWrapper);
+    return () => {
+      this.removeEventListener(eventName, callbackWrapper);
+    };
+  };
 }
 
 export { EventScope };
