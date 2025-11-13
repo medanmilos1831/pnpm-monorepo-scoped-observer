@@ -1,6 +1,6 @@
 import { HomePage } from "./pages/HomePage";
 
-import { createScopedObserver } from "./scoped-observer-v2";
+import { createScopedObserver } from "./scoped-observer";
 let scopedObserver = createScopedObserver([
   {
     scope: "country",
