@@ -9,14 +9,7 @@ export class ScopedObserver {
     scope: string,
     eventName: string
   ) {
-    console.group(`[ScopedObserver] ${type.toUpperCase()}`);
-
-    console.table({
-      Scope: scope,
-      Event: eventName,
-      Payload: payload,
-    });
-    console.groupEnd();
+    // Logging disabled
   }
 
   findScope(scope: string) {

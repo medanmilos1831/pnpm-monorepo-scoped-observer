@@ -1,3 +1,3 @@
-import { createVisibilityClient } from "./createVisibilityClient";
+import { createQuantumScrolliumClient } from "./createQuantumScrolliumClient";
 
-export { createVisibilityClient };
+export { createQuantumScrolliumClient };
