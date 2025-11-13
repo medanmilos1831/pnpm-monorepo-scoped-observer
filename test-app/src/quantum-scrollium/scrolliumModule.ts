@@ -1,52 +1,13 @@
 import { framework } from "@med1802/quantum-ui";
+
 import {
+  type IEntityMutations,
+  type IEntityGetters,
   ScrolliumDirection,
-  ScrolliumPublicEvents,
+  type IEntityState,
   type ScrolliumProps,
+  ScrolliumPublicEvents,
 } from "./types";
-
-interface IEntityState {
-  scrollPosition: number;
-  previousScrollPosition: number;
-  isScrolling: boolean;
-  scrollTimeoutId: number | null;
-  id: string;
-  isStart: boolean;
-  isEnd: boolean;
-  clientSize: number;
-  scrollSize: number;
-  progress: number;
-  direction: ScrolliumDirection;
-  element: HTMLElement | null;
-  style: React.CSSProperties;
-}
-
-interface IEntityMutations {
-  setScrollPosition: (position: number) => void;
-  setIsScrolling: (callback?: () => void) => void;
-  setClientSize: (size: number) => void;
-  setScrollSize: (size: number) => void;
-  initializeElement: (element: HTMLElement) => void;
-  calculateDirection: () => void;
-  calculateScrollBounds: () => void;
-  calculateProgress: () => void;
-  calculate: (position: number) => void;
-  cleanup: () => void;
-}
-
-interface IEntityGetters {
-  getScrollPosition: () => number;
-  getIsStart: () => boolean;
-  getIsEnd: () => boolean;
-  getClientSize: () => number;
-  getScrollSize: () => number;
-  getProgress: () => number;
-  getDirection: () => ScrolliumDirection;
-  getIsScrolling: () => boolean;
-  getId: () => string;
-  getStyle: () => React.CSSProperties;
-  getElement: () => HTMLElement | null;
-}
 
 export interface IModelApiClient {
   initializeElement: IEntityMutations["initializeElement"];
@@ -192,23 +153,14 @@ const scrolliumModule = framework.createModule<
       },
       getters(state) {
         return {
-          /** @returns Current scroll position in pixels */
           getScrollPosition: () => state.scrollPosition,
-          /** @returns True if scroll is at the start (position 0) */
           getIsStart: () => state.isStart,
-          /** @returns True if scroll is at the end (max scroll) */
           getIsEnd: () => state.isEnd,
-          /** @returns Visible client/viewport size in pixels */
           getClientSize: () => state.clientSize,
-          /** @returns Maximum scrollable size in pixels */
           getScrollSize: () => state.scrollSize,
-          /** @returns Scroll progress percentage (1-100) */
           getProgress: () => state.progress,
-          /** @returns Current scroll direction (up, down, left, right, none) */
           getDirection: () => state.direction,
-          /** @returns True if currently scrolling (debounced 500ms) */
           getIsScrolling: () => state.isScrolling,
-          /** @returns Entity identifier */
           getId: () => state.id,
           getStyle: () => state.style,
           getElement: () => state.element,
@@ -256,7 +208,6 @@ const scrolliumModule = framework.createModule<
           });
         },
         scrollToEnd: (options?: ScrollOptions) => {
-          console.log(entity.getters.getElement());
           entity.getters.getElement()?.scrollTo({
             top: entity.state.scrollSize,
             left: entity.state.scrollSize,

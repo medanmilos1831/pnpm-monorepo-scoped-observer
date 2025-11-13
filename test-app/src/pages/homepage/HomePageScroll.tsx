@@ -11,13 +11,11 @@ const SomeComponent = () => {
 
 const SelectorComponent = () => {
   const client = useScrolliumSelector("scroll-1");
-  console.log(client);
   useEffect(() => {
     if (!client) return;
     const unsubscribe = client.subscribe("onScroll", ({ payload }) => {
-      console.log(payload);
+      // Handle scroll event
     });
-    console.log(unsubscribe);
     return () => {
       unsubscribe();
     };

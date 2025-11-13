@@ -1,33 +1,61 @@
-import type { createStore } from "./Store/createStore";
-import type { createEntityApiClient } from "./Store/Entity/createEntityApiClient";
-
-export enum ScrolliumStoreEvents {
-  CREATE_SCROLLIUM = "createScrollium",
+export enum ScrolliumDirection {
+  UP = "up",
+  DOWN = "down",
+  NONE = "none",
 }
-
-export const SCROLLIUM_STORE_SCOPE = "scrollium-store" as const;
-export const SCROLLIUM_SCOPE = "scrollium" as const;
-
-export type IEntity = ReturnType<typeof createEntityApiClient>;
+export interface ScrolliumProps {
+  id: string;
+  onScroll?: (params: any) => void;
+}
+export interface ScrolliumProps {
+  id: string;
+  onScroll?: (params: any) => void;
+}
 
 export enum ScrolliumPublicEvents {
   ON_SCROLL = "onScroll",
   ON_SCROLL_STOP = "onScrollStop",
 }
 
-export type ScrolliumPublicEventsType = `${ScrolliumPublicEvents}`;
-
-export enum ScrolliumDirection {
-  UP = "up",
-  DOWN = "down",
-  NONE = "none",
-  LEFT = "left",
-  RIGHT = "right",
-}
-
-export interface ScrolliumProps {
+export interface IEntityState {
+  scrollPosition: number;
+  previousScrollPosition: number;
+  isScrolling: boolean;
+  scrollTimeoutId: number | null;
   id: string;
-  onScroll?: (params: any) => void;
+  isStart: boolean;
+  isEnd: boolean;
+  clientSize: number;
+  scrollSize: number;
+  progress: number;
+  direction: ScrolliumDirection;
+  element: HTMLElement | null;
+  style: React.CSSProperties;
 }
 
-export type StoreReturnType = ReturnType<typeof createStore<IEntity>>;
+export interface IEntityMutations {
+  setScrollPosition: (position: number) => void;
+  setIsScrolling: (callback?: () => void) => void;
+  setClientSize: (size: number) => void;
+  setScrollSize: (size: number) => void;
+  initializeElement: (element: HTMLElement) => void;
+  calculateDirection: () => void;
+  calculateScrollBounds: () => void;
+  calculateProgress: () => void;
+  calculate: (position: number) => void;
+  cleanup: () => void;
+}
+
+export interface IEntityGetters {
+  getScrollPosition: () => number;
+  getIsStart: () => boolean;
+  getIsEnd: () => boolean;
+  getClientSize: () => number;
+  getScrollSize: () => number;
+  getProgress: () => number;
+  getDirection: () => ScrolliumDirection;
+  getIsScrolling: () => boolean;
+  getId: () => string;
+  getStyle: () => React.CSSProperties;
+  getElement: () => HTMLElement | null;
+}
