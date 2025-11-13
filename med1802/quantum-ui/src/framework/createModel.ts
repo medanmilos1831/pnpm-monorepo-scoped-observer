@@ -10,10 +10,13 @@ function createModel<T extends { id: string }>(
     moduleConfigParams.entity(modelProps)
   );
   const modelObserver = core.createObserver(modelScope);
+  const subscribe = (eventName: string, callback: (payload: any) => void) => {
+    return modelObserver.subscribe(eventName, callback)!;
+  };
   return moduleConfigParams.modelApiClient(
     stateManager,
     modelObserver.dispatch,
-    modelObserver.subscribe
+    subscribe
   );
 }
 
