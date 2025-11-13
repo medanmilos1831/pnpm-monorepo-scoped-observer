@@ -26,7 +26,7 @@ const createQuantumScrolliumClient = () => {
         if (!props.onScroll) return;
         unsubscribe = model.subscribe(
           ScrolliumPublicEvents.ON_SCROLL,
-          ({ payload }: { payload: number }) => {
+          ({ payload }: { payload: any }) => {
             props.onScroll!(payload);
           }
         );
@@ -72,23 +72,21 @@ const createQuantumScrolliumClient = () => {
       useSyncExternalStore(mount, snapshot);
       if (!scrolliumModule.hasModel(id)) return undefined;
 
+      const model = scrolliumModule.getModelById(id);
       return {
-        commands: scrolliumModule.getModelById(id).commands,
-        getClient: scrolliumModule.getModelById(id).getClient,
+        commands: model.commands,
+        getClient: model.getClient,
+        subscribe: model.subscribe,
       };
     },
-    // useScrolliumSelector: (id: string) => {
-    //   return useScrolliumSelector(
-    //     {
-    //       store,
-    //       observer,
-    //     },
-    //     id
-    //   );
-    // },
-    // getScrolliumClient: (id: string) => {
-    //   return store.getters.getEntityById(id).api.getClientEntity();
-    // },
+    getScrolliumClient: (id: string) => {
+      const model = scrolliumModule.getModelById(id);
+      return {
+        commands: model.commands,
+        getClient: model.getClient,
+        subscribe: model.subscribe,
+      };
+    },
   };
 };
 

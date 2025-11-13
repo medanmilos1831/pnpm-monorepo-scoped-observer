@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Scroll, useScroll, useScrolliumSelector } from "../../scroll";
 const SomeComponent = () => {
   const client = useScroll();
@@ -11,9 +12,25 @@ const SomeComponent = () => {
 const SelectorComponent = () => {
   const client = useScrolliumSelector("scroll-1");
   console.log(client);
+  useEffect(() => {
+    if (!client) return;
+    const unsubscribe = client.subscribe("onScroll", ({ payload }) => {
+      console.log(payload);
+    });
+    console.log(unsubscribe);
+    return () => {
+      unsubscribe();
+    };
+  }, [client]);
   return (
     <div>
-      <button onClick={() => client?.commands.scrollToEnd()}>
+      <button
+        onClick={() =>
+          client?.commands.scrollToEnd({
+            behavior: "smooth",
+          })
+        }
+      >
         Scroll to 100
       </button>
       <h1>Selector Component</h1>
@@ -31,7 +48,6 @@ const HomePageScroll = () => {
       <div style={{ height: "10rem" }}>
         <Scroll
           id="scroll-1"
-          axis="vertical"
           onScroll={(payload) => {
             // console.log(payload);
           }}

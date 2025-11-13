@@ -25,14 +25,9 @@ export enum ScrolliumDirection {
   RIGHT = "right",
 }
 
-export enum ScrolliumAxis {
-  HORIZONTAL = "horizontal",
-  VERTICAL = "vertical",
-}
 export interface ScrolliumProps {
   id: string;
   onScroll?: (params: any) => void;
-  axis?: `${ScrolliumAxis}`;
 }
 
 export type StoreReturnType = ReturnType<typeof createStore<IEntity>>;

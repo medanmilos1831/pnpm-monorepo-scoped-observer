@@ -36,7 +36,6 @@ const createVisibilityClient = () => {
       });
       useSyncExternalStore(mount, snapshot);
       if (!visibilityModule.hasModel(id)) return undefined;
-
       return visibilityModule.getModelById(id);
     },
     getVisibilityClient: (id: string) => {

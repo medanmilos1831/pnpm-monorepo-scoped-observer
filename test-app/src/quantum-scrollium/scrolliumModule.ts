@@ -1,13 +1,11 @@
 import { framework } from "@med1802/quantum-ui";
 import {
-  ScrolliumAxis,
   ScrolliumDirection,
   ScrolliumPublicEvents,
   type ScrolliumProps,
 } from "./types";
 
 interface IEntityState {
-  axis: ScrolliumAxis;
   scrollPosition: number;
   previousScrollPosition: number;
   isScrolling: boolean;
@@ -26,7 +24,6 @@ interface IEntityState {
 interface IEntityMutations {
   setScrollPosition: (position: number) => void;
   setIsScrolling: (callback?: () => void) => void;
-  setAxis: (axis: ScrolliumAxis) => void;
   setClientSize: (size: number) => void;
   setScrollSize: (size: number) => void;
   initializeElement: (element: HTMLElement) => void;
@@ -38,7 +35,6 @@ interface IEntityMutations {
 }
 
 interface IEntityGetters {
-  getAxis: () => ScrolliumAxis;
   getScrollPosition: () => number;
   getIsStart: () => boolean;
   getIsEnd: () => boolean;
@@ -72,7 +68,6 @@ export interface IModelApiClient {
   getClient: () => {
     id: string;
     scrollPosition: number;
-    axis: ScrolliumAxis;
     direction: ScrolliumDirection;
     progress: number;
     isStart: boolean;
@@ -92,7 +87,6 @@ const scrolliumModule = framework.createModule<
     return {
       id: props.id,
       state: {
-        axis: props.axis ?? (ScrolliumAxis.VERTICAL as any),
         scrollPosition: 0,
         previousScrollPosition: 0,
         isScrolling: false,
@@ -108,10 +102,7 @@ const scrolliumModule = framework.createModule<
         style: {
           height: "100%",
           width: "100%",
-          overflow:
-            props.axis === ScrolliumAxis.HORIZONTAL
-              ? "auto hidden"
-              : "hidden auto",
+          overflow: "hidden auto",
         },
       },
       mutations(state) {
@@ -133,10 +124,6 @@ const scrolliumModule = framework.createModule<
               }
             }, 500);
           },
-          setAxis(axis: ScrolliumAxis) {
-            state.axis = axis;
-            this.calculate(state.scrollPosition);
-          },
           setClientSize: (size: number) => {
             state.clientSize = size;
           },
@@ -146,37 +133,19 @@ const scrolliumModule = framework.createModule<
           initializeElement(element: HTMLElement) {
             if (element) {
               state.element = element;
-              const clientSize = Math.ceil(
-                element![
-                  state.axis === ScrolliumAxis.VERTICAL
-                    ? "clientHeight"
-                    : "clientWidth"
-                ] || 0
-              );
+              const clientSize = Math.ceil(element!.clientHeight || 0);
               const maxScroll = Math.ceil(
-                (element![
-                  state.axis === ScrolliumAxis.VERTICAL
-                    ? "scrollHeight"
-                    : "scrollWidth"
-                ] || 0) - (clientSize || 0)
+                (element!.scrollHeight || 0) - (clientSize || 0)
               );
               this.setClientSize(clientSize);
               this.setScrollSize(maxScroll);
             }
           },
           calculateDirection() {
-            if (state.axis === ScrolliumAxis.HORIZONTAL) {
-              if (state.scrollPosition < state.previousScrollPosition) {
-                state.direction = ScrolliumDirection.LEFT;
-              } else {
-                state.direction = ScrolliumDirection.RIGHT;
-              }
+            if (state.scrollPosition < state.previousScrollPosition) {
+              state.direction = ScrolliumDirection.UP;
             } else {
-              if (state.scrollPosition < state.previousScrollPosition) {
-                state.direction = ScrolliumDirection.UP;
-              } else {
-                state.direction = ScrolliumDirection.DOWN;
-              }
+              state.direction = ScrolliumDirection.DOWN;
             }
           },
           calculateScrollBounds() {
@@ -223,8 +192,6 @@ const scrolliumModule = framework.createModule<
       },
       getters(state) {
         return {
-          /** @returns Current scroll axis (vertical or horizontal) */
-          getAxis: () => state.axis,
           /** @returns Current scroll position in pixels */
           getScrollPosition: () => state.scrollPosition,
           /** @returns True if scroll is at the start (position 0) */
@@ -250,26 +217,32 @@ const scrolliumModule = framework.createModule<
     };
   },
   modelApiClient(entity, dispatch, subscribe) {
+    const getClient = () => {
+      return {
+        id: entity.getters.getId(),
+        scrollPosition: entity.getters.getScrollPosition(),
+        direction: entity.getters.getDirection(),
+        progress: entity.getters.getProgress(),
+        isStart: entity.getters.getIsStart(),
+        isEnd: entity.getters.getIsEnd(),
+        clientSize: entity.getters.getClientSize(),
+        scrollSize: entity.getters.getScrollSize(),
+        isScrolling: entity.getters.getIsScrolling(),
+      };
+    };
     return {
-      initializeElement: entity.mutations.initializeElement,
+      initializeElement: (element) =>
+        entity.mutations.initializeElement(element),
       style: entity.getters.getStyle,
       subscribe,
       onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
         entity.mutations.setScrollPosition(
-          entity.state.axis === ScrolliumAxis.VERTICAL
-            ? (e.target as HTMLDivElement).scrollTop
-            : (e.target as HTMLDivElement).scrollLeft
+          (e.target as HTMLDivElement).scrollTop
         );
         entity.mutations.setIsScrolling(() => {
-          dispatch(
-            ScrolliumPublicEvents.ON_SCROLL_STOP,
-            entity.getters.getScrollPosition()
-          );
+          dispatch(ScrolliumPublicEvents.ON_SCROLL_STOP, getClient());
         });
-        dispatch(
-          ScrolliumPublicEvents.ON_SCROLL,
-          entity.getters.getScrollPosition()
-        );
+        dispatch(ScrolliumPublicEvents.ON_SCROLL, getClient());
       },
       commands: {
         scrollTo: (options?: ScrollToOptions) => {
@@ -291,20 +264,7 @@ const scrolliumModule = framework.createModule<
           });
         },
       },
-      getClient: () => {
-        return {
-          id: entity.getters.getId(),
-          scrollPosition: entity.getters.getScrollPosition(),
-          axis: entity.getters.getAxis(),
-          direction: entity.getters.getDirection(),
-          progress: entity.getters.getProgress(),
-          isStart: entity.getters.getIsStart(),
-          isEnd: entity.getters.getIsEnd(),
-          clientSize: entity.getters.getClientSize(),
-          scrollSize: entity.getters.getScrollSize(),
-          isScrolling: entity.getters.getIsScrolling(),
-        };
-      },
+      getClient,
       onScrollWatcher: (notify: () => void) => {
         return subscribe(ScrolliumPublicEvents.ON_SCROLL, () => {
           notify();
