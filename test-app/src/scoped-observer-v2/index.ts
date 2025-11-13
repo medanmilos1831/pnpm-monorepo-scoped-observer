@@ -1,27 +1,66 @@
-import { EventEntity } from "./EventEntity";
-import { ScopedObserver } from "./ScopedObserver";
-import { scopeNodeType } from "./types";
+import { EventScope } from "./EventScope";
+import { ROOT_SCOPE, type ScopeNode } from "./types";
 
-export const createScopedObserver = (arr: scopeNodeType[]) => {
-  let manager = new ScopedObserver();
-  const buildScopes = (arr: scopeNodeType[]) => {
-    const obj: { [key: string]: EventEntity } = {};
-    arr.forEach(({ scope, subScopes, log = false }) => {
-      const entity = new EventEntity(scope, log);
-      if (subScopes) {
-        entity.scopedEvents = buildScopes(subScopes) as any;
-      }
-      obj[scope] = entity;
-    });
-    return obj;
+export const createScopedObserver = (props: ScopeNode[]) => {
+  const root = new EventScope(ROOT_SCOPE);
+  props.forEach((node) => {
+    const scope = buildScopeHierarchy(node);
+    root.subScopes.set(node.scope, scope);
+  });
+  const buildScopeHierarchy = (node: ScopeNode): EventScope => {
+    const eventScope = new EventScope(node.scope);
+
+    if (node.subScopes && node.subScopes.length > 0) {
+      node.subScopes.forEach((subNode) => {
+        const subScope = buildScopeHierarchy(subNode);
+        eventScope.subScopes.set(subNode.scope, subScope);
+      });
+    }
+
+    return eventScope;
   };
-  manager.events = buildScopes(arr);
+
+  const find = (scope?: string): EventScope | undefined => {
+    if (!scope || scope.trim() === "") {
+      return root;
+    }
+
+    const scopeParts = scope.split(":").filter(Boolean);
+    let current: EventScope = root;
+
+    for (const part of scopeParts) {
+      const next = current.subScopes.get(part);
+      if (!next) {
+        return undefined;
+      }
+      current = next;
+    }
+
+    return current;
+  };
+
   return {
-    dispatch: manager.scopedObserverAction,
-    subscribe: manager.scopedObserverSubscribe,
-    eventInterceptor: manager.scopedObserverInterceptor,
-    logging: manager.logging,
+    dispatch: ({
+      scope,
+      eventName,
+      payload = undefined,
+    }: {
+      scope?: string;
+      eventName: string;
+      payload?: any;
+    }) => {
+      const scopeEntity = find(scope);
+      if (!scopeEntity) return;
+      scopeEntity.dispatch({ eventName, payload });
+    },
+    subscribe: ({
+      scope,
+      eventName,
+      callback,
+    }: {
+      scope?: string;
+      eventName: string;
+      callback: (payload: any) => void;
+    }) => {},
   };
 };
-
-export type { IScopedObserver } from "./types";
