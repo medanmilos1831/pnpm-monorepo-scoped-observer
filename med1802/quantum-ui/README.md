@@ -24,7 +24,7 @@ npm install @med1802/quantum-ui
 **Peer Dependencies:**
 
 - `react` ^18.0.0
-- `@med1802/scoped-observer` ^1.0.0
+- `@med1802/scoped-observer` ^1.1.0
 
 ---
 
