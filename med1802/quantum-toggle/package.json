@@ -1,6 +1,6 @@
 {
   "name": "@med1802/quantum-toggle",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,8 +8,8 @@
   },
   "peerDependencies": {
     "react": "^18.0.0",
-    "@med1802/scoped-observer": "^1.0.0",
-    "@med1802/quantum-ui": "^1.0.1"
+    "@med1802/scoped-observer": "^1.1.0",
+    "@med1802/quantum-ui": "^1.1.0"
   },
   "devDependencies": {
     "@med1802/scoped-observer": "workspace:*",
