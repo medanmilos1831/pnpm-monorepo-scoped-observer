@@ -33,12 +33,6 @@ Thumbs.db
 .env.*
 
 # Monorepo-specific
-scoped-observer/*/dist/
-scoped-observer/*/build/
-scoped-observer/*/node_modules/
-behavior/*/dist/
-behavior/*/build/
-behavior/*/node_modules/
 med1802/*/dist/
 med1802/*/build/
 med1802/*/node_modules/
