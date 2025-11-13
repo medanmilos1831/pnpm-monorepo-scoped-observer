@@ -1,4 +1,4 @@
-import { createScopedObserver } from "@scoped-observer/core";
+import { createScopedObserver } from "@med1802/scoped-observer";
 
 function createObserver(scope: string) {
   const observer = createScopedObserver([
