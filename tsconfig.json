@@ -14,14 +14,9 @@
     "baseUrl": "."
   },
   "references": [
-    { "path": "./scoped-observer/core" },
-    { "path": "./scoped-observer/react-state-machine" },
-    { "path": "./scoped-observer/react-store" },
-    { "path": "./behavior/react-visibility-state" },
-    { "path": "./behavior/react-wizzard" },
-    { "path": "./behavior/react-scrollium" },
     { "path": "./med1802/scoped-observer" },
     { "path": "./med1802/quantum-ui" },
     { "path": "./med1802/quantum-toggle" },
+    { "path": "./med1802/quantum-scrollium" }
   ]
 }
