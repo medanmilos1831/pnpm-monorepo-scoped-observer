@@ -1,9 +1,9 @@
 import { EventScope } from "./EventScope";
 import { ROOT_SCOPE, type ScopeNode } from "./types";
 
-export const createScopedObserver = (props: ScopeNode[]) => {
+export const createScopedObserver = (props?: ScopeNode[]) => {
   const root = new EventScope(ROOT_SCOPE);
-  props.forEach((node) => {
+  props?.forEach((node) => {
     const scope = buildScopeHierarchy(node);
     root.subScopes.set(node.scope, scope);
   });
@@ -38,7 +38,7 @@ export const createScopedObserver = (props: ScopeNode[]) => {
 
     return current;
   }
-
+  console.log(root);
   return {
     dispatch: ({
       scope,
