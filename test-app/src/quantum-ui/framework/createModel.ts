@@ -5,8 +5,7 @@ function createModel<T extends { id: string }>(
   moduleConfigParams: CreateModuleConfigType,
   modelProps: T
 ) {
-  const modelScope = "MODEL_OBSERVER";
-  const modelObserver = core.createObserver(modelScope);
+  const modelObserver = core.createObserver();
   const broker = core.createMessageBroker(modelObserver);
   const stateManager = core.createStateManager(
     moduleConfigParams.entity(modelProps)

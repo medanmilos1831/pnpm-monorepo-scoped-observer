@@ -30,19 +30,19 @@ type CommandsType = {
   onToggle: () => void;
 };
 
-type SubscribeType = (
-  eventName: string,
-  callback: (payload: any) => void
-) => () => void;
-
 export interface IModelApiClient {
-  getVisibility: () => "on" | "off";
   commands: CommandsType;
-  subscribe: SubscribeType;
-  onChangeSync: {
-    snapshot: () => "on" | "off";
-    subscribe: (notify: () => void) => () => void;
+  subscribers: {
+    onChange: (notify: () => void) => () => void;
   };
+  selectors: {
+    subscribe: (
+      eventName: string,
+      callback: (payload: any) => void
+    ) => () => void;
+    commands: CommandsType;
+  };
+  getVisibility: () => "on" | "off";
 }
 const visibilityModule = framework.createModule<
   IEntityState,
@@ -73,28 +73,28 @@ const visibilityModule = framework.createModule<
     };
   },
   modelApiClient(stateManager, broker) {
-    return {
-      commands: {
-        onOpen: () => {
-          broker.publish({
-            eventName: "onChange",
-            payload: "on",
-          });
-        },
-        onClose: () => {
-          broker.publish({
-            eventName: "onChange",
-            payload: "off",
-          });
-        },
-        onToggle: () => {
-          broker.publish({
-            eventName: "onChange",
-            payload:
-              stateManager.getters.getVisibility() === "on" ? "off" : "on",
-          });
-        },
+    const commands = {
+      onOpen: () => {
+        broker.publish({
+          eventName: "onChange",
+          payload: "on",
+        });
       },
+      onClose: () => {
+        broker.publish({
+          eventName: "onChange",
+          payload: "off",
+        });
+      },
+      onToggle: () => {
+        broker.publish({
+          eventName: "onChange",
+          payload: stateManager.getters.getVisibility() === "on" ? "off" : "on",
+        });
+      },
+    };
+    return {
+      commands,
       subscribers: {
         onChange: (notify: () => void) => {
           return broker.subscribe({
@@ -106,21 +106,20 @@ const visibilityModule = framework.createModule<
           });
         },
       },
+      selectors: {
+        subscribe: (
+          eventName: "onChange",
+          callback: (payload: any) => void
+        ) => {
+          return broker.subscribe({
+            eventName,
+            callback,
+          });
+        },
+        commands,
+      },
       getVisibility: () => stateManager.getters.getVisibility(),
     };
-    // return {
-    //   commands,
-    //   subscribe,
-    //   getVisibility: () => entity.getters.getVisibility(),
-    //   onChangeSync: {
-    //     snapshot: () => entity.getters.getVisibility(),
-    //     subscribe: (notify: () => void) => {
-    //       return subscribe("onChange", () => {
-    //         notify();
-    //       });
-    //     },
-    //   },
-    // };
   },
 });
 

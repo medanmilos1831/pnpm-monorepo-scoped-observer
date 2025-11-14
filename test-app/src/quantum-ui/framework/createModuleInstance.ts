@@ -4,7 +4,8 @@ import type { CreateModuleConfigType } from "./types";
 
 export function createModuleInstance(props: CreateModuleConfigType) {
   const scope = "MODULE_OBSERVER";
-  const { dispatch, subscribe } = core.createObserver(scope);
+  const observer = core.createObserver(scope);
+  const broker = core.createMessageBroker(observer);
 
   const moduleStateManager = core.createStateManager({
     id: props.name,
@@ -48,6 +49,8 @@ export function createModuleInstance(props: CreateModuleConfigType) {
     },
     getModelById: (id: string) => moduleStateManager.getters.getModelById(id),
     hasModel: (id: string) => moduleStateManager.getters.hasModel(id),
-    subscribe,
+    // subscribe: (eventName: string, callback: (payload: any) => void) => {
+    //   return broker.subscribe({ eventName, callback });
+    // },
   };
 }
