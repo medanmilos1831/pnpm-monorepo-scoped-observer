@@ -68,7 +68,6 @@ const createMessageBroker = (observer: IObserver, scope: string) => {
       if (interceptor) {
         const result = interceptor({ eventName });
         if (result === null || result === false) {
-          // Interceptor blocked the subscribe
           return () => {};
         }
         eventName = result.eventName;
