@@ -2,21 +2,39 @@ import { HomePage } from "./pages/HomePage";
 
 import { createScopedObserver } from "./scoped-observer";
 import { createMessageBroker } from "./message-broker";
-let scopedObserver = createScopedObserver([{ scope: "test-app" }]);
+
+const scopedObserver = createScopedObserver([{ scope: "test-app" }]);
 const messageBroker = createMessageBroker(scopedObserver, "test-app");
-console.log(messageBroker);
-// scopedObserver.dispatch({
-//   eventName: "name",
-//   payload: {
-//     name: "John",
-//   },
-// });
-// const unsubscribe = scopedObserver.subscribe({
-//   eventName: "name",
-//   callback: (payload) => {
-//     console.log("SUBSCRIBED", payload);
-//   },
-// });
+
+messageBroker.interceptor({
+  eventName: "user-updated",
+  onPublish: ({ payload }) => {
+    console.log("Interceptor: Modifikujem payload pre slanja");
+    return {
+      eventName: "user-updated",
+      payload: {
+        ...payload,
+        timestamp: Date.now(),
+      },
+    };
+  },
+  onSubscribe: ({ eventName }) => {
+    console.log("🟢 onSubscribe: Presrećem pretplatu na", eventName);
+    return { eventName, payload: "kita" };
+  },
+});
+
+messageBroker.subscribe({
+  eventName: "user-updated",
+  callback: (payload) => {
+    console.log("Primljen payload:", payload);
+  },
+});
+
+messageBroker.publish({
+  eventName: "user-updated",
+  payload: { name: "John", age: 30 },
+});
 
 function App() {
   return (

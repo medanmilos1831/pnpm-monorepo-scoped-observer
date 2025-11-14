@@ -38,7 +38,6 @@ export const createScopedObserver = (props?: ScopeNode[]) => {
 
     return current;
   }
-  console.log(root);
   return {
     dispatch: ({
       scope,
