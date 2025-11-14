@@ -6,18 +6,12 @@ function createModel<T extends { id: string }>(
   modelProps: T
 ) {
   const modelScope = "MODEL_OBSERVER";
+  const modelObserver = core.createObserver(modelScope);
+  const broker = core.createMessageBroker(modelObserver);
   const stateManager = core.createStateManager(
     moduleConfigParams.entity(modelProps)
   );
-  const modelObserver = core.createObserver(modelScope);
-  const subscribe = (eventName: string, callback: (payload: any) => void) => {
-    return modelObserver.subscribe(eventName, callback)!;
-  };
-  return moduleConfigParams.modelApiClient(
-    stateManager,
-    modelObserver.dispatch,
-    subscribe
-  );
+  return moduleConfigParams.modelApiClient(stateManager, broker);
 }
 
 export { createModel };

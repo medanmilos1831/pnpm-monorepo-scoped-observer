@@ -1,3 +1,3 @@
-import { createVisibilityClient } from "./createVisibilityClient";
+import { createToggleClient } from "./createToggleClient";
 
-export { createVisibilityClient };
+export { createToggleClient };

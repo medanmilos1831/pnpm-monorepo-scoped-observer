@@ -1,3 +1,4 @@
+import type { core } from "../core/core";
 import type { createModuleInstance } from "./createModuleInstance";
 
 type SubscribeType = (
@@ -9,10 +10,14 @@ export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
   modelApiClient: (
-    entity: ModelEntityPropType<S, M, G>,
-    dispatch: (eventName: string, payload: any) => void,
-    subscribe: SubscribeType
-  ) => A;
+    stateManager: ReturnType<typeof core.createStateManager>,
+    broker: ReturnType<typeof core.createMessageBroker>
+  ) => // params: ReturnType<typeof core.createMessageBroker>,
+  // stateManager: ReturnType<typeof core.createStateManager>
+  // entity: ModelEntityPropType<S, M, G>,
+  // dispatch: (eventName: string, payload: any) => void,
+  // subscribe: SubscribeType
+  any;
 };
 
 export type ModelEntityPropType<S, M = any, G = any> = {

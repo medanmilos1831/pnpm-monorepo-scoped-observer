@@ -19,7 +19,7 @@ import { createScopedObserver } from "@scoped-observer/core";
  *
  * // Subscribe to events
  * const unsubscribe = observer.subscribe("ON_STEP_CHANGE", (payload) => {
- *   console.log("Step changed:", payload);
+ *   // Handle step change
  * });
  * ```
  */

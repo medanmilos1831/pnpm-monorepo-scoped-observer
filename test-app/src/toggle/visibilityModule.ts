@@ -1,4 +1,4 @@
-import { framework } from "@med1802/quantum-ui";
+import { framework } from "../quantum-ui/framework";
 
 export enum INITIAL_STATE {
   ON = "on",
@@ -55,7 +55,7 @@ const visibilityModule = framework.createModule<
     return {
       id: props.id,
       state: {
-        visibility: props.initState,
+        visibility: "off",
       },
       mutations(state) {
         return {
@@ -69,44 +69,58 @@ const visibilityModule = framework.createModule<
           getVisibility: () => state.visibility,
         };
       },
+      subscribers(params: any) {},
     };
   },
-  modelApiClient(entity, dispatch, subscribe) {
-    const commands = {
-      onOpen: () => {
-        entity.mutations.setVisibility("on");
-        dispatch("onChange", {
-          visibility: "on",
-        });
-      },
-      onClose: () => {
-        entity.mutations.setVisibility("off");
-        dispatch("onChange", {
-          visibility: "off",
-        });
-      },
-      onToggle: () => {
-        entity.mutations.setVisibility(
-          entity.getters.getVisibility() === "on" ? "off" : "on"
-        );
-        dispatch("onChange", {
-          visibility: entity.getters.getVisibility() === "on" ? "off" : "on",
-        });
-      },
-    };
+  modelApiClient(stateManager, broker) {
     return {
-      commands,
-      subscribe,
-      getVisibility: () => entity.getters.getVisibility(),
-      onChangeSync: {
-        snapshot: () => entity.getters.getVisibility(),
-        subscribe: (notify: () => void) => {
-          return subscribe("onChange", () => {
-            notify();
+      commands: {
+        onOpen: () => {
+          broker.publish({
+            eventName: "onChange",
+            payload: "on",
+          });
+        },
+        onClose: () => {
+          broker.publish({
+            eventName: "onChange",
+            payload: "off",
+          });
+        },
+        onToggle: () => {
+          broker.publish({
+            eventName: "onChange",
+            payload:
+              stateManager.getters.getVisibility() === "on" ? "off" : "on",
           });
         },
       },
+      subscribers: {
+        onChange: (notify: () => void) => {
+          return broker.subscribe({
+            eventName: "onChange",
+            callback: ({ payload }: { payload: "on" | "off" }) => {
+              stateManager.mutations.setVisibility(payload);
+              notify();
+            },
+          });
+        },
+      },
+      getVisibility: () => stateManager.getters.getVisibility(),
     };
+    // return {
+    //   commands,
+    //   subscribe,
+    //   getVisibility: () => entity.getters.getVisibility(),
+    //   onChangeSync: {
+    //     snapshot: () => entity.getters.getVisibility(),
+    //     subscribe: (notify: () => void) => {
+    //       return subscribe("onChange", () => {
+    //         notify();
+    //       });
+    //     },
+    //   },
+    // };
   },
 });
 

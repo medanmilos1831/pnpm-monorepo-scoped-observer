@@ -15,7 +15,7 @@ const framework = (function () {
         const moduleInstance = createModuleInstance(moduleConfig);
         createModule(moduleConfig.name, moduleInstance);
       }
-      return getModuleByName(moduleConfig.name) as IModuleClientAPI<A>;
+      return getModuleByName(moduleConfig.name) as any;
     },
   };
 })();

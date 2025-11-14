@@ -38,7 +38,7 @@ import { WIZARD_OBSERVER_SCOPE } from "../../types";
  *
  * // Subscribe to events
  * api.addEventListener("ON_STEP_CHANGE", (payload) => {
- *   console.log("Step changed:", payload);
+ *   // Handle step change
  * });
  * ```
  */
@@ -109,7 +109,7 @@ const createEntityApiClient = (props: IWizardConfig) => {
          * @example
          * ```ts
          * const unsubscribe = api.addEventListener("ON_STEP_CHANGE", (payload) => {
-         *   console.log("Step changed:", payload.to);
+         *   // Handle step change
          * });
          * ```
          */

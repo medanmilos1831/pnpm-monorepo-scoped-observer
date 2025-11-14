@@ -1,23 +1,30 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { visibilityModule, VisibilityProps } from "./visibilityModule";
+import { visibilityModule } from "./visibilityModule";
 
-const createVisibilityClient = () => {
+const createToggleClient = () => {
   return {
-    useVisibility: (props: VisibilityProps) => {
+    useVisibility: (props: any) => {
       visibilityModule.createModel(props);
       const model = visibilityModule.getModelById(props.id);
-      useEffect(() => {
-        visibilityModule.lifeCycle(props.id);
-        return () => {
-          visibilityModule.removeModel(props.id);
-          visibilityModule.lifeCycle(props.id);
-        };
-      }, []);
+      // model.publisher({
+      //   type: "onOpen",
+      //   payload: undefined,
+      // });
+      // model.subscriber.onOpen();
+      // model.onOpen();
+      // const obj = model.getObj();
+      // useEffect(() => {
+      //   visibilityModule.lifeCycle(props.id);
+      //   return () => {
+      //     visibilityModule.removeModel(props.id);
+      //     visibilityModule.lifeCycle(props.id);
+      //   };
+      // }, []);
       const visibility = useSyncExternalStore(
-        model.onChangeSync.subscribe,
-        model.onChangeSync.snapshot
+        model.subscribers.onChange,
+        model.getVisibility
       );
-      return visibility;
+      console.log("RENDERED VISIBILITY", visibility);
     },
     useVisibilityCommands: (id: string) => {
       const model = visibilityModule.getModelById(id);
@@ -45,4 +52,4 @@ const createVisibilityClient = () => {
   };
 };
 
-export { createVisibilityClient };
+export { createToggleClient };
