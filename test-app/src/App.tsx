@@ -1,52 +1,22 @@
 import { HomePage } from "./pages/HomePage";
 
 import { createScopedObserver } from "./scoped-observer";
-let scopedObserver = createScopedObserver([
-  {
-    scope: "country",
-    subScopes: [
-      {
-        scope: "code",
-        subScopes: [
-          {
-            scope: "city",
-          },
-          {
-            scope: "name",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    scope: "person",
-    subScopes: [
-      {
-        scope: "fname",
-        subScopes: [
-          {
-            scope: "city",
-          },
-          {
-            scope: "phone",
-          },
-        ],
-      },
-    ],
-  },
-]);
-scopedObserver.dispatch({
-  eventName: "name",
-  payload: {
-    name: "John",
-  },
-});
-const unsubscribe = scopedObserver.subscribe({
-  eventName: "name",
-  callback: (payload) => {
-    console.log("SUBSCRIBED", payload);
-  },
-});
+import { createMessageBroker } from "./message-broker";
+let scopedObserver = createScopedObserver([{ scope: "test-app" }]);
+const messageBroker = createMessageBroker(scopedObserver, "test-app");
+console.log(messageBroker);
+// scopedObserver.dispatch({
+//   eventName: "name",
+//   payload: {
+//     name: "John",
+//   },
+// });
+// const unsubscribe = scopedObserver.subscribe({
+//   eventName: "name",
+//   callback: (payload) => {
+//     console.log("SUBSCRIBED", payload);
+//   },
+// });
 
 function App() {
   return (
