@@ -9,7 +9,6 @@ const messageBroker = createMessageBroker(scopedObserver, "test-app");
 messageBroker.interceptor({
   eventName: "user-updated",
   onPublish: ({ payload }) => {
-    console.log("Interceptor: Modifikujem payload pre slanja");
     return {
       eventName: "user-updated",
       payload: {
@@ -19,8 +18,7 @@ messageBroker.interceptor({
     };
   },
   onSubscribe: ({ eventName }) => {
-    console.log("🟢 onSubscribe: Presrećem pretplatu na", eventName);
-    return { eventName, payload: "kita" };
+    return { eventName };
   },
 });
 
