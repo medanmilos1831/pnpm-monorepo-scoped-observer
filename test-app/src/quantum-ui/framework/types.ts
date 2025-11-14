@@ -1,10 +1,5 @@
 import type { core } from "../core/core";
 
-type SubscribeType = (
-  eventName: string,
-  callback: (payload: any) => void
-) => () => void;
-
 export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
   entity: (props: any) => EntityStateManagerType<S, G, M>;
@@ -32,6 +27,8 @@ export interface IModuleClientAPI<A = any> {
   removeModel: (id: string) => void;
   getModelById: (id: string) => A;
   hasModel: (id: string) => boolean;
-  subscribe: SubscribeType;
-  lifeCycle: (id: string) => void;
+  lifeCycle: {
+    mount: (notify: () => void) => () => void;
+    unmount: (notify: () => void) => () => void;
+  };
 }
