@@ -6,7 +6,6 @@ const createToggleClient = () => {
     useVisibility: (props: any) => {
       toggleModule.createModel(props);
       const model = toggleModule.getModelById(props.id);
-      console.log("model", model.commands);
       useEffect(() => {
         return () => {
           toggleModule.removeModel(props.id);
@@ -32,12 +31,11 @@ const createToggleClient = () => {
       let hasModel = useSyncExternalStore(lifeCycle.mount, snapshot);
       useSyncExternalStore(lifeCycle.unmount, snapshot);
       const model = toggleModule.getModelById(id);
-      return hasModel ? model.modelClient() : undefined;
+      return hasModel ? model : undefined;
     },
     getVisibilityClient: (id: string) => {
       const model = toggleModule.getModelById(id);
-
-      return model.modelClient();
+      return model;
     },
   };
 };
