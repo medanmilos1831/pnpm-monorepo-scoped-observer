@@ -2,20 +2,14 @@ import type { core } from "../core/core";
 
 export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
-  model: (props: any) => EntityStateManagerType<S, G, M>;
+  model: (props: any) => ModelStateManagerType<S, G, M>;
   apiClient: (
-    model: ModelEntityPropType<S, M, G>,
+    model: ModelStateManagerType<S, M, G>,
     broker: ReturnType<typeof core.createMessageBroker>
   ) => any;
 };
 
-export type ModelEntityPropType<S, M = any, G = any> = {
-  state: S;
-  mutations: M;
-  getters: G;
-};
-
-export type EntityStateManagerType<S, G, M> = {
+export type ModelStateManagerType<S, G, M> = {
   id: string;
   state: S;
   mutations: (state: S) => M;
