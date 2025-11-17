@@ -1,6 +1,6 @@
 import { core } from "../core/core";
 import { createModel } from "./createModel";
-import type { CreateModuleConfigType } from "./types";
+import type { CreateModuleConfigType, ModelEntityPropType } from "./types";
 
 const framework = (function () {
   return {

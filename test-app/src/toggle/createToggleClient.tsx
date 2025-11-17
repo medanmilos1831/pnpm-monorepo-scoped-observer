@@ -1,39 +1,43 @@
-import { useState, useSyncExternalStore, useEffect } from "react";
-import { visibilityModule } from "./visibilityModule";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { toggleModule } from "./toggleModule";
 
 const createToggleClient = () => {
   return {
     useVisibility: (props: any) => {
-      visibilityModule.createModel(props);
-      const model = visibilityModule.getModelById(props.id);
+      toggleModule.createModel(props);
+      const model = toggleModule.getModelById(props.id);
+      console.log("model", model.commands);
       useEffect(() => {
         return () => {
-          visibilityModule.removeModel(props.id);
+          toggleModule.removeModel(props.id);
         };
       }, []);
       const visibility = useSyncExternalStore(
         model.subscribers.onChange,
         model.getVisibility
       );
-      return visibility as "on" | "off";
+      return visibility;
     },
     useVisibilityCommands: (id: string) => {
-      const model = visibilityModule.getModelById(id);
+      const model = toggleModule.getModelById(id);
       return model.commands;
     },
     useModelSelector: (id: string) => {
-      const [lifeCycle] = useState(visibilityModule.lifeCycle.bind(id));
+      const [lifeCycle] = useState(toggleModule.lifeCycle.bind(id));
       const [snapshot] = useState(() => {
         return () => {
-          return visibilityModule.hasModel(id);
+          return toggleModule.hasModel(id);
         };
       });
       let hasModel = useSyncExternalStore(lifeCycle.mount, snapshot);
       useSyncExternalStore(lifeCycle.unmount, snapshot);
-      return hasModel ? visibilityModule.getModelById(id).selectors : undefined;
+      const model = toggleModule.getModelById(id);
+      return hasModel ? model.modelClient() : undefined;
     },
     getVisibilityClient: (id: string) => {
-      return visibilityModule.getModelById(id);
+      const model = toggleModule.getModelById(id);
+
+      return model.modelClient();
     },
   };
 };
