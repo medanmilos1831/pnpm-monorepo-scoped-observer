@@ -8,7 +8,7 @@ function createModel<T extends { id: string }>(
   const modelObserver = core.createObserver();
   const broker = core.createMessageBroker(modelObserver);
   const model = core.createStateManager(moduleConfigParams.model(modelProps));
-  return moduleConfigParams.apiClient(model, broker);
+  return moduleConfigParams.modelClient(model, broker);
 }
 
 export { createModel };

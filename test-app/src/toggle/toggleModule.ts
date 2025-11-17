@@ -13,15 +13,15 @@ export type VisibilityProps = {
 };
 
 interface IModelState {
-  visibility: "on" | "off";
+  visibility: initialStateType;
 }
 
 interface IModelMutations {
-  setVisibility: (visibility: "on" | "off") => void;
+  setVisibility: (visibility: initialStateType) => void;
 }
 
 interface IModelGetters {
-  getVisibility: () => "on" | "off";
+  getVisibility: () => initialStateType;
 }
 
 interface ICommands {
@@ -31,13 +31,13 @@ interface ICommands {
 }
 
 interface ISubscribers {
-  onChange: (callback: (payload: "on" | "off") => void) => () => void;
+  onChange: (callback: (payload: initialStateType) => void) => () => void;
 }
 
 interface IModelApiClient {
   commands: ICommands;
   subscribers: ISubscribers;
-  getVisibility: () => "on" | "off";
+  getVisibility: () => initialStateType;
 }
 const toggleModule = framework.createModule<
   IModelState,
@@ -54,7 +54,7 @@ const toggleModule = framework.createModule<
       },
       mutations(state) {
         return {
-          setVisibility: (visibility: "on" | "off") => {
+          setVisibility: (visibility: initialStateType) => {
             state.visibility = visibility;
           },
         };
@@ -66,7 +66,7 @@ const toggleModule = framework.createModule<
       },
     };
   },
-  apiClient: (model, broker) => {
+  modelClient: (model, broker) => {
     const commands = {
       onOpen: () => {
         model.mutations.setVisibility("on");

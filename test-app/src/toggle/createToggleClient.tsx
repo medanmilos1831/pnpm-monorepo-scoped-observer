@@ -6,6 +6,7 @@ const createToggleClient = () => {
     useVisibility: (props: any) => {
       toggleModule.createModel(props);
       const model = toggleModule.getModelById(props.id);
+
       useEffect(() => {
         return () => {
           toggleModule.removeModel(props.id);

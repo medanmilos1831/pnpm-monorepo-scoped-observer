@@ -2,19 +2,19 @@ import type { core } from "../core/core";
 
 export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
-  model: (props: any) => ModelStateManagerType<S, G, M>;
-  apiClient: (
-    model: ModelStateManagerType<S, M, G>,
+  model: (props: any) => IModel<S, G, M>;
+  modelClient: (
+    model: ReturnType<typeof core.createStateManager>,
     broker: ReturnType<typeof core.createMessageBroker>
   ) => any;
 };
 
-export type ModelStateManagerType<S, G, M> = {
+export interface IModel<S, G, M> {
   id: string;
   state: S;
   mutations: (state: S) => M;
   getters: (state: S) => G;
-};
+}
 
 export interface IModuleClientAPI<A = any> {
   createModel: (props: any) => void;
