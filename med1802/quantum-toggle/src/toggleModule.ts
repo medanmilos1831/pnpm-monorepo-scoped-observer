@@ -5,7 +5,7 @@ import {
   IModelMutations,
   IModelState,
   initialStateType,
-  VisibilityProps,
+  ToggleProps,
 } from "./types";
 
 const toggleModule = framework.createModule<
@@ -14,8 +14,8 @@ const toggleModule = framework.createModule<
   IModelGetters,
   IModelApiClient
 >({
-  name: "VISIBILITY_CLIENT",
-  model: (props: VisibilityProps) => {
+  name: "toggle",
+  model: (props: ToggleProps) => {
     return {
       id: props.id,
       state: {
