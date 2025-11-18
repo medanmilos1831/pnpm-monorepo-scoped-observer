@@ -27,7 +27,7 @@ const toggleModule = framework.createModule<
   ToggleGetters,
   ToggleApiClient
 >({
-  name: "toggle",
+  name: "toggle-module",
   model: (props: ToggleProps) => {
     return {
       id: props.id,
@@ -73,20 +73,31 @@ const toggleModule = framework.createModule<
   },
 });
 
+toggleModule.onModelMount("some-model", (payload) => {
+  console.log("onModelMount", payload);
+});
+toggleModule.onModelUnmount("some-model", (payload) => {
+  console.log("onModelUnmount", payload);
+});
+toggleModule.createModel({ id: "some-model", initState: "open" });
+const model = toggleModule.getModelById("some-model");
+console.log(model.commands);
+toggleModule.removeModel("some-model");
+
 const HomePage = () => {
-  const [mount] = useState(() => {
-    return (notify: () => void) => {
-      return toggleModule.onModelMount("toggle", (payload) => {
-        notify();
-      });
-    };
-  });
-  const [snapshot] = useState(() => () => {
-    return toggleModule.getModelById("toggle");
-  });
-  const value = useSyncExternalStore(mount, snapshot);
-  toggleModule.createModel({ id: "toggle", initState: "open" });
-  console.log("SYNC EXTERNAL STORE", value);
+  // const [mount] = useState(() => {
+  //   return (notify: () => void) => {
+  //     return toggleModule.onModelMount("toggle", (payload) => {
+  //       notify();
+  //     });
+  //   };
+  // });
+  // const [snapshot] = useState(() => () => {
+  //   return toggleModule.getModelById("toggle");
+  // });
+  // const value = useSyncExternalStore(mount, snapshot);
+  // toggleModule.createModel({ id: "toggle", initState: "open" });
+  // console.log("SYNC EXTERNAL STORE", value);
   return (
     <div>
       <h1>Home Page</h1>
