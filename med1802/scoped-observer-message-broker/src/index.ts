@@ -24,7 +24,7 @@ type InterceptorCallback = (params: {
   payload?: any;
 }) => { eventName: string; payload?: any } | null | false;
 
-const createMessageBroker = (observer: IObserver, scope: string) => {
+const createMessageBroker = (observer: IObserver, scope?: string) => {
   const publishInterceptors = new Map<string, InterceptorCallback>();
   const subscribeInterceptors = new Map<string, InterceptorCallback>();
 
@@ -77,4 +77,4 @@ const createMessageBroker = (observer: IObserver, scope: string) => {
   };
 };
 
-export { createMessageBroker };
+export { createMessageBroker, IObserver };
