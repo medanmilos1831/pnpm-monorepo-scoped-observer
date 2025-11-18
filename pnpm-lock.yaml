@@ -55,11 +55,11 @@ importers:
   med1802/quantum-ui:
     dependencies:
       '@med1802/scoped-observer':
-        specifier: workspace:*
-        version: link:../scoped-observer
+        specifier: ^1.1.2
+        version: 1.1.2
       '@med1802/scoped-observer-message-broker':
-        specifier: workspace:*
-        version: link:../scoped-observer-message-broker
+        specifier: ^1.0.2
+        version: 1.0.2(@med1802/scoped-observer@1.1.2)
 
   med1802/scoped-observer: {}
 
@@ -519,6 +519,11 @@ packages:
 
   '@med1802/scoped-observer-message-broker@1.0.1':
     resolution: {integrity: sha512-fPGUfRJU9+FbXPY9Lhp60+2sIxu9CMZ7hyJ7E55zhO+yS6Sd/fH9W7azwyc5EhWXQJT3V2TWtiLREu9ZD27yug==}
+    peerDependencies:
+      '@med1802/scoped-observer': ^1.1.2
+
+  '@med1802/scoped-observer-message-broker@1.0.2':
+    resolution: {integrity: sha512-IZ1n2x2XIS+o1UJ05KyI63M8JZ7RlwydCs/sZqw2YayWim9OdhdlNytwr+714BYqEg18kBbnDIy+xmYk2H8TqA==}
     peerDependencies:
       '@med1802/scoped-observer': ^1.1.2
 
@@ -1910,6 +1915,10 @@ snapshots:
       react: 18.3.1
 
   '@med1802/scoped-observer-message-broker@1.0.1(@med1802/scoped-observer@1.1.2)':
+    dependencies:
+      '@med1802/scoped-observer': 1.1.2
+
+  '@med1802/scoped-observer-message-broker@1.0.2(@med1802/scoped-observer@1.1.2)':
     dependencies:
       '@med1802/scoped-observer': 1.1.2
 

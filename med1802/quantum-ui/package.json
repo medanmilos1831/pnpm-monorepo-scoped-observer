@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@med1802/scoped-observer": "^1.1.2",
-    "@med1802/scoped-observer-message-broker": "^1.0.1"
+    "@med1802/scoped-observer-message-broker": "^1.0.2"
   },
   "devDependencies": {
     "@med1802/scoped-observer": "workspace:*",
