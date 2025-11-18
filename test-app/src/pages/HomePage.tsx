@@ -1,63 +1,77 @@
-import { createToggleClient } from "@med1802/quantum-toggle";
-import { Button, Modal } from "antd";
-import { useEffect } from "react";
-const { useToggle, useToggleCommands, useToggleSelector, getToggleClient } =
-  createToggleClient();
-
-const UserModal = ({
-  model,
-}: {
-  model: { id: string; initState: "on" | "off" };
-}) => {
-  const visibility = useToggle(model);
-  const { onClose } = useToggleCommands(model.id);
-  return (
-    <>
-      <Modal open={visibility === "on"} onCancel={onClose} onOk={onClose}>
-        <h1>User Modal</h1>
-      </Modal>
-    </>
-  );
-};
-
-const SomeHeader = () => {
-  const visibility = useToggleSelector("user-modal");
-
-  useEffect(() => {
-    const unsubscribe = visibility?.subscribers.onChange((payload) => {
-      console.log("subscribe", visibility?.getVisibility(), payload);
-    });
-    return () => unsubscribe?.();
-  }, [visibility]);
-  return (
-    <div>
-      <h2>Header</h2>
-      <Button onClick={() => visibility?.commands.onOpen()}>
-        Open form header
-      </Button>
-    </div>
-  );
-};
-const SomeFooter = () => {
-  const visibilityCommands = useToggleCommands("user-modal");
-  return (
-    <div>
-      <h2>Footer</h2>
-      <Button onClick={() => visibilityCommands.onOpen()}>Open</Button>
-    </div>
-  );
-};
+import { framework } from "@med1802/quantum-ui";
+interface ToggleProps {
+  id: string;
+  initState: "open" | "close";
+}
+interface ToggleState {
+  status: "open" | "close";
+}
+interface ToggleMutations {
+  onOpen: () => void;
+  onClose: () => void;
+}
+interface ToggleGetters {
+  getStatus: () => "open" | "close";
+}
+interface ToggleApiClient {
+  onOpen: () => void;
+  onClose: () => void;
+}
+const toggleModule = framework.createModule<
+  ToggleState,
+  ToggleMutations,
+  ToggleGetters,
+  ToggleApiClient
+>({
+  name: "toggle",
+  model: (props: ToggleProps) => {
+    return {
+      id: props.id,
+      state: {
+        status: props.initState,
+      },
+      mutations(state) {
+        return {
+          onOpen: () => {
+            state.status = "open";
+          },
+          onClose: () => {
+            state.status = "close";
+          },
+        };
+      },
+      getters(state) {
+        return {
+          getStatus: () => state.status,
+        };
+      },
+    };
+  },
+  modelClient: (model, broker) => {
+    return {
+      commands: {
+        onOpen: () => {
+          model.mutations.onOpen();
+          broker.publish({
+            eventName: "onChange",
+            payload: model.getters.getStatus(),
+          });
+        },
+        onClose: () => {
+          model.mutations.onClose();
+          broker.publish({
+            eventName: "onChange",
+            payload: model.getters.getStatus(),
+          });
+        },
+      },
+    };
+  },
+});
 const HomePage = () => {
   return (
     <div>
-      <SomeHeader />
-      <UserModal
-        model={{
-          id: "user-modal",
-          initState: "off",
-        }}
-      />
-      <SomeFooter />
+      <h1>Home Page</h1>
     </div>
   );
 };
