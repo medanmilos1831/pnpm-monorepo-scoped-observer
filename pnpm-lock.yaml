@@ -57,13 +57,9 @@ importers:
       '@med1802/scoped-observer':
         specifier: workspace:*
         version: link:../scoped-observer
-    devDependencies:
-      '@types/react':
-        specifier: ^18.0.0
-        version: 18.3.23
-      react:
-        specifier: ^18.0.0
-        version: 18.3.1
+      '@med1802/scoped-observer-message-broker':
+        specifier: workspace:*
+        version: link:../scoped-observer-message-broker
 
   med1802/scoped-observer: {}
 
@@ -83,13 +79,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
       '@med1802/quantum-toggle':
         specifier: ^1.0.2
-        version: 1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1))(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)
+        version: 1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1))(@med1802/scoped-observer@1.1.2)(react@18.3.1)
       '@med1802/quantum-ui':
         specifier: ^1.0.1
-        version: 1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)
+        version: 1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)
       '@med1802/scoped-observer':
-        specifier: workspace:*
-        version: link:../med1802/scoped-observer
+        specifier: ^1.1.2
+        version: 1.1.2
+      '@med1802/scoped-observer-message-broker':
+        specifier: ^1.0.1
+        version: 1.0.1(@med1802/scoped-observer@1.1.2)
       '@mui/icons-material':
         specifier: ^7.3.1
         version: 7.3.1(@mui/material@7.3.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
@@ -517,6 +516,11 @@ packages:
     peerDependencies:
       '@med1802/scoped-observer': ^1.0.0
       react: ^18.0.0
+
+  '@med1802/scoped-observer-message-broker@1.0.1':
+    resolution: {integrity: sha512-fPGUfRJU9+FbXPY9Lhp60+2sIxu9CMZ7hyJ7E55zhO+yS6Sd/fH9W7azwyc5EhWXQJT3V2TWtiLREu9ZD27yug==}
+    peerDependencies:
+      '@med1802/scoped-observer': ^1.1.2
 
   '@med1802/scoped-observer@1.1.2':
     resolution: {integrity: sha512-bdl3Tumkvz74N69BufkvarNqgeyUr4otEOF5Y++COcIrFqtaAeTPcuIvsgqCCAHAcx6I1qm4tMMLTTWYHdE2rQ==}
@@ -1894,16 +1898,20 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@med1802/quantum-toggle@1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1))(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)':
+  '@med1802/quantum-toggle@1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1))(@med1802/scoped-observer@1.1.2)(react@18.3.1)':
     dependencies:
-      '@med1802/quantum-ui': 1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)
-      '@med1802/scoped-observer': link:med1802/scoped-observer
+      '@med1802/quantum-ui': 1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)
+      '@med1802/scoped-observer': 1.1.2
       react: 18.3.1
 
-  '@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)':
+  '@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)':
     dependencies:
-      '@med1802/scoped-observer': link:med1802/scoped-observer
+      '@med1802/scoped-observer': 1.1.2
       react: 18.3.1
+
+  '@med1802/scoped-observer-message-broker@1.0.1(@med1802/scoped-observer@1.1.2)':
+    dependencies:
+      '@med1802/scoped-observer': 1.1.2
 
   '@med1802/scoped-observer@1.1.2': {}
 

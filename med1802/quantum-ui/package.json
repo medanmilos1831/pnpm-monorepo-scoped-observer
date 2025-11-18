@@ -7,19 +7,17 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@med1802/scoped-observer": "workspace:*"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0"
+    "@med1802/scoped-observer": "^1.1.2",
+    "@med1802/scoped-observer-message-broker": "^1.0.1"
   },
   "devDependencies": {
-    "react": "^18.0.0",
-    "@types/react": "^18.0.0"
+    "@med1802/scoped-observer": "workspace:*",
+    "@med1802/scoped-observer-message-broker": "workspace:*"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages.git",
     "directory": "med1802/quantum-ui"
   },
-  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/quantum-ui"
+  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/quantum-ui#readme"
 }

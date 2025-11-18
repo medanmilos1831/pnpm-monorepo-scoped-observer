@@ -1,6 +1,6 @@
 # 🔄 Quantum UI
 
-A powerful, modular state management framework for React applications. Built on top of `@med1802/scoped-observer`, Quantum UI provides a structured approach to managing application state, modules, and models with built-in reactivity and lifecycle management.
+Quantum UI provides a structured approach to managing application state, modules, and models with built-in reactivity, event system, and lifecycle management.
 
 ---
 
@@ -9,7 +9,8 @@ A powerful, modular state management framework for React applications. Built on 
 - ✅ **Module-based architecture** — Organize your application into reusable modules
 - ✅ **Model management** — Create and manage multiple model instances per module
 - ✅ **State management** — Built-in state manager with mutations and getters
-- ✅ **Event system** — Integrated event dispatching and subscriptions
+- ✅ **Event system** — Integrated event dispatching and subscriptions via scoped observer
+- ✅ **Message broker** — Built-in message broker with interceptors for publish/subscribe
 - ✅ **Lifecycle hooks** — Manage model lifecycle events
 - ✅ **TypeScript support** — Fully typed API for better developer experience
 
@@ -21,10 +22,10 @@ A powerful, modular state management framework for React applications. Built on 
 npm install @med1802/quantum-ui
 ```
 
-**Peer Dependencies:**
+**Dependencies (automatically installed):**
 
-- `react` ^18.0.0
-- `@med1802/scoped-observer` ^1.1.0
+- `@med1802/scoped-observer`
+- `@med1802/scoped-observer-message-broker`
 
 ---
 
@@ -32,118 +33,141 @@ npm install @med1802/quantum-ui
 
 ### 1. Create a Module
 
-First, define your module configuration:
+First, define your module configuration with state, mutations, getters, and model client:
 
 ```typescript
 import { framework } from "@med1802/quantum-ui";
 
-// Define your entity state manager
-const userEntity = (props: { id: string; name: string }) => ({
-  id: props.id,
-  state: {
-    name: props.name,
-    email: "",
-    isActive: false,
-  },
-  mutations(state) {
-    return {
-      setName(name: string) {
-        state.name = name;
-      },
-      setEmail(email: string) {
-        state.email = email;
-      },
-      toggleActive() {
-        state.isActive = !state.isActive;
-      },
-    };
-  },
-  getters(state) {
-    return {
-      getFullInfo: () => `${state.name} (${state.email})`,
-      isActive: () => state.isActive,
-    };
-  },
-});
+export enum INITIAL_STATE {
+  ON = "on",
+  OFF = "off",
+}
 
-// Create model API client
-const userModelApi = (entity, dispatch, subscribe) => {
-  return {
-    // Expose entity methods
-    ...entity,
+export type initialStateType = `${INITIAL_STATE}`;
 
-    // Custom methods
-    activate() {
-      entity.mutations.toggleActive();
-      dispatch("userActivated", { id: entity.state.id });
-    },
-
-    subscribeToChanges(callback) {
-      return subscribe("userChanged", callback);
-    },
-  };
+export type ToggleProps = {
+  id: string;
+  initState: initialStateType;
 };
 
-// Create the module
-const userModule = framework.createModule({
-  name: "user",
-  entity: userEntity,
-  modelApiClient: userModelApi,
+const toggleModule = framework.createModule({
+  name: "toggle",
+  model: (props: ToggleProps) => {
+    return {
+      id: props.id,
+      state: {
+        visibility: props.initState,
+      },
+      mutations(state) {
+        return {
+          setVisibility: (visibility: initialStateType) => {
+            state.visibility = visibility;
+          },
+        };
+      },
+      getters(state) {
+        return {
+          getVisibility: () => state.visibility,
+        };
+      },
+    };
+  },
+  modelClient: (model, broker) => {
+    const commands = {
+      onOpen: () => {
+        model.mutations.setVisibility("on");
+        broker.publish({
+          eventName: "onChange",
+          payload: "on",
+        });
+      },
+      onClose: () => {
+        model.mutations.setVisibility("off");
+        broker.publish({
+          eventName: "onChange",
+          payload: "off",
+        });
+      },
+      onToggle: () => {
+        const newState = model.getters.getVisibility() === "on" ? "off" : "on";
+        model.mutations.setVisibility(newState);
+        broker.publish({
+          eventName: "onChange",
+          payload: newState,
+        });
+      },
+    };
+    const subscribers = {
+      onChange: (callback: (payload: "on" | "off") => void) => {
+        return broker.subscribe({
+          eventName: "onChange",
+          callback,
+        });
+      },
+    };
+    return {
+      commands,
+      subscribers,
+      getVisibility: model.getters.getVisibility,
+    };
+  },
 });
 ```
 
 ### 2. Create Model Instances
 
 ```typescript
-// Create a new user model
-userModule.createModel({ id: "user-1", name: "John Doe" });
+// Create a new toggle model
+toggleModule.createModel({ id: "my-toggle", initState: INITIAL_STATE.OFF });
 
 // Check if model exists
-if (userModule.hasModel("user-1")) {
+if (toggleModule.hasModel("my-toggle")) {
   // Get the model instance
-  const user = userModule.getModelById("user-1");
+  const toggle = toggleModule.getModelById("my-toggle");
 
-  // Use the model API
-  user.mutations.setEmail("john@example.com");
-  user.activate();
+  // Use commands
+  toggle.commands.onOpen();
+  toggle.commands.onToggle();
 
-  // Access getters
-  console.log(user.getters.getFullInfo());
+  // Access state
+  console.log(toggle.getVisibility()); // "on" or "off"
 }
 ```
 
 ### 3. Subscribe to Events
 
 ```typescript
-// Subscribe to module-level events
-const unsubscribe = userModule.subscribe("onModelLoad-user-1", (payload) => {
-  console.log("Model loaded:", payload);
+// Subscribe to model-specific events via broker
+const toggle = toggleModule.getModelById("my-toggle");
+
+const unsubscribe = toggle.subscribers.onChange((payload) => {
+  console.log("Visibility changed:", payload); // "on" or "off"
 });
 
-// Subscribe to model-specific events (in model API)
-const user = userModule.getModelById("user-1");
-const unsubscribeModel = user.subscribeToChanges((payload) => {
-  console.log("User changed:", payload);
-});
+// Subscribe to module-level events
+const unsubscribeModule = toggleModule.subscribe(
+  "onModelLoad-my-toggle",
+  (payload) => {
+    console.log("Model loaded:", payload);
+  }
+);
 
 // Clean up
 unsubscribe();
-unsubscribeModel();
+unsubscribeModule();
 ```
 
 ### 4. Manage Model Lifecycle
 
 ```typescript
 // Trigger lifecycle event
-userModule.lifeCycle("user-1");
+toggleModule.lifeCycle("my-toggle");
 
 // Remove model when done
-userModule.removeModel("user-1");
+toggleModule.removeModel("my-toggle");
 ```
 
----
-
-## 📚 API Reference
+## 📚 Framework API Reference
 
 ### `framework.createModule<S, M, G, A>(config)`
 
@@ -152,10 +176,17 @@ Creates a new module with the specified configuration.
 **Parameters:**
 
 - `config.name` (string) - Unique module name
-- `config.entity` (function) - Entity factory function that returns state manager config
-- `config.modelApiClient` (function) - Factory function that creates the model API
+- `config.model` (function) - Model factory function that returns state manager config with `id`, `state`, `mutations`, and `getters`
+- `config.modelClient` (function) - Factory function that creates the model API client. Receives `model` (with state, mutations, getters) and `broker` (message broker instance) as parameters
 
 **Returns:** `IModuleClientAPI<A>`
+
+**Type Parameters:**
+
+- `S` - State type
+- `M` - Mutations type
+- `G` - Getters type
+- `A` - Model API client type
 
 ### Module API
 
@@ -215,7 +246,8 @@ App
 
 ## 🔗 Related Packages
 
-- [`@med1802/scoped-observer`](../scoped-observer) - Event system used by Quantum UI
+- [`@med1802/scoped-observer`](https://www.npmjs.com/package/@med1802/scoped-observer) - Event system used by Quantum UI
+- [`@med1802/scoped-observer-message-broker`](https://www.npmjs.com/package/@med1802/scoped-observer-message-broker) - Message broker with interceptors used by Quantum UI
 
 ---
 
