@@ -14,8 +14,10 @@ interface ToggleGetters {
   getStatus: () => "open" | "close";
 }
 interface ToggleApiClient {
-  onOpen: () => void;
-  onClose: () => void;
+  commands: {
+    onOpen: () => void;
+    onClose: () => void;
+  };
 }
 const toggleModule = framework.createModule<
   ToggleState,
@@ -68,6 +70,13 @@ const toggleModule = framework.createModule<
     };
   },
 });
+
+console.log(toggleModule);
+
+toggleModule.createModel({ id: "toggle", initState: "open" });
+const model = toggleModule.getModelById("toggle");
+console.log(model.commands);
+
 const HomePage = () => {
   return (
     <div>
