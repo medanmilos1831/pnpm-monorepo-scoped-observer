@@ -1,6 +1,6 @@
 {
   "name": "@med1802/scoped-observer",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,5 +11,5 @@
     "url": "https://github.com/medanmilos1831/scoped-observer.git",
     "directory": "med1802/scoped-observer"
   },
-  "homepage": "https://github.com/medanmilos1831/med1802/tree/main/scoped-observer/scoped-observer#readme"
+  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/scoped-observer#readme"
 }
