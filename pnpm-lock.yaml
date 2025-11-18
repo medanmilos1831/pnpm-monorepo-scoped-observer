@@ -83,10 +83,13 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
       '@med1802/quantum-toggle':
         specifier: ^1.0.2
-        version: 1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1))(@med1802/scoped-observer@1.1.2)(react@18.3.1)
+        version: 1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1))(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)
       '@med1802/quantum-ui':
         specifier: ^1.0.1
-        version: 1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)
+        version: 1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)
+      '@med1802/scoped-observer':
+        specifier: workspace:*
+        version: link:../med1802/scoped-observer
       '@mui/icons-material':
         specifier: ^7.3.1
         version: 7.3.1(@mui/material@7.3.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
@@ -1891,15 +1894,15 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@med1802/quantum-toggle@1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1))(@med1802/scoped-observer@1.1.2)(react@18.3.1)':
+  '@med1802/quantum-toggle@1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1))(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)':
     dependencies:
-      '@med1802/quantum-ui': 1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)
-      '@med1802/scoped-observer': 1.1.2
+      '@med1802/quantum-ui': 1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)
+      '@med1802/scoped-observer': link:med1802/scoped-observer
       react: 18.3.1
 
-  '@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)':
+  '@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@med1802+scoped-observer)(react@18.3.1)':
     dependencies:
-      '@med1802/scoped-observer': 1.1.2
+      '@med1802/scoped-observer': link:med1802/scoped-observer
       react: 18.3.1
 
   '@med1802/scoped-observer@1.1.2': {}
