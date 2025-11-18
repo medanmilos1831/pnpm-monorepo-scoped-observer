@@ -3,8 +3,6 @@
     "private": true,
     "version": "1.0.0",
     "workspaces": [
-        "scoped-observer/*",
-        "behavior/*",
         "med1802/*"
     ],
     "devDependencies": {
