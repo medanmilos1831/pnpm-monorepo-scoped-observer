@@ -54,28 +54,17 @@ const framework = (function () {
             payload: undefined,
           });
         },
-        lifeCycle(this: string) {
-          return {
-            mount: (notify: () => void) => {
-              return observer.subscribe({
-                eventName: `onModelMount-${this}`,
-                callback: () => {
-                  notify();
-                },
-              })!;
-            },
-            unmount: (notify: () => void) => {
-              return observer.subscribe({
-                eventName: `onModelUnmount-${this}`,
-                callback: () => {
-                  notify();
-                },
-              })!;
-            },
-          };
+        onModelMount(id: string, callback: (params: any) => void) {
+          return observer.subscribe({
+            eventName: `onModelMount-${id}`,
+            callback,
+          })!;
         },
-        hasModel: (id: string) => {
-          return moduleStateManager.getters.hasModel(id);
+        onModelUnmount(id: string, callback: (params: any) => void) {
+          return observer.subscribe({
+            eventName: `onModelUnmount-${id}`,
+            callback,
+          })!;
         },
       };
     },

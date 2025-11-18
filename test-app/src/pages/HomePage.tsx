@@ -1,4 +1,6 @@
-import { framework } from "@med1802/quantum-ui";
+import { useState, useSyncExternalStore } from "react";
+import { framework } from "../quantum";
+
 interface ToggleProps {
   id: string;
   initState: "open" | "close";
@@ -71,13 +73,20 @@ const toggleModule = framework.createModule<
   },
 });
 
-console.log(toggleModule);
-
-toggleModule.createModel({ id: "toggle", initState: "open" });
-const model = toggleModule.getModelById("toggle");
-console.log(model.commands);
-
 const HomePage = () => {
+  const [mount] = useState(() => {
+    return (notify: () => void) => {
+      return toggleModule.onModelMount("toggle", (payload) => {
+        notify();
+      });
+    };
+  });
+  const [snapshot] = useState(() => () => {
+    return toggleModule.getModelById("toggle");
+  });
+  const value = useSyncExternalStore(mount, snapshot);
+  toggleModule.createModel({ id: "toggle", initState: "open" });
+  console.log("SYNC EXTERNAL STORE", value);
   return (
     <div>
       <h1>Home Page</h1>
