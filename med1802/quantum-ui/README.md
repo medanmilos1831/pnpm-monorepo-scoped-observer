@@ -31,140 +31,93 @@ npm install @med1802/quantum-ui
 
 ## ⚙️ Quick Start
 
-### 1. Create a Module
-
-First, define your module configuration with state, mutations, getters, and model client:
+### Complete Example
 
 ```typescript
 import { framework } from "@med1802/quantum-ui";
 
-export enum INITIAL_STATE {
-  ON = "on",
-  OFF = "off",
-}
-
-export type initialStateType = `${INITIAL_STATE}`;
-
-export type ToggleProps = {
+interface ToggleProps {
   id: string;
-  initState: initialStateType;
-};
-
-const toggleModule = framework.createModule({
-  name: "toggle",
+  initState: "open" | "close";
+}
+interface ToggleState {
+  status: "open" | "close";
+}
+interface ToggleMutations {
+  onOpen: () => void;
+  onClose: () => void;
+}
+interface ToggleGetters {
+  getStatus: () => "open" | "close";
+}
+interface ToggleApiClient {
+  commands: {
+    onOpen: () => void;
+    onClose: () => void;
+  };
+}
+const toggleModule = framework.createModule<
+  ToggleState,
+  ToggleMutations,
+  ToggleGetters,
+  ToggleApiClient
+>({
+  name: "toggle-module",
   model: (props: ToggleProps) => {
     return {
       id: props.id,
       state: {
-        visibility: props.initState,
+        status: props.initState,
       },
       mutations(state) {
         return {
-          setVisibility: (visibility: initialStateType) => {
-            state.visibility = visibility;
+          onOpen: () => {
+            state.status = "open";
+          },
+          onClose: () => {
+            state.status = "close";
           },
         };
       },
       getters(state) {
         return {
-          getVisibility: () => state.visibility,
+          getStatus: () => state.status,
         };
       },
     };
   },
   modelClient: (model, broker) => {
-    const commands = {
-      onOpen: () => {
-        model.mutations.setVisibility("on");
-        broker.publish({
-          eventName: "onChange",
-          payload: "on",
-        });
-      },
-      onClose: () => {
-        model.mutations.setVisibility("off");
-        broker.publish({
-          eventName: "onChange",
-          payload: "off",
-        });
-      },
-      onToggle: () => {
-        const newState = model.getters.getVisibility() === "on" ? "off" : "on";
-        model.mutations.setVisibility(newState);
-        broker.publish({
-          eventName: "onChange",
-          payload: newState,
-        });
-      },
-    };
-    const subscribers = {
-      onChange: (callback: (payload: "on" | "off") => void) => {
-        return broker.subscribe({
-          eventName: "onChange",
-          callback,
-        });
-      },
-    };
     return {
-      commands,
-      subscribers,
-      getVisibility: model.getters.getVisibility,
+      commands: {
+        onOpen: () => {
+          model.mutations.onOpen();
+          broker.publish({
+            eventName: "onChange",
+            payload: model.getters.getStatus(),
+          });
+        },
+        onClose: () => {
+          model.mutations.onClose();
+          broker.publish({
+            eventName: "onChange",
+            payload: model.getters.getStatus(),
+          });
+        },
+      },
     };
   },
 });
-```
 
-### 2. Create Model Instances
-
-```typescript
-// Create a new toggle model
-toggleModule.createModel({ id: "my-toggle", initState: INITIAL_STATE.OFF });
-
-// Check if model exists
-if (toggleModule.hasModel("my-toggle")) {
-  // Get the model instance
-  const toggle = toggleModule.getModelById("my-toggle");
-
-  // Use commands
-  toggle.commands.onOpen();
-  toggle.commands.onToggle();
-
-  // Access state
-  console.log(toggle.getVisibility()); // "on" or "off"
-}
-```
-
-### 3. Subscribe to Events
-
-```typescript
-// Subscribe to model-specific events via broker
-const toggle = toggleModule.getModelById("my-toggle");
-
-const unsubscribe = toggle.subscribers.onChange((payload) => {
-  console.log("Visibility changed:", payload); // "on" or "off"
+toggleModule.onModelMount("some-model", (payload) => {
+  console.log("onModelMount", payload);
 });
-
-// Subscribe to module-level events
-const unsubscribeModule = toggleModule.subscribe(
-  "onModelLoad-my-toggle",
-  (payload) => {
-    console.log("Model loaded:", payload);
-  }
-);
-
-// Clean up
-unsubscribe();
-unsubscribeModule();
-```
-
-### 4. Manage Model Lifecycle
-
-```typescript
-// Trigger lifecycle event
-toggleModule.lifeCycle("my-toggle");
-
-// Remove model when done
-toggleModule.removeModel("my-toggle");
+toggleModule.onModelUnmount("some-model", (payload) => {
+  console.log("onModelUnmount", payload);
+});
+toggleModule.createModel({ id: "some-model", initState: "open" });
+const model = toggleModule.getModelById("some-model");
+console.log(model.commands);
+toggleModule.removeModel("some-model");
 ```
 
 ## 📚 Framework API Reference
@@ -202,17 +155,13 @@ Removes a model instance by ID.
 
 Retrieves a model instance by ID.
 
-#### `hasModel(id: string): boolean`
+#### `onModelMount(id: string, callback: (params: any) => void): () => void`
 
-Checks if a model with the given ID exists.
+Subscribes to model mount events. Returns an unsubscribe function. The callback is triggered when a model with the specified ID is created.
 
-#### `subscribe(eventName: string, callback: (payload: any) => void): () => void`
+#### `onModelUnmount(id: string, callback: (params: any) => void): () => void`
 
-Subscribes to module-level events. Returns an unsubscribe function.
-
-#### `lifeCycle(id: string)`
-
-Triggers a lifecycle event for a specific model.
+Subscribes to model unmount events. Returns an unsubscribe function. The callback is triggered when a model with the specified ID is removed.
 
 ---
 
@@ -240,7 +189,7 @@ App
 2. **Model IDs**: Always use unique IDs for model instances
 3. **Event Cleanup**: Always unsubscribe from events to prevent memory leaks
 4. **Type Safety**: Leverage TypeScript generics for better type inference
-5. **Lifecycle Management**: Use `lifeCycle()` to notify when models are ready
+5. **Lifecycle Management**: Use `onModelMount()` and `onModelUnmount()` to handle model lifecycle events
 
 ---
 
