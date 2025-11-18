@@ -6,9 +6,11 @@
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
-  "peerDependencies": {
-    "react": "^18.0.0",
+  "dependencies": {
     "@med1802/quantum-ui": "^1.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
   },
   "devDependencies": {
     "@med1802/quantum-ui": "workspace:*",
