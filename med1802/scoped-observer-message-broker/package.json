@@ -1,0 +1,18 @@
+{
+  "name": "@med1802/scoped-observer-message-broker",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@med1802/scoped-observer": "^1.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages.git",
+    "directory": "med1802/scoped-observer-message-broker"
+  },
+  "homepage": "https://github.com/medanmilos1831/med1802/tree/main/scoped-observer-message-broker/scoped-observer-message-broker#readme"
+}
