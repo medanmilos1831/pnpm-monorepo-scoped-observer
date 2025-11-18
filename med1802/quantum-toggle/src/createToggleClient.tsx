@@ -1,9 +1,10 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { toggleModule } from "./toggleModule";
+import { ToggleProps } from "./types";
 
 const createToggleClient = () => {
   return {
-    useVisibility: (props: any) => {
+    useVisibility: (props: ToggleProps) => {
       toggleModule.createModel(props);
       const model = toggleModule.getModelById(props.id);
 

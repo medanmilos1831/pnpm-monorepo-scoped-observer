@@ -5,7 +5,7 @@ export enum INITIAL_STATE {
 
 export type initialStateType = `${INITIAL_STATE}`;
 
-export type VisibilityProps = {
+export type ToggleProps = {
   id: string;
   initState: initialStateType;
 };
