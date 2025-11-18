@@ -37,45 +37,72 @@ npm install @med1802/quantum-toggle
 import { createToggleClient } from "@med1802/quantum-toggle";
 
 export const toggleClient = createToggleClient();
+const { useToggle, useToggleCommands, useToggleSelector, getToggleClient } =
+  toggleClient;
 ```
 
-### 2. Build a modal with a single toggle instance
+### 2. Build a single modal experience
 
 ```tsx
-import React from "react";
-import { createToggleClient, INITIAL_STATE } from "@med1802/quantum-toggle";
+import { Button, Modal } from "antd";
+import { useEffect } from "react";
+import { createToggleClient } from "@med1802/quantum-toggle";
 
-const toggleClient = createToggleClient();
+const { useToggle, useToggleCommands, useToggleSelector } =
+  createToggleClient();
 
-const Modal = ({ children }: { children: React.ReactNode }) => {
-  const isOpen = toggleClient.useVisibility({
-    id: "modal",
-    initState: INITIAL_STATE.OFF,
-  });
-
-  const { onOpen, onClose, onToggle } =
-    toggleClient.useVisibilityCommands("modal");
-
-  if (isOpen === "off") return null;
+const UserModal = ({ model }: { model: ToggleProps }) => {
+  const visibility = useToggle(model);
+  const { onClose } = useToggleCommands(model.id);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose}>×</button>
-        <button onClick={onToggle}>Toggle</button>
-        {children}
-      </div>
+    <Modal open={visibility === "on"} onCancel={onClose} onOk={onClose}>
+      <h1>User Modal</h1>
+    </Modal>
+  );
+};
+
+const SomeHeader = () => {
+  const visibility = useToggleSelector("user-modal");
+
+  useEffect(() => {
+    const unsubscribe = visibility?.subscribers.onChange((payload) => {
+      console.log("subscribe", visibility?.getVisibility(), payload);
+    });
+    return () => unsubscribe?.();
+  }, [visibility]);
+
+  return (
+    <div>
+      <h2>Header</h2>
+      <Button onClick={() => visibility?.commands.onOpen()}>
+        Open form header
+      </Button>
+    </div>
+  );
+};
+
+const SomeFooter = () => {
+  const visibilityCommands = useToggleCommands("user-modal");
+  return (
+    <div>
+      <h2>Footer</h2>
+      <Button onClick={() => visibilityCommands.onOpen()}>Open</Button>
     </div>
   );
 };
 
 const App = () => {
-  const { onOpen } = toggleClient.useVisibilityCommands("modal");
-
   return (
     <div>
-      <button onClick={onOpen}>Open Modal</button>
-      <Modal>Modal Content</Modal>
+      <SomeHeader />
+      <UserModal
+        model={{
+          id: "user-modal",
+          initState: "off",
+        }}
+      />
+      <SomeFooter />
     </div>
   );
 };
@@ -95,7 +122,7 @@ Creates a new toggle client instance. You typically create one instance and reus
 const toggleClient = createToggleClient();
 ```
 
-### `toggleClient.useVisibility(props)`
+### `toggleClient.useToggle(props)`
 
 React hook that returns the current visibility state for a given ID. Automatically creates the model if it doesn't exist and manages its lifecycle.
 
@@ -107,13 +134,13 @@ React hook that returns the current visibility state for a given ID. Automatical
 **Returns:** `"on" | "off"`
 
 ```typescript
-const visibility = toggleClient.useVisibility({
+const visibility = toggleClient.useToggle({
   id: "my-component",
-  initState: INITIAL_STATE.OFF,
+  initState: "off",
 });
 ```
 
-### `toggleClient.useVisibilityCommands(id)`
+### `toggleClient.useToggleCommands(id)`
 
 React hook that returns command functions to control visibility state.
 
@@ -125,7 +152,7 @@ React hook that returns command functions to control visibility state.
 
 ```typescript
 const { onOpen, onClose, onToggle } =
-  toggleClient.useVisibilityCommands("my-component");
+  toggleClient.useToggleCommands("my-component");
 ```
 
 **Commands:**
@@ -134,7 +161,7 @@ const { onOpen, onClose, onToggle } =
 - `onClose()` - Sets visibility to "off"
 - `onToggle()` - Toggles between "on" and "off"
 
-### `toggleClient.useModelSelector(id)`
+### `toggleClient.useToggleSelector(id)`
 
 React hook that returns the model instance if it exists, or `undefined` if it doesn't. Useful for accessing the full model API.
 
@@ -145,18 +172,20 @@ React hook that returns the model instance if it exists, or `undefined` if it do
 **Returns:** `IModelApiClient | undefined`
 
 ```typescript
-const model = toggleClient.useModelSelector("my-component");
+const model = toggleClient.useToggleSelector("my-component");
 
 if (model) {
   // Access full API
   const currentState = model.getVisibility();
-  model.subscribe("onChange", (payload) => {
+  const unsubscribe = model.subscribers.onChange((payload) => {
     console.log("State changed:", payload);
   });
+  // ...later, when you want to stop listening:
+  unsubscribe();
 }
 ```
 
-### `toggleClient.getVisibilityClient(id)`
+### `toggleClient.getToggleClient(id)`
 
 Non-hook function to get the model instance directly. Use this outside of React components.
 
@@ -167,22 +196,10 @@ Non-hook function to get the model instance directly. Use this outside of React 
 **Returns:** `IModelApiClient`
 
 ```typescript
-const model = toggleClient.getVisibilityClient("my-component");
+const model = toggleClient.getToggleClient("my-component");
 const state = model.getVisibility();
 model.commands.onToggle();
 ```
-
----
-
-## 💡 Best Practices
-
-1. **Single Client Instance**: Create one `toggleClient` instance and reuse it throughout your app
-2. **Unique IDs**: Always use unique IDs for each visibility instance
-3. **Initial State**: Set appropriate initial states based on your use case
-4. **Lifecycle Management**: The library handles lifecycle automatically, but ensure IDs are consistent
-5. **Type Safety**: Use `INITIAL_STATE` enum for better type safety
-
----
 
 ## 🔗 Related Packages
 
