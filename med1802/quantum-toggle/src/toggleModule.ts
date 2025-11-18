@@ -4,6 +4,7 @@ import {
   IModelGetters,
   IModelMutations,
   IModelState,
+  INITIAL_STATE,
   initialStateType,
   ToggleProps,
 } from "./types";
@@ -19,7 +20,7 @@ const toggleModule = framework.createModule<
     return {
       id: props.id,
       state: {
-        visibility: "off",
+        visibility: props.initState,
       },
       mutations(state) {
         return {
@@ -38,31 +39,36 @@ const toggleModule = framework.createModule<
   modelClient: (model, broker) => {
     const commands = {
       onOpen: () => {
-        model.mutations.setVisibility("on");
+        model.mutations.setVisibility(INITIAL_STATE.ON);
         broker.publish({
           eventName: "onChange",
-          payload: "on",
+          payload: INITIAL_STATE.ON,
         });
       },
       onClose: () => {
-        model.mutations.setVisibility("off");
+        model.mutations.setVisibility(INITIAL_STATE.OFF);
         broker.publish({
           eventName: "onChange",
-          payload: "off",
+          payload: INITIAL_STATE.OFF,
         });
       },
       onToggle: () => {
         model.mutations.setVisibility(
-          model.getters.getVisibility() === "on" ? "off" : "on"
+          model.getters.getVisibility() === INITIAL_STATE.ON
+            ? INITIAL_STATE.OFF
+            : INITIAL_STATE.ON
         );
         broker.publish({
           eventName: "onChange",
-          payload: model.getters.getVisibility() === "on" ? "off" : "on",
+          payload:
+            model.getters.getVisibility() === INITIAL_STATE.ON
+              ? INITIAL_STATE.OFF
+              : INITIAL_STATE.ON,
         });
       },
     };
     const subscribers = {
-      onChange: (callback: (payload: "on" | "off") => void) => {
+      onChange: (callback: (payload: initialStateType) => void) => {
         return broker.subscribe({
           eventName: "onChange",
           callback,
