@@ -4,7 +4,7 @@ import { ToggleProps } from "./types";
 
 const createToggleClient = () => {
   return {
-    useVisibility: (props: ToggleProps) => {
+    useToggle: (props: ToggleProps) => {
       toggleModule.createModel(props);
       const model = toggleModule.getModelById(props.id);
 
@@ -19,11 +19,11 @@ const createToggleClient = () => {
       );
       return visibility;
     },
-    useVisibilityCommands: (id: string) => {
+    useToggleCommands: (id: string) => {
       const model = toggleModule.getModelById(id);
       return model.commands;
     },
-    useModelSelector: (id: string) => {
+    useToggleSelector: (id: string) => {
       const [lifeCycle] = useState(toggleModule.lifeCycle.bind(id));
       const [snapshot] = useState(() => {
         return () => {
@@ -35,7 +35,7 @@ const createToggleClient = () => {
       const model = toggleModule.getModelById(id);
       return hasModel ? model : undefined;
     },
-    getVisibilityClient: (id: string) => {
+    getToggleClient: (id: string) => {
       const model = toggleModule.getModelById(id);
       return model;
     },
