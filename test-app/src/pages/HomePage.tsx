@@ -1,56 +1,33 @@
-import { useEffect, useState } from "react";
-import {
-  useModelSelector,
+import { createToggleClient } from "@med1802/quantum-toggle";
+import { Button, Modal } from "antd";
+import { useEffect } from "react";
+const {
   useVisibility,
   useVisibilityCommands,
-} from "../toggleService";
-const VisibilityComponent = () => {
-  const visibility = useVisibility({ id: "toggle-1", initState: "on" });
-  const visibilityCommands = useVisibilityCommands("toggle-1");
-
+  useModelSelector,
+  getVisibilityClient,
+} = createToggleClient();
+const UserModal = ({ id }: { id: string }) => {
+  const visibility = useVisibility({ id, initState: "off" });
   return (
-    <div>
-      <div>Visibility Component Visibility: {visibility}</div>
-      <button onClick={() => visibilityCommands.onOpen()}>Open</button>
-      <button onClick={() => visibilityCommands.onClose()}>Close</button>
-      <button onClick={() => visibilityCommands.onToggle()}>Toggle</button>
-    </div>
+    <>
+      <Modal open={visibility === "on"}>modal</Modal>
+    </>
   );
 };
 const SomeComponent = () => {
-  const visibility = useModelSelector("toggle-1");
-  console.log("visibility", visibility);
-  useEffect(() => {
-    const unsubscribe = visibility?.subscribers.onChange((payload: any) => {
-      console.log("HOME PAGE PAYLOAD", payload);
-    });
-    return () => {
-      unsubscribe?.();
-    };
-  }, [visibility]);
+  const visibilityCommands = useVisibilityCommands("user-modal");
   return (
     <div>
-      hello
-      <button onClick={() => visibility?.commands.onOpen()}>Open</button>
-      <button onClick={() => visibility?.commands.onClose()}>Close</button>
-      <button onClick={() => visibility?.commands.onToggle()}>Toggle</button>
-    </div>
-  );
-};
-const WrapperComponent = () => {
-  const [show, setShow] = useState(true);
-  return (
-    <div>
-      <button onClick={() => setShow(!show)}>Show</button>
-      {show ? <VisibilityComponent /> : "nema"}
+      <Button onClick={() => visibilityCommands.onOpen()}>Open</Button>
     </div>
   );
 };
 const HomePage = () => {
   return (
     <div>
+      <UserModal id="user-modal" />
       <SomeComponent />
-      <WrapperComponent />
     </div>
   );
 };
