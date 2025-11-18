@@ -1,24 +1,48 @@
 import { createToggleClient } from "@med1802/quantum-toggle";
 import { Button, Modal } from "antd";
 import { useEffect } from "react";
-const {
-  useVisibility,
-  useVisibilityCommands,
-  useModelSelector,
-  getVisibilityClient,
-} = createToggleClient();
-const UserModal = ({ id }: { id: string }) => {
-  const visibility = useVisibility({ id, initState: "off" });
+const { useToggle, useToggleCommands, useToggleSelector, getToggleClient } =
+  createToggleClient();
+
+const UserModal = ({
+  model,
+}: {
+  model: { id: string; initState: "on" | "off" };
+}) => {
+  const visibility = useToggle(model);
+  const { onClose } = useToggleCommands(model.id);
   return (
     <>
-      <Modal open={visibility === "on"}>modal</Modal>
+      <Modal open={visibility === "on"} onCancel={onClose} onOk={onClose}>
+        <h1>User Modal</h1>
+      </Modal>
     </>
   );
 };
-const SomeComponent = () => {
-  const visibilityCommands = useVisibilityCommands("user-modal");
+
+const SomeHeader = () => {
+  const visibility = useToggleSelector("user-modal");
+
+  useEffect(() => {
+    const unsubscribe = visibility?.subscribers.onChange((payload) => {
+      console.log("subscribe", visibility?.getVisibility(), payload);
+    });
+    return () => unsubscribe?.();
+  }, [visibility]);
   return (
     <div>
+      <h2>Header</h2>
+      <Button onClick={() => visibility?.commands.onOpen()}>
+        Open form header
+      </Button>
+    </div>
+  );
+};
+const SomeFooter = () => {
+  const visibilityCommands = useToggleCommands("user-modal");
+  return (
+    <div>
+      <h2>Footer</h2>
       <Button onClick={() => visibilityCommands.onOpen()}>Open</Button>
     </div>
   );
@@ -26,8 +50,14 @@ const SomeComponent = () => {
 const HomePage = () => {
   return (
     <div>
-      <UserModal id="user-modal" />
-      <SomeComponent />
+      <SomeHeader />
+      <UserModal
+        model={{
+          id: "user-modal",
+          initState: "off",
+        }}
+      />
+      <SomeFooter />
     </div>
   );
 };
