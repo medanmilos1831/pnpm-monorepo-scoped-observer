@@ -1,0 +1,55 @@
+name: Publish Packages
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: https://registry.npmjs.org
+          cache: "pnpm"
+
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: |
+          pnpm run build:med1802-scoped-observer
+          pnpm run build:med1802-scoped-observer-message-broker
+          pnpm run build:med1802-quantum-ui
+          pnpm run build:med1802-quantum-toggle
+          pnpm run build:med1802-quantum-scrollium
+          pnpm run build:med1802-quantum-ui-react
+
+      - name: Publish packages
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+        run: |
+          pnpm run publish:med1802-scoped-observer
+          pnpm run publish:med1802-scoped-observer-message-broker
+          pnpm run publish:med1802-quantum-ui
+          pnpm run publish:med1802-quantum-toggle
+          pnpm run publish:med1802-quantum-scrollium
+          pnpm run publish:med1802-quantum-ui-react
