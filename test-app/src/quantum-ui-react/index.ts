@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import type { framework } from "../quantum/framework";
 
 const quantumUiReact = (props: ReturnType<typeof framework.createModule>) => {
@@ -25,6 +25,15 @@ const quantumUiReact = (props: ReturnType<typeof framework.createModule>) => {
       value = useSyncExternalStore(mount, snapshot);
       value = useSyncExternalStore(unmount, snapshot);
       return value;
+    },
+    useCreateModel: (modelId: string) => {
+      props.createModel(props);
+
+      useEffect(() => {
+        return () => {
+          props.removeModel(modelId);
+        };
+      }, []);
     },
     getModelById: (modelId: string) => {
       return props.getModelById(modelId);
