@@ -1,3 +1,3 @@
-import { framework } from "./framework";
+import { framework as quantumUi } from "./framework";
 import type { CreateModuleConfigType } from "./framework/types";
-export { framework as quantumUi, CreateModuleConfigType };
+export { quantumUi, CreateModuleConfigType };
