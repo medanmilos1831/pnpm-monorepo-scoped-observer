@@ -38,13 +38,11 @@ importers:
         version: 18.3.1
 
   med1802/quantum-toggle:
-    devDependencies:
+    dependencies:
       '@med1802/quantum-ui':
-        specifier: workspace:*
-        version: link:../quantum-ui
-      '@med1802/scoped-observer':
-        specifier: workspace:*
-        version: link:../scoped-observer
+        specifier: ^1.2.0
+        version: 1.3.0
+    devDependencies:
       '@types/react':
         specifier: ^18.0.0
         version: 18.3.23
@@ -60,6 +58,12 @@ importers:
       '@med1802/scoped-observer-message-broker':
         specifier: ^1.0.2
         version: 1.0.2(@med1802/scoped-observer@1.1.2)
+
+  med1802/quantum-ui-react:
+    dependencies:
+      '@med1802/quantum-ui':
+        specifier: ^1.3.0
+        version: 1.3.0
 
   med1802/scoped-observer: {}
 
@@ -77,30 +81,15 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
-      '@med1802/quantum-toggle':
-        specifier: ^1.0.2
-        version: 1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1))(@med1802/scoped-observer@1.1.2)(react@18.3.1)
       '@med1802/quantum-ui':
-        specifier: ^1.0.1
-        version: 1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)
-      '@med1802/scoped-observer':
-        specifier: ^1.1.2
-        version: 1.1.2
-      '@med1802/scoped-observer-message-broker':
-        specifier: ^1.0.1
-        version: 1.0.1(@med1802/scoped-observer@1.1.2)
+        specifier: ^1.2.0
+        version: 1.3.0
       '@mui/icons-material':
         specifier: ^7.3.1
         version: 7.3.1(@mui/material@7.3.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.23)(react@18.3.1)
       '@mui/material':
         specifier: ^7.3.1
         version: 7.3.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@scoped-observer/core':
-        specifier: ^2.3.5
-        version: 2.3.5
-      '@scoped-observer/react-state-machine':
-        specifier: ^3.0.7
-        version: 3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1)
       '@xstate/react':
         specifier: ^6.0.0
         version: 6.0.0(@types/react@18.3.23)(react@18.3.1)(xstate@5.20.2)
@@ -119,15 +108,6 @@ importers:
       react-router-dom:
         specifier: ^7.9.4
         version: 7.9.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-use-wizard:
-        specifier: ^2.3.0
-        version: 2.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-visibility-state:
-        specifier: ^1.1.0
-        version: 1.1.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1)
-      react-wizzard:
-        specifier: ^3.0.0
-        version: 3.0.3(@scoped-observer/core@2.3.5)(react@18.3.1)
       xstate:
         specifier: ^5.20.2
         version: 5.20.2
@@ -504,23 +484,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@med1802/quantum-toggle@1.0.2':
-    resolution: {integrity: sha512-Eih2AxPRBdCpa/Zl6mp0vIgGV0PDVhJ4predMrx68s+ni2Brdh5w7kTl7O5Fji9gF0VJvQD3ygfBa8VNbQC9oQ==}
-    peerDependencies:
-      '@med1802/quantum-ui': ^1.0.1
-      '@med1802/scoped-observer': ^1.0.0
-      react: ^18.0.0
-
-  '@med1802/quantum-ui@1.0.1':
-    resolution: {integrity: sha512-uasnaCAzZ+P+BlH6OM0FtXwLQ4O8FMoAJogn5aq/+bzcVNoeKK50ajVYjMo5DiEU17BDk9cMuLmQwkGVQtHv8A==}
-    peerDependencies:
-      '@med1802/scoped-observer': ^1.0.0
-      react: ^18.0.0
-
-  '@med1802/scoped-observer-message-broker@1.0.1':
-    resolution: {integrity: sha512-fPGUfRJU9+FbXPY9Lhp60+2sIxu9CMZ7hyJ7E55zhO+yS6Sd/fH9W7azwyc5EhWXQJT3V2TWtiLREu9ZD27yug==}
-    peerDependencies:
-      '@med1802/scoped-observer': ^1.1.2
+  '@med1802/quantum-ui@1.3.0':
+    resolution: {integrity: sha512-exoL56VxNrhmOo+UQsf3XtcoYNZmwbV3A/F5fsXkJa1FQSxJshaX1eNEoapuY3GXDIPGKkBy5pZIghCnIcQQ7Q==}
 
   '@med1802/scoped-observer-message-broker@1.0.2':
     resolution: {integrity: sha512-IZ1n2x2XIS+o1UJ05KyI63M8JZ7RlwydCs/sZqw2YayWim9OdhdlNytwr+714BYqEg18kBbnDIy+xmYk2H8TqA==}
@@ -781,15 +746,6 @@ packages:
     resolution: {integrity: sha512-8a/caCUN4vkTChxkaIJcMtwIVcBhi4X2PQRoT+yCK3qRYaZ7cURrmJFL5Ux9H9RaMIXj9RuihckdmkBX3zZsgg==}
     cpu: [x64]
     os: [win32]
-
-  '@scoped-observer/core@2.3.5':
-    resolution: {integrity: sha512-bklWun7hq0/CURXNQddXeW15WXrXVEFj/xGW8WxkDfKYzuoEjTdS4MyGBmw7BO7OxMGsTmDBBzYwfWY2WFnK9A==}
-
-  '@scoped-observer/react-state-machine@3.0.7':
-    resolution: {integrity: sha512-7ez+wFLZO/btF/Ta/ZbuaDRpcKxIztZy3nQj2L6tYz3HDqo8rCZWqW1PkEL5xETz6ifH60uD0D217TuiZjCA5A==}
-    peerDependencies:
-      '@scoped-observer/core': ^2.3.5
-      react: ^18.0.0
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1380,25 +1336,6 @@ packages:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
 
-  react-use-wizard@2.3.0:
-    resolution: {integrity: sha512-z06pQNZ18FvoK+ZDW50hOf0uOySo0Hhd7H4y0MLyk/tBCwpUKGBeULosORBVhipUaWihNLpLJxwH5f+85Qt5XA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-
-  react-visibility-state@1.1.0:
-    resolution: {integrity: sha512-NohIwak+C60nvJklXd11XgQV4CW7g/m6YntUs/fUqmavSkKsRTk2/l/z4CKwkGvF2fnMpOo7IdHCAYGE8FfrVQ==}
-    peerDependencies:
-      '@scoped-observer/react-state-machine': ^3.0.7
-      react: ^18.0.0
-
-  react-wizzard@3.0.3:
-    resolution: {integrity: sha512-OX/oqzWP50JDut4An7CR6TQ+da9npvWkK3M/bxJOw4S+Inbb8yFFD+6tJCmopMos2rDlYJT3hxNvdf4LRKG32A==}
-    peerDependencies:
-      '@scoped-observer/core': ^2.3.5
-      react: ^18.0.0
-
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
@@ -1903,20 +1840,10 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@med1802/quantum-toggle@1.0.2(@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1))(@med1802/scoped-observer@1.1.2)(react@18.3.1)':
-    dependencies:
-      '@med1802/quantum-ui': 1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)
-      '@med1802/scoped-observer': 1.1.2
-      react: 18.3.1
-
-  '@med1802/quantum-ui@1.0.1(@med1802/scoped-observer@1.1.2)(react@18.3.1)':
+  '@med1802/quantum-ui@1.3.0':
     dependencies:
       '@med1802/scoped-observer': 1.1.2
-      react: 18.3.1
-
-  '@med1802/scoped-observer-message-broker@1.0.1(@med1802/scoped-observer@1.1.2)':
-    dependencies:
-      '@med1802/scoped-observer': 1.1.2
+      '@med1802/scoped-observer-message-broker': 1.0.2(@med1802/scoped-observer@1.1.2)
 
   '@med1802/scoped-observer-message-broker@1.0.2(@med1802/scoped-observer@1.1.2)':
     dependencies:
@@ -2142,13 +2069,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.48.1':
     optional: true
-
-  '@scoped-observer/core@2.3.5': {}
-
-  '@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1)':
-    dependencies:
-      '@scoped-observer/core': 2.3.5
-      react: 18.3.1
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -2887,21 +2807,6 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  react-use-wizard@2.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  react-visibility-state@1.1.0(@scoped-observer/react-state-machine@3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@scoped-observer/react-state-machine': 3.0.7(@scoped-observer/core@2.3.5)(react@18.3.1)
-      react: 18.3.1
-
-  react-wizzard@3.0.3(@scoped-observer/core@2.3.5)(react@18.3.1):
-    dependencies:
-      '@scoped-observer/core': 2.3.5
-      react: 18.3.1
 
   react@18.3.1:
     dependencies:

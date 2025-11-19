@@ -23,6 +23,8 @@
         "build:med1802-quantum-toggle": "pnpm --filter @med1802/quantum-toggle run build",
         "publish:med1802-quantum-toggle": "pnpm publish --filter @med1802/quantum-toggle --access public",
         "build:med1802-quantum-scrollium": "pnpm --filter @med1802/quantum-scrollium run build",
-        "publish:med1802-quantum-scrollium": "pnpm publish --filter @med1802/quantum-scrollium --access public"
+        "publish:med1802-quantum-scrollium": "pnpm publish --filter @med1802/quantum-scrollium --access public",
+        "build:med1802-quantum-ui-react": "pnpm --filter @med1802/quantum-ui-react run build",
+        "publish:med1802-quantum-ui-react": "pnpm publish --filter @med1802/quantum-ui-react --access public"
     }
 }
