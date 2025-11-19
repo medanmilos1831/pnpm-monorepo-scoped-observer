@@ -37,11 +37,6 @@ const quantumUiModuleReact = (
         };
       }, []);
     },
-    getModelById: props.getModelById,
-    createModel: props.createModel,
-    removeModel: props.removeModel,
-    onModelMount: props.onModelMount,
-    onModelUnmount: props.onModelUnmount,
   };
 };
 
