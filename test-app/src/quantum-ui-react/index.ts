@@ -35,15 +35,9 @@ const quantumUiReact = (props: ReturnType<typeof framework.createModule>) => {
         };
       }, []);
     },
-    getModelById: (modelId: string) => {
-      return props.getModelById(modelId);
-    },
-    createModel: (modelId: string) => {
-      return props.createModel(modelId);
-    },
-    removeModel: (modelId: string) => {
-      return props.removeModel(modelId);
-    },
+    getModelById: props.getModelById,
+    createModel: props.createModel,
+    removeModel: props.removeModel,
   };
 };
 
