@@ -1,137 +1,61 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { framework } from "../quantum";
-import { quantumUiReact } from "../quantum-ui-react";
+import { Button, Modal } from "antd";
+import { useEffect } from "react";
+import { createToggleClient } from "@med1802/quantum-toggle";
 
-interface ToggleProps {
-  id: string;
-  initState: "open" | "close";
-}
-interface ToggleState {
-  status: "open" | "close";
-}
-interface ToggleMutations {
-  onOpen: () => void;
-  onClose: () => void;
-}
-interface ToggleGetters {
-  getStatus: () => "open" | "close";
-}
-interface ToggleApiClient {
-  commands: {
-    onOpen: () => void;
-    onClose: () => void;
-  };
-}
-const toggleModule = framework.createModule<
-  ToggleState,
-  ToggleMutations,
-  ToggleGetters,
-  ToggleApiClient
->({
-  name: "toggle-module",
-  model: (props: ToggleProps) => {
-    return {
-      id: props.id,
-      state: {
-        status: props.initState,
-      },
-      mutations(state) {
-        return {
-          onOpen: () => {
-            state.status = "open";
-          },
-          onClose: () => {
-            state.status = "close";
-          },
-        };
-      },
-      getters(state) {
-        return {
-          getStatus: () => state.status,
-        };
-      },
-    };
-  },
-  modelClient: (model, broker) => {
-    return {
-      commands: {
-        onOpen: () => {
-          model.mutations.onOpen();
-          broker.publish({
-            eventName: "onChange",
-            payload: model.getters.getStatus(),
-          });
-        },
-        onClose: () => {
-          model.mutations.onClose();
-          broker.publish({
-            eventName: "onChange",
-            payload: model.getters.getStatus(),
-          });
-        },
-      },
-    };
-  },
-});
+const { useToggle, useToggleCommands, useToggleSelector } =
+  createToggleClient();
 
-const quantumUi = quantumUiReact(toggleModule);
-console.log(quantumUi);
+const UserModal = ({ model }: { model: any }) => {
+  const visibility = useToggle(model);
+  const { onClose } = useToggleCommands(model.id);
 
-const SomeComponent = () => {
-  const model = quantumUi.useModelSelector("some-model");
-  console.log(model);
+  return (
+    <Modal open={visibility === "on"} onCancel={onClose} onOk={onClose}>
+      <h1>User Modal</h1>
+    </Modal>
+  );
+};
+const SomeHeader = () => {
+  const visibility = useToggleSelector("user-modal");
+
+  useEffect(() => {
+    const unsubscribe = visibility?.subscribers.onChange((payload) => {
+      console.log("subscribe", visibility?.getVisibility(), payload);
+    });
+    return () => unsubscribe?.();
+  }, [visibility]);
+
   return (
     <div>
-      <h1>Some Component</h1>
+      <h2>Header</h2>
+      <Button onClick={() => visibility?.commands.onOpen()}>
+        Open form header
+      </Button>
     </div>
   );
 };
-const SomeComponent2 = () => {
-  const model = toggleModule.createModel({
-    id: "some-model",
-    initState: "open",
-  });
-  useEffect(() => {
-    return () => {
-      toggleModule.removeModel("some-model");
-    };
-  }, []);
+
+const SomeFooter = () => {
+  const visibilityCommands = useToggleCommands("user-modal");
   return (
     <div>
-      <h1>Some Component 2</h1>
+      <h2>Footer</h2>
+      <Button onClick={() => visibilityCommands.onOpen()}>Open</Button>
     </div>
   );
 };
 
 const HomePage = () => {
-  const [count, setCount] = useState(0);
-  return (
-    <>
-      <SomeComponent />
-      {count % 2 === 0 && <SomeComponent2 />}
-      <button onClick={() => setCount(count + 1)}>Click me</button>
-    </>
-  );
-  // toggleModule.createModel({ id: "some-model", initState: "open" });
-  // setTimeout(() => {
-  //   toggleModule.removeModel("some-model");
-  // }, 1000);
-  // const [mount] = useState(() => {
-  //   return (notify: () => void) => {
-  //     return toggleModule.onModelMount("toggle", (payload) => {
-  //       notify();
-  //     });
-  //   };
-  // });
-  // const [snapshot] = useState(() => () => {
-  //   return toggleModule.getModelById("toggle");
-  // });
-  // const value = useSyncExternalStore(mount, snapshot);
-  // toggleModule.createModel({ id: "toggle", initState: "open" });
-  // console.log("SYNC EXTERNAL STORE", value);
   return (
     <div>
-      <h1>Home Page</h1>
+      <SomeHeader />
+      <UserModal
+        model={{
+          id: "user-modal",
+          initState: "off",
+        }}
+      />
+      <SomeFooter />
     </div>
   );
 };
