@@ -1,5 +1,6 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { framework } from "../quantum";
+import { quantumUiReact } from "../quantum-ui-react";
 
 interface ToggleProps {
   id: string;
@@ -73,18 +74,48 @@ const toggleModule = framework.createModule<
   },
 });
 
-toggleModule.onModelMount("some-model", (payload) => {
-  console.log("onModelMount", payload);
-});
-toggleModule.onModelUnmount("some-model", (payload) => {
-  console.log("onModelUnmount", payload);
-});
-toggleModule.createModel({ id: "some-model", initState: "open" });
-const model = toggleModule.getModelById("some-model");
-console.log(model.commands);
-toggleModule.removeModel("some-model");
+const quantumUi = quantumUiReact(toggleModule);
+console.log(quantumUi);
+
+const SomeComponent = () => {
+  const model = quantumUi.useModelSelector("some-model");
+  console.log(model);
+  return (
+    <div>
+      <h1>Some Component</h1>
+    </div>
+  );
+};
+const SomeComponent2 = () => {
+  const model = toggleModule.createModel({
+    id: "some-model",
+    initState: "open",
+  });
+  useEffect(() => {
+    return () => {
+      toggleModule.removeModel("some-model");
+    };
+  }, []);
+  return (
+    <div>
+      <h1>Some Component 2</h1>
+    </div>
+  );
+};
 
 const HomePage = () => {
+  const [count, setCount] = useState(0);
+  return (
+    <>
+      <SomeComponent />
+      {count % 2 === 0 && <SomeComponent2 />}
+      <button onClick={() => setCount(count + 1)}>Click me</button>
+    </>
+  );
+  // toggleModule.createModel({ id: "some-model", initState: "open" });
+  // setTimeout(() => {
+  //   toggleModule.removeModel("some-model");
+  // }, 1000);
   // const [mount] = useState(() => {
   //   return (notify: () => void) => {
   //     return toggleModule.onModelMount("toggle", (payload) => {
