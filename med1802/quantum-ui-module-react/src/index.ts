@@ -1,7 +1,9 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { framework } from "@med1802/quantum-ui";
 
-const quantumUiReact = (props: ReturnType<typeof framework.createModule>) => {
+const quantumUiModuleReact = (
+  props: ReturnType<typeof framework.createModule>
+) => {
   return {
     useModelSelector: (modelId: string) => {
       const [mount] = useState(() => {
@@ -41,4 +43,4 @@ const quantumUiReact = (props: ReturnType<typeof framework.createModule>) => {
   };
 };
 
-export { quantumUiReact };
+export { quantumUiModuleReact };

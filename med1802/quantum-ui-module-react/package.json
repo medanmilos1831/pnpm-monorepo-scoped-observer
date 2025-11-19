@@ -1,5 +1,5 @@
 {
-  "name": "@med1802/quantum-ui-react",
+  "name": "@med1802/quantum-ui-module-react",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages.git",
-    "directory": "med1802/quantum-ui-react"
+    "directory": "med1802/quantum-ui-module-react"
   },
-  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/quantum-ui-react#readme"
+  "homepage": "https://github.com/medanmilos1831/pnpm-monorepo-med1802-packages/tree/main/med1802/quantum-ui-module-react#readme"
 }
