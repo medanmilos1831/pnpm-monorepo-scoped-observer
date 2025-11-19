@@ -1,3 +1,3 @@
 import { framework } from "./framework";
-
-export { framework };
+import type { CreateModuleConfigType } from "./framework/types";
+export { framework, CreateModuleConfigType };
