@@ -1,7 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 
-import { quantumUi } from "@med1802/quantum-ui";
-import type { CreateModuleConfigType } from "@med1802/quantum-ui/src/framework/types";
+import { quantumUi, type CreateModuleConfigType } from "@med1802/quantum-ui";
 
 function quantumUiReact() {
   return {
