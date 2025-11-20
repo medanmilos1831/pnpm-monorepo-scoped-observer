@@ -1,6 +1,6 @@
 import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { createToggleClient } from "../toggle/createToggleClient";
+import { createToggleClient } from "@med1802/quantum-toggle";
 
 const { useToggle, useToggleCommands, useToggleSelector } =
   createToggleClient();
