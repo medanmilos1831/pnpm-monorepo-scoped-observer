@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@med1802/quantum-ui-react": "^1.0.1",
+    "@med1802/quantum-toggle": "^2.0.1",
+    "antd": "^5.29.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
