@@ -71,6 +71,9 @@ importers:
 
   test-app:
     dependencies:
+      '@med1802/quantum-ui-react':
+        specifier: ^1.0.1
+        version: 1.0.1
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -377,6 +380,9 @@ packages:
 
   '@med1802/quantum-ui-react@1.0.0':
     resolution: {integrity: sha512-SxSNFkZBQ06P+AXjOviRZriq6t0k5p/TuQXBKiuQAq81TBVpRZ+zJQCPMZEMxIJXPF+ollIEciCx4jjyMD1r3Q==}
+
+  '@med1802/quantum-ui-react@1.0.1':
+    resolution: {integrity: sha512-IXYPqb6Lx4V9b8PeKgYMnxYvrlByvqRseM8d7z41VY4aPjMQWSu2siFDpeKmtMi5VMUzkVY+I5EmI/Gr0SUa/w==}
 
   '@med1802/quantum-ui@1.3.1':
     resolution: {integrity: sha512-p5ENRcgiXo5rq9Ci+G2wcpve15PsLgAyjicPJ0THPz63Tee/TcuM00l1DEnPJBJ0q3TMPAKuFwbCw/ZMm+o8wQ==}
@@ -975,6 +981,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@med1802/quantum-ui-react@1.0.0':
+    dependencies:
+      '@med1802/quantum-ui': 1.3.1
+
+  '@med1802/quantum-ui-react@1.0.1':
     dependencies:
       '@med1802/quantum-ui': 1.3.1
 
