@@ -48,11 +48,11 @@ const toggleModule = quantumUi.createModule<
   ToggleApiClient
 >({
   name: "toggle",
-  model: (props: { id: string }) => {
+  model: (props: { id: string; initState: "on" | "off" }) => {
     return {
       id: props.id,
       state: {
-        status: "on",
+        status: prop.initState,
       },
       mutations(state) {
         return {
