@@ -1,6 +1,6 @@
 {
   "name": "@med1802/quantum-toggle",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "react": "^18.0.0",
-    "@med1802/quantum-ui-react": "^1.0.0"
+    "@med1802/quantum-ui-react": "^1.0.4"
   },
   "repository": {
     "type": "git",
