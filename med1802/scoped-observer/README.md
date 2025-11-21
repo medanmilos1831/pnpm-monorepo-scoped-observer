@@ -175,14 +175,6 @@ Subscribes to events on a specific scope.
 
 ---
 
-## 🔗 Related Packages
-
-- `@med1802/quantum-ui` — Modular state management framework
-- `@med1802/quantum-toggle` — Visibility state management
-- `@med1802/quantum-scrollium` — Scroll state management
-
----
-
 ## 📄 License
 
 MIT

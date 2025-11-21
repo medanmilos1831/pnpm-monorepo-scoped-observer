@@ -1,5 +1,10 @@
 import { EventScope } from "./EventScope";
-import { ROOT_SCOPE, type ScopeNode } from "./types";
+import {
+  ROOT_SCOPE,
+  type ScopeNode,
+  type scopedObserverDispatchType,
+  type scopedObserverSubscribeType,
+} from "./types";
 
 const createScopedObserver = (props?: ScopeNode[]) => {
   const root = new EventScope(ROOT_SCOPE);
@@ -60,15 +65,26 @@ const createScopedObserver = (props?: ScopeNode[]) => {
       scope?: string;
       eventName: string;
       callback: (payload: any) => void;
-    }) => {
+    }): (() => void) => {
       const scopeEntity = find(scope);
-      if (!scopeEntity) return;
+      if (!scopeEntity) {
+        console.warn(
+          `[ScopedObserver] Scope "${
+            scope || "root"
+          }" not found. Returning no-op unsubscribe.`
+        );
+        return () => {};
+      }
       const unsubscribe = scopeEntity.subscribe(eventName, callback);
       return unsubscribe;
     },
   };
 };
 
-type ScopeNodeType = ScopeNode[];
-
-export { createScopedObserver, type ScopeNodeType };
+type scopedObserverType = ReturnType<typeof createScopedObserver>;
+export {
+  createScopedObserver,
+  type scopedObserverType,
+  type scopedObserverDispatchType,
+  type scopedObserverSubscribeType,
+};
