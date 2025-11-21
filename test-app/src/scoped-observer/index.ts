@@ -71,4 +71,21 @@ const createScopedObserver = (props?: ScopeNode[]) => {
 
 type ScopeNodeType = ScopeNode[];
 
-export { createScopedObserver, type ScopeNodeType };
+type scopedObserverType = ReturnType<typeof createScopedObserver>;
+type scopedObserverDispatchType = {
+  scope?: string;
+  eventName: string;
+  payload?: any;
+};
+type scopedObserverSubscribeType = {
+  scope?: string;
+  eventName: string;
+  callback: (payload: any) => void;
+};
+export {
+  createScopedObserver,
+  type ScopeNodeType,
+  type scopedObserverType,
+  type scopedObserverDispatchType,
+  type scopedObserverSubscribeType,
+};

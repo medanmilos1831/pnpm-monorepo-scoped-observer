@@ -1,32 +1,21 @@
-interface IObserver {
-  dispatch: ({
-    scope,
-    eventName,
-    payload,
-  }: {
-    scope?: string;
-    eventName: string;
-    payload?: any;
-  }) => void;
-  subscribe: ({
-    scope,
-    eventName,
-    callback,
-  }: {
-    scope?: string;
-    eventName: string;
-    callback: (payload: any) => void;
-  }) => void;
-}
+import type {
+  scopedObserverType,
+  scopedObserverDispatchType,
+  scopedObserverSubscribeType,
+} from "../scoped-observer";
 
-type InterceptorCallback = (params: {
+type PublishInterceptor = (params: {
   eventName: string;
   payload?: any;
 }) => { eventName: string; payload?: any } | null | false;
 
-const createMessageBroker = (observer: IObserver, scope?: string) => {
-  const publishInterceptors = new Map<string, InterceptorCallback>();
-  const subscribeInterceptors = new Map<string, InterceptorCallback>();
+type SubscribeInterceptor = (params: {
+  eventName: string;
+}) => { eventName: string } | null | false;
+
+const createMessageBroker = (observer: scopedObserverType) => {
+  const publishInterceptors = new Map<string, PublishInterceptor>();
+  const subscribeInterceptors = new Map<string, SubscribeInterceptor>();
 
   return {
     interceptor({
@@ -35,8 +24,8 @@ const createMessageBroker = (observer: IObserver, scope?: string) => {
       onSubscribe,
     }: {
       eventName: string;
-      onPublish?: InterceptorCallback;
-      onSubscribe?: InterceptorCallback;
+      onPublish?: PublishInterceptor;
+      onSubscribe?: SubscribeInterceptor;
     }) {
       if (onPublish) {
         publishInterceptors.set(eventName, onPublish);
@@ -45,7 +34,7 @@ const createMessageBroker = (observer: IObserver, scope?: string) => {
         subscribeInterceptors.set(eventName, onSubscribe);
       }
     },
-    publish({ eventName, payload }: { eventName: string; payload?: any }) {
+    publish({ scope, eventName, payload }: scopedObserverDispatchType) {
       const interceptor = publishInterceptors.get(eventName);
       if (interceptor) {
         const result = interceptor({ eventName, payload });
@@ -57,13 +46,7 @@ const createMessageBroker = (observer: IObserver, scope?: string) => {
       }
       observer.dispatch({ scope, eventName, payload });
     },
-    subscribe({
-      eventName,
-      callback,
-    }: {
-      eventName: string;
-      callback: (payload: any) => void;
-    }) {
+    subscribe({ scope, eventName, callback }: scopedObserverSubscribeType) {
       const interceptor = subscribeInterceptors.get(eventName);
       if (interceptor) {
         const result = interceptor({ eventName });
@@ -77,4 +60,4 @@ const createMessageBroker = (observer: IObserver, scope?: string) => {
   };
 };
 
-export { createMessageBroker, IObserver };
+export { createMessageBroker };
