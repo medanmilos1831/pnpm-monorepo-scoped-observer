@@ -65,9 +65,16 @@ const createScopedObserver = (props?: ScopeNode[]) => {
       scope?: string;
       eventName: string;
       callback: (payload: any) => void;
-    }) => {
+    }): (() => void) => {
       const scopeEntity = find(scope);
-      if (!scopeEntity) return;
+      if (!scopeEntity) {
+        console.warn(
+          `[ScopedObserver] Scope "${
+            scope || "root"
+          }" not found. Returning no-op unsubscribe.`
+        );
+        return () => {};
+      }
       const unsubscribe = scopeEntity.subscribe(eventName, callback);
       return unsubscribe;
     },
