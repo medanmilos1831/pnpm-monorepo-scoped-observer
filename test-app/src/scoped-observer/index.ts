@@ -1,5 +1,10 @@
 import { EventScope } from "./EventScope";
-import { ROOT_SCOPE, type ScopeNode } from "./types";
+import {
+  ROOT_SCOPE,
+  type ScopeNode,
+  type scopedObserverDispatchType,
+  type scopedObserverSubscribeType,
+} from "./types";
 
 const createScopedObserver = (props?: ScopeNode[]) => {
   const root = new EventScope(ROOT_SCOPE);
@@ -69,22 +74,9 @@ const createScopedObserver = (props?: ScopeNode[]) => {
   };
 };
 
-type ScopeNodeType = ScopeNode[];
-
 type scopedObserverType = ReturnType<typeof createScopedObserver>;
-type scopedObserverDispatchType = {
-  scope?: string;
-  eventName: string;
-  payload?: any;
-};
-type scopedObserverSubscribeType = {
-  scope?: string;
-  eventName: string;
-  callback: (payload: any) => void;
-};
 export {
   createScopedObserver,
-  type ScopeNodeType,
   type scopedObserverType,
   type scopedObserverDispatchType,
   type scopedObserverSubscribeType,
