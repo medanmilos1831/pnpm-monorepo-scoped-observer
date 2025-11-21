@@ -25,72 +25,89 @@ npm install @med1802/scoped-observer-message-broker
 import { createScopedObserver } from "@med1802/scoped-observer";
 import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 
-// Create a scoped observer tree (typically once per app)
-const scopedObserver = createScopedObserver([{ scope: "app" }]);
+// Create a scoped observer (typically once per app)
+const scopedObserver = createScopedObserver();
 
-// Create a broker focused on a single scope
-const broker = createMessageBroker(scopedObserver, "app");
+// Create a message broker
+const messageBroker = createMessageBroker(scopedObserver);
 
-// Optionally register interceptors per event
-broker.interceptor({
-  eventName: "user:updated",
+// Register an interceptor to transform payload on publish
+messageBroker.interceptor({
+  eventName: "increment",
   onPublish: ({ eventName, payload }) => {
-    if (!payload?.id) {
-      // block invalid publish
-      return null;
-    }
     return {
       eventName,
-      payload: { ...payload, interceptedAt: Date.now() },
+      payload: {
+        incrementBy: payload,
+        timestamp: Date.now(),
+        multiplier: 2,
+        random: Math.random(),
+      },
     };
   },
-  onSubscribe: ({ eventName }) => {
-    // rewrite event target if needed
-    return { eventName };
-  },
 });
 
-// Subscribe to scoped events
-const unsubscribe = broker.subscribe({
-  eventName: "user:updated",
+// Subscribe to events
+messageBroker.subscribe({
+  eventName: "increment",
   callback: (payload) => {
-    console.log("Received", payload);
+    console.log(JSON.stringify(payload, null, 2));
+    // Output:
+    // {
+    //   "incrementBy": 1,
+    //   "timestamp": 1234567890,
+    //   "multiplier": 2,
+    //   "random": 0.123456
+    // }
   },
 });
 
-// Publish scoped events
-broker.publish({
-  eventName: "user:updated",
-  payload: { id: "42", name: "Ada" },
+// Publish an event (payload will be transformed by interceptor)
+messageBroker.publish({
+  eventName: "increment",
+  payload: 1,
 });
 ```
 
 ## API
 
-### `createMessageBroker(observer, scope)`
+### `createMessageBroker(observer)`
 
 - `observer`: Instance returned by `createScopedObserver`.
-- `scope`: String key that resolves to a scope node within the observer tree.
 - Returns an object with:
-  - `publish({ eventName, payload })`
-  - `subscribe({ eventName, callback })`
-  - `interceptor({ eventName, onPublish?, onSubscribe? })`
+  - `publish({ scope?, eventName, payload })` - Publish an event (scope is optional)
+  - `subscribe({ scope?, eventName, callback })` - Subscribe to an event (scope is optional)
+  - `interceptor({ eventName, onPublish?, onSubscribe? })` - Register interceptors for an event
 
 ### Interceptors
 
+Interceptors allow you to transform or block events before they're published or subscribed:
+
 ```ts
-broker.interceptor({
-  eventName: "cart:checkout",
+messageBroker.interceptor({
+  eventName: "increment",
   onPublish: ({ eventName, payload }) => {
-    // mutate payload or block by returning null/false
-    return { eventName, payload };
+    // Transform payload before publishing
+    return {
+      eventName,
+      payload: {
+        ...payload,
+        timestamp: Date.now(),
+      },
+    };
+    // Or block by returning null/false
+    // return null;
   },
   onSubscribe: ({ eventName }) => {
-    // change the target event or block subscription
-    return { eventName };
+    // Rewrite event name if needed
+    return { eventName: `transformed:${eventName}` };
+    // Or block subscription by returning null/false
+    // return null;
   },
 });
 ```
+
+**Interceptor behavior:**
 
 - `onPublish` receives `{ eventName, payload }` and can:
   - return `{ eventName, payload }` to continue (optionally mutated)

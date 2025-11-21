@@ -14,7 +14,7 @@ type SubscribeInterceptor = (params: {
 }) => { eventName: string } | null | false;
 
 const createMessageBroker = (observer: scopedObserverType) => {
-  const publishInterceptors = new Map<string, PublishInterceptor>();
+  const publishInterceptors = new Map<string, PublishInterceptor[]>();
   const subscribeInterceptors = new Map<string, SubscribeInterceptor>();
 
   return {
@@ -28,23 +28,38 @@ const createMessageBroker = (observer: scopedObserverType) => {
       onSubscribe?: SubscribeInterceptor;
     }) {
       if (onPublish) {
-        publishInterceptors.set(eventName, onPublish);
+        const existing = publishInterceptors.get(eventName) || [];
+        existing.push(onPublish);
+        publishInterceptors.set(eventName, existing);
       }
       if (onSubscribe) {
         subscribeInterceptors.set(eventName, onSubscribe);
       }
     },
     publish({ scope, eventName, payload }: scopedObserverDispatchType) {
-      const interceptor = publishInterceptors.get(eventName);
-      if (interceptor) {
-        const result = interceptor({ eventName, payload });
+      let currentEventName = eventName;
+      let currentPayload = payload;
+
+      const interceptors = publishInterceptors.get(currentEventName) || [];
+      for (const interceptor of interceptors) {
+        const result = interceptor({
+          eventName: currentEventName,
+          payload: currentPayload,
+        });
+
         if (result === null || result === false) {
           return;
         }
-        eventName = result.eventName;
-        payload = result.payload;
+
+        currentEventName = result.eventName;
+        currentPayload = result.payload;
       }
-      observer.dispatch({ scope, eventName, payload });
+
+      observer.dispatch({
+        scope,
+        eventName: currentEventName,
+        payload: currentPayload,
+      });
     },
     subscribe({ scope, eventName, callback }: scopedObserverSubscribeType) {
       const interceptor = subscribeInterceptors.get(eventName);
