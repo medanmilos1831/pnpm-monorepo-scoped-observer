@@ -40,7 +40,6 @@ const createMessageBroker = (observer: scopedObserverType) => {
       let currentEventName = eventName;
       let currentPayload = payload;
 
-      // Prolazimo kroz sve interceptore redom
       const interceptors = publishInterceptors.get(currentEventName) || [];
       for (const interceptor of interceptors) {
         const result = interceptor({
@@ -56,8 +55,11 @@ const createMessageBroker = (observer: scopedObserverType) => {
         currentPayload = result.payload;
       }
 
-      // Na kraju šaljemo observer-u
-      observer.dispatch({ scope, eventName: currentEventName, payload: currentPayload });
+      observer.dispatch({
+        scope,
+        eventName: currentEventName,
+        payload: currentPayload,
+      });
     },
     subscribe({ scope, eventName, callback }: scopedObserverSubscribeType) {
       const interceptor = subscribeInterceptors.get(eventName);
