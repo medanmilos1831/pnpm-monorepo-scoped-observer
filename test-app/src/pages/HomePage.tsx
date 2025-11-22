@@ -1,7 +1,24 @@
 import { quantumUi } from "../quantum";
-const framework = quantumUi.createModule({
+interface IState {
+  count: number;
+}
+interface IMutations {
+  increment: () => void;
+}
+interface IGetters {
+  getCount: () => number;
+}
+interface ICommands {
+  increment: () => void;
+}
+const framework = quantumUi.createModule<
+  IState,
+  IMutations,
+  IGetters,
+  ICommands
+>({
   name: "counterModule",
-  model: (props: any) => {
+  model: (props) => {
     return {
       id: props.id,
       state: {

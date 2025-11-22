@@ -2,7 +2,7 @@ import type { core } from "../core/core";
 
 export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
-  model: (props: any) => IModel<S, G, M>;
+  model: (props: { id: string; state: S }) => IModel<S, G, M>;
   modelClient: (
     model: ReturnType<typeof core.createStateManager>,
     broker: ReturnType<typeof core.createMessageBroker>

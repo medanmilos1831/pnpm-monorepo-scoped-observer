@@ -17,10 +17,6 @@ const framework = (function () {
           }
           const model = createModel(moduleConfig, params);
           stateManager.mutations.createModel(params.id, model);
-          console.log(
-            "createModel",
-            stateManager.getters.getModels()[0].commands
-          );
           setTimeout(() => {
             observer.dispatch({
               eventName: `onModelMount-${params.id}`,
