@@ -67,14 +67,17 @@ importers:
   med1802/scoped-observer-message-broker:
     dependencies:
       '@med1802/scoped-observer':
-        specifier: ^1.1.3
-        version: 1.1.3
+        specifier: ^1.1.4
+        version: 1.1.4
 
   test-app:
     dependencies:
-      '@med1802/quantum-toggle':
-        specifier: ^2.0.2
-        version: 2.0.2(react@19.2.0)
+      '@med1802/scoped-observer':
+        specifier: ^1.1.3
+        version: 1.1.4
+      '@med1802/scoped-observer-message-broker':
+        specifier: ^2.0.1
+        version: 2.0.1(@med1802/scoped-observer@1.1.4)
       antd:
         specifier: ^5.29.1
         version: 5.29.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -426,11 +429,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@med1802/quantum-toggle@2.0.2':
-    resolution: {integrity: sha512-Q2OKb2KtJWkIsTxlLAiW1lP5d5lCnXX+TbmucOg8ILvsZLhGS4nQSczLm5fwmfOudy3xhiqsmINm74Ke/KPRmA==}
-    peerDependencies:
-      react: '>=18'
-
   '@med1802/quantum-ui-react@1.0.4':
     resolution: {integrity: sha512-6BccpPkiD4cWsz5dhws727U4e2eCULZacZhFvMxjmbD/UJuPH/Vn7hJCuk6AZo28muEOXEo6isHKUYGTWNNIeQ==}
 
@@ -442,11 +440,16 @@ packages:
     peerDependencies:
       '@med1802/scoped-observer': ^1.1.2
 
+  '@med1802/scoped-observer-message-broker@2.0.1':
+    resolution: {integrity: sha512-QPqGArQU5ckrL0Cen6eUnf8n8nPkP28dEoOhYAK/qitdtd7vx0UNhcLSr++NCo/YpJSKNqNdoNrjk6LFAia6bQ==}
+    peerDependencies:
+      '@med1802/scoped-observer': ^1.1.3
+
   '@med1802/scoped-observer@1.1.2':
     resolution: {integrity: sha512-bdl3Tumkvz74N69BufkvarNqgeyUr4otEOF5Y++COcIrFqtaAeTPcuIvsgqCCAHAcx6I1qm4tMMLTTWYHdE2rQ==}
 
-  '@med1802/scoped-observer@1.1.3':
-    resolution: {integrity: sha512-m3HnwNGkJdV+a+K1F6t2YKzoIbJuXpH16gKbsp2ZOerRXo2dO8+fdAtXd5ZHMFCRCPJaktWC+SdtE6ux3f6bSg==}
+  '@med1802/scoped-observer@1.1.4':
+    resolution: {integrity: sha512-cZrQNNEHXmelCz9fffhNAfeTP64Ued4S9Re2B+VerJotRyioyxHOw5BJvr+QGYcMQQANmQNTQ2UYl/oyEyUbSw==}
 
   '@rc-component/async-validator@5.0.4':
     resolution: {integrity: sha512-qgGdcVIF604M9EqjNF0hbUTz42bz/RDtxWdWuU5EQe3hi7M8ob54B6B35rOsvX5eSvIHIzT9iH1R3n+hk3CGfg==}
@@ -1414,11 +1417,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@med1802/quantum-toggle@2.0.2(react@19.2.0)':
-    dependencies:
-      '@med1802/quantum-ui-react': 1.0.4
-      react: 19.2.0
-
   '@med1802/quantum-ui-react@1.0.4':
     dependencies:
       '@med1802/quantum-ui': 1.3.1
@@ -1432,9 +1430,13 @@ snapshots:
     dependencies:
       '@med1802/scoped-observer': 1.1.2
 
+  '@med1802/scoped-observer-message-broker@2.0.1(@med1802/scoped-observer@1.1.4)':
+    dependencies:
+      '@med1802/scoped-observer': 1.1.4
+
   '@med1802/scoped-observer@1.1.2': {}
 
-  '@med1802/scoped-observer@1.1.3': {}
+  '@med1802/scoped-observer@1.1.4': {}
 
   '@rc-component/async-validator@5.0.4':
     dependencies:
