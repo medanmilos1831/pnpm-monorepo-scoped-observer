@@ -87,4 +87,5 @@ export {
   type scopedObserverType,
   type scopedObserverDispatchType,
   type scopedObserverSubscribeType,
+  type ScopeNode,
 };
