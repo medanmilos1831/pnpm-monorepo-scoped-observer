@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@med1802/scoped-observer": "^1.1.3",
-    "@med1802/scoped-observer-message-broker": "^2.0.1",
+    "@med1802/scoped-observer": "^1.1.4",
+    "@med1802/scoped-observer-message-broker": "^2.0.2",
     "antd": "^5.29.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

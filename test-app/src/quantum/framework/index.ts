@@ -1,5 +1,5 @@
-import { core } from "../core/core";
 import { createModel } from "./createModel";
+import { createModuleInfrastructure } from "./createModuleInfrastructure";
 import type { CreateModuleConfigType } from "./types";
 
 const framework = (function () {
@@ -7,36 +7,20 @@ const framework = (function () {
     createModule<S = any, M = any, G = any, A = any>(
       moduleConfig: CreateModuleConfigType<S, M, G, A>
     ) {
-      const observer = core.createObserver();
-      const moduleStateManager = core.createStateManager({
-        id: moduleConfig.name,
-        state: {
-          modules: new Map<string, any>(),
-        },
-        mutations(state) {
-          return {
-            createModel(name: string, model: any) {
-              state.modules.set(name, model);
-            },
-            removeModel(id: string) {
-              state.modules.delete(id);
-            },
-          };
-        },
-        getters(state) {
-          return {
-            getModelById: (id: string) => state.modules.get(id)!,
-            hasModel: (id: string) => state.modules.has(id),
-          };
-        },
-      });
+      const { stateManager, observer } = createModuleInfrastructure(
+        moduleConfig.name
+      );
       return {
-        createModel: (params: any) => {
-          if (moduleStateManager.getters.hasModel(params.id)) {
+        createModel: (params: { id: string; state: S }) => {
+          if (stateManager.getters.hasModel(params.id)) {
             return;
           }
           const model = createModel(moduleConfig, params);
-          moduleStateManager.mutations.createModel(params.id, model);
+          stateManager.mutations.createModel(params.id, model);
+          console.log(
+            "createModel",
+            stateManager.getters.getModels()[0].commands
+          );
           setTimeout(() => {
             observer.dispatch({
               eventName: `onModelMount-${params.id}`,
@@ -45,10 +29,10 @@ const framework = (function () {
           }, 0);
         },
         getModelById: (id: string) => {
-          return moduleStateManager.getters.getModelById(id) as A;
+          return stateManager.getters.getModelById(id) as A;
         },
         removeModel: (id: string) => {
-          moduleStateManager.mutations.removeModel(id);
+          stateManager.mutations.removeModel(id);
           observer.dispatch({
             eventName: `onModelUnmount-${id}`,
             payload: undefined,

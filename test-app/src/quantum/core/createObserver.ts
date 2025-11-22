@@ -1,6 +1,6 @@
-import { createScopedObserver } from "@med1802/scoped-observer";
+import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
 
-function createObserver(scope: string) {
+function createObserver(scope?: ScopeNode[]) {
   return createScopedObserver(scope);
 }
 
