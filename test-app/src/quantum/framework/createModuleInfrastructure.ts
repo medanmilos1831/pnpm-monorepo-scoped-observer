@@ -1,18 +1,37 @@
 import { core } from "../core/core";
-import type { IModules } from "./types";
+import { createModel } from "./createModel";
+import type { IModuleConfig } from "./types";
 
-const createModuleInfrastructure = (moduleName: string) => {
+const createModuleInfrastructure = (moduleConfig: IModuleConfig) => {
   const observer = core.createObserver();
   const stateManager = core.createStateManager({
-    id: moduleName,
+    id: moduleConfig.id,
     state: {
-      modules: new Map<string, IModules>(),
+      modules: new Map<
+        string,
+        {
+          modelClient: any;
+          destroyModel: () => void;
+        }
+      >(),
     },
     mutations(state) {
       return {
-        createModel(modelId: string, modelClient: any) {
+        createModel({
+          id: modelId,
+          state: modelState,
+        }: {
+          id: string;
+          state: any;
+        }) {
           state.modules.set(modelId, {
-            modelClient,
+            modelClient: (() => {
+              const modelClient = createModel(moduleConfig, {
+                id: modelId,
+                state: modelState,
+              });
+              return modelClient;
+            })(),
             destroyModel: () => {
               state.modules.delete(modelId);
               observer.dispatch({
@@ -27,6 +46,7 @@ const createModuleInfrastructure = (moduleName: string) => {
               payload: undefined,
             });
           }, 0);
+          console.log(state.modules);
         },
       };
     },
@@ -38,10 +58,7 @@ const createModuleInfrastructure = (moduleName: string) => {
       };
     },
   });
-  return {
-    stateManager,
-    observer,
-  };
+  return stateManager;
 };
 
 export { createModuleInfrastructure };
