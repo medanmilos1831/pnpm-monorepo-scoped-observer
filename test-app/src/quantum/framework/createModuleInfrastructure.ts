@@ -25,13 +25,10 @@ const createModuleInfrastructure = (moduleConfig: IModuleConfig) => {
           state: any;
         }) {
           state.modules.set(modelId, {
-            modelClient: (() => {
-              const modelClient = createModel(moduleConfig, {
-                id: modelId,
-                state: modelState,
-              });
-              return modelClient;
-            })(),
+            modelClient: createModel(moduleConfig, {
+              id: modelId,
+              state: modelState,
+            }),
             destroyModel: () => {
               state.modules.delete(modelId);
               observer.dispatch({
