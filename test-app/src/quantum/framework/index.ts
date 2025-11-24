@@ -1,6 +1,6 @@
 import { createModel } from "./createModel";
 import { createModuleInfrastructure } from "./createModuleInfrastructure";
-import type { CreateModuleConfigType } from "./types";
+import type { CreateModuleConfigType, IModules } from "./types";
 
 const framework = (function () {
   return {
@@ -15,37 +15,26 @@ const framework = (function () {
           if (stateManager.getters.hasModel(params.id)) {
             return;
           }
-          const model = createModel(moduleConfig, params);
-          stateManager.mutations.createModel(params.id, model);
-          setTimeout(() => {
-            observer.dispatch({
-              eventName: `onModelMount-${params.id}`,
-              payload: undefined,
-            });
-          }, 0);
+          stateManager.mutations.createModel(
+            params.id,
+            createModel(moduleConfig, params)
+          );
         },
         getModelById: (id: string) => {
-          return stateManager.getters.getModelById(id) as A;
+          return stateManager.getters.getModelById(id) as IModules<A>;
         },
-        removeModel: (id: string) => {
-          stateManager.mutations.removeModel(id);
-          observer.dispatch({
-            eventName: `onModelUnmount-${id}`,
-            payload: undefined,
-          });
-        },
-        onModelMount(id: string, callback: (params: any) => void) {
-          return observer.subscribe({
-            eventName: `onModelMount-${id}`,
-            callback,
-          })!;
-        },
-        onModelUnmount(id: string, callback: (params: any) => void) {
-          return observer.subscribe({
-            eventName: `onModelUnmount-${id}`,
-            callback,
-          })!;
-        },
+        // onModelMount(id: string, callback: (params: any) => void) {
+        //   return observer.subscribe({
+        //     eventName: `onModelMount-${id}`,
+        //     callback,
+        //   })!;
+        // },
+        // onModelUnmount(id: string, callback: (params: any) => void) {
+        //   return observer.subscribe({
+        //     eventName: `onModelUnmount-${id}`,
+        //     callback,
+        //   })!;
+        // },
       };
     },
   };

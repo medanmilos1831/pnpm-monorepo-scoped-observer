@@ -1,12 +1,14 @@
 import type { core } from "../core/core";
 
+type modelClientType<A = any> = (
+  model: ReturnType<typeof core.createStateManager>,
+  broker: ReturnType<typeof core.createMessageBroker>
+) => A;
+
 export type CreateModuleConfigType<S = any, M = any, G = any, A = any> = {
   name: string;
   model: (props: { id: string; state: S }) => IModel<S, G, M>;
-  modelClient: (
-    model: ReturnType<typeof core.createStateManager>,
-    broker: ReturnType<typeof core.createMessageBroker>
-  ) => any;
+  modelClient: modelClientType;
 };
 
 export interface IModel<S, G, M> {
@@ -25,4 +27,9 @@ export interface IModuleClientAPI<A = any> {
     mount: (notify: () => void) => () => void;
     unmount: (notify: () => void) => () => void;
   };
+}
+
+export interface IModules<A = any> {
+  modelClient: modelClientType<A>;
+  destroyModel: () => void;
 }

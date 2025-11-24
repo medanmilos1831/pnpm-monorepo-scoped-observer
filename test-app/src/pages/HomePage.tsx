@@ -50,6 +50,8 @@ const framework = quantumUi.createModule<
 });
 const HomePage = () => {
   framework.createModel({ id: "counter", state: { count: 0 } });
+  const model = framework.getModelById("counter");
+  console.log(model.modelClient);
 
   return (
     <div>
