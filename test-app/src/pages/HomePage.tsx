@@ -1,4 +1,4 @@
-import { quantumUi } from "../quantum";
+import { quantumUiReact } from "../quantum-ui-react";
 // import { Store } from "@tanstack/store";
 // const counterStore = new Store({
 //   count: () => {
@@ -7,26 +7,31 @@ import { quantumUi } from "../quantum";
 // });
 // console.log(counterStore);
 
-const counterModule = quantumUi.createModule<number>({
-  name: "counter",
-  model: (props) => {
-    return {
-      id: props.id,
-      state: props.state,
-    };
-  },
-});
-counterModule.createModel({
-  id: "counter",
-  state: 0,
-});
-const model = counterModule.getModelById("counter")!;
-console.log(model);
+const { useModelSelector, useCreateModel } =
+  quantumUiReact.createModule<number>({
+    name: "counter",
+    // model treba da se uradi rename na STORE
+    model: (props: any) => {
+      return {
+        id: props.id,
+        state: props.state,
+      };
+    },
+  });
+// counterModule.createModel({
+//   id: "counter",
+//   state: 0,
+// });
+// const model = counterModule.getModelById("counter")!;
+// console.log(model);
 
-const unsubscribe = model.subscribe((payload) => {
-  console.log("PAYLOAD", payload);
-});
+// const unsubscribe = model.subscribe((payload) => {
+//   console.log("PAYLOAD", payload);
+// });
 const HomePage = () => {
+  const model = useModelSelector("counter");
+  console.log(model);
+  useCreateModel({ id: "counter", state: 0 });
   return (
     <div>
       <h1>Home Page</h1>

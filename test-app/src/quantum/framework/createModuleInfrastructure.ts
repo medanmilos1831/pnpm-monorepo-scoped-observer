@@ -14,6 +14,9 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
 
   return {
     createModel: ({ id, state: modelState }: { id: string; state: S }) => {
+      if (modules.state.has(id)) {
+        return;
+      }
       modules.setState(
         (prevState) => {
           const model = moduleConfig.model({
@@ -42,7 +45,7 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
       );
     },
     getModelById: (id: string) => {
-      return modules.state.get(id)?.model;
+      return modules.state.get(id);
     },
     subscribe: (callback: (payload?: any) => void, eventName?: string) => {
       return modules.subscribe((payload) => {
