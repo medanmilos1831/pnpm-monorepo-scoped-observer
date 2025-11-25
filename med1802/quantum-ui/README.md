@@ -23,9 +23,80 @@ npm install @med1802/quantum-ui
 
 ---
 
-## 📚 Framework API Reference
+## ⚙️ Quick Start
 
-### `framework.createModule<S>(config)`
+```typescript
+import { quantumUi } from "@med1802/quantum-ui";
+
+const counterModule = quantumUi.createModule<number>({
+  name: "counter",
+  store: (props) => {
+    return {
+      id: props.id,
+      state: props.state,
+    };
+  },
+});
+// Fire when a specific store id mounts
+counterModule.subscribe((payload) => {
+  console.log("TRIGGERED ON CREATE COUNTER STORE", payload);
+}, "onStoreCreate-counter");
+
+// Fire when the same store id is destroyed
+counterModule.subscribe((payload) => {
+  console.log("TRIGGERED ON DESTROY COUNTER STORE", payload);
+}, "onStoreDestroy-counter");
+
+// Listen to every setState emission (no custom event name needed)
+counterModule.subscribe((payload) => {
+  console.log("LISTENER FOR ALL SET STATE EVENTS", payload);
+});
+
+counterModule.createStore({
+  id: "counter",
+  state: 0,
+});
+const counterStore = counterModule.getStoreById("counter")!;
+counterStore.destroy();
+```
+
+### Custom store events
+
+```typescript
+const counterModule = quantumUi.createModule<number>({
+  name: "counter",
+  store: (props) => ({
+    id: props.id,
+    state: props.state,
+  }),
+});
+counterModule.createStore({
+  id: "counter",
+  state: 0,
+});
+const counterStore = counterModule.getStoreById("counter")!;
+
+// Subscribes to every mutation via default `setState` event
+counterStore.store.subscribe((payload) => {
+  console.log("PAYLOAD", payload);
+});
+
+// Subscribes only when a custom event name is dispatched
+counterStore.store.subscribe((payload) => {
+  console.log("PAYLOAD CUSTOM EVENT", payload);
+}, "triggerOnlyOnCustomEvent");
+
+counterStore.store.setState((state) => state + 1);
+counterStore.store.setState((state) => state + 1, {
+  customEvents: ["triggerOnlyOnCustomEvent"],
+});
+```
+
+---
+
+## 📚 Quantum UI API Reference
+
+### `quantumUi.createModule<S>(config)`
 
 Creates a module that can manage multiple store instances sharing the same state shape.
 
@@ -53,7 +124,7 @@ Every module store entry exposes the native store primitive:
 ## 🏗️ Architecture
 
 ```
-Module (framework.createModule)
+Module (quantumUi.createModule)
 └── Map<string, StoreEntry>
     ├── store (core.createStore)
     └── destroy()
@@ -62,16 +133,6 @@ Module (framework.createModule)
 - **Module** — wraps a Map of store entries and coordinates lifecycle events.
 - **Store entry** — contains a reactive store and a `destroy` helper.
 - **Store** — observer-backed primitive with batched state updates and subscriptions.
-
----
-
-## 💡 Best Practices
-
-1. **ID discipline** — Re-using ids is a no-op, so pick deterministic ids per entity.
-2. **Destroy stores** — Always call `destroy()` when an entity leaves the UI to keep module state lean.
-3. **Use lifecycle events** — Subscribe to `onModelMount-{id}` / `onModelUnmount-{id}` for orchestration work.
-4. **Single source of truth** — Avoid mutating the returned `state` object directly. Always go through `setState`.
-5. **Typed stores** — Provide the `S` generic when creating a module so you get inference inside `setState`.
 
 ---
 
