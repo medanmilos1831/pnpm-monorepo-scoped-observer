@@ -59,8 +59,15 @@ importers:
   med1802/quantum-ui-react:
     dependencies:
       '@med1802/quantum-ui':
-        specifier: ^1.3.1
-        version: 1.3.1
+        specifier: ^1.4.2
+        version: 1.4.2
+      use-sync-external-store:
+        specifier: ^1.6.0
+        version: 1.6.0(react@19.2.0)
+    devDependencies:
+      '@types/use-sync-external-store':
+        specifier: ^0.0.6
+        version: 0.0.6
 
   med1802/scoped-observer: {}
 
@@ -72,12 +79,9 @@ importers:
 
   test-app:
     dependencies:
-      '@med1802/scoped-observer':
-        specifier: ^1.1.4
-        version: 1.1.4
-      '@med1802/scoped-observer-message-broker':
-        specifier: ^2.0.2
-        version: 2.0.2(@med1802/scoped-observer@1.1.4)
+      '@med1802/quantum-ui':
+        specifier: ^1.4.1
+        version: 1.4.2
       '@tanstack/store':
         specifier: ^0.8.0
         version: 0.8.0
@@ -441,13 +445,8 @@ packages:
   '@med1802/quantum-ui-react@1.0.4':
     resolution: {integrity: sha512-6BccpPkiD4cWsz5dhws727U4e2eCULZacZhFvMxjmbD/UJuPH/Vn7hJCuk6AZo28muEOXEo6isHKUYGTWNNIeQ==}
 
-  '@med1802/quantum-ui@1.3.1':
-    resolution: {integrity: sha512-p5ENRcgiXo5rq9Ci+G2wcpve15PsLgAyjicPJ0THPz63Tee/TcuM00l1DEnPJBJ0q3TMPAKuFwbCw/ZMm+o8wQ==}
-
-  '@med1802/scoped-observer-message-broker@1.0.2':
-    resolution: {integrity: sha512-IZ1n2x2XIS+o1UJ05KyI63M8JZ7RlwydCs/sZqw2YayWim9OdhdlNytwr+714BYqEg18kBbnDIy+xmYk2H8TqA==}
-    peerDependencies:
-      '@med1802/scoped-observer': ^1.1.2
+  '@med1802/quantum-ui@1.4.2':
+    resolution: {integrity: sha512-5OhMkrutPMM0lZ+ltF9paehC9zSr8ZeGxJd1GVLZxfN2soxHbrXzq9lNIcMuhdkFINNk582bO1lYEwIzVQsxqA==}
 
   '@med1802/scoped-observer-message-broker@2.0.2':
     resolution: {integrity: sha512-b9EllvQcI3X9ygRHIudzybqMd+aus6ByWTJnrOb/hHTwDlIDvNvrtY9cPoXGwmSaxw1gy/d4TNCWWyuUFTxCAw==}
@@ -1436,16 +1435,12 @@ snapshots:
 
   '@med1802/quantum-ui-react@1.0.4':
     dependencies:
-      '@med1802/quantum-ui': 1.3.1
+      '@med1802/quantum-ui': 1.4.2
 
-  '@med1802/quantum-ui@1.3.1':
+  '@med1802/quantum-ui@1.4.2':
     dependencies:
       '@med1802/scoped-observer': 1.1.4
-      '@med1802/scoped-observer-message-broker': 1.0.2(@med1802/scoped-observer@1.1.4)
-
-  '@med1802/scoped-observer-message-broker@1.0.2(@med1802/scoped-observer@1.1.4)':
-    dependencies:
-      '@med1802/scoped-observer': 1.1.4
+      '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
 
   '@med1802/scoped-observer-message-broker@2.0.2(@med1802/scoped-observer@1.1.4)':
     dependencies:

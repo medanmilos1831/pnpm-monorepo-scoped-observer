@@ -1,54 +1,50 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "use-sync-external-store/shim";
 
-import { quantumUi, type CreateModuleConfigType } from "@med1802/quantum-ui";
-
-function quantumUiReact() {
+import { quantumUi, type IModuleConfig } from "../quantum";
+const quantumUiReact = (() => {
   return {
-    createModule<S = any, M = any, G = any, A = any>(
-      props: CreateModuleConfigType<S, M, G, A>
-    ) {
-      const createModule = quantumUi.createModule<S, M, G, A>(props);
+    createModule<S = any>(props: IModuleConfig<S>) {
+      const createModule = quantumUi.createModule<S>(props);
       return {
-        useModelSelector: (modelId: string) => {
+        useStoreSelector: (modelId: string) => {
           const [mount] = useState(() => {
             return (notify: () => void) => {
-              return createModule.onModelMount(modelId, () => {
+              return createModule.subscribe((payload) => {
                 notify();
-              });
+              }, `onStoreCreate-${modelId}`);
             };
           });
           const [unmount] = useState(() => {
             return (notify: () => void) => {
-              return createModule.onModelUnmount(modelId, () => {
+              return createModule.subscribe((payload) => {
                 notify();
-              });
+              }, `onStoreDestroy-${modelId}`);
             };
           });
           const [snapshot] = useState(() => () => {
-            return createModule.getModelById(modelId);
+            return createModule.getStoreById(modelId);
           });
           let value = undefined;
           value = useSyncExternalStore(mount, snapshot);
           value = useSyncExternalStore(unmount, snapshot);
-          return value;
+          return value?.store;
         },
-        useCreateModel: (model: any) => {
-          createModule.createModel(model);
-
+        useCreateStore: (props: { id: string; state: S }) => {
+          createModule.createStore(props);
+          const model = createModule.getStoreById(props.id)!;
           useEffect(() => {
             return () => {
-              createModule.removeModel(model.id);
+              model.destroy();
             };
           }, []);
         },
-        getModelById: createModule.getModelById,
-        createModel: createModule.createModel,
-        removeModel: createModule.removeModel,
-        onModelMount: createModule.onModelMount,
-        onModelUnmount: createModule.onModelUnmount,
+        createStore: createModule.createStore,
+        getStoreById: createModule.getStoreById,
+        subscribe: createModule.subscribe,
       };
     },
   };
-}
+})();
 
 export { quantumUiReact };
