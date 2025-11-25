@@ -44,8 +44,8 @@ const quantumUiReact = (() => {
           //   };
           // }, []);
         },
-        getModelById: createModule.getModelById,
         createModel: createModule.createModel,
+        getModelById: createModule.getModelById,
         subscribe: createModule.subscribe,
       };
     },
