@@ -6,27 +6,26 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
     new Map<
       string,
       {
-        model: ReturnType<typeof core.createStore<S>>;
-        removeModel: () => void;
+        store: ReturnType<typeof core.createStore<S>>;
+        destroy: () => void;
       }
     >()
   );
 
   return {
-    createModel: ({ id, state: modelState }: { id: string; state: S }) => {
+    createStore: ({ id, state }: { id: string; state: S }) => {
       if (modules.state.has(id)) {
         return;
       }
       modules.setState(
         (prevState) => {
-          const model = moduleConfig.model({
+          const model = moduleConfig.store({
             id,
-            state: modelState,
+            state,
           });
-          const store = core.createStore(model.state);
           return prevState.set(id, {
-            model: store,
-            removeModel() {
+            store: core.createStore(model.state),
+            destroy() {
               modules.setState(
                 (prevState) => {
                   prevState.delete(id);
@@ -44,7 +43,7 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
         }
       );
     },
-    getModelById: (id: string) => {
+    getStoreById: (id: string) => {
       return modules.state.get(id);
     },
     subscribe: (callback: (payload?: any) => void, eventName?: string) => {

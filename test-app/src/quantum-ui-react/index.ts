@@ -7,7 +7,7 @@ const quantumUiReact = (() => {
     createModule<S = any>(props: IModuleConfig<S>) {
       const createModule = quantumUi.createModule<S>(props);
       return {
-        useModelSelector: (modelId: string) => {
+        useStoreSelector: (modelId: string) => {
           const [mount] = useState(() => {
             return (notify: () => void) => {
               return createModule.subscribe((payload) => {
@@ -23,29 +23,24 @@ const quantumUiReact = (() => {
             };
           });
           const [snapshot] = useState(() => () => {
-            return createModule.getModelById(modelId);
+            return createModule.getStoreById(modelId);
           });
           let value = undefined;
           value = useSyncExternalStore(mount, snapshot);
           value = useSyncExternalStore(unmount, snapshot);
-          return value?.model;
+          return value?.store;
         },
-        useCreateModel: (props: { id: string; state: S }) => {
-          createModule.createModel(props);
-          const model = createModule.getModelById(props.id)!;
+        useCreateStore: (props: { id: string; state: S }) => {
+          createModule.createStore(props);
+          const model = createModule.getStoreById(props.id)!;
           useEffect(() => {
             return () => {
-              model.removeModel();
+              model.destroy();
             };
           }, []);
-          // useEffect(() => {
-          //   return () => {
-          //     createModule.removeModel(model.id);
-          //   };
-          // }, []);
         },
-        createModel: createModule.createModel,
-        getModelById: createModule.getModelById,
+        createStore: createModule.createStore,
+        getStoreById: createModule.getStoreById,
         subscribe: createModule.subscribe,
       };
     },

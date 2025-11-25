@@ -1,8 +1,8 @@
-export interface IModel<S = any> {
+export interface IStore<S = any> {
   id: string;
   state: S;
 }
 export interface IModuleConfig<S = any> {
   name: string;
-  model: (props: { id: string; state: S }) => IModel<S>;
+  store: (props: { id: string; state: S }) => IStore<S>;
 }

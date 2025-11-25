@@ -1,4 +1,5 @@
 import { quantumUiReact } from "../quantum-ui-react";
+// import { quantumUi } from "../quantum";
 // import { Store } from "@tanstack/store";
 // const counterStore = new Store({
 //   count: () => {
@@ -7,31 +8,41 @@ import { quantumUiReact } from "../quantum-ui-react";
 // });
 // console.log(counterStore);
 
-const { useModelSelector, useCreateModel } =
+const { useStoreSelector, useCreateStore } =
   quantumUiReact.createModule<number>({
     name: "counter",
-    // model treba da se uradi rename na STORE
-    model: (props: any) => {
+    store: (props) => {
       return {
         id: props.id,
         state: props.state,
       };
     },
   });
-// counterModule.createModel({
+// const counterModule = quantumUi.createModule<number>({
+//   name: "counter",
+//   store: (props) => {
+//     return {
+//       id: props.id,
+//       state: props.state,
+//     };
+//   },
+// });
+// counterModule.createStore({
 //   id: "counter",
 //   state: 0,
 // });
-// const model = counterModule.getModelById("counter")!;
-// console.log(model);
+// const counterStore = counterModule.getStoreById("counter")!;
+// counterStore.store.subscribe((payload) => {
+//   console.log("PAYLOAD", payload);
+// });
 
 // const unsubscribe = model.subscribe((payload) => {
 //   console.log("PAYLOAD", payload);
 // });
 const HomePage = () => {
-  const model = useModelSelector("counter");
+  useCreateStore({ id: "counter", state: 0 });
+  const model = useStoreSelector("counter");
   console.log(model);
-  useCreateModel({ id: "counter", state: 0 });
   return (
     <div>
       <h1>Home Page</h1>

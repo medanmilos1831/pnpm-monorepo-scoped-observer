@@ -14,7 +14,7 @@ function createStore<S = any>(state: S) {
       if (options?.customEvents && options.customEvents.length > 0) {
         options.customEvents.forEach((eventName) => {
           observer.dispatch({
-            eventName: eventName,
+            eventName,
             payload: {
               prevState: prevState,
               newState: state,

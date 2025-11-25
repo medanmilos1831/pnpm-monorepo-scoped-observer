@@ -6,8 +6,8 @@ const framework = (function () {
     createModule<S = any>(moduleConfig: IModuleConfig<S>) {
       const moduleInfrastructure = createModuleInfrastructure(moduleConfig);
       return {
-        createModel: moduleInfrastructure.createModel,
-        getModelById: moduleInfrastructure.getModelById,
+        createStore: moduleInfrastructure.createStore,
+        getStoreById: moduleInfrastructure.getStoreById,
         subscribe: moduleInfrastructure.subscribe,
       };
     },
