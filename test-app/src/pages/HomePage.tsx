@@ -1,58 +1,31 @@
 import { quantumUi } from "../quantum";
-interface IState {
-  count: number;
-}
-interface IMutations {
-  increment: () => void;
-  decrement: () => void;
-}
-interface IGetters {
-  getCount: () => number;
-}
-interface ICommands {
-  increment: () => void;
-}
-const framework = quantumUi.createModule({
-  id: "counterModule",
-  model: (props: any) => {
+// import { Store } from "@tanstack/store";
+// const counterStore = new Store({
+//   count: () => {
+//     console.log("count");
+//   },
+// });
+// console.log(counterStore);
+
+const counterModule = quantumUi.createModule<number>({
+  name: "counter",
+  model: (props) => {
+    console.log("MODEL", props);
     return {
       id: props.id,
-      state: {
-        count: 0,
-      },
-      mutations(state: any) {
-        return {
-          increment: () => {
-            state.count++;
-          },
-          decrement: () => {
-            state.count--;
-          },
-        };
-      },
-      getters(state: any) {
-        return {
-          getCount: () => state.count,
-        };
-      },
-    };
-  },
-  modelClient: (model: any, broker: any) => {
-    return {
-      commands: {
-        increment: () => {
-          model.mutations;
-        },
-      },
+      state: props.state,
     };
   },
 });
+counterModule.createModel({
+  id: "counter",
+  state: 0,
+});
+// console.log(counterModule);
+counterModule.subscribe((payload) => {
+  console.log("PAYLOAD", payload);
+});
 const HomePage = () => {
-  const pera = framework.createModel({ id: "counter", state: { count: 0 } });
-  console.log(pera);
-  // const model = framework.getModelById("counter");
-  // console.log(model);
-
   return (
     <div>
       <h1>Home Page</h1>

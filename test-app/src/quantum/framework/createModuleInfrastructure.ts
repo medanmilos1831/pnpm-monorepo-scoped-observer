@@ -1,61 +1,57 @@
 import { core } from "../core/core";
-import { createModel } from "./createModel";
-import type { IModuleConfig } from "./types";
+import type { IModel, IModuleConfig } from "./types";
 
-const createModuleInfrastructure = (moduleConfig: IModuleConfig) => {
-  const observer = core.createObserver();
-  const stateManager = core.createStateManager({
-    id: moduleConfig.id,
-    state: {
-      modules: new Map<
-        string,
-        {
-          modelClient: any;
-          destroyModel: () => void;
-        }
-      >(),
-    },
-    mutations(state) {
-      return {
-        createModel({
-          id: modelId,
-          state: modelState,
-        }: {
-          id: string;
-          state: any;
-        }) {
-          state.modules.set(modelId, {
-            modelClient: createModel(moduleConfig, {
-              id: modelId,
-              state: modelState,
-            }),
-            destroyModel: () => {
-              state.modules.delete(modelId);
-              observer.dispatch({
-                eventName: `onModelUnmount-${modelId}`,
-                payload: undefined,
-              });
+const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
+  const modules = core.createStore(
+    new Map<
+      string,
+      {
+        model: IModel<S>;
+        removeModel: () => void;
+      }
+    >()
+  );
+
+  return {
+    createModel: ({ id, state: modelState }: { id: string; state: S }) => {
+      modules.setState(
+        (prevState) => {
+          const model = moduleConfig.model({
+            id,
+            state: modelState,
+          });
+          return prevState.set(id, {
+            model,
+            removeModel() {
+              modules.setState(
+                (prevState) => {
+                  prevState.delete(id);
+                  return { ...prevState };
+                },
+                {
+                  customEvents: [`onModelUnmount-${id}`],
+                }
+              );
             },
           });
-          setTimeout(() => {
-            observer.dispatch({
-              eventName: `onModelMount-${modelId}`,
-              payload: undefined,
-            });
-          }, 0);
-          console.log(state.modules);
         },
-      };
+        {
+          customEvents: [`onModelMount-${id}`],
+        }
+      );
     },
-    getters(state) {
-      return {
-        getModelById: (id: string) => state.modules.get(id)!,
-        hasModel: (id: string) => state.modules.has(id),
-        getModels: () => Array.from(state.modules.values()),
-      };
+    getModelById: (id: string) => {
+      return modules.state.get(id)?.model;
     },
-  });
-  return stateManager;
+    subscribe: (callback: (payload?: any) => void, eventName?: string) => {
+      return modules.subscribe((payload) => {
+        callback({
+          newState: Array.from(payload.newState.values()),
+          prevState: Array.from(payload.prevState.values()),
+        });
+      }, eventName);
+    },
+  };
 };
 
 export { createModuleInfrastructure };
