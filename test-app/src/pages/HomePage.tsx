@@ -10,7 +10,6 @@ import { quantumUi } from "../quantum";
 const counterModule = quantumUi.createModule<number>({
   name: "counter",
   model: (props) => {
-    console.log("MODEL", props);
     return {
       id: props.id,
       state: props.state,
@@ -21,7 +20,6 @@ counterModule.createModel({
   id: "counter",
   state: 0,
 });
-// console.log(counterModule);
 counterModule.subscribe((payload) => {
   console.log("PAYLOAD", payload);
 });
