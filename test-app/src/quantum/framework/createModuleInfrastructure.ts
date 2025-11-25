@@ -6,7 +6,7 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
     new Map<
       string,
       {
-        model: IModel<S>;
+        model: ReturnType<typeof core.createStore<S>>;
         removeModel: () => void;
       }
     >()
@@ -20,8 +20,9 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
             id,
             state: modelState,
           });
+          const store = core.createStore(model.state);
           return prevState.set(id, {
-            model,
+            model: store,
             removeModel() {
               modules.setState(
                 (prevState) => {

@@ -31,7 +31,7 @@ function createStore<S = any>(state: S) {
       });
     },
     subscribe: (callback: (payload?: any) => void, eventName?: string) => {
-      observer.subscribe({
+      return observer.subscribe({
         eventName: eventName || "setState",
         callback: ({ payload }: { payload: { prevState: S; newState: S } }) => {
           callback(payload);

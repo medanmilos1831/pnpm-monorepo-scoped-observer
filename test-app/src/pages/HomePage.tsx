@@ -20,7 +20,10 @@ counterModule.createModel({
   id: "counter",
   state: 0,
 });
-counterModule.subscribe((payload) => {
+const model = counterModule.getModelById("counter")!;
+console.log(model);
+
+const unsubscribe = model.subscribe((payload) => {
   console.log("PAYLOAD", payload);
 });
 const HomePage = () => {
