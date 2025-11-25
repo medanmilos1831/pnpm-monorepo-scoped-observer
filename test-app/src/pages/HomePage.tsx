@@ -1,33 +1,27 @@
-import { quantumUi } from "@med1802/quantum-ui";
+import { quantumUiReact } from "@med1802/quantum-ui-react";
+import { useEffect } from "react";
 
-const counterModule = quantumUi.createModule<number>({
-  name: "counter",
-  store: (props) => {
-    return {
-      id: props.id,
-      state: props.state,
-    };
-  },
-});
-
-counterModule.createStore({
-  id: "counter",
-  state: 0,
-});
-const counterStore = counterModule.getStoreById("counter")!;
-
-counterStore.store.subscribe((payload) => {
-  console.log("PAYLOAD", payload);
-});
-counterStore.store.subscribe((payload) => {
-  console.log("PAYLOAD CUSTOM EVENT", payload);
-}, "triggerOnlyOnCustomEvent");
-counterStore.store.setState((state) => state + 1);
-counterStore.store.setState((state) => state + 1, {
-  customEvents: ["triggerOnlyOnCustomEvent"],
-});
+const { useStoreSelector, useCreateStore, getStoreById } =
+  quantumUiReact.createModule<number>({
+    name: "counter",
+    store: (props) => {
+      return {
+        id: props.id,
+        state: props.state,
+      };
+    },
+  });
 
 const HomePage = () => {
+  const counterSelector = useStoreSelector("counter");
+  useCreateStore({ id: "counter", state: 0 });
+
+  useEffect(() => {
+    counterSelector?.subscribe((payload) => {
+      console.log("PAYLOAD", payload);
+    });
+  });
+  counterSelector?.setState((state) => state + 1);
   return (
     <div>
       <h1>Home Page</h1>
