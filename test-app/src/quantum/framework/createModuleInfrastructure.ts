@@ -26,20 +26,20 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
           return prevState.set(id, {
             store: core.createStore(model.state),
             destroy() {
+              modules.state.delete(id);
               modules.setState(
-                (prevState) => {
-                  prevState.delete(id);
-                  return { ...prevState };
+                (prev) => {
+                  return prev;
                 },
                 {
-                  customEvents: [`onModelUnmount-${id}`],
+                  customEvents: [`onStoreDestroy-${id}`],
                 }
               );
             },
           });
         },
         {
-          customEvents: [`onModelMount-${id}`],
+          customEvents: [`onStoreCreate-${id}`],
         }
       );
     },

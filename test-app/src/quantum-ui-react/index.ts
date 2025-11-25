@@ -12,14 +12,14 @@ const quantumUiReact = (() => {
             return (notify: () => void) => {
               return createModule.subscribe((payload) => {
                 notify();
-              }, `onModelMount-${modelId}`);
+              }, `onStoreCreate-${modelId}`);
             };
           });
           const [unmount] = useState(() => {
             return (notify: () => void) => {
               return createModule.subscribe((payload) => {
                 notify();
-              }, `onModelUnmount-${modelId}`);
+              }, `onStoreDestroy-${modelId}`);
             };
           });
           const [snapshot] = useState(() => () => {
