@@ -1,5 +1,5 @@
 import { core } from "../core/core";
-import type { IModel, IModuleConfig } from "./types";
+import type { IModuleConfig } from "./types";
 
 const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
   const modules = core.createStore(
