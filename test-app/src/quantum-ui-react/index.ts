@@ -8,32 +8,27 @@ const quantumUiReact = (() => {
       const createModule = quantumUi.createModule<S>(props);
       return {
         useStoreSelector: (modelId: string) => {
-          const [mount] = useState(() => {
-            return (notify: () => void) => {
-              return createModule.subscribe((payload) => {
-                notify();
-              }, `onStoreCreate-${modelId}`);
-            };
-          });
-          const [unmount] = useState(() => {
-            return (notify: () => void) => {
-              return createModule.subscribe((payload) => {
-                notify();
-              }, `onStoreDestroy-${modelId}`);
+          const [lifecycle] = useState(() => {
+            return {
+              onLoad: (notify: () => void) => {
+                return createModule.onLoad(modelId, notify);
+              },
+              onDestroy: (notify: () => void) => {
+                return createModule.onDestroy(modelId, notify);
+              },
             };
           });
           const [snapshot] = useState(() => () => {
             return createModule.getStoreById(modelId);
           });
-          let value = undefined;
-          value = useSyncExternalStore(mount, snapshot);
-          value = useSyncExternalStore(unmount, snapshot);
-          return value?.store;
+          useSyncExternalStore(lifecycle.onLoad, snapshot);
+          useSyncExternalStore(lifecycle.onDestroy, snapshot);
+          return createModule.getStoreById(modelId)?.store ?? undefined;
         },
         useCreateStore: (props: { id: string; state: S }) => {
-          createModule.createStore(props);
-          const model = createModule.getStoreById(props.id)!;
           useEffect(() => {
+            createModule.createStore(props);
+            const model = createModule.getStoreById(props.id)!;
             return () => {
               model.destroy();
             };

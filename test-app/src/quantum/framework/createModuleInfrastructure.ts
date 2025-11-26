@@ -32,14 +32,14 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
                   return prev;
                 },
                 {
-                  customEvents: [`onStoreDestroy-${id}`],
+                  customEvents: [`onDestroy-${id}`],
                 }
               );
             },
           });
         },
         {
-          customEvents: [`onStoreCreate-${id}`],
+          customEvents: [`onLoad-${id}`],
         }
       );
     },
@@ -53,6 +53,22 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
           prevState: Array.from(payload.prevState.values()),
         });
       }, eventName);
+    },
+    onLoad: (id: string, callback: (payload?: any) => void) => {
+      return modules.subscribe((payload) => {
+        callback({
+          newState: Array.from(payload.newState.values()),
+          prevState: Array.from(payload.prevState.values()),
+        });
+      }, `onLoad-${id}`);
+    },
+    onDestroy: (id: string, callback: (payload?: any) => void) => {
+      return modules.subscribe((payload) => {
+        callback({
+          newState: Array.from(payload.newState.values()),
+          prevState: Array.from(payload.prevState.values()),
+        });
+      }, `onDestroy-${id}`);
     },
   };
 };
