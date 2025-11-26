@@ -12,7 +12,7 @@ const counterModule = quantumUiReact.createModule({
 const HomePage = () => {
   const counter = counterModule.useEntitySelector("counter");
   counterModule.useCreateEntity({ id: "counter", state: 0 });
-
+  console.log(counter);
   useEffect(() => {
     const unsubscribe = counter?.subscribe(({ prevState, newState }) => {
       console.log(prevState, newState);
