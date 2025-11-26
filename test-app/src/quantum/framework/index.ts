@@ -8,7 +8,6 @@ const framework = (function () {
       return {
         createStore: moduleInfrastructure.createStore,
         getStoreById: moduleInfrastructure.getStoreById,
-        subscribe: moduleInfrastructure.subscribe,
         onLoad: moduleInfrastructure.onLoad,
         onDestroy: moduleInfrastructure.onDestroy,
       };

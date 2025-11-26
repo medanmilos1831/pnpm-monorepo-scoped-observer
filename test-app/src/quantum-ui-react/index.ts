@@ -36,7 +36,8 @@ const quantumUiReact = (() => {
         },
         createStore: createModule.createStore,
         getStoreById: createModule.getStoreById,
-        subscribe: createModule.subscribe,
+        onLoad: createModule.onLoad,
+        onDestroy: createModule.onDestroy,
       };
     },
   };

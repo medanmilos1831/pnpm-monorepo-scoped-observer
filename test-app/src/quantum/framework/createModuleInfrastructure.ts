@@ -46,14 +46,14 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
     getStoreById: (id: string) => {
       return modules.state.get(id);
     },
-    subscribe: (callback: (payload?: any) => void, eventName?: string) => {
-      return modules.subscribe((payload) => {
-        callback({
-          newState: Array.from(payload.newState.values()),
-          prevState: Array.from(payload.prevState.values()),
-        });
-      }, eventName);
-    },
+    // subscribe: (callback: (payload?: any) => void, eventName?: string) => {
+    //   return modules.subscribe((payload) => {
+    //     callback({
+    //       newState: Array.from(payload.newState.values()),
+    //       prevState: Array.from(payload.prevState.values()),
+    //     });
+    //   }, eventName);
+    // },
     onLoad: (id: string, callback: (payload?: any) => void) => {
       return modules.subscribe((payload) => {
         callback({
