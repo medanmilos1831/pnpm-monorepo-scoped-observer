@@ -11,8 +11,26 @@ const createToggleClient = () => {
     },
   });
   return {
-    useToggle: (props: any) => {},
-    useToggleCommands: (id: string) => {},
+    useToggle: ({ id, initState }: { id: string; initState: "on" | "off" }) => {
+      toggleModule.useCreateEntity({ id, state: initState });
+      const toggle = toggleModule.getEntityById(id);
+      console.log("USE TOGGLE", toggle);
+      return toggle?.store.state;
+    },
+    useToggleCommands: (id: string) => {
+      const toggle = toggleModule.getEntityById(id);
+      return {
+        onOpen: () => {
+          toggle?.store.setState(() => "on");
+        },
+        onClose: () => {
+          toggle?.store.setState(() => "off");
+        },
+        onToggle: () => {
+          toggle?.store.setState((state) => (state === "on" ? "off" : "on"));
+        },
+      };
+    },
   };
 };
 
