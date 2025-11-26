@@ -1,17 +1,17 @@
 {
   "name": "@med1802/quantum-ui-react",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@med1802/quantum-ui": "^1.4.2",
+    "@med1802/quantum-ui": "^2.0.3",
     "use-sync-external-store": "^1.6.0"
   },
   "devDependencies": {
-    "@med1802/quantum-ui": "^1.4.2",
+    "@med1802/quantum-ui": "^2.0.3",
     "use-sync-external-store": "^1.6.0",
     "@types/use-sync-external-store": "^0.0.6"
   },

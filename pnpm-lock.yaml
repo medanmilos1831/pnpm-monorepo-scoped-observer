@@ -59,8 +59,8 @@ importers:
   med1802/quantum-ui-react:
     dependencies:
       '@med1802/quantum-ui':
-        specifier: ^1.4.2
-        version: 1.4.2
+        specifier: ^2.0.3
+        version: 2.0.3
       use-sync-external-store:
         specifier: ^1.6.0
         version: 1.6.0(react@19.2.0)
@@ -79,6 +79,9 @@ importers:
 
   test-app:
     dependencies:
+      '@med1802/quantum-ui':
+        specifier: ^2.0.3
+        version: 2.0.3
       '@med1802/quantum-ui-react':
         specifier: ^2.0.0
         version: 2.0.0(react@19.2.0)
@@ -447,6 +450,9 @@ packages:
 
   '@med1802/quantum-ui@1.4.2':
     resolution: {integrity: sha512-5OhMkrutPMM0lZ+ltF9paehC9zSr8ZeGxJd1GVLZxfN2soxHbrXzq9lNIcMuhdkFINNk582bO1lYEwIzVQsxqA==}
+
+  '@med1802/quantum-ui@2.0.3':
+    resolution: {integrity: sha512-Ua7mavhHNuY1VEbvpPx10VQAS7M6Jw8DfjWnVtxz67c8v2khpAshWpKiZ2IIDpHB+vuHZCDLpygoLg/b7sjwew==}
 
   '@med1802/scoped-observer-message-broker@2.0.2':
     resolution: {integrity: sha512-b9EllvQcI3X9ygRHIudzybqMd+aus6ByWTJnrOb/hHTwDlIDvNvrtY9cPoXGwmSaxw1gy/d4TNCWWyuUFTxCAw==}
@@ -1445,6 +1451,11 @@ snapshots:
       - react
 
   '@med1802/quantum-ui@1.4.2':
+    dependencies:
+      '@med1802/scoped-observer': 1.1.4
+      '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
+
+  '@med1802/quantum-ui@2.0.3':
     dependencies:
       '@med1802/scoped-observer': 1.1.4
       '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)

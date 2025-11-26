@@ -7,41 +7,37 @@ const quantumUiReact = (() => {
     createModule<S = any>(props: IModuleConfig<S>) {
       const createModule = quantumUi.createModule<S>(props);
       return {
-        useStoreSelector: (modelId: string) => {
-          const [mount] = useState(() => {
-            return (notify: () => void) => {
-              return createModule.subscribe((payload) => {
-                notify();
-              }, `onStoreCreate-${modelId}`);
-            };
-          });
-          const [unmount] = useState(() => {
-            return (notify: () => void) => {
-              return createModule.subscribe((payload) => {
-                notify();
-              }, `onStoreDestroy-${modelId}`);
+        useEntitySelector: (modelId: string) => {
+          const [lifecycle] = useState(() => {
+            return {
+              onEntityLoad: (notify: () => void) => {
+                return createModule.onEntityLoad(modelId, notify);
+              },
+              onEntityDestroy: (notify: () => void) => {
+                return createModule.onEntityDestroy(modelId, notify);
+              },
             };
           });
           const [snapshot] = useState(() => () => {
-            return createModule.getStoreById(modelId);
+            return createModule.getEntityById(modelId);
           });
-          let value = undefined;
-          value = useSyncExternalStore(mount, snapshot);
-          value = useSyncExternalStore(unmount, snapshot);
-          return value?.store;
+          useSyncExternalStore(lifecycle.onEntityLoad, snapshot);
+          useSyncExternalStore(lifecycle.onEntityDestroy, snapshot);
+          return createModule.getEntityById(modelId)?.store ?? undefined;
         },
-        useCreateStore: (props: { id: string; state: S }) => {
-          createModule.createStore(props);
-          const model = createModule.getStoreById(props.id)!;
+        useCreateEntity: (props: { id: string; state: S }) => {
           useEffect(() => {
+            createModule.createEntity(props);
+            const model = createModule.getEntityById(props.id)!;
             return () => {
               model.destroy();
             };
           }, []);
         },
-        createStore: createModule.createStore,
-        getStoreById: createModule.getStoreById,
-        subscribe: createModule.subscribe,
+        createEntity: createModule.createEntity,
+        getEntityById: createModule.getEntityById,
+        onEntityLoad: createModule.onEntityLoad,
+        onEntityDestroy: createModule.onEntityDestroy,
       };
     },
   };
