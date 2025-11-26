@@ -1,6 +1,10 @@
 import { core } from "../core/core";
 import type { IModuleConfig } from "./types";
 
+const ENTITY_EVENTS = {
+  ON_ENTITY_LOAD: "onEntityLoad",
+  ON_ENTITY_DESTROY: "onEntityDestroy",
+};
 const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
   const modules = core.createStore(
     new Map<
@@ -13,7 +17,7 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
   );
 
   return {
-    createStore: ({ id, state }: { id: string; state: S }) => {
+    createEntity: ({ id, state }: { id: string; state: S }) => {
       if (modules.state.has(id)) {
         return;
       }
@@ -32,43 +36,35 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
                   return prev;
                 },
                 {
-                  customEvents: [`onDestroy-${id}`],
+                  customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
                 }
               );
             },
           });
         },
         {
-          customEvents: [`onLoad-${id}`],
+          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`],
         }
       );
     },
-    getStoreById: (id: string) => {
+    getEntityById: (id: string) => {
       return modules.state.get(id);
     },
-    // subscribe: (callback: (payload?: any) => void, eventName?: string) => {
-    //   return modules.subscribe((payload) => {
-    //     callback({
-    //       newState: Array.from(payload.newState.values()),
-    //       prevState: Array.from(payload.prevState.values()),
-    //     });
-    //   }, eventName);
-    // },
-    onLoad: (id: string, callback: (payload?: any) => void) => {
+    onEntityLoad: (id: string, callback: (payload?: any) => void) => {
       return modules.subscribe((payload) => {
         callback({
           newState: Array.from(payload.newState.values()),
           prevState: Array.from(payload.prevState.values()),
         });
-      }, `onLoad-${id}`);
+      }, `${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`);
     },
-    onDestroy: (id: string, callback: (payload?: any) => void) => {
+    onEntityDestroy: (id: string, callback: (payload?: any) => void) => {
       return modules.subscribe((payload) => {
         callback({
           newState: Array.from(payload.newState.values()),
           prevState: Array.from(payload.prevState.values()),
         });
-      }, `onDestroy-${id}`);
+      }, `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`);
     },
   };
 };

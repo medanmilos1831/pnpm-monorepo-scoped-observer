@@ -6,10 +6,10 @@ const framework = (function () {
     createModule<S = any>(moduleConfig: IModuleConfig<S>) {
       const moduleInfrastructure = createModuleInfrastructure(moduleConfig);
       return {
-        createStore: moduleInfrastructure.createStore,
-        getStoreById: moduleInfrastructure.getStoreById,
-        onLoad: moduleInfrastructure.onLoad,
-        onDestroy: moduleInfrastructure.onDestroy,
+        createEntity: moduleInfrastructure.createEntity,
+        getEntityById: moduleInfrastructure.getEntityById,
+        onEntityLoad: moduleInfrastructure.onEntityLoad,
+        onEntityDestroy: moduleInfrastructure.onEntityDestroy,
       };
     },
   };
