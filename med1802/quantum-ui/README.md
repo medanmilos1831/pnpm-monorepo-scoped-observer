@@ -9,9 +9,6 @@ Quantum UI helps you organize many small state machines (entities) inside a sing
 - **Entity-centric architecture** — Modules orchestrate many entity instances, each backed by an isolated store.
 - **Reactive core** — Built on a minimal observer + store layer with custom lifecycle events.
 - **Lifecycle hooks** — Automatic `onEntityLoad-{id}` and `onEntityDestroy-{id}` signals.
-- **Typed APIs** — Generics everywhere for predictable state and getters.
-- **Custom events** — `setState` accepts `customEvents` for fine-grained orchestration.
-- **React-ready** — Companion package `@med1802/quantum-ui-react` exposes hooks on top of the same contracts.
 
 ---
 
