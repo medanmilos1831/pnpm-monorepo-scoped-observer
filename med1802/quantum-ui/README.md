@@ -1,4 +1,4 @@
-# Quantum UI — Store-First Modules
+# Quantum UI
 
 Quantum UI helps you organize many small state machines (entities) inside a single module. Each module keeps a Map of entity stores, dispatches lifecycle events when entities mount or unmount, and lets you observe changes in plain JavaScript.
 
@@ -25,9 +25,7 @@ npm install @med1802/quantum-ui
 ```typescript
 import { quantumUi } from "@med1802/quantum-ui";
 
-type CounterState = number;
-
-const counterModule = quantumUi.createModule<CounterState>({
+const counterModule = quantumUi.createModule<number>({
   name: "counter",
   store: ({ id, state }) => ({
     id,
@@ -52,10 +50,13 @@ const entry = counterModule.getEntityById("counter");
 entry?.store.subscribe(({ prevState, newState }) => {
   console.log("SET STATE", prevState, newState);
 });
+entry?.store.subscribe(({ prevState, newState }) => {
+  console.log("SET STATE", prevState, newState);
+}, "incremented");
 
 entry?.store.setState((value) => value + 1);
 entry?.store.setState((value) => value + 1, {
-  customEvents: ["counter:incremented"],
+  customEvents: ["incremented"],
 });
 
 // Destroy when you are done
