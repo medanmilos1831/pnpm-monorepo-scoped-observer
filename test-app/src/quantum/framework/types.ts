@@ -11,10 +11,10 @@ export interface IStore<S = any> {
 /**
  * Module configuration contract used when calling `createModule`.
  */
-export interface IModuleConfig<S = any> {
+export interface IModuleConfig<S = any, A = any> {
   name: string;
   store: (props: { id: string; state: S }) => IStore<S>;
-  apiClient: (store: any) => any;
+  apiClient: (store: ReturnType<typeof core.createStore<S>>) => A;
 }
 
 /**

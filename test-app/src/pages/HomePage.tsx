@@ -1,10 +1,13 @@
 import { createToggleClient } from "../toggle";
 
-const { useToggle, useToggleCommands } = createToggleClient();
+const { useToggle, useToggleCommands, useToggleSelector } =
+  createToggleClient();
 
 const ComponentOne = () => {
+  const toggleModule = useToggleSelector("toggleOne");
   const toggle = useToggle({ id: "toggleOne", initState: "on" });
   console.log("TOGGLE", toggle);
+  console.log("TOGGLE MODULE", toggleModule);
   return <div></div>;
 };
 

@@ -8,30 +8,12 @@ import { ENTITY_EVENTS, type IEntityEntry, type IModuleConfig } from "./types";
  *
  * @param moduleConfig Declarative description of how to construct each entity store.
  */
-const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
+const createModuleInfrastructure = <S, A>(
+  moduleConfig: IModuleConfig<S, A>
+) => {
   const modules = core.createStore(
     new Map<string, ReturnType<typeof moduleConfig.apiClient>>()
   );
-
-  function entityClientApi(
-    id: string,
-    store: ReturnType<typeof core.createStore<S>>
-  ) {
-    return {
-      destroy() {
-        modules.getState().delete(id);
-        modules.setState((prev) => prev, {
-          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
-        });
-      },
-      getState: () => {
-        console.log("getState", store.getState());
-        return store.getState() as S;
-      },
-      subscribe: store.subscribe,
-      setState: store.setState,
-    };
-  }
 
   return {
     /**
@@ -62,10 +44,7 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
      */
     onEntityLoad: (id: string, callback: (payload?: any) => void) => {
       return modules.subscribe((payload) => {
-        callback({
-          newState: Array.from(payload.newState.values()),
-          prevState: Array.from(payload.prevState.values()),
-        });
+        callback();
       }, `${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`);
     },
     /**
@@ -73,14 +52,8 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
      */
     onEntityDestroy: (id: string, callback: (payload?: any) => void) => {
       return modules.subscribe((payload) => {
-        callback({
-          newState: Array.from(payload.newState.values()),
-          prevState: Array.from(payload.prevState.values()),
-        });
+        callback();
       }, `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`);
-    },
-    logModules: () => {
-      // console.log("modules", modules.state);
     },
   };
 };
