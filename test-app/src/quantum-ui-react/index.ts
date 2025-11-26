@@ -10,11 +10,17 @@ const quantumUiReact = (() => {
         useEntitySelector: (entityId: string) => {
           const [subscribe] = useState(() => {
             return (notify: () => void) => {
-              const unsub1 = createModule.onEntityLoad(entityId, notify);
-              const unsub2 = createModule.onEntityDestroy(entityId, notify);
+              const unsubscribeLoad = createModule.onEntityLoad(
+                entityId,
+                notify
+              );
+              const unsubscribeDestroy = createModule.onEntityDestroy(
+                entityId,
+                notify
+              );
               return () => {
-                unsub1();
-                unsub2();
+                unsubscribeLoad();
+                unsubscribeDestroy();
               };
             };
           });
