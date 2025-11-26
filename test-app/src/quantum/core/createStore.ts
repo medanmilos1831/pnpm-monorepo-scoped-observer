@@ -2,6 +2,7 @@ import { createObserver } from "./createObserver";
 
 function createStore<S = any>(state: S) {
   const observer = createObserver();
+  let internalState = structuredClone(state);
   return {
     setState: (
       callback: (state: S) => S,
@@ -9,7 +10,7 @@ function createStore<S = any>(state: S) {
         customEvents: string[];
       }
     ) => {
-      state = callback(state);
+      internalState = callback(internalState);
       if (options?.customEvents && options.customEvents.length > 0) {
         options.customEvents.forEach((eventName) => {
           observer.dispatch({
@@ -31,8 +32,9 @@ function createStore<S = any>(state: S) {
         },
       });
     },
-
-    state,
+    getState: () => {
+      return internalState;
+    },
   };
 }
 

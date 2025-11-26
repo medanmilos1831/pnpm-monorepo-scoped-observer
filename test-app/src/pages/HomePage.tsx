@@ -3,7 +3,8 @@ import { createToggleClient } from "../toggle";
 const { useToggle, useToggleCommands } = createToggleClient();
 
 const ComponentOne = () => {
-  const toggle = useToggle({ id: "toggleOne", initState: "off" });
+  const toggle = useToggle({ id: "toggleOne", initState: "on" });
+  console.log("TOGGLE", toggle);
   return <div></div>;
 };
 
@@ -11,14 +12,33 @@ const ComponentTwo = () => {
   const commands = useToggleCommands("toggleOne");
   return (
     <div>
-      <button onClick={() => {}}>Open</button>
-      <button onClick={() => {}}>Close</button>
+      <button
+        onClick={() => {
+          commands.onOpen();
+        }}
+      >
+        Open
+      </button>
+      <button
+        onClick={() => {
+          commands.onClose();
+        }}
+      >
+        Close
+      </button>
       <button
         onClick={() => {
           commands.onToggle();
         }}
       >
         Toggle
+      </button>
+      <button
+        onClick={() => {
+          commands.logState();
+        }}
+      >
+        Log State
       </button>
     </div>
   );

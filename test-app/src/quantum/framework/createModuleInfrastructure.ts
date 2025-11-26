@@ -1,6 +1,5 @@
 import { core } from "../core/core";
-import { createEntityInfrastructure } from "./createEntityInfrastructure";
-import { ENTITY_EVENTS, type IModuleConfig } from "./types";
+import { ENTITY_EVENTS, type IEntityEntry, type IModuleConfig } from "./types";
 
 /**
  * Creates the high-level module infrastructure responsible for managing entity stores.
@@ -11,41 +10,52 @@ import { ENTITY_EVENTS, type IModuleConfig } from "./types";
  */
 const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
   const modules = core.createStore(
-    new Map<
-      string,
-      {
-        destroy: () => void;
-        getState: () => S;
-        subscribe: (
-          callback: (payload?: any) => void,
-          eventName?: string
-        ) => void;
-        setState: (
-          callback: (state: S) => S,
-          options?: {
-            customEvents: string[];
-          }
-        ) => void;
-      }
-    >()
+    new Map<string, ReturnType<typeof moduleConfig.apiClient>>()
   );
 
-  const entityInfrastructure = createEntityInfrastructure(
-    modules,
-    moduleConfig
-  );
+  function entityClientApi(
+    id: string,
+    store: ReturnType<typeof core.createStore<S>>
+  ) {
+    return {
+      destroy() {
+        modules.getState().delete(id);
+        modules.setState((prev) => prev, {
+          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
+        });
+      },
+      getState: () => {
+        console.log("getState", store.getState());
+        return store.getState() as S;
+      },
+      subscribe: store.subscribe,
+      setState: store.setState,
+    };
+  }
 
   return {
     /**
      * Public helper for creating entities through the internal infra.
      */
-    createEntity: entityInfrastructure.createEntity,
+    createEntity: (entityConfig: { id: string; state: S }) => {
+      if (modules.getState().has(entityConfig.id)) {
+        return;
+      }
+      const value = moduleConfig.store({
+        id: entityConfig.id,
+        state: entityConfig.state,
+      });
+      const store = core.createStore(value.state);
+      const client = moduleConfig.apiClient(store);
+      modules.setState((prevState) => prevState.set(entityConfig.id, client), {
+        customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${entityConfig.id}`],
+      });
+    },
     /**
      * Retrieves entity metadata (store + destroy handler) by id.
      */
     getEntityById: (id: string) => {
-      console.log("GET ENTITY BY ID", modules.state.get(id));
-      return modules.state.get(id);
+      return modules.getState().get(id);
     },
     /**
      * Subscribes to entity load events for a specific id.
@@ -68,6 +78,9 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
           prevState: Array.from(payload.prevState.values()),
         });
       }, `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`);
+    },
+    logModules: () => {
+      // console.log("modules", modules.state);
     },
   };
 };

@@ -14,6 +14,7 @@ export interface IStore<S = any> {
 export interface IModuleConfig<S = any> {
   name: string;
   store: (props: { id: string; state: S }) => IStore<S>;
+  apiClient: (store: any) => any;
 }
 
 /**
@@ -25,26 +26,23 @@ export const ENTITY_EVENTS = {
 };
 
 /**
+ * Entity entry shape stored in the module's entity registry.
+ */
+export interface IEntityEntry<S = any> {
+  destroy: () => void;
+  getState: () => S;
+  subscribe: (callback: (payload?: any) => void, eventName?: string) => void;
+  setState: (
+    callback: (state: S) => S,
+    options?: {
+      customEvents: string[];
+    }
+  ) => void;
+}
+
+/**
  * Backing store that keeps track of every entity instance inside a module.
  */
 export type ModuleEntitiesStore<S> = ReturnType<
-  typeof core.createStore<
-    Map<
-      string,
-      {
-        destroy: () => void;
-        getState: () => S;
-        subscribe: (
-          callback: (payload?: any) => void,
-          eventName?: string
-        ) => void;
-        setState: (
-          callback: (state: S) => S,
-          options?: {
-            customEvents: string[];
-          }
-        ) => void;
-      }
-    >
-  >
+  typeof core.createStore<Map<string, IEntityEntry<S>>>
 >;

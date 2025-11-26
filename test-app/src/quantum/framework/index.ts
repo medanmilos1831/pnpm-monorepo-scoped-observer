@@ -11,9 +11,8 @@ const framework = (function () {
     /**
      * Creates a module with the provided configuration.
      */
-    createModule<S = any>(moduleConfig: IModuleConfig<S>) {
-      return createModuleInfrastructure(moduleConfig);
-    },
+    createModule: <S = any>(moduleConfig: IModuleConfig<S>) =>
+      createModuleInfrastructure(moduleConfig),
   };
 })();
 
