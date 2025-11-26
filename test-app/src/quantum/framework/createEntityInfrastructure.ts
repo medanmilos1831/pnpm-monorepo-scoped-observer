@@ -12,6 +12,27 @@ const createEntityInfrastructure = <S>(
   >,
   moduleConfig: IModuleConfig<S>
 ) => {
+  function destroy(id: string) {
+    return () => {
+      modules.state.delete(id);
+      modules.setState(
+        (prev) => {
+          return prev;
+        },
+        {
+          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
+        }
+      );
+    };
+  }
+  function createStore(id: string, state: S) {
+    return core.createStore(
+      moduleConfig.store({
+        id,
+        state,
+      }).state
+    );
+  }
   return {
     createEntity: ({ id, state }: { id: string; state: S }) => {
       if (modules.state.has(id)) {
@@ -20,23 +41,8 @@ const createEntityInfrastructure = <S>(
       modules.setState(
         (prevState) => {
           return prevState.set(id, {
-            store: core.createStore(
-              moduleConfig.store({
-                id,
-                state,
-              }).state
-            ),
-            destroy() {
-              modules.state.delete(id);
-              modules.setState(
-                (prev) => {
-                  return prev;
-                },
-                {
-                  customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
-                }
-              );
-            },
+            store: createStore(id, state),
+            destroy: destroy(id),
           });
         },
         {
