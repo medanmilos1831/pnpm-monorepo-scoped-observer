@@ -12,13 +12,7 @@ const framework = (function () {
      * Creates a module with the provided configuration.
      */
     createModule<S = any>(moduleConfig: IModuleConfig<S>) {
-      const moduleInfrastructure = createModuleInfrastructure(moduleConfig);
-      return {
-        createEntity: moduleInfrastructure.createEntity,
-        getEntityById: moduleInfrastructure.getEntityById,
-        onEntityLoad: moduleInfrastructure.onEntityLoad,
-        onEntityDestroy: moduleInfrastructure.onEntityDestroy,
-      };
+      return createModuleInfrastructure(moduleConfig);
     },
   };
 })();

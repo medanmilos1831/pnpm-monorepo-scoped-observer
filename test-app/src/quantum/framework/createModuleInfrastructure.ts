@@ -14,8 +14,18 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
     new Map<
       string,
       {
-        store: ReturnType<typeof core.createStore<S>>;
         destroy: () => void;
+        getState: () => S;
+        subscribe: (
+          callback: (payload?: any) => void,
+          eventName?: string
+        ) => void;
+        setState: (
+          callback: (state: S) => S,
+          options?: {
+            customEvents: string[];
+          }
+        ) => void;
       }
     >()
   );
@@ -33,7 +43,10 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
     /**
      * Retrieves entity metadata (store + destroy handler) by id.
      */
-    getEntityById: entityInfrastructure.getEntityById,
+    getEntityById: (id: string) => {
+      console.log("GET ENTITY BY ID", modules.state.get(id));
+      return modules.state.get(id);
+    },
     /**
      * Subscribes to entity load events for a specific id.
      */

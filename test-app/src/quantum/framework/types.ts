@@ -32,8 +32,18 @@ export type ModuleEntitiesStore<S> = ReturnType<
     Map<
       string,
       {
-        store: ReturnType<typeof core.createStore<S>>;
         destroy: () => void;
+        getState: () => S;
+        subscribe: (
+          callback: (payload?: any) => void,
+          eventName?: string
+        ) => void;
+        setState: (
+          callback: (state: S) => S,
+          options?: {
+            customEvents: string[];
+          }
+        ) => void;
       }
     >
   >

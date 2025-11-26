@@ -44,14 +44,19 @@ const createEntityInfrastructure = <S>(
      * Registers a new entity if the id is unused and emits `onEntityLoad-{id}`.
      */
     createEntity: ({ id, state }: { id: string; state: S }) => {
+      const store = createStore(id, state);
       if (modules.state.has(id)) {
         return;
       }
       modules.setState(
         (prevState) =>
           prevState.set(id, {
-            store: createStore(id, state),
             destroy: destroy(id),
+            getState: () => {
+              return store.state as S;
+            },
+            subscribe: store.subscribe,
+            setState: store.setState,
           }),
         {
           customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`],

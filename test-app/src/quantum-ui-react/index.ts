@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 
-import { quantumUi, type IModuleConfig } from "@med1802/quantum-ui";
+import { quantumUi, type IModuleConfig } from "../quantum";
 const quantumUiReact = (() => {
   return {
     createModule<S = any>(props: IModuleConfig<S>) {
@@ -23,12 +23,12 @@ const quantumUiReact = (() => {
           });
           useSyncExternalStore(lifecycle.onEntityLoad, snapshot);
           useSyncExternalStore(lifecycle.onEntityDestroy, snapshot);
-          return createModule.getEntityById(modelId)?.store ?? undefined;
+          return createModule.getEntityById(modelId)?.getState() ?? undefined;
         },
         useCreateEntity: (props: { id: string; state: S }) => {
+          createModule.createEntity(props);
+          const model = createModule.getEntityById(props.id)!;
           useEffect(() => {
-            createModule.createEntity(props);
-            const model = createModule.getEntityById(props.id)!;
             return () => {
               model.destroy();
             };

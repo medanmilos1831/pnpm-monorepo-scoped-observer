@@ -9,25 +9,18 @@ function createStore<S = any>(state: S) {
         customEvents: string[];
       }
     ) => {
-      const prevState = structuredClone(state);
       state = callback(state);
       if (options?.customEvents && options.customEvents.length > 0) {
         options.customEvents.forEach((eventName) => {
           observer.dispatch({
             eventName,
-            payload: {
-              prevState: prevState,
-              newState: state,
-            },
+            payload: state,
           });
         });
       }
       observer.dispatch({
         eventName: "setState",
-        payload: {
-          prevState: prevState,
-          newState: state,
-        },
+        payload: state,
       });
     },
     subscribe: (callback: (payload?: any) => void, eventName?: string) => {
