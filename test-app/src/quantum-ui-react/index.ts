@@ -8,21 +8,20 @@ const quantumUiReact = (() => {
       const createModule = quantumUi.createModule<S, A>(props);
       return {
         useEntitySelector: (entityId: string) => {
-          const [lifecycle] = useState(() => {
-            return {
-              onEntityLoad: (notify: () => void) => {
-                return createModule.onEntityLoad(entityId, notify);
-              },
-              onEntityDestroy: (notify: () => void) => {
-                return createModule.onEntityDestroy(entityId, notify);
-              },
+          const [subscribe] = useState(() => {
+            return (notify: () => void) => {
+              const unsub1 = createModule.onEntityLoad(entityId, notify);
+              const unsub2 = createModule.onEntityDestroy(entityId, notify);
+              return () => {
+                unsub1();
+                unsub2();
+              };
             };
           });
-          const [snapshot] = useState(() => () => {
-            return createModule.getEntityById(entityId);
-          });
-          useSyncExternalStore(lifecycle.onEntityLoad, snapshot);
-          useSyncExternalStore(lifecycle.onEntityDestroy, snapshot);
+          const [snapshot] = useState(
+            () => () => createModule.getEntityById(entityId)
+          );
+          useSyncExternalStore(subscribe, snapshot);
           return createModule.getEntityById(entityId) ?? undefined;
         },
         useCreateEntity: (props: { id: string; state: S }) => {
@@ -30,7 +29,7 @@ const quantumUiReact = (() => {
           const model = createModule.getEntityById(props.id)!;
           useEffect(() => {
             return () => {
-              // model.destroy();
+              model.destroy();
             };
           }, []);
         },

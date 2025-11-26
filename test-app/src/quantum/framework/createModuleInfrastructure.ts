@@ -1,5 +1,5 @@
 import { core } from "../core/core";
-import { ENTITY_EVENTS, type IEntityEntry, type IModuleConfig } from "./types";
+import { ENTITY_EVENTS, type IModuleConfig } from "./types";
 
 /**
  * Creates the high-level module infrastructure responsible for managing entity stores.
@@ -12,7 +12,7 @@ const createModuleInfrastructure = <S, A>(
   moduleConfig: IModuleConfig<S, A>
 ) => {
   const modules = core.createStore(
-    new Map<string, ReturnType<typeof moduleConfig.apiClient>>()
+    new Map<string, A & { destroy: () => void }>()
   );
 
   return {
@@ -20,24 +20,42 @@ const createModuleInfrastructure = <S, A>(
      * Public helper for creating entities through the internal infra.
      */
     createEntity: (entityConfig: { id: string; state: S }) => {
-      if (modules.getState().has(entityConfig.id)) {
-        return;
-      }
       const value = moduleConfig.store({
         id: entityConfig.id,
         state: entityConfig.state,
       });
+      if (modules.getState().has(value.id)) {
+        return;
+      }
       const store = core.createStore(value.state);
       const client = moduleConfig.apiClient(store);
-      modules.setState((prevState) => prevState.set(entityConfig.id, client), {
-        customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${entityConfig.id}`],
-      });
+      function destroy() {
+        modules.setState(
+          (prevState) => {
+            prevState.delete(value.id);
+            return prevState;
+          },
+          {
+            customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${value.id}`],
+          }
+        );
+      }
+      modules.setState(
+        (prevState) =>
+          prevState.set(value.id, {
+            ...client,
+            destroy,
+          }),
+        {
+          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${value.id}`],
+        }
+      );
     },
     /**
      * Retrieves entity metadata (store + destroy handler) by id.
      */
     getEntityById: (id: string) => {
-      return modules.getState().get(id);
+      return modules.getState().get(id) as A & { destroy: () => void };
     },
     /**
      * Subscribes to entity load events for a specific id.

@@ -24,25 +24,3 @@ export const ENTITY_EVENTS = {
   ON_ENTITY_LOAD: "onEntityLoad",
   ON_ENTITY_DESTROY: "onEntityDestroy",
 };
-
-/**
- * Entity entry shape stored in the module's entity registry.
- */
-export interface IEntityEntry<S = any> {
-  destroy: () => void;
-  getState: () => S;
-  subscribe: (callback: (payload?: any) => void, eventName?: string) => void;
-  setState: (
-    callback: (state: S) => S,
-    options?: {
-      customEvents: string[];
-    }
-  ) => void;
-}
-
-/**
- * Backing store that keeps track of every entity instance inside a module.
- */
-export type ModuleEntitiesStore<S> = ReturnType<
-  typeof core.createStore<Map<string, IEntityEntry<S>>>
->;
