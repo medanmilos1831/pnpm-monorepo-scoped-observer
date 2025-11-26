@@ -1,6 +1,14 @@
 import { core } from "../core/core";
-import type { IModuleConfig } from "./types";
+import { createEntityInfrastructure } from "./createEntityInfrastructure";
+import { ENTITY_EVENTS, type IModuleConfig } from "./types";
 
+/**
+ * Creates the high-level module infrastructure responsible for managing entity stores.
+ * Internally it keeps a registry of entities (via a store) and exposes helpers for
+ * creating entities, retrieving them, and subscribing to lifecycle events.
+ *
+ * @param moduleConfig Declarative description of how to construct each entity store.
+ */
 const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
   const modules = core.createStore(
     new Map<
@@ -12,47 +20,41 @@ const createModuleInfrastructure = <S>(moduleConfig: IModuleConfig<S>) => {
     >()
   );
 
+  const entityInfrastructure = createEntityInfrastructure(
+    modules,
+    moduleConfig
+  );
+
   return {
-    createStore: ({ id, state }: { id: string; state: S }) => {
-      if (modules.state.has(id)) {
-        return;
-      }
-      modules.setState(
-        (prevState) => {
-          const model = moduleConfig.store({
-            id,
-            state,
-          });
-          return prevState.set(id, {
-            store: core.createStore(model.state),
-            destroy() {
-              modules.state.delete(id);
-              modules.setState(
-                (prev) => {
-                  return prev;
-                },
-                {
-                  customEvents: [`onStoreDestroy-${id}`],
-                }
-              );
-            },
-          });
-        },
-        {
-          customEvents: [`onStoreCreate-${id}`],
-        }
-      );
-    },
-    getStoreById: (id: string) => {
-      return modules.state.get(id);
-    },
-    subscribe: (callback: (payload?: any) => void, eventName?: string) => {
+    /**
+     * Public helper for creating entities through the internal infra.
+     */
+    createEntity: entityInfrastructure.createEntity,
+    /**
+     * Retrieves entity metadata (store + destroy handler) by id.
+     */
+    getEntityById: entityInfrastructure.getEntityById,
+    /**
+     * Subscribes to entity load events for a specific id.
+     */
+    onEntityLoad: (id: string, callback: (payload?: any) => void) => {
       return modules.subscribe((payload) => {
         callback({
           newState: Array.from(payload.newState.values()),
           prevState: Array.from(payload.prevState.values()),
         });
-      }, eventName);
+      }, `${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`);
+    },
+    /**
+     * Subscribes to entity destroy events for a specific id.
+     */
+    onEntityDestroy: (id: string, callback: (payload?: any) => void) => {
+      return modules.subscribe((payload) => {
+        callback({
+          newState: Array.from(payload.newState.values()),
+          prevState: Array.from(payload.prevState.values()),
+        });
+      }, `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`);
     },
   };
 };

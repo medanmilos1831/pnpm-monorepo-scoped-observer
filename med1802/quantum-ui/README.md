@@ -1,21 +1,21 @@
-# 🔄 Quantum UI (Store-first Edition)
+# Quantum UI — Store-First Modules
 
-Quantum UI now focuses on lightweight, reactive stores. Each module owns a map of stores (keyed by `id`) that can dispatch lifecycle events, broadcast `setState` updates, and expose granular subscriptions both per-store and per-module.
-
----
-
-## 🚀 Features
-
-- ✅ **Module-managed stores** — Create isolated store instances with a single call
-- ✅ **Reactive state** — Built-in store primitive with `setState`, `subscribe`, and custom lifecycle events
-- ✅ **Lifecycle signals** — Automatic `onModelMount-{id}` / `onModelUnmount-{id}` events for orchestration
-- ✅ **Scoped observers** — Every store and module emits updates through the Observer core
-- ✅ **Message broker ready** — Core still ships observer + broker utilities for more advanced setups
-- ✅ **Fully typed API** — Simple generics keep state definitions ergonomic
+Quantum UI helps you organize many small state machines (entities) inside a single module. Each module keeps a Map of entity stores, dispatches lifecycle events when entities mount or unmount, and lets you observe changes in plain JavaScript.
 
 ---
 
-## 📦 Installation
+## Highlights
+
+- **Entity-centric architecture** — Modules orchestrate many entity instances, each backed by an isolated store.
+- **Reactive core** — Built on a minimal observer + store layer with custom lifecycle events.
+- **Lifecycle hooks** — Automatic `onEntityLoad-{id}` and `onEntityDestroy-{id}` signals.
+- **Typed APIs** — Generics everywhere for predictable state and getters.
+- **Custom events** — `setState` accepts `customEvents` for fine-grained orchestration.
+- **React-ready** — Companion package `@med1802/quantum-ui-react` exposes hooks on top of the same contracts.
+
+---
+
+## Installation
 
 ```bash
 npm install @med1802/quantum-ui
@@ -23,119 +23,101 @@ npm install @med1802/quantum-ui
 
 ---
 
-## ⚙️ Quick Start
+## Quick Start
 
 ```typescript
 import { quantumUi } from "@med1802/quantum-ui";
 
-const counterModule = quantumUi.createModule<number>({
+type CounterState = number;
+
+const counterModule = quantumUi.createModule<CounterState>({
   name: "counter",
-  store: (props) => {
-    return {
-      id: props.id,
-      state: props.state,
-    };
-  },
-});
-// Fire when a specific store id mounts
-counterModule.subscribe((payload) => {
-  console.log("TRIGGERED ON CREATE COUNTER STORE", payload);
-}, "onStoreCreate-counter");
-
-// Fire when the same store id is destroyed
-counterModule.subscribe((payload) => {
-  console.log("TRIGGERED ON DESTROY COUNTER STORE", payload);
-}, "onStoreDestroy-counter");
-
-// Listen to every setState emission (no custom event name needed)
-counterModule.subscribe((payload) => {
-  console.log("LISTENER FOR ALL SET STATE EVENTS", payload);
-});
-
-counterModule.createStore({
-  id: "counter",
-  state: 0,
-});
-const counterStore = counterModule.getStoreById("counter")!;
-counterStore.destroy();
-```
-
-### Custom store events
-
-```typescript
-const counterModule = quantumUi.createModule<number>({
-  name: "counter",
-  store: (props) => ({
-    id: props.id,
-    state: props.state,
+  store: ({ id, state }) => ({
+    id,
+    state,
   }),
 });
-counterModule.createStore({
-  id: "counter",
-  state: 0,
-});
-const counterStore = counterModule.getStoreById("counter")!;
 
-// Subscribes to every mutation via default `setState` event
-counterStore.store.subscribe((payload) => {
-  console.log("PAYLOAD", payload);
+// Subscribe to lifecycle signals
+const unsubscribeLoad = counterModule.onEntityLoad("counter", (payload) => {
+  console.log("ENTITY LOAD", payload);
+});
+const unsubscribeDestroy = counterModule.onEntityDestroy(
+  "counter",
+  (payload) => {
+    console.log("ENTITY DESTROY", payload);
+  }
+);
+
+// Create and consume an entity
+counterModule.createEntity({ id: "counter", state: 0 });
+const entry = counterModule.getEntityById("counter");
+entry?.store.subscribe(({ prevState, newState }) => {
+  console.log("SET STATE", prevState, newState);
 });
 
-// Subscribes only when a custom event name is dispatched
-counterStore.store.subscribe((payload) => {
-  console.log("PAYLOAD CUSTOM EVENT", payload);
-}, "triggerOnlyOnCustomEvent");
-
-counterStore.store.setState((state) => state + 1);
-counterStore.store.setState((state) => state + 1, {
-  customEvents: ["triggerOnlyOnCustomEvent"],
+entry?.store.setState((value) => value + 1);
+entry?.store.setState((value) => value + 1, {
+  customEvents: ["counter:incremented"],
 });
+
+// Destroy when you are done
+entry?.destroy();
+unsubscribeLoad?.();
+unsubscribeDestroy?.();
 ```
 
 ---
 
-## 📚 Quantum UI API Reference
+## Module API
 
-### `quantumUi.createModule<S>(config)`
+```ts
+const module = quantumUi.createModule<S>(config);
+```
 
-Creates a module that can manage multiple store instances sharing the same state shape.
+### Config
 
-**Config:**
+- `name` — descriptive identifier (debugging aid).
+- `store({ id, state })` — factory returning `{ id, state }` (can include computed fields).
 
-- `name` — unique module name (used for debugging only right now)
-- `store` — factory that receives `{ id, state }` and returns the initial `IStore<S>`
+### Returned helpers
 
-**Returns an object with:**
-
-- `createStore({ id, state })` — registers a new store instance. No-op if the `id` already exists.
-- `getStoreById(id)` — returns `{ store, destroy }` or `undefined`. Call `destroy()` to remove the store (and to emit `onModelUnmount-{id}`).
-- `subscribe(callback, eventName?)` — listen to module-level events. Without `eventName` you receive payloads for every module `setState`. Pass custom event names (like `onModelMount-${id}`) to listen to lifecycle hooks.
-
-### Store API (`core.createStore`)
-
-Every module store entry exposes the native store primitive:
-
-- `setState(updater, options?)` — updates the state. Optional `options.customEvents` (array) dispatch additional events after the update.
-- `subscribe(callback, eventName?)` — listen to store updates. Defaults to `setState` events.
-- `state` — the current immutable snapshot.
+- `createEntity({ id, state })` — registers a new entity; duplicate `id` calls are ignored.
+- `getEntityById(id)` — returns `{ store, destroy }` or `undefined`.
+- `onEntityLoad(id, callback)` — subscribes to load events for a specific entity id.
+- `onEntityDestroy(id, callback)` — subscribes to destroy events for a specific entity id.
 
 ---
 
-## 🏗️ Architecture
+## Entity Store API (`core.createStore`)
 
-```
-Module (quantumUi.createModule)
-└── Map<string, StoreEntry>
-    ├── store (core.createStore)
-    └── destroy()
-```
+Each entity entry exposes the raw store instance:
 
-- **Module** — wraps a Map of store entries and coordinates lifecycle events.
-- **Store entry** — contains a reactive store and a `destroy` helper.
-- **Store** — observer-backed primitive with batched state updates and subscriptions.
+- `setState(updater, options?)`
+  - `updater` receives current state and returns the next value.
+  - `options.customEvents?: string[]` dispatches additional observer events after the update.
+- `subscribe(listener)` — listens to `setState` payloads (`{ prevState, newState }`).
+- `state` — the current snapshot.
+- `destroy()` — convenience wrapper added by the framework to remove the entity from the module map.
 
 ---
 
-## 📝 License
+## Architecture Overview
+
+```
+quantumUi.createModule(config)
+└── Module store (Map<string, EntityEntry>)
+    ├── EntityEntry.store (core.createStore)
+    ├── EntityEntry.destroy()
+    └── Lifecycle events (onEntityLoad/onEntityDestroy)
+```
+
+- **Module store** — tracks every entity and exposes lifecycle notifications.
+- **Entity entry** — pairs the user store with a destroy routine bound to its id.
+- **Observer layer** — powers subscriptions, custom events, and React bindings.
+
+---
+
+## License
 
 MIT
