@@ -1,119 +1,96 @@
-# 🔄 Quantum UI React
+# Quantum UI React
 
-React hooks integration layer for `@med1802/quantum-ui` modules. It wires
-lifecycle hooks and `useSyncExternalStore` so that React components can subscribe
-to `quantum-ui` models without writing boilerplate.
+Hooks layer for `@med1802/quantum-ui`. It bridges the entity-based module system
+with idiomatic React patterns so you can create, select, and observe entities
+directly inside components.
 
-## ✨ Features
+---
 
-- `useModelSelector(id)` – subscribe to a specific model instance
-- `useCreateModel(id, props)` – create/remove models inside React effects
-- Full TypeScript support with generics for your module API
-- Lightweight wrapper around existing `quantum-ui` modules
+## Features
 
-## 🚀 Usage
+- `createModule` wrapper that mirrors the base Quantum UI API
+- `useEntitySelector(id)` — subscribe to store changes for one entity
+- `useCreateEntity({ id, state })` — create/destroy entities inside component lifecycles
+- Works with `useSyncExternalStore` under the hood for concurrent-safe updates
+- Fully typed generics forwarded from the underlying module config
+
+---
+
+## Installation
+
+```bash
+npm install @med1802/quantum-ui-react
+```
+
+---
+
+## Quick Start
 
 ```tsx
+import { useEffect } from "react";
 import { quantumUiReact } from "@med1802/quantum-ui-react";
-import { useEffect, useSyncExternalStore } from "react";
 
-const quantumUi = quantumUiReact();
-
-interface ToggleState {
-  status: string;
-}
-
-interface ToggleMutations {
-  setStatus: (status: string) => void;
-}
-
-interface ToggleGetters {
-  getStatus: () => string;
-}
-
-interface ToggleApiClient {
-  commands: {
-    toggle: () => void;
-  };
-  subscribers: {
-    onChange: (callback: (payload: string) => void) => () => void;
-  };
-  getStatus: () => string;
-}
-
-const toggleModule = quantumUi.createModule<
-  ToggleState,
-  ToggleMutations,
-  ToggleGetters,
-  ToggleApiClient
->({
-  name: "toggle",
-  model: (props: { id: string; initState: "on" | "off" }) => {
-    return {
-      id: props.id,
-      state: {
-        status: prop.initState,
-      },
-      mutations(state) {
-        return {
-          setStatus: (status: string) => {
-            state.status = status;
-          },
-        };
-      },
-      getters(state) {
-        return {
-          getStatus: () => state.status,
-        };
-      },
-    };
-  },
-  modelClient: (model, broker) => {
-    return {
-      commands: {
-        toggle: () => {
-          model.mutations.setStatus(
-            model.getters.getStatus() === "on" ? "off" : "on"
-          );
-          broker.publish({
-            eventName: "onChange",
-            payload: model.getters.getStatus(),
-          });
-        },
-      },
-      subscribers: {
-        onChange: (callback: (payload: string) => void) => {
-          return broker.subscribe({
-            eventName: "onChange",
-            callback,
-          });
-        },
-      },
-      getStatus: model.getters.getStatus,
-    };
-  },
+const counterModule = quantumUiReact.createModule<number>({
+  name: "counter",
+  store: ({ id, state }) => ({
+    id,
+    state,
+  }),
 });
 
 const HomePage = () => {
-  const modelSelector = toggleModule.useModelSelector("toggle");
-  toggleModule.useCreateModel({ id: "toggle", initState: "on" });
-  const model = toggleModule.getModelById("toggle");
-  const visibility = useSyncExternalStore(
-    model.subscribers.onChange,
-    model.getStatus
-  );
+  // Returns the entity store instance (or undefined if not created yet)
+  const counter = counterModule.useEntitySelector("counter");
+
+  // Ensures the entity exists for the lifetime of this component
+  counterModule.useCreateEntity({ id: "counter", state: 0 });
 
   useEffect(() => {
+    const unsubscribe = counter?.subscribe(({ prevState, newState }) => {
+      console.log(prevState, newState);
+    });
     return () => {
-      toggleModule.removeModel("toggle");
+      unsubscribe?.();
     };
-  }, []);
+  }, [counter]);
 
   return (
-    <div>
-      <h1>Status: {visibility}</h1>
-      <button onClick={() => model.commands.toggle()}>Toggle</button>
-    </div>
+    <button onClick={() => counter?.setState((value) => value + 1)}>
+      Increment ({counter?.state ?? 0})
+    </button>
   );
 };
 ```
+
+---
+
+## API Reference
+
+### `quantumUiReact.createModule<S>(config)`
+
+Accepts the same config as `quantumUi.createModule` and returns:
+
+- `useEntitySelector(id: string)`  
+  React hook that returns the entity store (`core.createStore`) for a given id.
+  Re-renders when lifecycle events fire or the entity is removed.
+
+- `useCreateEntity({ id, state })`  
+  React hook that creates the entity on mount and destroys it on unmount.
+
+- `createEntity`, `getEntityById`, `onEntityLoad`, `onEntityDestroy`  
+  Direct pass-through helpers from the underlying Quantum UI module if you need
+  to manage entities outside of React hooks.
+
+### Entity store
+
+The value returned by `useEntitySelector` is the raw `core.createStore` instance, so you can:
+
+- Call `store.setState((draft) => nextDraft)` with optional `{ customEvents }`
+- Read `store.state` for the latest snapshot
+- Call `store.subscribe(listener)` for low-level observers
+
+---
+
+## License
+
+MIT

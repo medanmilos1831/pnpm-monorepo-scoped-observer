@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { quantumUiReact } from "../quantum-ui-react";
+import { quantumUiReact } from "@med1802/quantum-ui-react";
 
 const counterModule = quantumUiReact.createModule({
   name: "counter",
@@ -21,15 +21,7 @@ const HomePage = () => {
       unsubscribe?.();
     };
   }, [counter]);
-  console.log(counter);
-  return (
-    <div>
-      COUNTER
-      <button onClick={() => counter?.setState((state) => state + 1)}>
-        click me
-      </button>
-    </div>
-  );
+  return <div></div>;
 };
 
 export { HomePage };
