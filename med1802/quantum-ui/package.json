@@ -1,6 +1,6 @@
 {
   "name": "@med1802/quantum-ui",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,8 +11,8 @@
     "@med1802/scoped-observer-message-broker": "^2.0.2"
   },
   "devDependencies": {
-    "@med1802/scoped-observer": "workspace:*",
-    "@med1802/scoped-observer-message-broker": "workspace:*"
+    "@med1802/scoped-observer": "^1.1.4",
+    "@med1802/scoped-observer-message-broker": "^2.0.2"
   },
   "repository": {
     "type": "git",
