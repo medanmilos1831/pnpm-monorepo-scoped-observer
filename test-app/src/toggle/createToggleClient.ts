@@ -20,12 +20,13 @@ const createToggleClient = () => {
         };
       },
       apiClient: (store) => {
+        let self = this;
         return {
-          onOpen: () => {
-            store.setState((state) => "on");
+          onOpen() {
+            store.setState(() => "on");
           },
           onClose: () => {
-            store.setState((state) => "off");
+            store.setState(() => "off");
           },
           onToggle: () => {
             store.setState((prevState) => {
@@ -57,12 +58,11 @@ const createToggleClient = () => {
     },
     useToggleSelector: toggleModule.useEntitySelector,
     useToggleCommands: (id: string) => {
-      const toggle = toggleModule.getEntityById(id) as any;
+      const { onOpen, onClose, onToggle } = toggleModule.getEntityById(id)!;
       return {
-        onOpen: toggle.onOpen,
-        onClose: toggle.onClose,
-        onToggle: toggle.onToggle,
-        logState: toggle.logState,
+        onOpen,
+        onClose,
+        onToggle,
       };
     },
   };

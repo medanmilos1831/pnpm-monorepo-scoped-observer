@@ -36,13 +36,6 @@ const ComponentTwo = () => {
       >
         Toggle
       </button>
-      <button
-        onClick={() => {
-          commands.logState();
-        }}
-      >
-        Log State
-      </button>
     </div>
   );
 };
