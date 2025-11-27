@@ -13,10 +13,12 @@ function createStore<S = any>(state: S) {
       internalState = callback(internalState);
       if (options?.customEvents && options.customEvents.length > 0) {
         options.customEvents.forEach((eventName) => {
-          observer.dispatch({
-            eventName,
-            payload: state,
-          });
+          setTimeout(() => {
+            observer.dispatch({
+              eventName,
+              payload: state,
+            });
+          }, 0);
         });
       }
       observer.dispatch({

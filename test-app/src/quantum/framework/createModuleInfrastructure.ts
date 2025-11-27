@@ -61,17 +61,19 @@ const createModuleInfrastructure = <S, A>(
      * Subscribes to entity load events for a specific id.
      */
     onEntityLoad: (id: string, callback: (payload?: any) => void) => {
-      return modules.subscribe((payload) => {
-        callback();
-      }, `${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`);
+      return modules.subscribe(
+        callback,
+        `${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`
+      );
     },
     /**
      * Subscribes to entity destroy events for a specific id.
      */
     onEntityDestroy: (id: string, callback: (payload?: any) => void) => {
-      return modules.subscribe((payload) => {
-        callback();
-      }, `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`);
+      return modules.subscribe(
+        callback,
+        `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`
+      );
     },
   };
 };

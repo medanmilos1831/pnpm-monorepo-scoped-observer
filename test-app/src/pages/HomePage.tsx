@@ -1,13 +1,22 @@
+import { useState } from "react";
 import { createToggleClient } from "../toggle";
 
 const { useToggle, useToggleCommands, useToggleSelector } =
   createToggleClient();
 
+const Wrapper = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+      {count % 2 === 0 ? <ComponentOne /> : "nema"}
+    </div>
+  );
+};
+
 const ComponentOne = () => {
-  const toggleModule = useToggleSelector("toggleOne");
   const toggle = useToggle({ id: "toggleOne", initState: "on" });
-  console.log("TOGGLE", toggle);
-  console.log("TOGGLE MODULE", toggleModule);
   return <div></div>;
 };
 
@@ -40,14 +49,23 @@ const ComponentTwo = () => {
   );
 };
 
+const ComponentThree = () => {
+  const client = useToggleSelector("toggleOne");
+  console.log(client);
+  return <div></div>;
+};
+
 const HomePage = () => {
   return (
     <div>
       <div>
-        <ComponentOne />
+        <Wrapper />
       </div>
       <div>
         <ComponentTwo />
+      </div>
+      <div>
+        <ComponentThree />
       </div>
     </div>
   );
