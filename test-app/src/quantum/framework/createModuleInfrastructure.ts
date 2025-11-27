@@ -20,34 +20,34 @@ const createModuleInfrastructure = <S, A>(
      * Public helper for creating entities through the internal infra.
      */
     createEntity: (entityConfig: { id: string; state: S }) => {
-      const value = moduleConfig.store({
+      const { id, state } = moduleConfig.store({
         id: entityConfig.id,
         state: entityConfig.state,
       });
-      if (modules.getState().has(value.id)) {
+      if (modules.getState().has(id)) {
         return;
       }
-      const store = core.createStore(value.state);
+      const store = core.createStore(state);
       const client = moduleConfig.apiClient(store);
       function destroy() {
         modules.setState(
           (prevState) => {
-            prevState.delete(value.id);
+            prevState.delete(id);
             return prevState;
           },
           {
-            customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${value.id}`],
+            customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
           }
         );
       }
       modules.setState(
         (prevState) =>
-          prevState.set(value.id, {
+          prevState.set(id, {
             ...client,
             destroy,
           }),
         {
-          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${value.id}`],
+          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`],
         }
       );
     },
