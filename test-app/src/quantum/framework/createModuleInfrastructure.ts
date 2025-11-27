@@ -11,16 +11,14 @@ import { ENTITY_EVENTS, type IModuleConfig } from "./types";
 const createModuleInfrastructure = <S, A>(
   moduleConfig: IModuleConfig<S, A>
 ) => {
-  const modules = core.createStore(
-    new Map<string, A & { destroy: () => void }>()
-  );
+  const modules = core.createStore(new Map<string, A>());
 
   return {
     /**
      * Public helper for creating entities through the internal infra.
      */
     createEntity: (entityConfig: { id: string; state: S }) => {
-      const { id, state } = moduleConfig.store({
+      const { id, state } = moduleConfig.onCreateEntity({
         id: entityConfig.id,
         state: entityConfig.state,
       });
@@ -29,25 +27,19 @@ const createModuleInfrastructure = <S, A>(
       }
       const store = core.createStore(state);
       const client = moduleConfig.apiClient(store);
-      function destroy() {
-        modules.setState(
-          (prevState) => {
-            prevState.delete(id);
-            return prevState;
-          },
-          {
-            customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
-          }
-        );
-      }
+
+      modules.setState((prevState) => prevState.set(id, client), {
+        customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`],
+      });
+    },
+    destroyEntity: (id: string) => {
       modules.setState(
-        (prevState) =>
-          prevState.set(id, {
-            ...client,
-            destroy,
-          }),
+        (prevState) => {
+          prevState.delete(id);
+          return prevState;
+        },
         {
-          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`],
+          customEvents: [`${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`],
         }
       );
     },
@@ -55,7 +47,7 @@ const createModuleInfrastructure = <S, A>(
      * Retrieves entity metadata (store + destroy handler) by id.
      */
     getEntityById: (id: string) => {
-      return modules.getState().get(id) as A & { destroy: () => void };
+      return modules.getState().get(id) as A;
     },
     /**
      * Subscribes to entity load events for a specific id.

@@ -32,10 +32,9 @@ const quantumUiReact = (() => {
         },
         useCreateEntity: (props: { id: string; state: S }) => {
           createModule.createEntity(props);
-          const model = createModule.getEntityById(props.id)!;
           useEffect(() => {
             return () => {
-              model.destroy();
+              createModule.destroyEntity(props.id);
             };
           }, []);
         },

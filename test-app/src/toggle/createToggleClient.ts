@@ -13,7 +13,7 @@ const createToggleClient = () => {
   const toggleModule = quantumUiReact.createModule<"on" | "off", IToggleClient>(
     {
       name: "toggle",
-      store: ({ id, state }: { id: string; state: "on" | "off" }) => {
+      onCreateEntity: ({ id, state }: { id: string; state: "on" | "off" }) => {
         return {
           id,
           state,
