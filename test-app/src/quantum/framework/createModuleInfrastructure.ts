@@ -26,7 +26,7 @@ const createModuleInfrastructure = <S, A>(
         return;
       }
       const store = core.createStore(state);
-      const client = moduleConfig.apiClient(store);
+      const client = moduleConfig.clientSchema(store);
 
       modules.setState((prevState) => prevState.set(id, client), {
         customEvents: [`${ENTITY_EVENTS.ON_ENTITY_LOAD}-${id}`],
@@ -47,7 +47,7 @@ const createModuleInfrastructure = <S, A>(
      * Retrieves entity metadata (store + destroy handler) by id.
      */
     getEntityById: (id: string) => {
-      return modules.getState().get(id) as A;
+      return modules.getState().get(id);
     },
     /**
      * Subscribes to entity load events for a specific id.

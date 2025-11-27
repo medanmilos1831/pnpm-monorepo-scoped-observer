@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { quantumUiReact } from "../quantum-ui-react";
+import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
 
 interface IToggleClient {
   onOpen: () => void;
@@ -7,7 +7,7 @@ interface IToggleClient {
   onToggle: () => void;
   getState: () => "on" | "off";
   onChangeSubscriber: (notify: () => void) => () => void;
-  subscribe: (callback: (payload?: any) => void, eventName?: string) => void;
+  subscribe: ISubscribe<"on" | "off">;
 }
 const createToggleClient = () => {
   const toggleModule = quantumUiReact.createModule<"on" | "off", IToggleClient>(
@@ -19,7 +19,7 @@ const createToggleClient = () => {
           state,
         };
       },
-      apiClient: (store) => {
+      clientSchema: (store) => {
         return {
           onOpen() {
             store.setState(() => "on");
@@ -36,7 +36,7 @@ const createToggleClient = () => {
             return store.getState();
           },
           onChangeSubscriber: (notify: () => void) => {
-            return store.subscribe(() => {
+            return store.subscribe((payload) => {
               notify();
             });
           },

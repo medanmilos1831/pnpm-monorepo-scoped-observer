@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 
-import { quantumUi, type IModuleConfig } from "../quantum";
+import {
+  quantumUi,
+  type IModuleConfig,
+  type ISetState,
+  type IGetState,
+  type ISubscribe,
+} from "../quantum";
 const quantumUiReact = (() => {
   return {
     createModule<S = any, A = any>(props: IModuleConfig<S, A>) {
@@ -47,4 +53,4 @@ const quantumUiReact = (() => {
   };
 })();
 
-export { quantumUiReact };
+export { quantumUiReact, type ISetState, type IGetState, type ISubscribe };
