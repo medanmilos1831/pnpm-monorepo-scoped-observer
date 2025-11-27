@@ -20,7 +20,6 @@ const createToggleClient = () => {
         };
       },
       apiClient: (store) => {
-        let self = this;
         return {
           onOpen() {
             store.setState(() => "on");
