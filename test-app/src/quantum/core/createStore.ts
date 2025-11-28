@@ -16,14 +16,14 @@ function createStore<S = any>(state: S) {
           setTimeout(() => {
             observer.dispatch({
               eventName,
-              payload: state,
+              payload: internalState,
             });
           }, 0);
         });
       }
       observer.dispatch({
         eventName: "setState",
-        payload: state,
+        payload: internalState,
       });
     },
     subscribe: (callback: (payload?: any) => void, eventName?: string) => {

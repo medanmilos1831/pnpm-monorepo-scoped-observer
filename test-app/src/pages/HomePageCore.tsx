@@ -1,73 +1,89 @@
-import { useState } from "react";
-import { createToggleClient } from "../toggle";
+import { quantumUi, type ISubscribe } from "../quantum";
 
-const { useToggle, useToggleCommands, useToggleSelector } =
-  createToggleClient();
+enum toggleState {
+  ON = "on",
+  OFF = "off",
+}
 
-const Wrapper = () => {
-  const [count, setCount] = useState(0);
+type toggleStateType = `${toggleState}`;
 
-  return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-      {count % 2 === 0 ? <ComponentOne /> : "nema"}
-    </div>
-  );
-};
+interface IToggleClient {
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+  getState: () => toggleStateType;
+  subscribe: ISubscribe<toggleStateType>;
+}
 
-const ComponentOne = () => {
-  const toggle = useToggle({ id: "toggleOne", initState: "on" });
-  console.log("toggle", toggle);
-  return <div></div>;
-};
+const toogleModule = quantumUi.createModule<`${toggleState}`, IToggleClient>({
+  name: "toggle",
+  onCreateEntity: ({ id, state }: { id: string; state: toggleStateType }) => {
+    return {
+      id,
+      state,
+    };
+  },
+  clientSchema: (store) => {
+    return {
+      onOpen: () => {
+        store.setState(() => toggleState.ON);
+      },
+      onClose: () => {
+        store.setState(() => toggleState.OFF);
+      },
+      onToggle: () => {
+        store.setState((prevState) => {
+          return prevState === toggleState.ON
+            ? toggleState.OFF
+            : toggleState.ON;
+        });
+      },
+      getState: () => {
+        return store.getState();
+      },
+      subscribe: store.subscribe,
+    };
+  },
+});
 
-const ComponentTwo = () => {
-  const commands = useToggleCommands("toggleOne");
-  return (
-    <div>
-      <button
-        onClick={() => {
-          commands.onOpen();
-        }}
-      >
-        Open
-      </button>
-      <button
-        onClick={() => {
-          commands.onClose();
-        }}
-      >
-        Close
-      </button>
-      <button
-        onClick={() => {
-          commands.onToggle();
-        }}
-      >
-        Toggle
-      </button>
-    </div>
-  );
-};
+toogleModule.onEntityLoad("toggleOne", (payload: IToggleClient) => {
+  console.log("ONLOAD", payload);
+});
+toogleModule.onEntityDestroy("toggleOne", (payload: undefined) => {
+  console.log("ONDESTROY", payload);
+});
+toogleModule.createEntity({
+  id: "toggleOne",
+  state: toggleState.ON,
+});
+const toggleOne = toogleModule.getEntityById("toggleOne");
+toggleOne?.subscribe((payload) => {
+  console.log("ON CHANGE", payload);
+});
 
-const ComponentThree = () => {
-  const client = useToggleSelector("toggleOne");
-  console.log(client);
-  return <div></div>;
-};
+toggleOne?.onToggle();
+toggleOne?.onToggle();
+toggleOne?.onToggle();
+toggleOne?.onToggle();
+toggleOne?.onToggle();
+toggleOne?.onToggle();
 
+setTimeout(() => {
+  toogleModule.destroyEntity("toggleOne");
+}, 1000);
+
+setTimeout(() => {
+  toogleModule.createEntity({
+    id: "toggleOne",
+    state: toggleState.ON,
+  });
+}, 2000);
 const HomePageCore = () => {
   return (
     <div>
-      <div>
-        <Wrapper />
-      </div>
-      <div>
-        <ComponentTwo />
-      </div>
-      <div>
-        <ComponentThree />
-      </div>
+      <button onClick={() => toggleOne?.onOpen()}>Open</button>
+      <button onClick={() => toggleOne?.onClose()}>Close</button>
+      <button onClick={() => toggleOne?.onToggle()}>Toggle</button>
     </div>
   );
 };
