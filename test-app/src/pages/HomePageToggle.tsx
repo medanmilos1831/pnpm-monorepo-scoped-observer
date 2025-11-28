@@ -56,7 +56,7 @@ const ComponentThree = () => {
   return <div></div>;
 };
 
-const HomePage = () => {
+const HomePageToggle = () => {
   return (
     <div>
       <div>
@@ -72,4 +72,4 @@ const HomePage = () => {
   );
 };
 
-export { HomePage };
+export { HomePageToggle };
