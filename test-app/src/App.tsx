@@ -13,8 +13,8 @@ function App() {
       }}
     >
       {/* <HomePageCore /> */}
-      <HomePageReact />
-      {/* <HomePageToggle /> */}
+      {/* <HomePageReact /> */}
+      <HomePageToggle />
     </div>
   );
 }

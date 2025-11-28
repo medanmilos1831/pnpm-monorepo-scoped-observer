@@ -17,8 +17,7 @@ const Wrapper = () => {
 
 const ComponentOne = () => {
   const toggle = useToggle({ id: "toggleOne", initState: "on" });
-  console.log("toggle", toggle);
-  return <div></div>;
+  return <div>Toggle: {toggle}</div>;
 };
 
 const ComponentTwo = () => {
