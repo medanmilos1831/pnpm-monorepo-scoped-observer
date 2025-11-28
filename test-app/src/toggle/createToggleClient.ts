@@ -47,7 +47,7 @@ const createToggleClient = () => {
           return store.getState();
         },
         onChangeSubscriber: (notify: () => void) => {
-          return store.subscribe((payload) => {
+          return store.subscribe(() => {
             notify();
           });
         },
