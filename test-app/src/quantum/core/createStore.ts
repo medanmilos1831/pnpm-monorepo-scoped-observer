@@ -7,7 +7,7 @@ function createStore<S = any>(state: S) {
     setState: (
       callback: (state: S) => S,
       options?: {
-        customEvents: string[];
+        customEvents?: string[];
       }
     ) => {
       internalState = callback(internalState);

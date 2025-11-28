@@ -1,5 +1,3 @@
-import type { core } from "../core/core";
-
 /**
  * Canonical shape of an entity store managed by the framework.
  */
@@ -14,7 +12,7 @@ export interface IStore<S = any> {
 export interface IModuleConfig<S = any, A = any> {
   name: string;
   onCreateEntity: (props: { id: string; state: S }) => IStore<S>;
-  clientSchema: (store: ReturnType<typeof core.createStore<S>>) => A;
+  clientSchema: (store: IStoreInstance<S>) => A;
 }
 
 /**
@@ -44,6 +42,15 @@ export type ISubscribe<S = any> = (
   callback: (payload?: S) => void,
   eventName?: string
 ) => () => void;
+
+/**
+ * Store instance returned by createStore.
+ */
+export interface IStoreInstance<S = any> {
+  setState: ISetState<S>;
+  getState: IGetState<S>;
+  subscribe: ISubscribe<S>;
+}
 
 /**
  * Event names dispatched when entity lifecycle changes occur.

@@ -6,7 +6,7 @@ interface IToggleClient {
   onClose: () => void;
   onToggle: () => void;
   getState: () => "on" | "off";
-  onChangeSubscriber: (notify: () => void) => () => void;
+  onChangeSubscriber: ISubscribe<"on" | "off">;
   subscribe: ISubscribe<"on" | "off">;
 }
 const createToggleClient = () => {
