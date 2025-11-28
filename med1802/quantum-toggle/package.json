@@ -1,19 +1,20 @@
 {
   "name": "@med1802/quantum-toggle",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@med1802/quantum-ui-react": "^1.0.4"
+    "@med1802/quantum-ui-react": "^2.1.1"
   },
   "peerDependencies": {
     "react": ">=18"
   },
   "devDependencies": {
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "@med1802/quantum-ui-react": "^2.1.1"
   },
   "repository": {
     "type": "git",

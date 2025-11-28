@@ -40,8 +40,8 @@ importers:
   med1802/quantum-toggle:
     dependencies:
       '@med1802/quantum-ui-react':
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^2.1.1
+        version: 2.1.1(react@18.3.1)
     devDependencies:
       react:
         specifier: ^18.3.1
@@ -439,14 +439,11 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@med1802/quantum-ui-react@1.0.4':
-    resolution: {integrity: sha512-6BccpPkiD4cWsz5dhws727U4e2eCULZacZhFvMxjmbD/UJuPH/Vn7hJCuk6AZo28muEOXEo6isHKUYGTWNNIeQ==}
-
   '@med1802/quantum-ui-react@2.0.1':
     resolution: {integrity: sha512-tWyP59287w4sVUjLOHtYTIzqykqsqFEPjA27PcqA6YEIKddGYe4doF2QDadxCwlclIfFdfEftjpRWwk+chUIhg==}
 
-  '@med1802/quantum-ui@1.4.2':
-    resolution: {integrity: sha512-5OhMkrutPMM0lZ+ltF9paehC9zSr8ZeGxJd1GVLZxfN2soxHbrXzq9lNIcMuhdkFINNk582bO1lYEwIzVQsxqA==}
+  '@med1802/quantum-ui-react@2.1.1':
+    resolution: {integrity: sha512-okUok/e9opbaFrS2wQSsH2Yaqjko97wnD9o2C/S224/qycwzLfIc5yn6OvGRC9NrzoZHOLccU/ahWWJvx5nIDw==}
 
   '@med1802/quantum-ui@2.1.0':
     resolution: {integrity: sha512-ySIlavL33tHP2NuNw8wA4jYiC4Q+b4hZQn1wcKzXUEcVYqpP9awcaIi642owXWAHKXr02tXoEpiLvpY72FSTKw==}
@@ -1436,10 +1433,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@med1802/quantum-ui-react@1.0.4':
-    dependencies:
-      '@med1802/quantum-ui': 1.4.2
-
   '@med1802/quantum-ui-react@2.0.1(react@19.2.0)':
     dependencies:
       '@med1802/quantum-ui': 2.1.0
@@ -1447,10 +1440,12 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@med1802/quantum-ui@1.4.2':
+  '@med1802/quantum-ui-react@2.1.1(react@18.3.1)':
     dependencies:
-      '@med1802/scoped-observer': 1.1.4
-      '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
+      '@med1802/quantum-ui': 2.1.0
+      use-sync-external-store: 1.6.0(react@18.3.1)
+    transitivePeerDependencies:
+      - react
 
   '@med1802/quantum-ui@2.1.0':
     dependencies:
@@ -2214,6 +2209,10 @@ snapshots:
       browserslist: 4.25.3
       escalade: 3.2.0
       picocolors: 1.1.1
+
+  use-sync-external-store@1.6.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   use-sync-external-store@1.6.0(react@19.2.0):
     dependencies:

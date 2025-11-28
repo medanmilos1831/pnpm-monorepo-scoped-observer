@@ -1,111 +1,138 @@
 # 🔄 Quantum Toggle
 
-A modern React hook-based library for managing toggle/visibility state in your applications. Built on top of `@med1802/quantum-ui`, Quantum Toggle provides a clean and type-safe API for controlling on/off states with automatic lifecycle management and React's `useSyncExternalStore` for optimal performance.
+> React-first toggle state management built on top of `@med1802/quantum-ui`.
 
-Perfect for managing modals, drawers, tooltips, accordions, and any component that needs toggle functionality.
+Quantum Toggle exposes a focused API for building toggleable experiences (modals, drawers, accordions, menus, etc.). It wraps `useSyncExternalStore` so that every toggle instance is concurrent-safe, memoized, and automatically cleaned up when you leave the component tree.
+
+---
+
+## 📘 Contents
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Usage Patterns](#-usage-patterns)
+- [API Reference](#-api-reference)
+- [Related Packages](#-related-packages)
 
 ---
 
 ## 🚀 Features
 
-- ✅ **React Hooks API** — Simple, intuitive hooks for managing toggle state
-- ✅ **Automatic Lifecycle** — Models are automatically created and cleaned up
-- ✅ **Type-Safe** — Full TypeScript support with exported types
-- ✅ **Performance Optimized** — Uses React's `useSyncExternalStore` for efficient updates
-- ✅ **Command Pattern** — Clean API with `onOpen`, `onClose`, and `onToggle` commands
-- ✅ **Built on Quantum UI** — Leverages the powerful quantum-ui framework
+- **React Hooks API** – `useToggle`, `useToggleCommands`, and `useToggleSelector`
+- **Automatic lifecycle** – Entities are created/destroyed through hooks
+- **Command-first ergonomics** – `onOpen`, `onClose`, `onToggle` available everywhere
+- **Type-safe** – Ships with TypeScript typings for every public primitive
+- **Concurrent rendering ready** – Uses `useSyncExternalStore` under the hood
+- **Composable** – Built on the Quantum UI module system so you can extend it when needed
 
 ---
 
 ## 📦 Installation
 
 ```bash
+# pick your favorite client
+pnpm add @med1802/quantum-toggle
+# or
 npm install @med1802/quantum-toggle
+# or
+yarn add @med1802/quantum-toggle
 ```
 
-**Peer Dependencies**
+**Peer dependency**
 
-- `react` ^18.0.0
+- `react >= 18`
 
 ---
 
 ## ⚙️ Quick Start
 
-### 1. Create the toggle client
+### 1. Instantiate the client once
 
-```typescript
+```ts
+// toggleClient.ts
 import { createToggleClient } from "@med1802/quantum-toggle";
 
 export const toggleClient = createToggleClient();
-const { useToggle, useToggleCommands, useToggleSelector, getToggleClient } =
-  toggleClient;
 ```
 
-### 2. Build a single modal experience
+### 2. Consume hooks inside components
 
 ```tsx
-import { Button, Modal } from "antd";
-import { useEffect } from "react";
-import { createToggleClient } from "@med1802/quantum-toggle";
+import { toggleClient } from "./toggleClient";
 
-const { useToggle, useToggleCommands, useToggleSelector } =
-  createToggleClient();
+const { useToggle, useToggleCommands } = toggleClient;
 
-const UserModal = ({ model }: { model: ToggleProps }) => {
-  const visibility = useToggle(model);
-  const { onClose } = useToggleCommands(model.id);
+export const ProfileModal = () => {
+  const visibility = useToggle({ id: "profile-modal", initState: "off" });
+  const { onClose } = useToggleCommands("profile-modal");
 
   return (
     <Modal open={visibility === "on"} onCancel={onClose} onOk={onClose}>
-      <h1>User Modal</h1>
+      <h1>Profile</h1>
     </Modal>
   );
 };
 
-const SomeHeader = () => {
-  const visibility = useToggleSelector("user-modal");
+export const ProfileButton = () => {
+  const { onOpen } = useToggleCommands("profile-modal");
+  return <Button onClick={onOpen}>Open profile</Button>;
+};
+```
+
+### 3. Optional selectors/subscribers
+
+```tsx
+const { useToggleSelector } = toggleClient;
+
+export const DebugPanel = () => {
+  const model = useToggleSelector("profile-modal");
 
   useEffect(() => {
-    const unsubscribe = visibility?.subscribers.onChange((payload) => {
-      console.log("subscribe", visibility?.getVisibility(), payload);
+    const unsubscribe = model?.subscribers.onChange((payload) => {
+      console.log("Toggle changed", payload);
     });
     return () => unsubscribe?.();
-  }, [visibility]);
+  }, [model]);
+
+  return <pre>{model?.getState()}</pre>;
+};
+```
+
+---
+
+## 🧱 Usage Patterns
+
+### Modal pattern
+
+```tsx
+const { useToggle, useToggleCommands } = toggleClient;
+
+export const ModalExample = () => {
+  const visibility = useToggle({ id: "user-modal", initState: "off" });
+  const commands = useToggleCommands("user-modal");
 
   return (
-    <div>
-      <h2>Header</h2>
-      <Button onClick={() => visibility?.commands.onOpen()}>
-        Open form header
-      </Button>
-    </div>
+    <>
+      <Button onClick={commands.onOpen}>Open modal</Button>
+      <Modal open={visibility === "on"} onCancel={commands.onClose}>
+        <UserForm />
+      </Modal>
+    </>
   );
 };
+```
 
-const SomeFooter = () => {
-  const visibilityCommands = useToggleCommands("user-modal");
-  return (
-    <div>
-      <h2>Footer</h2>
-      <Button onClick={() => visibilityCommands.onOpen()}>Open</Button>
-    </div>
-  );
-};
+### Imperative orchestration
 
-const App = () => {
-  return (
-    <div>
-      <SomeHeader />
-      <UserModal
-        model={{
-          id: "user-modal",
-          initState: "off",
-        }}
-      />
-      <SomeFooter />
-    </div>
-  );
-};
+```ts
+const model = toggleClient.getToggleClient("user-modal");
+model.onOpen();
+
+// subscribe outside of React
+const unsubscribe = model.subscribe(() => {
+  console.log("modal changed", model.getState());
+});
 ```
 
 ---
@@ -114,97 +141,54 @@ const App = () => {
 
 ### `createToggleClient()`
 
-Creates a new toggle client instance. You typically create one instance and reuse it throughout your application.
+Creates a client with the full hook/api surface. Call it once and re-use the returned object.
 
-**Returns:** `ToggleClient`
-
-```typescript
+```ts
 const toggleClient = createToggleClient();
 ```
 
-### `toggleClient.useToggle(props)`
+### `toggleClient.useToggle({ id, initState })`
 
-React hook that returns the current visibility state for a given ID. Automatically creates the model if it doesn't exist and manages its lifecycle.
+Returns `"on"` or `"off"` for the provided entity. Automatically creates the entity on mount and destroys it on unmount.
 
-**Parameters:**
-
-- `props.id` (string) - Unique identifier for the visibility instance
-- `props.initState` (`"on" | "off"`) - Initial state
-
-**Returns:** `"on" | "off"`
-
-```typescript
-const visibility = toggleClient.useToggle({
-  id: "my-component",
-  initState: "off",
-});
+```ts
+const state = toggleClient.useToggle({ id: "drawer", initState: "off" });
 ```
 
 ### `toggleClient.useToggleCommands(id)`
 
-React hook that returns command functions to control visibility state.
+Returns `onOpen`, `onClose`, and `onToggle` closures that always target the same entity.
 
-**Parameters:**
-
-- `id` (string) - Unique identifier for the visibility instance
-
-**Returns:** `{ onOpen: () => void; onClose: () => void; onToggle: () => void }`
-
-```typescript
-const { onOpen, onClose, onToggle } =
-  toggleClient.useToggleCommands("my-component");
+```ts
+const { onOpen, onToggle } = toggleClient.useToggleCommands("drawer");
 ```
-
-**Commands:**
-
-- `onOpen()` - Sets visibility to "on"
-- `onClose()` - Sets visibility to "off"
-- `onToggle()` - Toggles between "on" and "off"
 
 ### `toggleClient.useToggleSelector(id)`
 
-React hook that returns the model instance if it exists, or `undefined` if it doesn't. Useful for accessing the full model API.
+Returns the low-level model (or `undefined`). Use it when you need subscribers, metadata, or to read a custom field.
 
-**Parameters:**
-
-- `id` (string) - Unique identifier for the visibility instance
-
-**Returns:** `IModelApiClient | undefined`
-
-```typescript
-const model = toggleClient.useToggleSelector("my-component");
-
-if (model) {
-  // Access full API
-  const currentState = model.getVisibility();
-  const unsubscribe = model.subscribers.onChange((payload) => {
-    console.log("State changed:", payload);
-  });
-  // ...later, when you want to stop listening:
-  unsubscribe();
-}
+```ts
+const model = toggleClient.useToggleSelector("drawer");
+model?.getState();
+model?.subscribers.onChange(console.log);
 ```
 
 ### `toggleClient.getToggleClient(id)`
 
-Non-hook function to get the model instance directly. Use this outside of React components.
+Imperative accessor that works outside React (testing, services, listeners).
 
-**Parameters:**
-
-- `id` (string) - Unique identifier for the visibility instance
-
-**Returns:** `IModelApiClient`
-
-```typescript
-const model = toggleClient.getToggleClient("my-component");
-const state = model.getVisibility();
-model.commands.onToggle();
+```ts
+const modal = toggleClient.getToggleClient("drawer");
+modal.onToggle();
 ```
+
+---
 
 ## 🔗 Related Packages
 
-- [`@med1802/quantum-ui`](../quantum-ui) - Core framework used by Quantum Toggle
-- [`@med1802/scoped-observer`](../../med1802/scoped-observer) - Event system used internally
+- [`@med1802/quantum-ui`](../quantum-ui) – Core entity/module engine
+- [`@med1802/quantum-ui-react`](../quantum-ui-react) – React bindings for the Quantum UI framework
+- [`@med1802/scoped-observer`](../../med1802/scoped-observer) – Event system powering subscriptions
 
 ---
 

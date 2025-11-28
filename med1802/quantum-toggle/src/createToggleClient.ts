@@ -1,106 +1,84 @@
 import { useSyncExternalStore } from "react";
-import { quantumUiReact } from "@med1802/quantum-ui-react";
+import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
 
-import {
-  INITIAL_STATE,
-  type initialStateType,
-  type ToggleProps,
-} from "./types";
+enum toggleState {
+  ON = "on",
+  OFF = "off",
+}
 
+type toggleStateType = `${toggleState}`;
+
+interface IToggleClient {
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+  getState: () => toggleStateType;
+  onChangeSubscriber: ISubscribe<toggleStateType>;
+  subscribe: ISubscribe<toggleStateType>;
+}
 const createToggleClient = () => {
-  const quantumUi = quantumUiReact();
-  const toggleModule = quantumUi.createModule({
+  const toggleModule = quantumUiReact.createModule<
+    toggleStateType,
+    IToggleClient
+  >({
     name: "toggle",
-    model: (props: ToggleProps) => {
+    onCreateEntity: ({ id, state }: { id: string; state: toggleStateType }) => {
       return {
-        id: props.id,
-        state: {
-          visibility: props.initState,
-        },
-        mutations(state) {
-          return {
-            setVisibility: (visibility: initialStateType) => {
-              state.visibility = visibility;
-            },
-          };
-        },
-        getters(state) {
-          return {
-            getVisibility: () => state.visibility,
-          };
-        },
+        id,
+        state,
       };
     },
-    modelClient: (model, broker) => {
-      const commands = {
-        onOpen: () => {
-          model.mutations.setVisibility(INITIAL_STATE.ON);
-          broker.publish({
-            eventName: "onChange",
-            payload: INITIAL_STATE.ON,
-          });
+    clientSchema: (store) => {
+      return {
+        onOpen() {
+          store.setState(() => toggleState.ON);
         },
         onClose: () => {
-          model.mutations.setVisibility(INITIAL_STATE.OFF);
-          broker.publish({
-            eventName: "onChange",
-            payload: INITIAL_STATE.OFF,
-          });
+          store.setState(() => toggleState.OFF);
         },
         onToggle: () => {
-          model.mutations.setVisibility(
-            model.getters.getVisibility() === INITIAL_STATE.ON
-              ? INITIAL_STATE.OFF
-              : INITIAL_STATE.ON
-          );
-          broker.publish({
-            eventName: "onChange",
-            payload:
-              model.getters.getVisibility() === INITIAL_STATE.ON
-                ? INITIAL_STATE.OFF
-                : INITIAL_STATE.ON,
+          store.setState((prevState) => {
+            return prevState === toggleState.ON
+              ? toggleState.OFF
+              : toggleState.ON;
           });
         },
-      };
-      const subscribers = {
-        onChange: (callback: (payload: initialStateType) => void) => {
-          return broker.subscribe({
-            eventName: "onChange",
-            callback,
+        getState: () => {
+          return store.getState();
+        },
+        onChangeSubscriber: (notify: () => void) => {
+          return store.subscribe(() => {
+            notify();
           });
         },
-      };
-      return {
-        commands,
-        subscribers,
-        getVisibility: model.getters.getVisibility,
+        subscribe: store.subscribe,
       };
     },
   });
   return {
-    useToggle: (props: ToggleProps) => {
-      toggleModule.useCreateModel(props);
-      const model = toggleModule.getModelById(props.id);
+    useToggle: ({
+      id,
+      initState,
+    }: {
+      id: string;
+      initState: toggleStateType;
+    }) => {
+      toggleModule.useCreateEntity({ id, state: initState });
+      const model = toggleModule.getEntityById(id)!;
       const visibility = useSyncExternalStore(
-        model.subscribers.onChange,
-        model.getVisibility
+        model?.onChangeSubscriber,
+        model?.getState
       );
       return visibility;
     },
+    useToggleSelector: toggleModule.useEntitySelector,
     useToggleCommands: (id: string) => {
-      const model = toggleModule.getModelById(id);
-      return model
-        ? model.commands
-        : {
-            onOpen: () => {},
-            onClose: () => {},
-            onToggle: () => {},
-          };
-    },
-    useToggleSelector: toggleModule.useModelSelector,
-    getToggleClient: (id: string) => {
-      const model = toggleModule.getModelById(id);
-      return model;
+      const { onOpen, onClose, onToggle } = toggleModule.getEntityById(id)!;
+      return {
+        onOpen,
+        onClose,
+        onToggle,
+      };
     },
   };
 };
