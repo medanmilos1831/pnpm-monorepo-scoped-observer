@@ -13,7 +13,6 @@ directly inside components.
   and re-renders when the entity loads/destroys
 - `useCreateEntity({ id, state })` — create/destroy entities inside component lifecycles
 - Works with `useSyncExternalStore` under the hood for concurrent-safe updates
-- Fully typed generics forwarded from the underlying module config
 
 ---
 
