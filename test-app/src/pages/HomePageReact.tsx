@@ -60,7 +60,6 @@ const HomePageReact = () => {
     toggle?.onChangeSubscriber!,
     toggle?.getState!
   );
-  console.log("value", value);
   return (
     <div>
       <button onClick={() => toggle?.onOpen()}>Open</button>

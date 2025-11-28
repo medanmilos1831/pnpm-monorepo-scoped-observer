@@ -47,10 +47,10 @@ const toogleModule = quantumUi.createModule<`${toggleState}`, IToggleClient>({
 });
 
 toogleModule.onEntityLoad("toggleOne", (payload: IToggleClient) => {
-  console.log("ONLOAD", payload);
+  // Entity loaded
 });
 toogleModule.onEntityDestroy("toggleOne", (payload: undefined) => {
-  console.log("ONDESTROY", payload);
+  // Entity destroyed
 });
 toogleModule.createEntity({
   id: "toggleOne",
@@ -58,7 +58,7 @@ toogleModule.createEntity({
 });
 const toggleOne = toogleModule.getEntityById("toggleOne");
 toggleOne?.subscribe((payload) => {
-  console.log("ON CHANGE", payload);
+  // State changed
 });
 
 toggleOne?.onToggle();
