@@ -1,5 +1,5 @@
-import { useEffect, useSyncExternalStore } from "react";
-import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
+import { useSyncExternalStore } from "react";
+import { quantumUiReact } from "../quantum-ui-react";
 
 enum toggleState {
   ON = "on",
