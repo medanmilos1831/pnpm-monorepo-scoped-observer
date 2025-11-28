@@ -12,8 +12,8 @@ function App() {
         color: "white",
       }}
     >
-      <HomePageCore />
-      {/* <HomePageReact /> */}
+      {/* <HomePageCore /> */}
+      <HomePageReact />
       {/* <HomePageToggle /> */}
     </div>
   );

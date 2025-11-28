@@ -1,73 +1,71 @@
-import { useState } from "react";
-import { createToggleClient } from "../toggle";
+import { useEffect, useSyncExternalStore } from "react";
+import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
 
-const { useToggle, useToggleCommands, useToggleSelector } =
-  createToggleClient();
+enum toggleState {
+  ON = "on",
+  OFF = "off",
+}
 
-const Wrapper = () => {
-  const [count, setCount] = useState(0);
+type toggleStateType = `${toggleState}`;
 
-  return (
-    <div>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-      {count % 2 === 0 ? <ComponentOne /> : "nema"}
-    </div>
-  );
-};
+interface IToggleClient {
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+  getState: () => toggleStateType;
+  onChangeSubscriber: (notify: () => void) => () => void;
+}
 
-const ComponentOne = () => {
-  const toggle = useToggle({ id: "toggleOne", initState: "on" });
-  console.log("toggle", toggle);
-  return <div></div>;
-};
-
-const ComponentTwo = () => {
-  const commands = useToggleCommands("toggleOne");
-  return (
-    <div>
-      <button
-        onClick={() => {
-          commands.onOpen();
-        }}
-      >
-        Open
-      </button>
-      <button
-        onClick={() => {
-          commands.onClose();
-        }}
-      >
-        Close
-      </button>
-      <button
-        onClick={() => {
-          commands.onToggle();
-        }}
-      >
-        Toggle
-      </button>
-    </div>
-  );
-};
-
-const ComponentThree = () => {
-  const client = useToggleSelector("toggleOne");
-  console.log(client);
-  return <div></div>;
-};
-
+const { useEntitySelector, useCreateEntity } = quantumUiReact.createModule<
+  toggleStateType,
+  IToggleClient
+>({
+  name: "toggle",
+  onCreateEntity: ({ id, state }: { id: string; state: toggleStateType }) => {
+    return {
+      id,
+      state,
+    };
+  },
+  clientSchema: (store) => {
+    return {
+      onOpen: () => {
+        store.setState(() => toggleState.ON);
+      },
+      onClose: () => {
+        store.setState(() => toggleState.OFF);
+      },
+      onToggle: () => {
+        store.setState((prevState) => {
+          return prevState === toggleState.ON
+            ? toggleState.OFF
+            : toggleState.ON;
+        });
+      },
+      getState: () => {
+        return store.getState();
+      },
+      onChangeSubscriber: (notify: () => void) => {
+        return store.subscribe(() => {
+          notify();
+        });
+      },
+    };
+  },
+});
 const HomePageReact = () => {
+  useCreateEntity({ id: "toggleOne", state: toggleState.ON });
+  const toggle = useEntitySelector("toggleOne");
+  const value = useSyncExternalStore(
+    toggle?.onChangeSubscriber!,
+    toggle?.getState!
+  );
+  console.log("value", value);
   return (
     <div>
-      <div>
-        <Wrapper />
-      </div>
-      <div>
-        <ComponentTwo />
-      </div>
-      <div>
-        <ComponentThree />
-      </div>
+      <button onClick={() => toggle?.onOpen()}>Open</button>
+      <button onClick={() => toggle?.onClose()}>Close</button>
+      <button onClick={() => toggle?.onToggle()}>Toggle</button>
     </div>
   );
 };

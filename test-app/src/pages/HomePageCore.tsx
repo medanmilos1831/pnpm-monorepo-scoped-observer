@@ -79,13 +79,7 @@ setTimeout(() => {
   });
 }, 2000);
 const HomePageCore = () => {
-  return (
-    <div>
-      <button onClick={() => toggleOne?.onOpen()}>Open</button>
-      <button onClick={() => toggleOne?.onClose()}>Close</button>
-      <button onClick={() => toggleOne?.onToggle()}>Toggle</button>
-    </div>
-  );
+  return <div></div>;
 };
 
 export { HomePageCore };
