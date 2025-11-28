@@ -23,46 +23,74 @@ npm install @med1802/quantum-ui
 ## Quick Start
 
 ```typescript
-import { quantumUi } from "@med1802/quantum-ui";
+import { quantumUi, type ISubscribe } from "@med1802/quantum-ui";
 
-const counterModule = quantumUi.createModule<number>({
-  name: "counter",
-  store: ({ id, state }) => ({
+enum ToggleState {
+  ON = "on",
+  OFF = "off",
+}
+
+type ToggleStateType = `${ToggleState}`;
+
+interface IToggleClient {
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+  getState: () => ToggleStateType;
+  subscribe: ISubscribe<ToggleStateType>;
+}
+
+const toggleModule = quantumUi.createModule<ToggleStateType, IToggleClient>({
+  name: "toggle",
+  onCreateEntity: ({ id, state }) => ({
     id,
     state,
+  }),
+  clientSchema: (store) => ({
+    onOpen: () => {
+      store.setState(() => ToggleState.ON);
+    },
+    onClose: () => {
+      store.setState(() => ToggleState.OFF);
+    },
+    onToggle: () => {
+      store.setState((prevState) =>
+        prevState === ToggleState.ON ? ToggleState.OFF : ToggleState.ON
+      );
+    },
+    getState: () => store.getState(),
+    subscribe: store.subscribe,
   }),
 });
 
 // Subscribe to lifecycle signals
-const unsubscribeLoad = counterModule.onEntityLoad("counter", (payload) => {
+toggleModule.onEntityLoad("toggleOne", (payload) => {
   console.log("ENTITY LOAD", payload);
 });
-const unsubscribeDestroy = counterModule.onEntityDestroy(
-  "counter",
-  (payload) => {
-    console.log("ENTITY DESTROY", payload);
-  }
-);
+toggleModule.onEntityDestroy("toggleOne", (payload) => {
+  console.log("ENTITY DESTROY", payload);
+});
 
 // Create and consume an entity
-counterModule.createEntity({ id: "counter", state: 0 });
-const entry = counterModule.getEntityById("counter");
-entry?.store.subscribe(({ prevState, newState }) => {
-  console.log("SET STATE", prevState, newState);
+toggleModule.createEntity({
+  id: "toggleOne",
+  state: ToggleState.ON,
 });
-entry?.store.subscribe(({ prevState, newState }) => {
-  console.log("SET STATE", prevState, newState);
-}, "incremented");
 
-entry?.store.setState((value) => value + 1);
-entry?.store.setState((value) => value + 1, {
-  customEvents: ["incremented"],
+const toggleOne = toggleModule.getEntityById("toggleOne");
+
+// Subscribe to state changes
+toggleOne?.subscribe((payload) => {
+  console.log("STATE CHANGED", payload);
 });
+
+// Use client methods
+toggleOne?.onToggle();
+toggleOne?.onOpen();
+toggleOne?.onClose();
 
 // Destroy when you are done
-entry?.destroy();
-unsubscribeLoad?.();
-unsubscribeDestroy?.();
+toggleModule.destroyEntity("toggleOne");
 ```
 
 ---
@@ -70,48 +98,53 @@ unsubscribeDestroy?.();
 ## Module API
 
 ```ts
-const module = quantumUi.createModule<S>(config);
+const module = quantumUi.createModule<S, A>(config);
 ```
 
 ### Config
 
 - `name` — descriptive identifier (debugging aid).
-- `store({ id, state })` — factory returning `{ id, state }` (can include computed fields).
+- `onCreateEntity({ id, state })` — factory returning `{ id, state }` (can include computed fields).
+- `clientSchema(store)` — factory that receives the store instance and returns a client object with your custom API.
 
 ### Returned helpers
 
 - `createEntity({ id, state })` — registers a new entity; duplicate `id` calls are ignored.
-- `getEntityById(id)` — returns `{ store, destroy }` or `undefined`.
-- `onEntityLoad(id, callback)` — subscribes to load events for a specific entity id.
-- `onEntityDestroy(id, callback)` — subscribes to destroy events for a specific entity id.
+- `getEntityById(id)` — returns the client object (type `A`) or `undefined`.
+- `destroyEntity(id)` — removes an entity from the module.
+- `onEntityLoad(id, callback)` — subscribes to load events for a specific entity id. Callback receives the client object.
+- `onEntityDestroy(id, callback)` — subscribes to destroy events for a specific entity id. Callback receives `undefined`.
 
 ---
 
-## Entity Store API (`core.createStore`)
+## Store API (`core.createStore`)
 
-Each entity entry exposes the raw store instance:
+The store instance is available within `clientSchema` and provides:
 
 - `setState(updater, options?)`
   - `updater` receives current state and returns the next value.
   - `options.customEvents?: string[]` dispatches additional observer events after the update.
-- `subscribe(listener)` — listens to `setState` payloads (`{ prevState, newState }`).
-- `state` — the current snapshot.
-- `destroy()` — convenience wrapper added by the framework to remove the entity from the module map.
+- `getState()` — returns the current state snapshot.
+- `subscribe(callback, eventName?)` — subscribes to state changes.
+  - `callback` receives the new state value (or `undefined`).
+  - `eventName` is optional; defaults to `"setState"`.
 
 ---
 
 ## Architecture Overview
 
 ```
-quantumUi.createModule(config)
-└── Module store (Map<string, EntityEntry>)
-    ├── EntityEntry.store (core.createStore)
-    ├── EntityEntry.destroy()
+quantumUi.createModule<S, A>(config)
+└── Module store (Map<string, A>)
+    ├── Client object (A) - created via clientSchema
+    │   └── Wraps store instance (core.createStore<S>)
+    ├── destroyEntity(id) - removes entity from map
     └── Lifecycle events (onEntityLoad/onEntityDestroy)
 ```
 
-- **Module store** — tracks every entity and exposes lifecycle notifications.
-- **Entity entry** — pairs the user store with a destroy routine bound to its id.
+- **Module store** — tracks every entity as a client object and exposes lifecycle notifications.
+- **Client object** — your custom API (type `A`) that wraps the store instance, created via `clientSchema`.
+- **Store instance** — available within `clientSchema`, provides `setState`, `getState`, and `subscribe`.
 - **Observer layer** — powers subscriptions, custom events, and React bindings.
 
 ---

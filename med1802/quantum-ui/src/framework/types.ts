@@ -1,5 +1,3 @@
-import type { core } from "../core/core";
-
 /**
  * Canonical shape of an entity store managed by the framework.
  */
@@ -11,9 +9,47 @@ export interface IStore<S = any> {
 /**
  * Module configuration contract used when calling `createModule`.
  */
-export interface IModuleConfig<S = any> {
+export interface IModuleConfig<S = any, A = any> {
   name: string;
-  store: (props: { id: string; state: S }) => IStore<S>;
+  onCreateEntity: (props: { id: string; state: S }) => IStore<S>;
+  clientSchema: (store: IStoreInstance<S>) => A;
+}
+
+/**
+ * Options for setState method.
+ */
+export interface ISetStateOptions {
+  customEvents?: string[];
+}
+
+/**
+ * Type for setState method in createStore.
+ */
+export type ISetState<S = any> = (
+  callback: (state: S) => S,
+  options?: ISetStateOptions
+) => void;
+
+/**
+ * Type for getState method in createStore.
+ */
+export type IGetState<S = any> = () => S;
+
+/**
+ * Type for subscribe method in createStore.
+ */
+export type ISubscribe<S = any> = (
+  callback: (payload?: S) => void,
+  eventName?: string
+) => () => void;
+
+/**
+ * Store instance returned by createStore.
+ */
+export interface IStoreInstance<S = any> {
+  setState: ISetState<S>;
+  getState: IGetState<S>;
+  subscribe: ISubscribe<S>;
 }
 
 /**
@@ -23,18 +59,3 @@ export const ENTITY_EVENTS = {
   ON_ENTITY_LOAD: "onEntityLoad",
   ON_ENTITY_DESTROY: "onEntityDestroy",
 };
-
-/**
- * Backing store that keeps track of every entity instance inside a module.
- */
-export type ModuleEntitiesStore<S> = ReturnType<
-  typeof core.createStore<
-    Map<
-      string,
-      {
-        store: ReturnType<typeof core.createStore<S>>;
-        destroy: () => void;
-      }
-    >
-  >
->;
