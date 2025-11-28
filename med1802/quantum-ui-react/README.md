@@ -9,7 +9,8 @@ directly inside components.
 ## Features
 
 - `createModule` wrapper that mirrors the base Quantum UI API
-- `useEntitySelector(id)` — subscribe to store changes for one entity
+- `useEntitySelector(id)` — returns the client object produced by `clientSchema`
+  and re-renders when the entity loads/destroys
 - `useCreateEntity({ id, state })` — create/destroy entities inside component lifecycles
 - Works with `useSyncExternalStore` under the hood for concurrent-safe updates
 - Fully typed generics forwarded from the underlying module config
@@ -27,37 +28,69 @@ npm install @med1802/quantum-ui-react
 ## Quick Start
 
 ```tsx
-import { useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import { quantumUiReact } from "@med1802/quantum-ui-react";
 
-const counterModule = quantumUiReact.createModule<number>({
-  name: "counter",
-  store: ({ id, state }) => ({
+enum ToggleState {
+  ON = "on",
+  OFF = "off",
+}
+
+type ToggleStateType = `${ToggleState}`;
+
+interface IToggleClient {
+  onOpen: () => void;
+  onClose: () => void;
+  onToggle: () => void;
+  getState: () => ToggleStateType;
+  onChangeSubscriber: (notify: () => void) => () => void;
+}
+
+const { useEntitySelector, useCreateEntity } = quantumUiReact.createModule<
+  ToggleStateType,
+  IToggleClient
+>({
+  name: "toggle",
+  onCreateEntity: ({ id, state }) => ({
     id,
     state,
   }),
+  clientSchema: (store) => ({
+    onOpen: () => {
+      store.setState(() => ToggleState.ON);
+    },
+    onClose: () => {
+      store.setState(() => ToggleState.OFF);
+    },
+    onToggle: () => {
+      store.setState((prevState) =>
+        prevState === ToggleState.ON ? ToggleState.OFF : ToggleState.ON
+      );
+    },
+    getState: () => store.getState(),
+    onChangeSubscriber: (notify) => {
+      return store.subscribe(() => {
+        notify();
+      });
+    },
+  }),
 });
 
-const HomePage = () => {
-  // Returns the entity store instance (or undefined if not created yet)
-  const counter = counterModule.useEntitySelector("counter");
-
-  // Ensures the entity exists for the lifetime of this component
-  counterModule.useCreateEntity({ id: "counter", state: 0 });
-
-  useEffect(() => {
-    const unsubscribe = counter?.subscribe(({ prevState, newState }) => {
-      console.log(prevState, newState);
-    });
-    return () => {
-      unsubscribe?.();
-    };
-  }, [counter]);
+const HomePageReact = () => {
+  useCreateEntity({ id: "toggleOne", state: ToggleState.ON });
+  const toggle = useEntitySelector("toggleOne");
+  const value = useSyncExternalStore(
+    toggle?.onChangeSubscriber ?? (() => () => {}),
+    toggle?.getState ?? (() => ToggleState.OFF)
+  );
 
   return (
-    <button onClick={() => counter?.setState((value) => value + 1)}>
-      Increment ({counter?.state ?? 0})
-    </button>
+    <div>
+      <div>Current: {value}</div>
+      <button onClick={() => toggle?.onOpen()}>Open</button>
+      <button onClick={() => toggle?.onClose()}>Close</button>
+      <button onClick={() => toggle?.onToggle()}>Toggle</button>
+    </div>
   );
 };
 ```
@@ -66,28 +99,34 @@ const HomePage = () => {
 
 ## API Reference
 
-### `quantumUiReact.createModule<S>(config)`
+### `quantumUiReact.createModule<S, A>(config)`
 
-Accepts the same config as `quantumUi.createModule` and returns:
+Accepts the same config as `quantumUi.createModule`:
+
+- `name` – descriptive identifier
+- `onCreateEntity({ id, state })` – returns `{ id, state }`
+- `clientSchema(store)` – receives the raw store instance and returns your client object (`A`)
+
+The returned module exposes:
 
 - `useEntitySelector(id: string)`  
-  React hook that returns the entity store (`core.createStore`) for a given id.
-  Re-renders when lifecycle events fire or the entity is removed.
+  React hook that returns the client object (`A`) for a given id. Re-renders when
+  the entity loads, updates, or is destroyed.
 
 - `useCreateEntity({ id, state })`  
   React hook that creates the entity on mount and destroys it on unmount.
 
-- `createEntity`, `getEntityById`, `onEntityLoad`, `onEntityDestroy`  
+- `createEntity`, `getEntityById`, `destroyEntity`, `onEntityLoad`, `onEntityDestroy`  
   Direct pass-through helpers from the underlying Quantum UI module if you need
   to manage entities outside of React hooks.
 
-### Entity store
+### Store access inside `clientSchema`
 
-The value returned by `useEntitySelector` is the raw `core.createStore` instance, so you can:
+The `store` argument is the raw `core.createStore` instance, so you can:
 
-- Call `store.setState((draft) => nextDraft)` with optional `{ customEvents }`
-- Read `store.state` for the latest snapshot
-- Call `store.subscribe(listener)` for low-level observers
+- Call `store.setState((draft) => nextDraft, { customEvents? })`
+- Read the current value via `store.getState()`
+- Subscribe to updates with `store.subscribe(listener, eventName?)`
 
 ---
 
