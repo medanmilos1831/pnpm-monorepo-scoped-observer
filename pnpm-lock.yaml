@@ -59,8 +59,8 @@ importers:
   med1802/quantum-ui-react:
     dependencies:
       '@med1802/quantum-ui':
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.1.0
+        version: 2.1.0
       use-sync-external-store:
         specifier: ^1.6.0
         version: 1.6.0(react@19.2.0)
@@ -79,12 +79,9 @@ importers:
 
   test-app:
     dependencies:
-      '@med1802/quantum-ui':
-        specifier: ^2.0.3
-        version: 2.0.3
       '@med1802/quantum-ui-react':
-        specifier: ^2.0.0
-        version: 2.0.0(react@19.2.0)
+        specifier: ^2.0.1
+        version: 2.0.1(react@19.2.0)
       '@tanstack/store':
         specifier: ^0.8.0
         version: 0.8.0
@@ -445,14 +442,14 @@ packages:
   '@med1802/quantum-ui-react@1.0.4':
     resolution: {integrity: sha512-6BccpPkiD4cWsz5dhws727U4e2eCULZacZhFvMxjmbD/UJuPH/Vn7hJCuk6AZo28muEOXEo6isHKUYGTWNNIeQ==}
 
-  '@med1802/quantum-ui-react@2.0.0':
-    resolution: {integrity: sha512-vvl4KNx+QrFLuqzrsDVduK2DJLZqL5ehUW1uPgWO6j6NDj00IEIx5m0Jgkqb9S52YQYMGAI7wDjxbQn2hgcUFA==}
+  '@med1802/quantum-ui-react@2.0.1':
+    resolution: {integrity: sha512-tWyP59287w4sVUjLOHtYTIzqykqsqFEPjA27PcqA6YEIKddGYe4doF2QDadxCwlclIfFdfEftjpRWwk+chUIhg==}
 
   '@med1802/quantum-ui@1.4.2':
     resolution: {integrity: sha512-5OhMkrutPMM0lZ+ltF9paehC9zSr8ZeGxJd1GVLZxfN2soxHbrXzq9lNIcMuhdkFINNk582bO1lYEwIzVQsxqA==}
 
-  '@med1802/quantum-ui@2.0.3':
-    resolution: {integrity: sha512-Ua7mavhHNuY1VEbvpPx10VQAS7M6Jw8DfjWnVtxz67c8v2khpAshWpKiZ2IIDpHB+vuHZCDLpygoLg/b7sjwew==}
+  '@med1802/quantum-ui@2.1.0':
+    resolution: {integrity: sha512-ySIlavL33tHP2NuNw8wA4jYiC4Q+b4hZQn1wcKzXUEcVYqpP9awcaIi642owXWAHKXr02tXoEpiLvpY72FSTKw==}
 
   '@med1802/scoped-observer-message-broker@2.0.2':
     resolution: {integrity: sha512-b9EllvQcI3X9ygRHIudzybqMd+aus6ByWTJnrOb/hHTwDlIDvNvrtY9cPoXGwmSaxw1gy/d4TNCWWyuUFTxCAw==}
@@ -1443,9 +1440,9 @@ snapshots:
     dependencies:
       '@med1802/quantum-ui': 1.4.2
 
-  '@med1802/quantum-ui-react@2.0.0(react@19.2.0)':
+  '@med1802/quantum-ui-react@2.0.1(react@19.2.0)':
     dependencies:
-      '@med1802/quantum-ui': 1.4.2
+      '@med1802/quantum-ui': 2.1.0
       use-sync-external-store: 1.6.0(react@19.2.0)
     transitivePeerDependencies:
       - react
@@ -1455,7 +1452,7 @@ snapshots:
       '@med1802/scoped-observer': 1.1.4
       '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
 
-  '@med1802/quantum-ui@2.0.3':
+  '@med1802/quantum-ui@2.1.0':
     dependencies:
       '@med1802/scoped-observer': 1.1.4
       '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)

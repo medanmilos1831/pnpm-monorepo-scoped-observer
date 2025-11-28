@@ -1,36 +1,46 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 
-import { quantumUi, type IModuleConfig } from "@med1802/quantum-ui";
+import {
+  quantumUi,
+  type IModuleConfig,
+  type ISetState,
+  type IGetState,
+  type ISubscribe,
+} from "@med1802/quantum-ui";
 const quantumUiReact = (() => {
   return {
-    createModule<S = any>(props: IModuleConfig<S>) {
-      const createModule = quantumUi.createModule<S>(props);
+    createModule<S = any, A = any>(props: IModuleConfig<S, A>) {
+      const createModule = quantumUi.createModule<S, A>(props);
       return {
-        useEntitySelector: (modelId: string) => {
-          const [lifecycle] = useState(() => {
-            return {
-              onEntityLoad: (notify: () => void) => {
-                return createModule.onEntityLoad(modelId, notify);
-              },
-              onEntityDestroy: (notify: () => void) => {
-                return createModule.onEntityDestroy(modelId, notify);
-              },
+        useEntitySelector: (entityId: string) => {
+          const [subscribe] = useState(() => {
+            return (notify: () => void) => {
+              const unsubscribeLoad = createModule.onEntityLoad(
+                entityId,
+                notify
+              );
+              const unsubscribeDestroy = createModule.onEntityDestroy(
+                entityId,
+                notify
+              );
+              return () => {
+                unsubscribeLoad();
+                unsubscribeDestroy();
+              };
             };
           });
-          const [snapshot] = useState(() => () => {
-            return createModule.getEntityById(modelId);
-          });
-          useSyncExternalStore(lifecycle.onEntityLoad, snapshot);
-          useSyncExternalStore(lifecycle.onEntityDestroy, snapshot);
-          return createModule.getEntityById(modelId)?.store ?? undefined;
+          const [snapshot] = useState(
+            () => () => createModule.getEntityById(entityId)
+          );
+          useSyncExternalStore(subscribe, snapshot);
+          return createModule.getEntityById(entityId) ?? undefined;
         },
         useCreateEntity: (props: { id: string; state: S }) => {
+          createModule.createEntity(props);
           useEffect(() => {
-            createModule.createEntity(props);
-            const model = createModule.getEntityById(props.id)!;
             return () => {
-              model.destroy();
+              createModule.destroyEntity(props.id);
             };
           }, []);
         },
@@ -43,4 +53,4 @@ const quantumUiReact = (() => {
   };
 })();
 
-export { quantumUiReact };
+export { quantumUiReact, type ISetState, type IGetState, type ISubscribe };
