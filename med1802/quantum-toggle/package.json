@@ -9,11 +9,7 @@
   "dependencies": {
     "@med1802/quantum-ui-react": "^2.1.1"
   },
-  "peerDependencies": {
-    "react": ">=18"
-  },
   "devDependencies": {
-    "react": "^18.3.1",
     "@med1802/quantum-ui-react": "^2.1.1"
   },
   "repository": {
