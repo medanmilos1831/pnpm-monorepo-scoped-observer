@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "use-sync-external-store/shim";
 import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
 
 enum toggleState {
@@ -53,6 +53,17 @@ const createToggleClient = () => {
       };
     },
   });
+  const entityInstance = (entity: IToggleClient) => {
+    return {
+      onChange: (callback: (payload: toggleStateType) => void) => {
+        return entity.onChange(callback);
+      },
+      onOpen: entity.onOpen,
+      onClose: entity.onClose,
+      onToggle: entity.onToggle,
+      getState: entity.getState,
+    };
+  };
   return {
     useCreateToggle: (params: { id: string; initState: toggleStateType }) => {
       const hasEntity = toggleModule.hasEntity(params.id);
@@ -64,38 +75,24 @@ const createToggleClient = () => {
       }
       const { id, initState } = params;
       toggleModule.useCreateEntity({ id, state: initState });
+      const entity = toggleModule.getEntityById(id)!;
+      return entityInstance(entity);
+    },
+    useToggleInstance: (id: string) => {
+      const entity = toggleModule.getEntityById(id)!;
+      return entity ? entityInstance(entity) : undefined;
     },
     useToggleState: (id: string) => {
       const entity = toggleModule.getEntityById(id)!;
       if (!entity) {
-        throw new Error(`Toggle ${id} not found`);
+        return undefined;
       }
       const value = useSyncExternalStore(entity.onChange, entity.getState);
       return value;
     },
-    onChange: (id: string, callback: (payload: toggleStateType) => void) => {
+    getToggleInstance: (id: string) => {
       const entity = toggleModule.getEntityById(id)!;
-      if (!entity) {
-        throw new Error(`Toggle ${id} not found`);
-      }
-      return entity.onChange((payload) => {
-        callback(payload);
-      });
-    },
-    getToggleCommands: (id: string) => {
-      const { onOpen, onClose, onToggle } = toggleModule.getEntityById(id)!;
-      return {
-        onOpen,
-        onClose,
-        onToggle,
-      };
-    },
-    getToggleState: (id: string) => {
-      const entity = toggleModule.getEntityById(id)!;
-      if (!entity) {
-        throw new Error(`Toggle ${id} not found`);
-      }
-      return entity.getState();
+      return entity ? entityInstance(entity) : undefined;
     },
   };
 };

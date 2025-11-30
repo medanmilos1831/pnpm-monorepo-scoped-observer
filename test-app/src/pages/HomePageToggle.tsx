@@ -1,22 +1,18 @@
-import { Drawer, Modal } from "antd";
+import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { createToggleClient } from "../toggle";
-import { useSyncExternalStore } from "use-sync-external-store";
-import { useEffect } from "react";
+import { Form } from "antd";
 
-const { useCreateToggle, getToggleCommands, onChange, useToggleState } =
+const { useCreateToggle, useToggleState, useToggleInstance } =
   createToggleClient();
 
 const ComponentOne = () => {
-  useCreateToggle({
+  const { onOpen, onClose, onToggle } = useCreateToggle({
     id: "userModal",
     initState: "off",
   });
-  const value = useToggleState("userModal");
-  const { onOpen, onClose, onToggle } = getToggleCommands("userModal");
   return (
     <>
       <h1>Component One</h1>
-      <p>Value: {value}</p>
       <button onClick={onOpen}>Open</button>
       <button onClick={onClose}>Close</button>
       <button onClick={onToggle}>Toggle</button>
@@ -24,31 +20,38 @@ const ComponentOne = () => {
   );
 };
 const ComponentTwo = () => {
-  const { onOpen, onClose, onToggle } = getToggleCommands("userModal");
+  const value = useToggleState("userModal");
   return (
     <>
-      <button onClick={onOpen}>Open</button>
-      <button onClick={onClose}>Close</button>
-      <button onClick={onToggle}>Toggle</button>
+      <p style={{ color: value === "on" ? "green" : "red" }}>Value: {value}</p>
     </>
   );
 };
 
 const ComponentThree = () => {
-  onChange("userModal", (payload) => {
-    console.log("payload", payload);
-  });
+  const value = useToggleInstance("userModal");
+  console.log("useToggleInstance", value);
   return <></>;
 };
-
+const ComponentFour = () => {
+  const e = useFormInstance();
+  e.resetFields();
+  // console.log("e", e);
+  return <></>;
+};
 const HomePageToggle = () => {
+  const [form] = Form.useForm();
+  // console.log("form", form);
   // const userModal = useToggleState("userModal");
   // console.log("userModal", userModal);
   return (
     <div>
+      {/* <Form form={form}> */}
       <ComponentOne />
       <ComponentTwo />
       <ComponentThree />
+      <ComponentFour />
+      {/* </Form> */}
       {/* <SomeHeader />
       <ModalComponent id="userModal" initState="off" />
       <ModalComponent id="authModal" initState="off" />
