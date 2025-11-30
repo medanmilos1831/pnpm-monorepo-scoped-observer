@@ -6,10 +6,13 @@ const { useCreateToggle, useToggleState, useToggleInstance } =
   createToggleClient();
 
 const ComponentOne = () => {
-  const { onOpen, onClose, onToggle } = useCreateToggle({
+  const value = useCreateToggle({
     id: "userModal",
     initState: "off",
   });
+
+  console.log("value component one", value);
+  const { onOpen, onClose, onToggle } = value;
   return (
     <>
       <h1>Component One</h1>
@@ -20,10 +23,15 @@ const ComponentOne = () => {
   );
 };
 const ComponentTwo = () => {
-  const value = useToggleState("userModal");
+  // const value = useToggleState("userModal");
+  const value = useCreateToggle({
+    id: "userModal",
+    initState: "off",
+  });
+  console.log("value component two", value);
   return (
     <>
-      <p style={{ color: value === "on" ? "green" : "red" }}>Value: {value}</p>
+      {/* <p style={{ color: value === "on" ? "green" : "red" }}>Value: {value}</p> */}
     </>
   );
 };
@@ -34,8 +42,6 @@ const ComponentThree = () => {
   return <></>;
 };
 const ComponentFour = () => {
-  const e = useFormInstance();
-  e.resetFields();
   // console.log("e", e);
   return <></>;
 };

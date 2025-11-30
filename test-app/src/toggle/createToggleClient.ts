@@ -75,8 +75,10 @@ const createToggleClient = () => {
       }
       const { id, initState } = params;
       toggleModule.useCreateEntity({ id, state: initState });
-      const entity = toggleModule.getEntityById(id)!;
-      return entityInstance(entity);
+      const value = !hasEntity
+        ? entityInstance(toggleModule.getEntityById(id)!)
+        : undefined;
+      return value as IToggleClient;
     },
     useToggleInstance: (id: string) => {
       const entity = toggleModule.getEntityById(id)!;
