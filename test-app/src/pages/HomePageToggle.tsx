@@ -1,12 +1,8 @@
-import useFormInstance from "antd/es/form/hooks/useFormInstance";
+import { useEffect } from "react";
 import { createToggleClient } from "../toggle";
-import { Drawer, Form, Modal } from "antd";
+import { Drawer, Modal } from "antd";
 
 const { useToggle, getToggleInstance } = createToggleClient();
-
-const SomeHeader = () => {
-  return <div>SomeHeader</div>;
-};
 
 const ModalComponent = ({
   id,
@@ -62,6 +58,17 @@ const SomeComponent = () => {
   );
 };
 
+const SomeComponentWatcher = () => {
+  const [value] = useToggle({ id: "userModal" });
+  const drawerReference = getToggleInstance("userDrawer");
+  useEffect(() => {
+    drawerReference?.onChange((payload) => {
+      console.log("value changed", payload, drawerReference?.getState());
+    });
+  }, []);
+  return <>{value}</>;
+};
+
 const HomePageToggle = () => {
   return (
     <>
@@ -70,6 +77,7 @@ const HomePageToggle = () => {
       <DrawerComponent id="userDrawer" initState="off" />
       <DrawerComponent id="authDrawer" initState="off" />
       <SomeComponent />
+      <SomeComponentWatcher />
     </>
   );
 };

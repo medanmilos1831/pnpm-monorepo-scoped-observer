@@ -7,10 +7,10 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@med1802/quantum-ui-react": "^2.1.1"
+    "@med1802/quantum-ui-react": "^2.1.2"
   },
   "devDependencies": {
-    "@med1802/quantum-ui-react": "^2.1.1"
+    "@med1802/quantum-ui-react": "^2.1.2"
   },
   "repository": {
     "type": "git",

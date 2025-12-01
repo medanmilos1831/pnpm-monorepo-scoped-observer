@@ -40,8 +40,8 @@ importers:
   med1802/quantum-toggle:
     dependencies:
       '@med1802/quantum-ui-react':
-        specifier: ^2.1.1
-        version: 2.1.1(react@19.2.0)
+        specifier: ^2.1.2
+        version: 2.1.2(react@19.2.0)
 
   med1802/quantum-ui:
     dependencies:
@@ -76,8 +76,8 @@ importers:
   test-app:
     dependencies:
       '@med1802/quantum-ui-react':
-        specifier: ^2.0.1
-        version: 2.0.1(react@19.2.0)
+        specifier: ^2.1.2
+        version: 2.1.2(react@19.2.0)
       '@tanstack/store':
         specifier: ^0.8.0
         version: 0.8.0
@@ -90,9 +90,6 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
-      use-sync-external-store:
-        specifier: ^1.6.0
-        version: 1.6.0(react@19.2.0)
     devDependencies:
       '@types/node':
         specifier: ^24.10.1
@@ -438,14 +435,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
 
-  '@med1802/quantum-ui-react@2.0.1':
-    resolution: {integrity: sha512-tWyP59287w4sVUjLOHtYTIzqykqsqFEPjA27PcqA6YEIKddGYe4doF2QDadxCwlclIfFdfEftjpRWwk+chUIhg==}
-
-  '@med1802/quantum-ui-react@2.1.1':
-    resolution: {integrity: sha512-okUok/e9opbaFrS2wQSsH2Yaqjko97wnD9o2C/S224/qycwzLfIc5yn6OvGRC9NrzoZHOLccU/ahWWJvx5nIDw==}
-
-  '@med1802/quantum-ui@2.1.0':
-    resolution: {integrity: sha512-ySIlavL33tHP2NuNw8wA4jYiC4Q+b4hZQn1wcKzXUEcVYqpP9awcaIi642owXWAHKXr02tXoEpiLvpY72FSTKw==}
+  '@med1802/quantum-ui-react@2.1.2':
+    resolution: {integrity: sha512-5gW1sguypGN5wctd82lq8q/rmjISWvJGTwTU+i97sOn5MLpEGtO5ZyUJ2vFaPmEwMq0c/GqrBzkrbpN9jIbQPQ==}
 
   '@med1802/quantum-ui@2.1.1':
     resolution: {integrity: sha512-XAVnQVT+l+q4r94Cajha/Hha9rcvTa+Z8b408Kh2op31S0t7An869RxFR9Plf3J//LjAynzSCfWWU1k33mZdYw==}
@@ -1435,24 +1426,12 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@med1802/quantum-ui-react@2.0.1(react@19.2.0)':
+  '@med1802/quantum-ui-react@2.1.2(react@19.2.0)':
     dependencies:
       '@med1802/quantum-ui': 2.1.1
       use-sync-external-store: 1.6.0(react@19.2.0)
     transitivePeerDependencies:
       - react
-
-  '@med1802/quantum-ui-react@2.1.1(react@19.2.0)':
-    dependencies:
-      '@med1802/quantum-ui': 2.1.0
-      use-sync-external-store: 1.6.0(react@19.2.0)
-    transitivePeerDependencies:
-      - react
-
-  '@med1802/quantum-ui@2.1.0':
-    dependencies:
-      '@med1802/scoped-observer': 1.1.4
-      '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
 
   '@med1802/quantum-ui@2.1.1':
     dependencies:
