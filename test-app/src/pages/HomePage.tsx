@@ -1,8 +1,14 @@
-import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
+import { createMessageBroker } from "../broker";
 import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
 import { Button, Modal } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
+
+enum EventName {
+  ON_CHANGE = "onChange",
+  ON_OPEN = "onOpen",
+  ON_CLOSE = "onClose",
+}
 
 type EventPayload = {
   payload: { open: boolean; message?: string };
@@ -18,6 +24,7 @@ type Channel = {
   useOnChange: () => [boolean, () => void];
   open: (payload: { message?: string }) => void;
   close: () => void;
+  useInterceptOpen: any;
 };
 
 const reactObserver = <T extends { [key: string]: any }>(params: T) => {
@@ -31,7 +38,8 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
   Object.keys(params).forEach((key) => {
     function open(payload: { message?: string }) {
       messageBroker.publish({
-        eventName: "onChange",
+        scope: key,
+        eventName: EventName.ON_OPEN,
         payload: {
           open: true,
           message: payload.message,
@@ -40,38 +48,70 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
     }
     function close() {
       messageBroker.publish({
-        eventName: "onChange",
+        eventName: EventName.ON_CHANGE,
         payload: {
           open: false,
           message: undefined,
         },
       });
     }
-    obj[key as keyof T] = {
-      open,
-      close,
-      subscribe: (eventName: string, callback: (payload: any) => void) => {
-        return messageBroker.subscribe({
-          eventName,
-          callback,
-        });
-      },
-      useOnChange: () => {
-        const [open, setOpen] = useState(false);
-        useEffect(() => {
-          const unsubscribe = messageBroker.subscribe({
-            eventName: "onChange",
-            callback(data: EventPayload) {
-              const { payload } = data;
-              const { open } = payload;
-              setOpen(open);
+    obj[key as keyof T] = (() => {
+      messageBroker.interceptor({
+        scope: key,
+        eventName: EventName.ON_OPEN,
+        onPublish: (obj) => {
+          console.log("INNER", obj);
+          return {
+            eventName: EventName.ON_CHANGE,
+            payload: {
+              open: true,
+              message: {
+                ...obj.payload,
+              },
+            },
+          };
+        },
+      });
+      return {
+        open,
+        close,
+        subscribe: (eventName: string, callback: (payload: any) => void) => {
+          return messageBroker.subscribe({
+            scope: key,
+            eventName,
+            callback,
+          });
+        },
+        useOnChange: () => {
+          const [open, setOpen] = useState(false);
+          useEffect(() => {
+            const unsubscribe = messageBroker.subscribe({
+              scope: key,
+              eventName: EventName.ON_CHANGE,
+              callback(data: EventPayload) {
+                const { payload } = data;
+                const { open } = payload;
+                setOpen(open);
+              },
+            });
+            return () => unsubscribe();
+          }, []);
+          return [open, close];
+        },
+        useInterceptOpen: (callback: (payload: EventPayload) => void) => {
+          messageBroker.interceptor({
+            scope: key,
+            eventName: EventName.ON_OPEN,
+            onPublish: (obj) => {
+              return {
+                eventName: obj.eventName,
+                payload: callback(obj.payload),
+              };
             },
           });
-          return () => unsubscribe();
-        }, []);
-        return [open, close];
-      },
-    };
+        },
+      };
+    })();
   });
   return obj;
 };
