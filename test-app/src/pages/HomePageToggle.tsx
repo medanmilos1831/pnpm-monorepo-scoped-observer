@@ -1,63 +1,76 @@
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { createToggleClient } from "../toggle";
-import { Form } from "antd";
+import { Drawer, Form, Modal } from "antd";
 
 const { useToggle, getToggleInstance } = createToggleClient();
 
-const ComponentOne = () => {
-  const [value, { onOpen, onClose, onToggle }] = useToggle({
-    id: "userModal",
-    initState: "off",
-  });
-
-  console.log("value component one", value);
-  return (
-    <>
-      <h1>Component One</h1>
-      <button onClick={onOpen}>Open</button>
-      <button onClick={onClose}>Close</button>
-      <button onClick={onToggle}>Toggle</button>
-    </>
-  );
+const SomeHeader = () => {
+  return <div>SomeHeader</div>;
 };
-const ComponentTwo = () => {
-  const [value] = useToggle({
-    id: "userModal",
-  });
+
+const ModalComponent = ({
+  id,
+  initState,
+}: {
+  id: string;
+  initState: "on" | "off";
+}) => {
+  const [value, { onClose }] = useToggle({ id, initState });
   return (
     <>
-      <p style={{ color: value === "on" ? "green" : "red" }}>Value: {value}</p>
+      <Modal open={value === "on"} onCancel={onClose}>
+        <div>ModalContent</div>
+      </Modal>
     </>
   );
 };
 
-const ComponentThree = () => {
-  const value = getToggleInstance("userModal");
-  console.log("useToggleInstance", value);
-  return <></>;
+const DrawerComponent = ({
+  id,
+  initState,
+}: {
+  id: string;
+  initState: "on" | "off";
+}) => {
+  const [value, { onClose }] = useToggle({ id, initState });
+  return (
+    <>
+      <Drawer open={value === "on"} onClose={onClose}>
+        <div>DrawerContent</div>
+      </Drawer>
+    </>
+  );
 };
-const ComponentFour = () => {
-  return <></>;
+
+const SomeComponent = () => {
+  const userModalInstance = getToggleInstance("userModal");
+  const userDrawerInstance = getToggleInstance("userDrawer");
+  return (
+    <>
+      <div>
+        <button onClick={() => userModalInstance?.onOpen()}>Open</button>
+        <button onClick={() => userModalInstance?.onClose()}>Close</button>
+        <button onClick={() => userModalInstance?.onToggle()}>Toggle</button>
+      </div>
+      <br />
+      <div>
+        <button onClick={() => userDrawerInstance?.onOpen()}>Open</button>
+        <button onClick={() => userDrawerInstance?.onClose()}>Close</button>
+        <button onClick={() => userDrawerInstance?.onToggle()}>Toggle</button>
+      </div>
+    </>
+  );
 };
+
 const HomePageToggle = () => {
-  // console.log("form", form);
-  // const userModal = useToggleState("userModal");
-  // console.log("userModal", userModal);
   return (
-    <div>
-      {/* <Form form={form}> */}
-      <ComponentOne />
-      <ComponentTwo />
-      <ComponentThree />
-      <ComponentFour />
-      {/* </Form> */}
-      {/* <SomeHeader />
+    <>
       <ModalComponent id="userModal" initState="off" />
       <ModalComponent id="authModal" initState="off" />
       <DrawerComponent id="userDrawer" initState="off" />
       <DrawerComponent id="authDrawer" initState="off" />
-      <SomeComponent /> */}
-    </div>
+      <SomeComponent />
+    </>
   );
 };
 

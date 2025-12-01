@@ -1,4 +1,4 @@
-import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
+import { quantumUiReact, type ISubscribe } from "@med1802/quantum-ui-react";
 
 enum toggleState {
   ON = "on",
