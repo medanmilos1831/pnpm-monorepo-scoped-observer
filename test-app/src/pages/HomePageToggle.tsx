@@ -5,12 +5,10 @@ import { Form } from "antd";
 const { useToggle, getToggleInstance } = createToggleClient();
 
 const ComponentOne = () => {
-  const [value, commands] = useToggle({
+  const [value, { onOpen, onClose, onToggle }] = useToggle({
     id: "userModal",
     initState: "off",
   });
-
-  const { onOpen, onClose, onToggle } = commands;
 
   console.log("value component one", value);
   return (
