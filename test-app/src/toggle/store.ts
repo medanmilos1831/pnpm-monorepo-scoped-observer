@@ -34,13 +34,22 @@ const createStore = (
         callback,
       });
     },
-    interceptor: (callback: any) => {
+    interceptor: ({
+      mutatePayload,
+      abort,
+    }: {
+      mutatePayload: (payload: any) => any;
+      abort?: () => void;
+    }) => {
       return messageBroker.interceptor({
         scope,
         eventName: EventName.ON_CHANGE,
-        onPublish: (payload) => {
-          console.log("INTERCEPTOR PAYLOAD", payload);
-          return payload;
+        onPublish: ({ eventName, payload }) => {
+          return false;
+          return {
+            eventName,
+            payload,
+          };
         },
       });
     },

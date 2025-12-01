@@ -17,12 +17,10 @@ const toggleObservers = createReactToggleObserver({
   },
 });
 const { modal } = toggleObservers;
-const { useToggle } = modal;
+const { useToggle, useInterceptor } = modal;
 
 const ModalComponent = () => {
   const [value, close, message] = useToggle();
-  console.log("MODAL MESSAGE", message);
-  console.log("MODAL VALUE", value);
   return (
     <>
       <Modal
@@ -41,6 +39,10 @@ const ModalComponent = () => {
 
 const SomeComponent = () => {
   const [counter, setCounter] = useState(0);
+  useInterceptor((payload: any) => {
+    console.log("SOME COMPONENT INTERCEPTOR PAYLOAD", payload);
+    return payload;
+  });
   return (
     <div>
       <h1>SomeComponent</h1>
