@@ -10,26 +10,24 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
       useEffect(() => {
         const unsubscribe = store.subscribe(EventName.ON_CHANGE, (data) => {
           const { payload } = data;
-          const { open, message } = payload;
+          const { open } = payload;
           setOpen(open);
         });
         return () => unsubscribe();
-      }, []);
+      });
       return [open, store.close, store.getMessage()] as [
         boolean,
         () => void,
         any
       ];
     },
-    useOnChange: (callback: any) => {
-      // const unsubscribe = messageBroker.interceptor({
-      //   scope,
-      //   eventName: EventName.ON_CHANGE,
-      //   onPublish: callback,
-      // });
-      // useEffect(() => {
-      //   return () => unsubscribe();
-      // }, []);
+    useInterceptor: (callback: any) => {
+      useEffect(() => {
+        const unsubscribe = store.interceptor(callback);
+        return () => {
+          unsubscribe();
+        };
+      });
     },
   };
 };

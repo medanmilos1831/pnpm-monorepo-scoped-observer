@@ -21,9 +21,18 @@ const { useToggle } = modal;
 
 const ModalComponent = () => {
   const [value, close, message] = useToggle();
+  console.log("MODAL MESSAGE", message);
+  console.log("MODAL VALUE", value);
   return (
     <>
-      <Modal open={value} onCancel={() => close()}>
+      <Modal
+        open={value}
+        onCancel={() =>
+          close({
+            name: "close message",
+          })
+        }
+      >
         <h1>Modal Content</h1>
       </Modal>
     </>

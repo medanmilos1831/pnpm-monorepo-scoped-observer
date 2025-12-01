@@ -16,7 +16,7 @@ type Channel = {
     eventName: EventName.ON_CHANGE,
     callback: (payload: EventPayload) => void
   ) => () => void;
-  useToggle: () => [boolean, () => void, message: any];
+  useToggle: () => [boolean, (message?: any) => void, message: any];
   open: (message?: any) => void;
   close: (message?: any) => void;
 };
