@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
 import type { createHandlers } from "./handlers";
 import { EventName } from "./types";
+import type { createStore } from "./store";
 
-const createReactHooks = (handlers: ReturnType<typeof createHandlers>) => {
+const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
     useToggle: () => {
       const [open, setOpen] = useState(false);
       useEffect(() => {
-        const unsubscribe = handlers.subscribe(EventName.ON_CHANGE, (data) => {
+        const unsubscribe = store.subscribe(EventName.ON_CHANGE, (data) => {
           const { payload } = data;
           const { open, message } = payload;
           setOpen(open);
         });
         return () => unsubscribe();
       }, []);
-      return [open, handlers.close, undefined] as [
+      return [open, store.close, store.getMessage()] as [
         boolean,
         () => void,
-        undefined
+        any
       ];
     },
     useOnChange: (callback: any) => {

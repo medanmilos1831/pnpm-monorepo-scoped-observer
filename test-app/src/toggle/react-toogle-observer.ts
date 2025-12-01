@@ -3,6 +3,7 @@ import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
 import type { Channel } from "./types";
 import { createHandlers } from "./handlers";
 import { createReactHooks } from "./react-hooks";
+import { createStore } from "./store";
 const createReactToggleObserver = <T extends { [key: string]: any }>(
   params: T
 ) => {
@@ -13,13 +14,13 @@ const createReactToggleObserver = <T extends { [key: string]: any }>(
   const messageBroker = createMessageBroker(scopedObserver);
   const obj = {} as Record<keyof T, Channel>;
   Object.keys(params).forEach((key) => {
-    const handlers = createHandlers(messageBroker, key);
-    const { useToggle } = createReactHooks(handlers);
+    const store = createStore(key, messageBroker);
+    const { useToggle } = createReactHooks(store);
     obj[key as keyof T] = (() => {
       return {
-        open: handlers.open,
-        close: handlers.close,
-        subscribe: handlers.subscribe,
+        open: store.open,
+        close: store.close,
+        subscribe: store.subscribe,
         useToggle,
       };
     })();

@@ -21,13 +21,10 @@ const { useToggle } = modal;
 
 const ModalComponent = () => {
   const [value, close, message] = useToggle();
-  //   console.log("MODAL MESSAGE", message);
-  //   console.log("MODAL VALUE", value);
   return (
     <>
-      <Modal open={value} onCancel={close}>
+      <Modal open={value} onCancel={() => close()}>
         <h1>Modal Content</h1>
-        {/* <div>Modal Content {message}</div> */}
       </Modal>
     </>
   );
@@ -50,8 +47,6 @@ const ButtonComponent = () => {
       onClick={() => {
         toggleObservers.modal.open({
           name: "John Doe",
-          age: 30,
-          email: "john.doe@example.com",
         });
       }}
     >
