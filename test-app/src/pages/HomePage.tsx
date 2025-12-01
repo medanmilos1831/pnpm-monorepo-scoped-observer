@@ -4,13 +4,20 @@ import { Button, Modal } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
 
+type EventPayload = {
+  payload: { open: boolean; message?: string };
+  eventName: string;
+  scope: string;
+};
+
 type Channel = {
-  publish: (eventName: string, payload: any) => void;
   subscribe: (
     eventName: string,
-    callback: (payload: any) => void
+    callback: (payload: EventPayload) => void
   ) => () => void;
-  useSubscribe: (eventName: string, callback: (payload: any) => void) => void;
+  useOnChange: () => [boolean, () => void];
+  open: (payload: { message?: string }) => void;
+  close: () => void;
 };
 
 const reactObserver = <T extends { [key: string]: any }>(params: T) => {
@@ -22,31 +29,47 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
   const messageBroker = createMessageBroker(scopedObserver);
   const obj = {} as Record<keyof T, Channel>;
   Object.keys(params).forEach((key) => {
+    function open(payload: { message?: string }) {
+      messageBroker.publish({
+        eventName: "onChange",
+        payload: {
+          open: true,
+          message: payload.message,
+        },
+      });
+    }
+    function close() {
+      messageBroker.publish({
+        eventName: "onChange",
+        payload: {
+          open: false,
+          message: undefined,
+        },
+      });
+    }
     obj[key as keyof T] = {
-      publish: (
-        eventName: string,
-        payload: { data: boolean; message: string }
-      ) => {
-        messageBroker.publish({
-          eventName,
-          payload,
-        });
-      },
+      open,
+      close,
       subscribe: (eventName: string, callback: (payload: any) => void) => {
         return messageBroker.subscribe({
           eventName,
           callback,
         });
       },
-      useSubscribe: (eventName: string, callback: (payload: any) => void) => {
-        const [value, setValue] = useState(false);
+      useOnChange: () => {
+        const [open, setOpen] = useState(false);
         useEffect(() => {
           const unsubscribe = messageBroker.subscribe({
-            eventName,
-            callback,
+            eventName: "onChange",
+            callback(data: EventPayload) {
+              const { payload } = data;
+              const { open } = payload;
+              setOpen(open);
+            },
           });
           return () => unsubscribe();
         }, []);
+        return [open, close];
       },
     };
   });
@@ -57,22 +80,16 @@ const toggleObserver = reactObserver({
   modal: {},
   drawer: {},
 });
+const { modal } = toggleObserver;
+const { useOnChange } = modal;
 
 const ModalComponent = () => {
-  const [open, setOpen] = useState(false);
-  //   useEffect(() => {
-  //     const unsubscribe = toggleObserver.useSubscribe(
-  //       "openModal",
-  //       ({ payload }) => {
-  //         console.log(payload);
-  //         setOpen(payload.data);
-  //       }
-  //     );
-  //     return unsubscribe;
-  //   }, []);
+  const [value, close] = useOnChange();
   return (
     <>
-      <Modal open={open}></Modal>
+      <Modal open={value} onCancel={close}>
+        <div>Modal Content</div>
+      </Modal>
     </>
   );
 };
@@ -89,10 +106,7 @@ const ButtonComponent = () => {
   return (
     <Button
       onClick={() => {
-        toggleObserver.modal.publish("openModal", {
-          data: true,
-          message: "Hello, world!",
-        });
+        toggleObserver.modal.open({ message: "Hello, world!" });
       }}
     >
       Open Modal
