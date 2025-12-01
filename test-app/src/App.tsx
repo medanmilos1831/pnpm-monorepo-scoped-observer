@@ -1,6 +1,4 @@
-import { HomePageCore } from "./pages/HomePageCore";
-import { HomePageReact } from "./pages/HomePageReact";
-import { HomePageToggle } from "./pages/HomePageToggle";
+import { HomePage } from "./pages/HomePage";
 
 function App() {
   return (
@@ -12,9 +10,7 @@ function App() {
         color: "white",
       }}
     >
-      {/* <HomePageCore /> */}
-      {/* <HomePageReact /> */}
-      <HomePageToggle />
+      <HomePage />
     </div>
   );
 }
