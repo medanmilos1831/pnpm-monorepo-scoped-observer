@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 
 enum EventName {
   ON_CHANGE = "onChange",
-  ON_OPEN = "onOpen",
-  ON_CLOSE = "onClose",
 }
 
 // OnChange payload
@@ -26,7 +24,7 @@ type EventPayload = {
 
 type Channel = {
   subscribe: (
-    eventName: string,
+    eventName: EventName.ON_CHANGE,
     callback: (payload: EventPayload) => void
   ) => () => void;
   useToggle: () => [boolean, () => void, message: any];
@@ -35,7 +33,7 @@ type Channel = {
   useOnChange: useOnChangeReturnType;
 };
 
-const reactObserver = <T extends { [key: string]: any }>(params: T) => {
+const toggleObserver = <T extends { [key: string]: any }>(params: T) => {
   const scopes: ScopeNode[] = Object.keys(params).map((scope) => ({
     scope,
   }));
@@ -67,17 +65,21 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
         },
       });
     }
+    function subscribe(
+      eventName: EventName.ON_CHANGE,
+      callback: (payload: any) => void
+    ) {
+      return messageBroker.subscribe({
+        scope: key,
+        eventName,
+        callback,
+      });
+    }
     obj[key as keyof T] = (() => {
       return {
         open,
         close,
-        subscribe: (eventName: string, callback: (payload: any) => void) => {
-          return messageBroker.subscribe({
-            scope: key,
-            eventName,
-            callback,
-          });
-        },
+        subscribe,
         useToggle: () => {
           const [open, setOpen] = useState(false);
           useEffect(() => {
@@ -116,16 +118,15 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
   return obj;
 };
 
-const toggleObserver = reactObserver({
+const toggleObservers = toggleObserver({
   modal: {},
   drawer: {},
 });
-const { modal } = toggleObserver;
+const { modal } = toggleObservers;
 const { useToggle, useOnChange } = modal;
 
 const ModalComponent = () => {
   const [value, close, message] = useToggle();
-  console.log("MESSAGE", message);
   return (
     <>
       <Modal open={value} onCancel={close}>
@@ -136,15 +137,18 @@ const ModalComponent = () => {
 };
 
 const SomeComponent = () => {
+  const [counter, setCounter] = useState(0);
   useOnChange((payload) => {
     return {
       ...payload,
-      message: payload.open ? "otvori" : "zatvori",
+      message: counter,
     };
   });
   return (
     <div>
       <h1>SomeComponent</h1>
+      <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
+      <p>Counter: {counter}</p>
     </div>
   );
 };
@@ -153,7 +157,7 @@ const ButtonComponent = () => {
   return (
     <Button
       onClick={() => {
-        toggleObserver.modal.open({ message: <>PRAR</> });
+        toggleObservers.modal.open({ message: <>PRAR</> });
       }}
     >
       Open Modal
