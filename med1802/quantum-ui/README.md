@@ -112,6 +112,7 @@ const module = quantumUi.createModule<S, A>(config);
 - `createEntity({ id, state })` — registers a new entity; duplicate `id` calls are ignored.
 - `getEntityById(id)` — returns the client object (type `A`) or `undefined`.
 - `destroyEntity(id)` — removes an entity from the module.
+- `hasEntity(id)` — returns `true` if an entity with the given `id` exists, `false` otherwise.
 - `onEntityLoad(id, callback)` — subscribes to load events for a specific entity id. Callback receives the client object.
 - `onEntityDestroy(id, callback)` — subscribes to destroy events for a specific entity id. Callback receives `undefined`.
 

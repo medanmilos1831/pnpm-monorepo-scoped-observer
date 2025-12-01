@@ -65,6 +65,9 @@ const createModuleInfrastructure = <S, A>(
         callback(undefined);
       }, `${ENTITY_EVENTS.ON_ENTITY_DESTROY}-${id}`);
     },
+    hasEntity: (id: string) => {
+      return modules.getState().has(id);
+    },
   };
 };
 

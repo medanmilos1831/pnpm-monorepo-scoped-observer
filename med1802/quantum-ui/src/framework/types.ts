@@ -39,7 +39,7 @@ export type IGetState<S = any> = () => S;
  * Type for subscribe method in createStore.
  */
 export type ISubscribe<S = any> = (
-  callback: (payload?: S) => void,
+  callback: (payload: S) => void,
   eventName?: string
 ) => () => void;
 
