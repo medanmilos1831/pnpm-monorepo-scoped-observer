@@ -6,14 +6,14 @@ const createHandlers = (
   scope: string
 ) => {
   let messageCurrent: any = undefined;
-  function open(payload?: { message?: string }) {
+  function open(message?: any) {
     messageCurrent = undefined;
     messageBroker.publish({
       scope,
       eventName: EventName.ON_CHANGE,
       payload: {
         open: true,
-        message: payload ? payload.message : undefined,
+        message: message ?? undefined,
       },
     });
   }
