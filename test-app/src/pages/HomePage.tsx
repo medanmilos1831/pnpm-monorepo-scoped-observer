@@ -28,7 +28,7 @@ type Channel = {
     callback: (payload: EventPayload) => void
   ) => () => void;
   useToggle: () => [boolean, () => void, message: any];
-  open: (payload: { message?: any }) => void;
+  open: (payload?: { message?: any }) => void;
   close: () => void;
   useOnChange: useOnChangeReturnType;
 };
@@ -43,18 +43,23 @@ const toggleObserver = <T extends { [key: string]: any }>(params: T) => {
   const obj = {} as Record<keyof T, Channel>;
   Object.keys(params).forEach((key) => {
     let messageCurrent: any;
-    function open(payload: { message?: string }) {
+    function open(payload?: { message?: string }) {
+      params[key].logger({
+        open: true,
+        message: payload ? payload.message : undefined,
+      });
       messageCurrent = undefined;
       messageBroker.publish({
         scope: key,
         eventName: EventName.ON_CHANGE,
         payload: {
           open: true,
-          message: payload.message,
+          message: payload ? payload.message : undefined,
         },
       });
     }
     function close() {
+      params[key].logger({ open: false, message: undefined });
       messageCurrent = undefined;
       messageBroker.publish({
         scope: key,
@@ -119,8 +124,16 @@ const toggleObserver = <T extends { [key: string]: any }>(params: T) => {
 };
 
 const toggleObservers = toggleObserver({
-  modal: {},
-  drawer: {},
+  modal: {
+    logger: (params: any) => {
+      console.log("MODAL", params);
+    },
+  },
+  drawer: {
+    logger: (params: any) => {
+      console.log("DRAWER", params);
+    },
+  },
 });
 const { modal } = toggleObservers;
 const { useToggle, useOnChange } = modal;
@@ -158,7 +171,7 @@ const ButtonComponent = () => {
   return (
     <Button
       onClick={() => {
-        toggleObservers.modal.open({ message: <>PRAR</> });
+        toggleObservers.modal.open({ message: "kita" });
       }}
     >
       Open Modal
