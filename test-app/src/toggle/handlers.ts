@@ -19,6 +19,7 @@ const createHandlers = (
   }
   function close() {
     messageCurrent = undefined;
+    console.log("CLOSE", messageCurrent);
     messageBroker.publish({
       scope,
       eventName: EventName.ON_CHANGE,

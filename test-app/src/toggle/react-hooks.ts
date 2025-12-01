@@ -2,10 +2,12 @@ import { useState } from "react";
 import type { createMessageBroker } from "../broker";
 import { useEffect } from "react";
 import { EventName, type EventPayload } from "./types";
+import type { createHandlers } from "./handlers";
 
 const createReactHooks = (
   messageBroker: ReturnType<typeof createMessageBroker>,
-  scope: string
+  scope: string,
+  handlers: ReturnType<typeof createHandlers>
 ) => {
   return {
     useToggle: () => {
@@ -17,13 +19,16 @@ const createReactHooks = (
           callback(data: EventPayload) {
             const { payload } = data;
             const { open, message } = payload;
-            // messageCurrent = message;
             setOpen(open);
           },
         });
         return () => unsubscribe();
       }, []);
-      return [open, close, undefined] as [boolean, () => void, undefined];
+      return [open, handlers.close, undefined] as [
+        boolean,
+        () => void,
+        undefined
+      ];
     },
     useOnChange: (callback: any) => {
       const unsubscribe = messageBroker.interceptor({
