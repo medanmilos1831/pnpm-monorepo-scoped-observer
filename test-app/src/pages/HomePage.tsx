@@ -127,6 +127,7 @@ const { useToggle, useOnChange } = modal;
 
 const ModalComponent = () => {
   const [value, close, message] = useToggle();
+  console.log("MESSAGE", message);
   return (
     <>
       <Modal open={value} onCancel={close}>
