@@ -17,8 +17,8 @@ type Channel = {
     callback: (payload: EventPayload) => void
   ) => () => void;
   useToggle: () => [boolean, () => void, message: any];
-  open: (payload?: { message?: any }) => void;
-  close: () => void;
+  open: (message?: any) => void;
+  close: (message?: any) => void;
 };
 
 export type { Channel, EventPayload };

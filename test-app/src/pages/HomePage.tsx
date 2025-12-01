@@ -49,11 +49,9 @@ const ButtonComponent = () => {
     <Button
       onClick={() => {
         toggleObservers.modal.open({
-          message: {
-            name: "John Doe",
-            age: 30,
-            email: "john.doe@example.com",
-          },
+          name: "John Doe",
+          age: 30,
+          email: "john.doe@example.com",
         });
       }}
     >
