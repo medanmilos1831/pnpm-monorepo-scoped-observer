@@ -1,8 +1,7 @@
 import { createMessageBroker } from "../broker";
 import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
 import { Button, Modal } from "antd";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 enum EventName {
   ON_CHANGE = "onChange",
@@ -10,8 +9,17 @@ enum EventName {
   ON_CLOSE = "onClose",
 }
 
+// OnChange payload
+type onChangePayload = {
+  open: boolean;
+  message?: any;
+};
+type useOnChangeParams = (payload: onChangePayload) => void;
+type useOnChangeReturnType = (payload: useOnChangeParams) => void;
+// END :: OnChange payload
+
 type EventPayload = {
-  payload: { open: boolean; message?: string };
+  payload: onChangePayload;
   eventName: string;
   scope: string;
 };
@@ -21,10 +29,10 @@ type Channel = {
     eventName: string,
     callback: (payload: EventPayload) => void
   ) => () => void;
-  useOnChange: () => [boolean, () => void];
-  open: (payload: { message?: string }) => void;
+  useToggle: () => [boolean, () => void, message: any];
+  open: (payload: { message?: any }) => void;
   close: () => void;
-  useInterceptOpen: any;
+  useOnChange: useOnChangeReturnType;
 };
 
 const reactObserver = <T extends { [key: string]: any }>(params: T) => {
@@ -36,10 +44,12 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
   const messageBroker = createMessageBroker(scopedObserver);
   const obj = {} as Record<keyof T, Channel>;
   Object.keys(params).forEach((key) => {
+    let messageCurrent: any;
     function open(payload: { message?: string }) {
+      messageCurrent = undefined;
       messageBroker.publish({
         scope: key,
-        eventName: EventName.ON_OPEN,
+        eventName: EventName.ON_CHANGE,
         payload: {
           open: true,
           message: payload.message,
@@ -47,7 +57,9 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
       });
     }
     function close() {
+      messageCurrent = undefined;
       messageBroker.publish({
+        scope: key,
         eventName: EventName.ON_CHANGE,
         payload: {
           open: false,
@@ -56,22 +68,6 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
       });
     }
     obj[key as keyof T] = (() => {
-      messageBroker.interceptor({
-        scope: key,
-        eventName: EventName.ON_OPEN,
-        onPublish: (obj) => {
-          console.log("INNER", obj);
-          return {
-            eventName: EventName.ON_CHANGE,
-            payload: {
-              open: true,
-              message: {
-                ...obj.payload,
-              },
-            },
-          };
-        },
-      });
       return {
         open,
         close,
@@ -82,7 +78,7 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
             callback,
           });
         },
-        useOnChange: () => {
+        useToggle: () => {
           const [open, setOpen] = useState(false);
           useEffect(() => {
             const unsubscribe = messageBroker.subscribe({
@@ -90,18 +86,19 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
               eventName: EventName.ON_CHANGE,
               callback(data: EventPayload) {
                 const { payload } = data;
-                const { open } = payload;
+                const { open, message } = payload;
+                messageCurrent = message;
                 setOpen(open);
               },
             });
             return () => unsubscribe();
           }, []);
-          return [open, close];
+          return [open, close, messageCurrent];
         },
-        useInterceptOpen: (callback: (payload: EventPayload) => void) => {
-          messageBroker.interceptor({
+        useOnChange: (callback) => {
+          const unsubscribe = messageBroker.interceptor({
             scope: key,
-            eventName: EventName.ON_OPEN,
+            eventName: EventName.ON_CHANGE,
             onPublish: (obj) => {
               return {
                 eventName: obj.eventName,
@@ -109,6 +106,9 @@ const reactObserver = <T extends { [key: string]: any }>(params: T) => {
               };
             },
           });
+          useEffect(() => {
+            return () => unsubscribe();
+          }, []);
         },
       };
     })();
@@ -121,20 +121,27 @@ const toggleObserver = reactObserver({
   drawer: {},
 });
 const { modal } = toggleObserver;
-const { useOnChange } = modal;
+const { useToggle, useOnChange } = modal;
 
 const ModalComponent = () => {
-  const [value, close] = useOnChange();
+  const [value, close, message] = useToggle();
+  console.log("MESSAGE", message);
   return (
     <>
       <Modal open={value} onCancel={close}>
-        <div>Modal Content</div>
+        <div>Modal Content {message}</div>
       </Modal>
     </>
   );
 };
 
 const SomeComponent = () => {
+  useOnChange((payload) => {
+    return {
+      ...payload,
+      message: payload.open ? "otvori" : "zatvori",
+    };
+  });
   return (
     <div>
       <h1>SomeComponent</h1>
@@ -146,7 +153,7 @@ const ButtonComponent = () => {
   return (
     <Button
       onClick={() => {
-        toggleObserver.modal.open({ message: "Hello, world!" });
+        toggleObserver.modal.open({ message: <>PRAR</> });
       }}
     >
       Open Modal
@@ -157,9 +164,9 @@ const ButtonComponent = () => {
 const HomePage = () => {
   return (
     <div>
+      <SomeComponent />
       <h1>HomePage</h1>
       <ModalComponent />
-      <SomeComponent />
       <ButtonComponent />
     </div>
   );

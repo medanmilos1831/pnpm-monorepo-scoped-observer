@@ -39,6 +39,9 @@ const createMessageBroker = (observer: scopedObserverType) => {
       if (onSubscribe) {
         subscribeInterceptors.set(key, onSubscribe);
       }
+      return () => {
+        publishInterceptors.delete(key);
+      };
     },
     publish({ scope, eventName, payload }: scopedObserverDispatchType) {
       let currentEventName = eventName;
