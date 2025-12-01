@@ -1,26 +1,16 @@
-import { useState } from "react";
-import type { createMessageBroker } from "../broker";
-import { useEffect } from "react";
-import { EventName, type EventPayload } from "./types";
+import { useEffect, useState } from "react";
 import type { createHandlers } from "./handlers";
+import { EventName } from "./types";
 
-const createReactHooks = (
-  messageBroker: ReturnType<typeof createMessageBroker>,
-  scope: string,
-  handlers: ReturnType<typeof createHandlers>
-) => {
+const createReactHooks = (handlers: ReturnType<typeof createHandlers>) => {
   return {
     useToggle: () => {
       const [open, setOpen] = useState(false);
       useEffect(() => {
-        const unsubscribe = messageBroker.subscribe({
-          scope,
-          eventName: EventName.ON_CHANGE,
-          callback(data: EventPayload) {
-            const { payload } = data;
-            const { open, message } = payload;
-            setOpen(open);
-          },
+        const unsubscribe = handlers.subscribe(EventName.ON_CHANGE, (data) => {
+          const { payload } = data;
+          const { open, message } = payload;
+          setOpen(open);
         });
         return () => unsubscribe();
       }, []);
@@ -31,14 +21,14 @@ const createReactHooks = (
       ];
     },
     useOnChange: (callback: any) => {
-      const unsubscribe = messageBroker.interceptor({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        onPublish: callback,
-      });
-      useEffect(() => {
-        return () => unsubscribe();
-      }, []);
+      // const unsubscribe = messageBroker.interceptor({
+      //   scope,
+      //   eventName: EventName.ON_CHANGE,
+      //   onPublish: callback,
+      // });
+      // useEffect(() => {
+      //   return () => unsubscribe();
+      // }, []);
     },
   };
 };

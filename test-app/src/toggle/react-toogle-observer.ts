@@ -14,7 +14,7 @@ const createReactToggleObserver = <T extends { [key: string]: any }>(
   const obj = {} as Record<keyof T, Channel>;
   Object.keys(params).forEach((key) => {
     const handlers = createHandlers(messageBroker, key);
-    const { useToggle } = createReactHooks(messageBroker, key, handlers);
+    const { useToggle } = createReactHooks(handlers);
     obj[key as keyof T] = (() => {
       return {
         open: handlers.open,
