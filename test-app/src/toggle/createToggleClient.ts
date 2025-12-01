@@ -53,17 +53,6 @@ const createToggleClient = () => {
       };
     },
   });
-  const entityInstance = (entity: IToggleClient) => {
-    return {
-      onChange: (callback: (payload: toggleStateType) => void) => {
-        return entity.onChange(callback);
-      },
-      onOpen: entity.onOpen,
-      onClose: entity.onClose,
-      onToggle: entity.onToggle,
-      getState: entity.getState,
-    };
-  };
   return {
     useToggle: ({
       id,
@@ -98,7 +87,15 @@ const createToggleClient = () => {
 
     getToggleInstance: (id: string) => {
       const entity = toggleModule.getEntityById(id)!;
-      return entity ? entityInstance(entity) : undefined;
+      return entity
+        ? {
+            onChange: entity.onChange,
+            onOpen: entity.onOpen,
+            onClose: entity.onClose,
+            onToggle: entity.onToggle,
+            getState: entity.getState,
+          }
+        : undefined;
     },
   };
 };
