@@ -12,7 +12,6 @@ directly inside components.
 - `useEntitySelector(id)` — returns the client object produced by `clientSchema`
   and re-renders when the entity loads/destroys
 - `useCreateEntity({ id, state })` — create/destroy entities inside component lifecycles
-- Works with `useSyncExternalStore` under the hood for concurrent-safe updates
 
 ---
 
@@ -27,7 +26,6 @@ npm install @med1802/quantum-ui-react
 ## Quick Start
 
 ```tsx
-import { useSyncExternalStore } from "react";
 import { quantumUiReact } from "@med1802/quantum-ui-react";
 
 enum ToggleState {
@@ -45,35 +43,33 @@ interface IToggleClient {
   onChangeSubscriber: (notify: () => void) => () => void;
 }
 
-const { useEntitySelector, useCreateEntity } = quantumUiReact.createModule<
-  ToggleStateType,
-  IToggleClient
->({
-  name: "toggle",
-  onCreateEntity: ({ id, state }) => ({
-    id,
-    state,
-  }),
-  clientSchema: (store) => ({
-    onOpen: () => {
-      store.setState(() => ToggleState.ON);
-    },
-    onClose: () => {
-      store.setState(() => ToggleState.OFF);
-    },
-    onToggle: () => {
-      store.setState((prevState) =>
-        prevState === ToggleState.ON ? ToggleState.OFF : ToggleState.ON
-      );
-    },
-    getState: () => store.getState(),
-    onChangeSubscriber: (notify) => {
-      return store.subscribe(() => {
-        notify();
-      });
-    },
-  }),
-});
+const { useEntitySelector, useCreateEntity, useSyncExternalStore } =
+  quantumUiReact.createModule<ToggleStateType, IToggleClient>({
+    name: "toggle",
+    onCreateEntity: ({ id, state }) => ({
+      id,
+      state,
+    }),
+    clientSchema: (store) => ({
+      onOpen: () => {
+        store.setState(() => ToggleState.ON);
+      },
+      onClose: () => {
+        store.setState(() => ToggleState.OFF);
+      },
+      onToggle: () => {
+        store.setState((prevState) =>
+          prevState === ToggleState.ON ? ToggleState.OFF : ToggleState.ON
+        );
+      },
+      getState: () => store.getState(),
+      onChangeSubscriber: (notify) => {
+        return store.subscribe(() => {
+          notify();
+        });
+      },
+    }),
+  });
 
 const HomePageReact = () => {
   useCreateEntity({ id: "toggleOne", state: ToggleState.ON });
@@ -115,7 +111,12 @@ The returned module exposes:
 - `useCreateEntity({ id, state })`  
   React hook that creates the entity on mount and destroys it on unmount.
 
-- `createEntity`, `getEntityById`, `destroyEntity`, `onEntityLoad`, `onEntityDestroy`  
+- `useSyncExternalStore`  
+  Exported `useSyncExternalStore` shim from `use-sync-external-store` package for
+  concurrent-safe state subscriptions. Use this instead of React's built-in version
+  for better compatibility across React versions.
+
+- `createEntity`, `getEntityById`, `destroyEntity`, `hasEntity`, `onEntityLoad`, `onEntityDestroy`  
   Direct pass-through helpers from the underlying Quantum UI module if you need
   to manage entities outside of React hooks.
 

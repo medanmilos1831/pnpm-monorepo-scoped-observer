@@ -41,11 +41,7 @@ importers:
     dependencies:
       '@med1802/quantum-ui-react':
         specifier: ^2.1.1
-        version: 2.1.1(react@18.3.1)
-    devDependencies:
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        version: 2.1.1(react@19.2.0)
 
   med1802/quantum-ui:
     dependencies:
@@ -59,8 +55,8 @@ importers:
   med1802/quantum-ui-react:
     dependencies:
       '@med1802/quantum-ui':
-        specifier: ^2.1.0
-        version: 2.1.0
+        specifier: ^2.1.1
+        version: 2.1.1
       use-sync-external-store:
         specifier: ^1.6.0
         version: 1.6.0(react@19.2.0)
@@ -94,6 +90,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
+      use-sync-external-store:
+        specifier: ^1.6.0
+        version: 1.6.0(react@19.2.0)
     devDependencies:
       '@types/node':
         specifier: ^24.10.1
@@ -447,6 +446,9 @@ packages:
 
   '@med1802/quantum-ui@2.1.0':
     resolution: {integrity: sha512-ySIlavL33tHP2NuNw8wA4jYiC4Q+b4hZQn1wcKzXUEcVYqpP9awcaIi642owXWAHKXr02tXoEpiLvpY72FSTKw==}
+
+  '@med1802/quantum-ui@2.1.1':
+    resolution: {integrity: sha512-XAVnQVT+l+q4r94Cajha/Hha9rcvTa+Z8b408Kh2op31S0t7An869RxFR9Plf3J//LjAynzSCfWWU1k33mZdYw==}
 
   '@med1802/scoped-observer-message-broker@2.0.2':
     resolution: {integrity: sha512-b9EllvQcI3X9ygRHIudzybqMd+aus6ByWTJnrOb/hHTwDlIDvNvrtY9cPoXGwmSaxw1gy/d4TNCWWyuUFTxCAw==}
@@ -1435,19 +1437,24 @@ snapshots:
 
   '@med1802/quantum-ui-react@2.0.1(react@19.2.0)':
     dependencies:
+      '@med1802/quantum-ui': 2.1.1
+      use-sync-external-store: 1.6.0(react@19.2.0)
+    transitivePeerDependencies:
+      - react
+
+  '@med1802/quantum-ui-react@2.1.1(react@19.2.0)':
+    dependencies:
       '@med1802/quantum-ui': 2.1.0
       use-sync-external-store: 1.6.0(react@19.2.0)
     transitivePeerDependencies:
       - react
 
-  '@med1802/quantum-ui-react@2.1.1(react@18.3.1)':
-    dependencies:
-      '@med1802/quantum-ui': 2.1.0
-      use-sync-external-store: 1.6.0(react@18.3.1)
-    transitivePeerDependencies:
-      - react
-
   '@med1802/quantum-ui@2.1.0':
+    dependencies:
+      '@med1802/scoped-observer': 1.1.4
+      '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
+
+  '@med1802/quantum-ui@2.1.1':
     dependencies:
       '@med1802/scoped-observer': 1.1.4
       '@med1802/scoped-observer-message-broker': 2.0.2(@med1802/scoped-observer@1.1.4)
@@ -2209,10 +2216,6 @@ snapshots:
       browserslist: 4.25.3
       escalade: 3.2.0
       picocolors: 1.1.1
-
-  use-sync-external-store@1.6.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
 
   use-sync-external-store@1.6.0(react@19.2.0):
     dependencies:
