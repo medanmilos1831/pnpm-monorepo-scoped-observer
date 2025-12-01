@@ -65,33 +65,37 @@ const createToggleClient = () => {
     };
   };
   return {
-    useCreateToggle: (params: { id: string; initState: toggleStateType }) => {
-      const hasEntity = toggleModule.hasEntity(params.id);
-
-      if (hasEntity) {
-        console.warn(
-          `Toggle ${params.id} already exists. State will not be reset.`
-        );
+    useToggle: ({
+      id,
+      initState,
+    }: {
+      id: string;
+      initState?: toggleStateType;
+    }) => {
+      const hasEntity = toggleModule.hasEntity(id);
+      if (!hasEntity && !initState) {
+        throw new Error(`Toggle ${id} not found`);
       }
-      const { id, initState } = params;
-      toggleModule.useCreateEntity({ id, state: initState });
-      const value = !hasEntity
-        ? entityInstance(toggleModule.getEntityById(id)!)
-        : undefined;
-      return value as IToggleClient;
-    },
-    useToggleInstance: (id: string) => {
+      toggleModule.useCreateEntity({ id, state: initState ?? toggleState.OFF });
       const entity = toggleModule.getEntityById(id)!;
-      return entity ? entityInstance(entity) : undefined;
-    },
-    useToggleState: (id: string) => {
-      const entity = toggleModule.getEntityById(id)!;
-      if (!entity) {
-        return undefined;
-      }
       const value = useSyncExternalStore(entity.onChange, entity.getState);
-      return value;
+      return [
+        value,
+        {
+          onOpen: entity.onOpen,
+          onClose: entity.onClose,
+          onToggle: entity.onToggle,
+        },
+      ] as [
+        toggleState,
+        {
+          onOpen: () => void;
+          onClose: () => void;
+          onToggle: () => void;
+        }
+      ];
     },
+
     getToggleInstance: (id: string) => {
       const entity = toggleModule.getEntityById(id)!;
       return entity ? entityInstance(entity) : undefined;

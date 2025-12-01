@@ -2,17 +2,17 @@ import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { createToggleClient } from "../toggle";
 import { Form } from "antd";
 
-const { useCreateToggle, useToggleState, useToggleInstance } =
-  createToggleClient();
+const { useToggle, getToggleInstance } = createToggleClient();
 
 const ComponentOne = () => {
-  const value = useCreateToggle({
+  const [value, commands] = useToggle({
     id: "userModal",
     initState: "off",
   });
 
+  const { onOpen, onClose, onToggle } = commands;
+
   console.log("value component one", value);
-  const { onOpen, onClose, onToggle } = value;
   return (
     <>
       <h1>Component One</h1>
@@ -23,30 +23,25 @@ const ComponentOne = () => {
   );
 };
 const ComponentTwo = () => {
-  // const value = useToggleState("userModal");
-  const value = useCreateToggle({
+  const [value] = useToggle({
     id: "userModal",
-    initState: "off",
   });
-  console.log("value component two", value);
   return (
     <>
-      {/* <p style={{ color: value === "on" ? "green" : "red" }}>Value: {value}</p> */}
+      <p style={{ color: value === "on" ? "green" : "red" }}>Value: {value}</p>
     </>
   );
 };
 
 const ComponentThree = () => {
-  const value = useToggleInstance("userModal");
+  const value = getToggleInstance("userModal");
   console.log("useToggleInstance", value);
   return <></>;
 };
 const ComponentFour = () => {
-  // console.log("e", e);
   return <></>;
 };
 const HomePageToggle = () => {
-  const [form] = Form.useForm();
   // console.log("form", form);
   // const userModal = useToggleState("userModal");
   // console.log("userModal", userModal);

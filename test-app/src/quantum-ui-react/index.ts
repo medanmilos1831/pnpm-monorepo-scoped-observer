@@ -49,6 +49,7 @@ const quantumUiReact = (() => {
         onEntityLoad: createModule.onEntityLoad,
         onEntityDestroy: createModule.onEntityDestroy,
         hasEntity: createModule.hasEntity,
+        destroyEntity: createModule.destroyEntity,
       };
     },
   };
