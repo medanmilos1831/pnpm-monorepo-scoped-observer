@@ -50,6 +50,7 @@ const quantumUiReact = (() => {
         onEntityDestroy: createModule.onEntityDestroy,
         hasEntity: createModule.hasEntity,
         destroyEntity: createModule.destroyEntity,
+        useSyncExternalStore,
       };
     },
   };

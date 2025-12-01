@@ -1,4 +1,3 @@
-import { useSyncExternalStore } from "use-sync-external-store/shim";
 import { quantumUiReact, type ISubscribe } from "../quantum-ui-react";
 
 enum toggleState {
@@ -67,7 +66,10 @@ const createToggleClient = () => {
       }
       toggleModule.useCreateEntity({ id, state: initState ?? toggleState.OFF });
       const entity = toggleModule.getEntityById(id)!;
-      const value = useSyncExternalStore(entity.onChange, entity.getState);
+      const value = toggleModule.useSyncExternalStore(
+        entity.onChange,
+        entity.getState
+      );
       return [
         value,
         {
