@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import type { createHandlers } from "./handlers";
-import { EventName } from "./types";
 import type { createStore } from "./store";
+import { EventName } from "./types";
 
 const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
@@ -10,8 +9,7 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
       useEffect(() => {
         const unsubscribe = store.subscribe(EventName.ON_CHANGE, (data) => {
           const { payload } = data;
-          const { open, message } = payload;
-          // console.log("USE TOGGLE SUBSCRIBE", message);
+          const { open } = payload;
           setOpen(open);
         });
         return () => unsubscribe();
