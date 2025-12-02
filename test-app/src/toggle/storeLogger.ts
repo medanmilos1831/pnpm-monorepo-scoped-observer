@@ -1,6 +1,6 @@
 import type { StoreType } from "./types";
 
-const createLogger = (store: StoreType, active: boolean) => {
+const createStoreLogger = (store: StoreType, active: boolean) => {
   return {
     logStore: <T extends (...args: any[]) => any>(callback: T): T => {
       return ((...args: Parameters<T>) => {
@@ -19,4 +19,4 @@ const createLogger = (store: StoreType, active: boolean) => {
   };
 };
 
-export { createLogger };
+export { createStoreLogger };

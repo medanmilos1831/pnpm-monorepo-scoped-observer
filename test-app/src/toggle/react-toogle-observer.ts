@@ -14,13 +14,14 @@ const createReactToggleObserver = (config: storeConfig) => {
       if (!store.hasModel(id)) {
         throw new Error(`Toggle ${id} not found`);
       }
-      const model = store.getModel(id);
+      const { open, close, onChange, getMessage, getValue } =
+        store.getModel(id);
       return {
-        open: model.open,
-        close: model.close,
-        onChange: model.onChange,
-        getMessage: model.getMessage,
-        getValue: model.getValue,
+        open,
+        close,
+        onChange,
+        getMessage,
+        getValue,
       };
     },
     deleteToggle: (id: string) => {

@@ -1,4 +1,4 @@
-import { createLogger } from "./logger";
+import { createStoreLogger } from "./storeLogger";
 import { toggleModel } from "./toggleModel";
 import {
   type storeConfig,
@@ -8,11 +8,11 @@ import {
 
 const createStore = (config: storeConfig) => {
   const store = new Map<string, StoreModel>();
-  const logger = createLogger(store, config.log);
+  const logger = createStoreLogger(store, config.log);
   return {
     createModel: logger.logStore((params: toggleConfigType) => {
       if (store.has(params.id)) return;
-      const model = toggleModel(params);
+      const model = toggleModel(params, config.log);
       store.set(params.id, {
         model,
       });

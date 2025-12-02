@@ -1,21 +1,24 @@
 import { createScopedObserver } from "@med1802/scoped-observer";
+import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 import {
   EventName,
   type EventPayload,
   type InterceptorAction,
   type toggleConfigType,
 } from "./types";
-import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
+import { createModelLogger } from "./modellogger";
 
-const toggleModel = (params: toggleConfigType) => {
+const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
   const scopedObserver = createScopedObserver();
   const messageBroker = createMessageBroker(scopedObserver);
+  const logger = createModelLogger(params.id, activeLogger);
   let lastMessage = undefined as any;
   let initialState = params.initialState;
   let id = params.id;
 
   function publishHandler(open: boolean, message?: any) {
     lastMessage = message;
+    initialState = open;
     messageBroker.publish({
       eventName: EventName.ON_CHANGE,
       payload: {
@@ -23,14 +26,6 @@ const toggleModel = (params: toggleConfigType) => {
         message,
       },
     });
-
-    // config.logger({
-    //   eventName: EventName.ON_CHANGE,
-    //   payload: {
-    //     open,
-    //     message,
-    //   },
-    // });
   }
   function handleInterceptor(
     callback: (payload: any) => boolean | { payload: any },
@@ -54,10 +49,10 @@ const toggleModel = (params: toggleConfigType) => {
   }
   return {
     open: (message?: any) => {
-      publishHandler(true, message);
+      logger.logAction(publishHandler, true)(true, message);
     },
     close: (message?: any) => {
-      publishHandler(false, message);
+      logger.logAction(publishHandler, false)(false, message);
     },
     subscribe: (
       eventName: EventName.ON_CHANGE,
@@ -92,14 +87,10 @@ const toggleModel = (params: toggleConfigType) => {
         },
       });
     },
-    onChangeSync: (notify: () => void) => {
+    onChangeSync: (callback: () => void) => {
       return messageBroker.subscribe({
         eventName: EventName.ON_CHANGE,
-        callback: ({ payload }: EventPayload) => {
-          const { open } = payload;
-          initialState = open;
-          notify();
-        },
+        callback,
       });
     },
     onChange: (callback: (payload: EventPayload) => void) => {

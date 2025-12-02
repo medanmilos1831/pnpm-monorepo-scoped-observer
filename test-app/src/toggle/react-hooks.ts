@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
-import type { toggleConfigType } from "./types";
+import type { InterceptorAction, toggleConfigType } from "./types";
 
 const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
@@ -29,7 +29,7 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
     }: {
       id: string;
       callback: (payload: any) => boolean | { payload: any };
-      action?: "open" | "close";
+      action?: InterceptorAction;
     }) => {
       const model = store.getModel(id);
       useEffect(() => {
