@@ -7,12 +7,12 @@ import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 const toggleObservers = createReactToggleObserver({
   modal: {
     logger: (params: any) => {
-      //   console.log("MODAL LOGGER", params);
+      console.log("MODAL LOGGER", params);
     },
   },
   drawer: {
     logger: (params: any) => {
-      //   console.log("DRAWER LOGGER", params);
+      console.log("DRAWER LOGGER", params);
     },
   },
 });
@@ -40,9 +40,11 @@ const ModalComponent = () => {
 const SomeComponent = () => {
   const [counter, setCounter] = useState(0);
   useInterceptor((payload: any) => {
-    console.log("SOME COMPONENT INTERCEPTOR PAYLOAD", payload);
-    return payload;
-  });
+    return {
+      ...payload,
+      counter: counter + 1,
+    };
+  }, "open");
   return (
     <div>
       <h1>SomeComponent</h1>

@@ -1,5 +1,5 @@
 import { createMessageBroker } from "../broker";
-import { EventName, type EventPayload } from "./types";
+import { EventName, type EventPayload, type InterceptorAction } from "./types";
 
 const createStore = (
   scope: string,
@@ -16,6 +16,26 @@ const createStore = (
         message,
       },
     });
+  }
+  function handleInterceptor(
+    callback: (payload: any) => boolean | { payload: any },
+    payload: any,
+    eventName: string
+  ) {
+    const result = callback(payload.message);
+    if (result === false && typeof result === "boolean") {
+      return false;
+    }
+
+    let mutatedPayload = {
+      ...payload,
+      message: result,
+    };
+    lastMessage = mutatedPayload.message;
+    return {
+      eventName,
+      payload: mutatedPayload,
+    };
   }
   return {
     open: (message?: any) => {
@@ -34,18 +54,24 @@ const createStore = (
         callback,
       });
     },
-    interceptor: ({
-      mutatePayload,
-      abort,
-    }: {
-      mutatePayload: (payload: any) => any;
-      abort?: () => void;
-    }) => {
+    interceptor: (
+      callback: (payload: any) => boolean | { payload: any },
+      action: InterceptorAction
+    ) => {
       return messageBroker.interceptor({
         scope,
         eventName: EventName.ON_CHANGE,
         onPublish: ({ eventName, payload }) => {
-          return false;
+          let obj = {
+            open: true,
+            close: false,
+          };
+          if (action && obj[action] === payload.open) {
+            return handleInterceptor(callback, payload, eventName);
+          }
+          if (!action) {
+            return handleInterceptor(callback, payload, eventName);
+          }
           return {
             eventName,
             payload,
