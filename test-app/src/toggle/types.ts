@@ -53,5 +53,9 @@ export interface IToggleModel {
   getValue: () => boolean;
 }
 
+export type storeConfig = {
+  onCreate: (params: toggleConfigType) => toggleConfigType;
+};
+
 export type { Channel, EventPayload };
 export { EventName };

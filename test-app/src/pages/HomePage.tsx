@@ -3,13 +3,11 @@ import { Button, Modal } from "antd";
 
 const toggleObservers = createReactToggleObserver({
   onCreate(params: { id: string; initialState: boolean }) {
-    console.log("onCreate", params);
     return params;
   },
 });
 
-const { useToggle } = toggleObservers;
-
+const { useToggle } = toggleObservers.reactHooks;
 const ModalComponent = (params: { id: string; initialState: boolean }) => {
   const [isOpen, close, message] = useToggle(params);
   return (
@@ -23,7 +21,17 @@ const ModalComponent = (params: { id: string; initialState: boolean }) => {
 
 const SomeComponent = () => {
   const toggle = toggleObservers.getToggleClient("test");
-  return <Button onClick={() => toggle.open()}>Open Modal</Button>;
+  return (
+    <Button
+      onClick={() =>
+        toggle.open({
+          message: "Hello from button!",
+        })
+      }
+    >
+      Open Modal
+    </Button>
+  );
 };
 
 const HomePage = () => {

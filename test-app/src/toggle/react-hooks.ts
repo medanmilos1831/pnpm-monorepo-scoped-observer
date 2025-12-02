@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
 import type { toggleConfigType } from "./types";
@@ -29,13 +29,13 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
       callback: (payload: any) => boolean | { payload: any };
       action?: "open" | "close";
     }) => {
-      // const slice = store.getToggle(sliceId);
-      // useEffect(() => {
-      //   const unsubscribe = slice.interceptor(callback, action);
-      //   return () => {
-      //     unsubscribe();
-      //   };
-      // });
+      const slice = store.getToggle(sliceId);
+      useEffect(() => {
+        const unsubscribe = slice.interceptor(callback, action);
+        return () => {
+          unsubscribe();
+        };
+      });
     },
   };
 };

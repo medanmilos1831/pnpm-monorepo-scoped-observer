@@ -1,7 +1,11 @@
 import { toggleModel } from "./toggleModel";
-import { type IToggleModel, type toggleConfigType } from "./types";
+import {
+  type storeConfig,
+  type IToggleModel,
+  type toggleConfigType,
+} from "./types";
 
-const createStore = () => {
+const createStore = (config: storeConfig) => {
   const store = new Map<
     string,
     {
@@ -11,7 +15,7 @@ const createStore = () => {
   return {
     createToggle: (params: toggleConfigType) => {
       if (store.has(params.id)) return;
-      const model = toggleModel(params);
+      const model = toggleModel(config.onCreate(params));
       store.set(params.id, {
         model,
       });

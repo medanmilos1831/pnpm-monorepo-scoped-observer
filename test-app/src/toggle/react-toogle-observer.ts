@@ -7,26 +7,9 @@ const createReactToggleObserver = (config: {
     initialState: boolean;
   };
 }) => {
-  const store = createStore();
+  const store = createStore(config);
   const { useToggle, useInterceptor } = createReactHooks(store);
-  // const obj = {} as Record<keyof T, Channel>;
-  // Object.keys(params).forEach((key) => {
-  //   const store = createStore(key, messageBroker, params[key]);
-  //   const { useToggle, useInterceptor } = createReactHooks(store);
-  //   const { open, close, getMessage, getValue, onChange } = store;
-  //   obj[key as keyof T] = (() => {
-  //     return {
-  //       open,
-  //       close,
-  //       onChange,
-  //       useToggle,
-  //       useInterceptor,
-  //       getMessage,
-  //       getValue,
-  //     };
-  //   })();
-  // });
-  // return obj;
+
   return {
     reactHooks: {
       useToggle,
