@@ -1,4 +1,4 @@
-import { Button, Modal } from "antd";
+import { Button, Drawer, Modal } from "antd";
 import { useState } from "react";
 import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 
@@ -14,12 +14,16 @@ const toggleObservers = createReactToggleObserver({
     },
   },
 });
-const { modal } = toggleObservers;
-const { useToggle, useInterceptor } = modal;
+const { modal, drawer } = toggleObservers;
+const { useToggle: useModalToggle, useInterceptor: useModalInterceptor } =
+  modal;
+
+const { useToggle: useDrawerToggle, useInterceptor: useDrawerInterceptor } =
+  drawer;
 
 const ModalComponent = () => {
   const [counter, setCounter] = useState(0);
-  const [value, close, message] = useToggle(false);
+  const [value, close, message] = useModalToggle(false);
   return (
     <>
       <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
@@ -38,12 +42,37 @@ const ModalComponent = () => {
   );
 };
 
+const DrawerComponent = () => {
+  const [value, close, message] = useDrawerToggle(false);
+  console.log("DRAWER MESSAGE", value);
+  return (
+    <>
+      <Drawer
+        open={value}
+        onClose={() =>
+          close({
+            name: "close message",
+          })
+        }
+      >
+        <h1>Modal Content</h1>
+      </Drawer>
+    </>
+  );
+};
+
 const SomeComponent = () => {
   const [counter, setCounter] = useState(0);
-  useInterceptor((payload: any) => {
+  useDrawerInterceptor((payload: any) => {
     return {
       ...payload,
       counter: counter + 1,
+    };
+  }, "open");
+  useModalInterceptor((payload: any) => {
+    return {
+      ...payload,
+      counter: counter + 12,
     };
   }, "open");
   return (
@@ -57,15 +86,26 @@ const SomeComponent = () => {
 
 const ButtonComponent = () => {
   return (
-    <Button
-      onClick={() => {
-        toggleObservers.modal.open({
-          name: "John Doe",
-        });
-      }}
-    >
-      Open Modal
-    </Button>
+    <>
+      <Button
+        onClick={() => {
+          toggleObservers.modal.open({
+            name: "John Doe",
+          });
+        }}
+      >
+        Open Modal
+      </Button>
+      <Button
+        onClick={() => {
+          toggleObservers.drawer.open({
+            name: "John Doe",
+          });
+        }}
+      >
+        Open Drawer
+      </Button>
+    </>
   );
 };
 
@@ -75,6 +115,7 @@ const HomePage = () => {
       <SomeComponent />
       <h1>HomePage</h1>
       <ModalComponent />
+      <DrawerComponent />
       <ButtonComponent />
     </div>
   );
