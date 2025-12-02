@@ -4,12 +4,12 @@ import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 
 const toggleObservers = createReactToggleObserver({
   modal: {
-    logger: (params: any) => {
+    logger: (params) => {
       console.log("MODAL LOGGER", params);
     },
   },
   drawer: {
-    logger: (params: any) => {
+    logger: (params) => {
       console.log("DRAWER LOGGER", params);
     },
   },
@@ -19,9 +19,7 @@ const { useToggle, useInterceptor } = modal;
 
 const ModalComponent = () => {
   const [counter, setCounter] = useState(0);
-  const [value, close, message] = useToggle(counter % 2 === 0);
-  console.log("MODAL VALUE", value);
-  console.log("MODAL MESSAGE", message);
+  const [value, close, message] = useToggle(false);
   return (
     <>
       <Button onClick={() => setCounter(counter + 1)}>Increment</Button>

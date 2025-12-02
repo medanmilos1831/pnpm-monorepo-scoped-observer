@@ -1,15 +1,31 @@
 import { createMessageBroker } from "../broker";
-import { EventName, type EventPayload, type InterceptorAction } from "./types";
+import {
+  EventName,
+  type EventPayload,
+  type InterceptorAction,
+  type LoggerParams,
+} from "./types";
 
 const createStore = (
   scope: string,
-  messageBroker: ReturnType<typeof createMessageBroker>
+  messageBroker: ReturnType<typeof createMessageBroker>,
+  config: {
+    logger: (params: LoggerParams) => void;
+  }
 ) => {
   let lastMessage = undefined as any;
   let value = false;
   function publishHandler(open: boolean, message?: any) {
     lastMessage = message;
     messageBroker.publish({
+      scope,
+      eventName: EventName.ON_CHANGE,
+      payload: {
+        open,
+        message,
+      },
+    });
+    config.logger({
       scope,
       eventName: EventName.ON_CHANGE,
       payload: {

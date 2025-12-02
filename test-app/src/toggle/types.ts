@@ -11,6 +11,12 @@ type EventPayload = {
   scope: string;
 };
 
+export type LoggerParams = {
+  scope: string;
+  eventName: string;
+  payload: any;
+};
+
 export type InterceptorAction = "open" | "close";
 
 type Channel = {
