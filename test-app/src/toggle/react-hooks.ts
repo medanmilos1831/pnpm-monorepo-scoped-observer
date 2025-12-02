@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import type { createStore } from "./store";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
+import type { createStore } from "./store";
 
 const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
     useToggle: (initialValue?: boolean) => {
-      const [_] = useState(() => store.setValue(initialValue || false));
+      useState(() => store.setValue(initialValue || false));
       const value = useSyncExternalStore(store.onChange, store.getValue);
       return [value, store.close, store.getMessage()] as [
         boolean,

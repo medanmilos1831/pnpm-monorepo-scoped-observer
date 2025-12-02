@@ -18,11 +18,14 @@ const { modal } = toggleObservers;
 const { useToggle, useInterceptor } = modal;
 
 const ModalComponent = () => {
-  const [value, close, message] = useToggle(true);
+  const [counter, setCounter] = useState(0);
+  const [value, close, message] = useToggle(counter % 2 === 0);
   console.log("MODAL VALUE", value);
   console.log("MODAL MESSAGE", message);
   return (
     <>
+      <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
+      <p>Counter: {counter}</p>
       <Modal
         open={value}
         onCancel={() =>

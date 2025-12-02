@@ -94,8 +94,8 @@ const createStore = (
     getMessage: () => {
       return lastMessage;
     },
-    setValue: (value: boolean) => {
-      value = value;
+    setValue: (params: boolean) => {
+      value = params;
     },
     getValue: () => {
       return value;
