@@ -7,10 +7,13 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@med1802/scoped-observer-message-broker": "^2.1.0"
+    "@med1802/scoped-observer-message-broker": "^2.1.0",
+    "use-sync-external-store": "^1.6.0"
   },
   "devDependencies": {
-    "@med1802/scoped-observer-message-broker": "^2.1.0"
+    "@med1802/scoped-observer-message-broker": "^2.1.0",
+    "use-sync-external-store": "^1.6.0",
+    "@types/use-sync-external-store": "^0.0.6"
   },
   "repository": {
     "type": "git",

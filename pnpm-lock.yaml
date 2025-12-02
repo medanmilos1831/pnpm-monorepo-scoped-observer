@@ -67,12 +67,16 @@ importers:
 
   med1802/react-toggle-observer:
     dependencies:
-      '@med1802/scoped-observer':
-        specifier: ^1.1.4
-        version: 1.1.4
       '@med1802/scoped-observer-message-broker':
         specifier: ^2.1.0
         version: 2.1.0(@med1802/scoped-observer@1.1.4)
+      use-sync-external-store:
+        specifier: ^1.6.0
+        version: 1.6.0(react@19.2.0)
+    devDependencies:
+      '@types/use-sync-external-store':
+        specifier: ^0.0.6
+        version: 0.0.6
 
   med1802/scoped-observer: {}
 
