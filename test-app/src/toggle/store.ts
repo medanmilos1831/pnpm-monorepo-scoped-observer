@@ -15,15 +15,13 @@ const createStore = (config: storeConfig) => {
   >();
   const logger = createLogger(store, config.logOnCreate);
   return {
-    createToggle: (params: toggleConfigType) => {
-      logger.logStore(() => {
-        if (store.has(params.id)) return;
-        const model = toggleModel(params);
-        store.set(params.id, {
-          model,
-        });
+    createToggle: logger.logStore((params: toggleConfigType) => {
+      if (store.has(params.id)) return;
+      const model = toggleModel(params);
+      store.set(params.id, {
+        model,
       });
-    },
+    }),
     getToggle: (id: string) => {
       if (!store.has(id)) {
         throw new Error(`Toggle ${id} not found`);
