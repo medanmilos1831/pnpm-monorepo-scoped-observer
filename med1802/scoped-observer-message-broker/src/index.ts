@@ -19,28 +19,42 @@ const createMessageBroker = (observer: scopedObserverType) => {
 
   return {
     interceptor({
+      scope,
       eventName,
       onPublish,
       onSubscribe,
     }: {
+      scope?: string;
       eventName: string;
       onPublish?: PublishInterceptor;
       onSubscribe?: SubscribeInterceptor;
     }) {
+      const key = scope ? `${scope}:${eventName}` : eventName;
+
       if (onPublish) {
-        const existing = publishInterceptors.get(eventName) || [];
+        const existing = publishInterceptors.get(key) || [];
         existing.push(onPublish);
-        publishInterceptors.set(eventName, existing);
+        publishInterceptors.set(key, existing);
       }
       if (onSubscribe) {
-        subscribeInterceptors.set(eventName, onSubscribe);
+        subscribeInterceptors.set(key, onSubscribe);
       }
+      return () => {
+        publishInterceptors.delete(key);
+      };
     },
     publish({ scope, eventName, payload }: scopedObserverDispatchType) {
       let currentEventName = eventName;
       let currentPayload = payload;
 
-      const interceptors = publishInterceptors.get(currentEventName) || [];
+      // Try scope-specific interceptor first, then global
+      const scopeKey = scope ? `${scope}:${currentEventName}` : undefined;
+      const interceptors = scopeKey
+        ? publishInterceptors.get(scopeKey) ||
+          publishInterceptors.get(currentEventName) ||
+          []
+        : publishInterceptors.get(currentEventName) || [];
+
       for (const interceptor of interceptors) {
         const result = interceptor({
           eventName: currentEventName,
@@ -62,7 +76,13 @@ const createMessageBroker = (observer: scopedObserverType) => {
       });
     },
     subscribe({ scope, eventName, callback }: scopedObserverSubscribeType) {
-      const interceptor = subscribeInterceptors.get(eventName);
+      // Try scope-specific interceptor first, then global
+      const scopeKey = scope ? `${scope}:${eventName}` : undefined;
+      const interceptor = scopeKey
+        ? subscribeInterceptors.get(scopeKey) ||
+          subscribeInterceptors.get(eventName)
+        : subscribeInterceptors.get(eventName);
+
       if (interceptor) {
         const result = interceptor({ eventName });
         if (result === null || result === false) {
