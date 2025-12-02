@@ -7,11 +7,9 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@med1802/scoped-observer": "^1.1.4",
     "@med1802/scoped-observer-message-broker": "^2.1.0"
   },
   "devDependencies": {
-    "@med1802/scoped-observer": "^1.1.4",
     "@med1802/scoped-observer-message-broker": "^2.1.0"
   },
   "repository": {
