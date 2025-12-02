@@ -3,7 +3,7 @@ import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 import { Button, Modal } from "antd";
 
 const toggleObservers = createReactToggleObserver({
-  logOnCreate: true,
+  log: true,
 });
 
 const { useToggle, useInterceptor } = toggleObservers.reactHooks;

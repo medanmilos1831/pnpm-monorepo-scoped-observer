@@ -11,12 +11,6 @@ type EventPayload = {
   scope: string;
 };
 
-export type LoggerParams = {
-  scope: string;
-  eventName: string;
-  payload: any;
-};
-
 export type InterceptorAction = "open" | "close";
 
 export type toggleConfigType = {
@@ -42,8 +36,10 @@ export interface IToggleModel {
 }
 
 export type storeConfig = {
-  logOnCreate: boolean;
+  log: boolean;
 };
+
+export type StoreType = Map<string, { model: IToggleModel }>;
 
 export type { EventPayload };
 export { EventName };

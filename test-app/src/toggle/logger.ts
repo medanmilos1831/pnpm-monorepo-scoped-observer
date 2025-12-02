@@ -1,9 +1,6 @@
-import type { IToggleModel } from "./types";
+import type { StoreType } from "./types";
 
-const createLogger = (
-  store: Map<string, { model: IToggleModel }>,
-  active: boolean
-) => {
+const createLogger = (store: StoreType, active: boolean) => {
   return {
     logStore: <T extends (...args: any[]) => any>(callback: T): T => {
       return ((...args: Parameters<T>) => {

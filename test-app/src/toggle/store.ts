@@ -13,7 +13,7 @@ const createStore = (config: storeConfig) => {
       model: IToggleModel;
     }
   >();
-  const logger = createLogger(store, config.logOnCreate);
+  const logger = createLogger(store, config.log);
   return {
     createToggle: logger.logStore((params: toggleConfigType) => {
       if (store.has(params.id)) return;
