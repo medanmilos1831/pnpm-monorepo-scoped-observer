@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@med1802/scoped-observer-message-broker": "^2.0.2",
+    "@med1802/react-toggle-observer": "^1.0.0",
+    "@med1802/scoped-observer": "^1.1.4",
+    "@med1802/scoped-observer-message-broker": "^2.1.0",
     "@tanstack/store": "^0.8.0",
+    "@types/use-sync-external-store": "^1.5.0",
     "antd": "^5.29.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -20,7 +23,6 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
-    "@types/use-sync-external-store": "^0.0.6",
     "@vitejs/plugin-react": "^5.1.1",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"

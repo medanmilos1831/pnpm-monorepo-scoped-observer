@@ -1,25 +1,41 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
+import type { toggleConfigType } from "./types";
 
 const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
-    useToggle: (initialValue?: boolean) => {
-      useState(() => store.setValue(initialValue || false));
-      const value = useSyncExternalStore(store.onChangeSync, store.getValue);
-      return [value, store.close, store.getMessage()] as [
+    useToggle: (params: toggleConfigType) => {
+      const [toggle] = useState(() => {
+        store.createToggle(params);
+        return store.getToggle(params.id)!;
+      });
+      const value = useSyncExternalStore(
+        toggle.internal.onChangeSync,
+        toggle.client.getValue
+      );
+      return [value, toggle.client.close, toggle.client.getMessage()] as [
         boolean,
         () => void,
         any
       ];
     },
-    useInterceptor: (callback: any, action?: "open" | "close") => {
-      useEffect(() => {
-        const unsubscribe = store.interceptor(callback, action);
-        return () => {
-          unsubscribe();
-        };
-      });
+    useInterceptor: ({
+      sliceId,
+      callback,
+      action,
+    }: {
+      sliceId: string;
+      callback: (payload: any) => boolean | { payload: any };
+      action?: "open" | "close";
+    }) => {
+      // const slice = store.getToggle(sliceId);
+      // useEffect(() => {
+      //   const unsubscribe = slice.interceptor(callback, action);
+      //   return () => {
+      //     unsubscribe();
+      //   };
+      // });
     },
   };
 };

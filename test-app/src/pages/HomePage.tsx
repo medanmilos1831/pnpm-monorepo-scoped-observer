@@ -2,43 +2,34 @@ import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 import { Button, Modal } from "antd";
 
 const toggleObservers = createReactToggleObserver({
-  userModal: {
-    logger: (params) => {
-      console.log("MODAL LOGGER", params);
-    },
-  },
-  authModal: {
-    logger: (params) => {
-      console.log("DRAWER LOGGER", params);
-    },
+  onCreate(params: { id: string; initialState: boolean }) {
+    console.log("onCreate", params);
+    return params;
   },
 });
-const { userModal, authModal } = toggleObservers;
-const { useToggle: useUserModal, useInterceptor: useUserModalInterceptor } =
-  userModal;
 
-const { useToggle: useAuthToggle, useInterceptor: useAuthInterceptor } =
-  authModal;
+const { useToggle } = toggleObservers;
 
-const UserModalComponent = () => {
-  const [value, close, message] = useUserModal(false);
+const ModalComponent = (params: { id: string; initialState: boolean }) => {
+  const [isOpen, close, message] = useToggle(params);
   return (
-    <Modal open={value} onCancel={() => close()} onOk={() => close()}>
-      <h1>User Modal</h1>
+    <Modal open={isOpen} onCancel={() => close()} onOk={() => close()}>
+      <div>
+        <h1>Modal</h1>
+      </div>
     </Modal>
   );
 };
+
 const SomeComponent = () => {
-  return (
-    <>
-      <Button onClick={() => userModal.open()}>Open Modal</Button>
-    </>
-  );
+  const toggle = toggleObservers.getToggleClient("test");
+  return <Button onClick={() => toggle.open()}>Open Modal</Button>;
 };
+
 const HomePage = () => {
   return (
     <>
-      <UserModalComponent />
+      <ModalComponent id="test" initialState={false} />
       <SomeComponent />
     </>
   );

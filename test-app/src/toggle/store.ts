@@ -1,127 +1,45 @@
-import { createMessageBroker } from "../broker";
-import {
-  EventName,
-  type EventPayload,
-  type InterceptorAction,
-  type LoggerParams,
-} from "./types";
+import { toggleModel } from "./toggleModel";
+import { type IToggleModel, type toggleConfigType } from "./types";
 
-const createStore = (
-  scope: string,
-  messageBroker: ReturnType<typeof createMessageBroker>,
-  config: {
-    logger: (params: LoggerParams) => void;
-  }
-) => {
-  let lastMessage = undefined as any;
-  let value = false;
-  function publishHandler(open: boolean, message?: any) {
-    lastMessage = message;
-    messageBroker.publish({
-      scope,
-      eventName: EventName.ON_CHANGE,
-      payload: {
-        open,
-        message,
-      },
-    });
-    config.logger({
-      scope,
-      eventName: EventName.ON_CHANGE,
-      payload: {
-        open,
-        message,
-      },
-    });
-  }
-  function handleInterceptor(
-    callback: (payload: any) => boolean | { payload: any },
-    payload: any,
-    eventName: string
-  ) {
-    const result = callback(payload.message);
-    if (result === false && typeof result === "boolean") {
-      return false;
+const createStore = () => {
+  const store = new Map<
+    string,
+    {
+      model: IToggleModel;
     }
-
-    let mutatedPayload = {
-      ...payload,
-      message: result,
-    };
-    lastMessage = mutatedPayload.message;
-    return {
-      eventName,
-      payload: mutatedPayload,
-    };
-  }
+  >();
   return {
-    open: (message?: any) => {
-      publishHandler(true, message);
-    },
-    close: (message?: any) => {
-      publishHandler(false, message);
-    },
-    subscribe: (
-      eventName: EventName.ON_CHANGE,
-      callback: (payload: EventPayload) => void
-    ) => {
-      return messageBroker.subscribe({
-        scope,
-        eventName,
-        callback,
+    createToggle: (params: toggleConfigType) => {
+      if (store.has(params.id)) return;
+      const model = toggleModel(params);
+      store.set(params.id, {
+        model,
       });
     },
-    interceptor: (
-      callback: (payload: any) => boolean | { payload: any },
-      action?: InterceptorAction
-    ) => {
-      return messageBroker.interceptor({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        onPublish: ({ eventName, payload }) => {
-          let obj = {
-            open: true,
-            close: false,
-          };
-          if (action && obj[action] === payload.open) {
-            return handleInterceptor(callback, payload, eventName);
-          }
-          if (!action) {
-            return handleInterceptor(callback, payload, eventName);
-          }
-          return {
-            eventName,
-            payload,
-          };
+    getToggle: (id: string) => {
+      if (!store.has(id)) {
+        throw new Error(`Toggle ${id} not found`);
+      }
+      const model = store.get(id)!.model;
+      return {
+        internal: {
+          onChangeSync: model.onChangeSync,
         },
-      });
-    },
-    onChangeSync: (notify: () => void) => {
-      return messageBroker.subscribe({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        callback: ({ payload }: EventPayload) => {
-          const { open } = payload;
-          value = open;
-          notify();
+        client: {
+          open: model.open,
+          close: model.close,
+          onChange: model.onChange,
+          getMessage: model.getMessage,
+          getValue: model.getValue,
         },
-      });
+      };
     },
-    onChange: (callback: (payload: EventPayload) => void) => {
-      return messageBroker.subscribe({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        callback,
-      });
+    hasToggle: (id: string) => {
+      return store.has(id);
     },
-    getMessage: () => {
-      return lastMessage;
-    },
-    setValue: (params: boolean) => {
-      value = params;
-    },
-    getValue: () => {
-      return value;
+    deleteToggle: (id: string) => {
+      store.delete(id);
+      return id;
     },
   };
 };
