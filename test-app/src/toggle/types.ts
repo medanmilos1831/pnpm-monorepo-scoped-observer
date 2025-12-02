@@ -39,7 +39,10 @@ export type storeConfig = {
   log: boolean;
 };
 
-export type StoreType = Map<string, { model: IToggleModel }>;
+export type StoreModel = {
+  model: IToggleModel;
+};
+export type StoreType = Map<string, StoreModel>;
 
 export type { EventPayload };
 export { EventName };

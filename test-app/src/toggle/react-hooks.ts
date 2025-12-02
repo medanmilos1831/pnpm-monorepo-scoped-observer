@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
 import type { toggleConfigType } from "./types";
-import { useEffect } from "react";
 
 const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {

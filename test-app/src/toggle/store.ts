@@ -2,17 +2,12 @@ import { createLogger } from "./logger";
 import { toggleModel } from "./toggleModel";
 import {
   type storeConfig,
-  type IToggleModel,
+  type StoreModel,
   type toggleConfigType,
 } from "./types";
 
 const createStore = (config: storeConfig) => {
-  const store = new Map<
-    string,
-    {
-      model: IToggleModel;
-    }
-  >();
+  const store = new Map<string, StoreModel>();
   const logger = createLogger(store, config.log);
   return {
     createModel: logger.logStore((params: toggleConfigType) => {
