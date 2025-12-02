@@ -8,19 +8,16 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
     useToggle: (params: toggleConfigType) => {
       const [toggle] = useState(() => {
-        store.createToggle(params);
-        return store.getToggle(params.id)!;
+        store.createModel(params);
+        return store.getModel(params.id)!;
       });
-      const value = useSyncExternalStore(
-        toggle.internal.onChangeSync,
-        toggle.client.getValue
-      );
+      const value = useSyncExternalStore(toggle.onChangeSync, toggle.getValue);
       useEffect(() => {
         return () => {
-          store.deleteToggle(params.id);
+          store.deleteModel(params.id);
         };
       }, [params.id]);
-      return [value, toggle.client.close, toggle.client.getMessage()] as [
+      return [value, toggle.close, toggle.getMessage()] as [
         boolean,
         () => void,
         any
@@ -35,13 +32,13 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
       callback: (payload: any) => boolean | { payload: any };
       action?: "open" | "close";
     }) => {
-      const model = store.getToggle(id).internal;
+      const model = store.getModel(id);
       useEffect(() => {
         const unsubscribe = model.interceptor(callback, action);
         return () => {
           unsubscribe();
         };
-      });
+      }, [id]);
     },
   };
 };

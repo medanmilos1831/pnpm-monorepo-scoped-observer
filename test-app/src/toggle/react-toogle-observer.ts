@@ -11,16 +11,23 @@ const createReactToggleObserver = (config: storeConfig) => {
       useInterceptor,
     },
     getToggleClient: (id: string) => {
-      if (!store.hasToggle(id)) {
+      if (!store.hasModel(id)) {
         throw new Error(`Toggle ${id} not found`);
       }
-      return store.getToggle(id)!.client;
+      const model = store.getModel(id);
+      return {
+        open: model.open,
+        close: model.close,
+        onChange: model.onChange,
+        getMessage: model.getMessage,
+        getValue: model.getValue,
+      };
     },
     deleteToggle: (id: string) => {
-      return store.deleteToggle(id);
+      return store.deleteModel(id);
     },
     createToggle: (params: toggleConfigType) => {
-      return store.createToggle(params);
+      return store.createModel(params);
     },
   };
 };
