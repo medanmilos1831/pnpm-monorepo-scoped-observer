@@ -6,6 +6,7 @@ const createStore = (
   messageBroker: ReturnType<typeof createMessageBroker>
 ) => {
   let lastMessage = undefined as any;
+  let value = false;
   function publishHandler(open: boolean, message?: any) {
     lastMessage = message;
     messageBroker.publish({
@@ -79,8 +80,25 @@ const createStore = (
         },
       });
     },
+    onChange: (notify: () => void) => {
+      return messageBroker.subscribe({
+        scope,
+        eventName: EventName.ON_CHANGE,
+        callback: ({ payload }: EventPayload) => {
+          const { open } = payload;
+          value = open;
+          notify();
+        },
+      });
+    },
     getMessage: () => {
       return lastMessage;
+    },
+    setValue: (value: boolean) => {
+      value = value;
+    },
+    getValue: () => {
+      return value;
     },
   };
 };

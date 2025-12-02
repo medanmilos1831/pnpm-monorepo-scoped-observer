@@ -1,7 +1,5 @@
-import { createMessageBroker } from "../broker";
-import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
 import { Button, Modal } from "antd";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 
 const toggleObservers = createReactToggleObserver({
@@ -20,7 +18,9 @@ const { modal } = toggleObservers;
 const { useToggle, useInterceptor } = modal;
 
 const ModalComponent = () => {
-  const [value, close, message] = useToggle();
+  const [value, close, message] = useToggle(true);
+  console.log("MODAL VALUE", value);
+  console.log("MODAL MESSAGE", message);
   return (
     <>
       <Modal

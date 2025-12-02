@@ -1,20 +1,13 @@
 import { useEffect, useState } from "react";
 import type { createStore } from "./store";
-import { EventName } from "./types";
+import { useSyncExternalStore } from "use-sync-external-store/shim";
 
 const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
-    useToggle: () => {
-      const [open, setOpen] = useState(false);
-      useEffect(() => {
-        const unsubscribe = store.subscribe(EventName.ON_CHANGE, (data) => {
-          const { payload } = data;
-          const { open } = payload;
-          setOpen(open);
-        });
-        return () => unsubscribe();
-      }, []);
-      return [open, store.close, store.getMessage()] as [
+    useToggle: (initialValue?: boolean) => {
+      const [_] = useState(() => store.setValue(initialValue || false));
+      const value = useSyncExternalStore(store.onChange, store.getValue);
+      return [value, store.close, store.getMessage()] as [
         boolean,
         () => void,
         any
