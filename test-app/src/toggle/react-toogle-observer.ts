@@ -21,14 +21,16 @@ const createReactToggleObserver = <
   Object.keys(params).forEach((key) => {
     const store = createStore(key, messageBroker, params[key]);
     const { useToggle, useInterceptor } = createReactHooks(store);
-    const { open, close, subscribe } = store;
+    const { open, close, getMessage, getValue, onChange } = store;
     obj[key as keyof T] = (() => {
       return {
         open,
         close,
-        subscribe,
+        onChange,
         useToggle,
         useInterceptor,
+        getMessage,
+        getValue,
       };
     })();
   });

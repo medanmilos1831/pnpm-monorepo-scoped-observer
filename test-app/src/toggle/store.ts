@@ -96,7 +96,7 @@ const createStore = (
         },
       });
     },
-    onChange: (notify: () => void) => {
+    onChangeSync: (notify: () => void) => {
       return messageBroker.subscribe({
         scope,
         eventName: EventName.ON_CHANGE,
@@ -105,6 +105,13 @@ const createStore = (
           value = open;
           notify();
         },
+      });
+    },
+    onChange: (callback: (payload: EventPayload) => void) => {
+      return messageBroker.subscribe({
+        scope,
+        eventName: EventName.ON_CHANGE,
+        callback,
       });
     },
     getMessage: () => {

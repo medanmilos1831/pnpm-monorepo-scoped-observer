@@ -6,7 +6,7 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
   return {
     useToggle: (initialValue?: boolean) => {
       useState(() => store.setValue(initialValue || false));
-      const value = useSyncExternalStore(store.onChange, store.getValue);
+      const value = useSyncExternalStore(store.onChangeSync, store.getValue);
       return [value, store.close, store.getMessage()] as [
         boolean,
         () => void,
