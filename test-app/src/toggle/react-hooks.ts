@@ -15,6 +15,11 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
         toggle.internal.onChangeSync,
         toggle.client.getValue
       );
+      useEffect(() => {
+        return () => {
+          store.deleteToggle(params.id);
+        };
+      }, [params.id]);
       return [value, toggle.client.close, toggle.client.getMessage()] as [
         boolean,
         () => void,

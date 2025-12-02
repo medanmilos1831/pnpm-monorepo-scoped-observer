@@ -16,7 +16,7 @@ const createStore = (config: storeConfig) => {
   const logger = createLogger(store, config.logOnCreate);
   return {
     createToggle: (params: toggleConfigType) => {
-      logger.logOnCreate(() => {
+      logger.logStore(() => {
         if (store.has(params.id)) return;
         const model = toggleModel(params);
         store.set(params.id, {
@@ -47,8 +47,9 @@ const createStore = (config: storeConfig) => {
       return store.has(id);
     },
     deleteToggle: (id: string) => {
-      store.delete(id);
-      return id;
+      logger.logStore(() => {
+        store.delete(id);
+      });
     },
   };
 };

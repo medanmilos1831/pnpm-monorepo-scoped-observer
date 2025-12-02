@@ -66,12 +66,15 @@ const SomeOtherComponent = () => {
 };
 
 const HomePage = () => {
+  const [counter, setCounter] = useState(0);
   return (
     <>
       <ModalComponent id="test" initialState={false} />
       <ModalComponent id="test2" initialState={false} />
       <SomeOtherComponent />
       <SomeComponent />
+      <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
+      <p>Counter: {counter}</p>
     </>
   );
 };

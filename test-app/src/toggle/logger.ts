@@ -5,7 +5,7 @@ const createLogger = (
   active: boolean
 ) => {
   return {
-    logOnCreate: (callback: any) => {
+    logStore: (callback: any) => {
       callback();
       if (active) {
         const allToggles = Array.from(store.entries()).map(
