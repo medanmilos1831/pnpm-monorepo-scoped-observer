@@ -28,6 +28,7 @@ const createStore = (config: storeConfig) => {
       return {
         internal: {
           onChangeSync: model.onChangeSync,
+          interceptor: model.interceptor,
         },
         client: {
           open: model.open,

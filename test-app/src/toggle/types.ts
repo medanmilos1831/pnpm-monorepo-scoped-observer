@@ -19,18 +19,6 @@ export type LoggerParams = {
 
 export type InterceptorAction = "open" | "close";
 
-type Channel = {
-  open: (message?: any) => void;
-  close: (message?: any) => void;
-  onChange: (callback: (payload: EventPayload) => void) => () => void;
-  useToggle: (
-    initialValue?: boolean
-  ) => [boolean, (message?: any) => void, message: any];
-  useInterceptor: (callback: any, action?: InterceptorAction) => void;
-  getMessage: () => any;
-  getValue: () => boolean;
-};
-
 export type toggleConfigType = {
   id: string;
   initialState: boolean;
@@ -46,7 +34,7 @@ export interface IToggleModel {
   interceptor: (
     callback: (payload: any) => boolean | { payload: any },
     action?: InterceptorAction
-  ) => void;
+  ) => () => void;
   onChangeSync: (notify: () => void) => () => void;
   onChange: (callback: (payload: EventPayload) => void) => () => void;
   getMessage: () => any;
@@ -57,5 +45,5 @@ export type storeConfig = {
   onCreate: (params: toggleConfigType) => toggleConfigType;
 };
 
-export type { Channel, EventPayload };
+export type { EventPayload };
 export { EventName };
