@@ -20,7 +20,7 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
         any
       ];
     },
-    useInterceptor: (callback: any, action: "open" | "close") => {
+    useInterceptor: (callback: any, action?: "open" | "close") => {
       useEffect(() => {
         const unsubscribe = store.interceptor(callback, action);
         return () => {

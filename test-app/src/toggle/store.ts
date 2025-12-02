@@ -56,7 +56,7 @@ const createStore = (
     },
     interceptor: (
       callback: (payload: any) => boolean | { payload: any },
-      action: InterceptorAction
+      action?: InterceptorAction
     ) => {
       return messageBroker.interceptor({
         scope,
