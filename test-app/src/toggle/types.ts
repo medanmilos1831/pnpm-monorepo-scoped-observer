@@ -42,7 +42,7 @@ export interface IToggleModel {
 }
 
 export type storeConfig = {
-  onCreate: (params: toggleConfigType) => toggleConfigType;
+  logOnCreate: boolean;
 };
 
 export type { EventPayload };

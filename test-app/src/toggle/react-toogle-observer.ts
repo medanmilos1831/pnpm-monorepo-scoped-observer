@@ -1,12 +1,7 @@
 import { createReactHooks } from "./react-hooks";
 import { createStore } from "./store";
-import type { toggleConfigType } from "./types";
-const createReactToggleObserver = (config: {
-  onCreate: (params: toggleConfigType) => {
-    id: string;
-    initialState: boolean;
-  };
-}) => {
+import type { storeConfig, toggleConfigType } from "./types";
+const createReactToggleObserver = (config: storeConfig) => {
   const store = createStore(config);
   const { useToggle, useInterceptor } = createReactHooks(store);
 
