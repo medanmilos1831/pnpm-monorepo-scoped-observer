@@ -15,18 +15,18 @@ const createReactToggleObserver = <
   const scopes: ScopeNode[] = Object.keys(params).map((scope) => ({
     scope,
   }));
-  console.log("SCOPES", params);
   const scopedObserver = createScopedObserver(scopes);
   const messageBroker = createMessageBroker(scopedObserver);
   const obj = {} as Record<keyof T, Channel>;
   Object.keys(params).forEach((key) => {
     const store = createStore(key, messageBroker, params[key]);
     const { useToggle, useInterceptor } = createReactHooks(store);
+    const { open, close, subscribe } = store;
     obj[key as keyof T] = (() => {
       return {
-        open: store.open,
-        close: store.close,
-        subscribe: store.subscribe,
+        open,
+        close,
+        subscribe,
         useToggle,
         useInterceptor,
       };
