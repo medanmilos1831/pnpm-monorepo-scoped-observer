@@ -1,5 +1,5 @@
 import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
-import { createMessageBroker } from "../broker";
+import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 import { createReactHooks } from "./react-hooks";
 import { createStore } from "./store";
 import type { Channel, LoggerParams } from "./types";
