@@ -14,10 +14,8 @@ const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
   const logger = createModelLogger(params.id, activeLogger);
   let lastMessage = undefined as any;
   let initialState = params.initialState;
-  let id = params.id;
 
   function publishHandler(open: boolean, message?: any) {
-    console.log(message);
     lastMessage = message;
     initialState = open;
     const payload = {
