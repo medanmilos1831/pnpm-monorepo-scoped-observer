@@ -3,7 +3,7 @@ import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
 import type { InterceptorAction, toggleConfigType } from "./types";
 
-const createReactHooks = (store: ReturnType<typeof createStore>) => {
+const createReactAdapter = (store: ReturnType<typeof createStore>) => {
   return {
     useToggle: (params: toggleConfigType) => {
       const [toggle] = useState(() => {
@@ -42,4 +42,4 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
   };
 };
 
-export { createReactHooks };
+export { createReactAdapter };
