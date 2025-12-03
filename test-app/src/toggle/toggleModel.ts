@@ -6,7 +6,7 @@ import {
   type InterceptorAction,
   type toggleConfigType,
 } from "./types";
-import { createModelLogger } from "./modellogger";
+import { createModelLogger } from "./logger/modellogger";
 
 const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
   const scopedObserver = createScopedObserver();

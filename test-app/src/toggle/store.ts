@@ -1,4 +1,4 @@
-import { createStoreLogger } from "./storeLogger";
+import { createStoreLogger } from "./logger/storeLogger";
 import { toggleModel } from "./toggleModel";
 import {
   type storeConfig,
