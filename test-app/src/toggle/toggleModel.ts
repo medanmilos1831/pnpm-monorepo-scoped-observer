@@ -17,43 +17,46 @@ const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
   let id = params.id;
 
   function publishHandler(open: boolean, message?: any) {
+    console.log(message);
     lastMessage = message;
     initialState = open;
+    const payload = {
+      open,
+      message,
+    };
     messageBroker.publish({
       eventName: EventName.ON_CHANGE,
-      payload: {
-        open,
-        message,
-      },
+      payload,
     });
+    return {
+      payload,
+      eventName: EventName.ON_CHANGE,
+      id: params.id,
+    };
   }
   function handleInterceptor(
     callback: (payload: any) => boolean | { payload: any },
-    payload: any,
+    payload: { open: boolean; message: any },
     eventName: string
   ) {
     const result = callback(payload.message);
     if (result === false && typeof result === "boolean") {
       return false;
     }
-
-    let mutatedPayload = {
-      ...payload,
-      message: result,
-    };
-    lastMessage = mutatedPayload.message;
+    payload.message = result;
+    lastMessage = result;
     return {
       eventName,
-      payload: mutatedPayload,
+      payload,
     };
   }
   return {
-    open: (message?: any) => {
-      logger.logAction(publishHandler, true)(true, message);
-    },
-    close: (message?: any) => {
-      logger.logAction(publishHandler, false)(false, message);
-    },
+    open: logger.logAction((message?: any) => {
+      return publishHandler(true, message);
+    }),
+    close: logger.logAction((message?: any) => {
+      return publishHandler(false, message);
+    }),
     subscribe: (
       eventName: EventName.ON_CHANGE,
       callback: (payload: EventPayload) => void

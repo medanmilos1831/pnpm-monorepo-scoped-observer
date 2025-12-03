@@ -18,7 +18,7 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
       }, [params.id]);
       return [value, toggle.close, toggle.getMessage()] as [
         boolean,
-        () => void,
+        (message?: any) => void,
         any
       ];
     },
@@ -37,7 +37,7 @@ const createReactHooks = (store: ReturnType<typeof createStore>) => {
         return () => {
           unsubscribe();
         };
-      }, [id]);
+      });
     },
   };
 };

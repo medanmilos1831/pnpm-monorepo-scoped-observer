@@ -10,7 +10,11 @@ const { useToggle, useInterceptor } = toggleObservers.reactHooks;
 const ModalComponent = (params: { id: string; initialState: boolean }) => {
   const [isOpen, close, message] = useToggle(params);
   return (
-    <Modal open={isOpen} onCancel={() => close()} onOk={() => close()}>
+    <Modal
+      open={isOpen}
+      onCancel={() => close("close message")}
+      onOk={() => close()}
+    >
       <div>
         <h1>Modal</h1>
       </div>

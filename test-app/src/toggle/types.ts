@@ -1,8 +1,8 @@
 enum EventName {
   ON_CHANGE = "onChange",
 }
-type onChangePayload = {
-  open: boolean;
+export type onChangePayload = {
+  payload: { open: boolean; message?: any };
   message?: any;
 };
 type EventPayload = {
