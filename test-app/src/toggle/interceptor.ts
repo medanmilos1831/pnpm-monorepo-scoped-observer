@@ -47,16 +47,13 @@ const createInterceptor = (
   }
   return {
     interceptorNew: ({ middleware, value }: any) => {
-      const unsubscribe = messageBroker.interceptor({
+      return messageBroker.interceptor({
         eventName: EventName.ON_CHANGE,
         onPublish: ({ eventName, payload }) => {
           const result = onPublish({ eventName, payload, middleware, value });
           return result;
         },
       });
-      return () => {
-        unsubscribe();
-      };
     },
   };
 };
