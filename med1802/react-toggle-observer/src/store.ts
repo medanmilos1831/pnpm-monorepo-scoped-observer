@@ -1,127 +1,36 @@
-import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
+import { createStoreLogger } from "./logger/storeLogger";
+import { toggleModel } from "./toggleModel";
 import {
-  EventName,
-  type EventPayload,
-  type InterceptorAction,
-  type LoggerParams,
+  type storeConfig,
+  type StoreModel,
+  type toggleConfigType,
 } from "./types";
 
-const createStore = (
-  scope: string,
-  messageBroker: ReturnType<typeof createMessageBroker>,
-  config: {
-    logger: (params: LoggerParams) => void;
-  }
-) => {
-  let lastMessage = undefined as any;
-  let value = false;
-  function publishHandler(open: boolean, message?: any) {
-    lastMessage = message;
-    messageBroker.publish({
-      scope,
-      eventName: EventName.ON_CHANGE,
-      payload: {
-        open,
-        message,
-      },
-    });
-    config.logger({
-      scope,
-      eventName: EventName.ON_CHANGE,
-      payload: {
-        open,
-        message,
-      },
-    });
-  }
-  function handleInterceptor(
-    callback: (payload: any) => boolean | { payload: any },
-    payload: any,
-    eventName: string
-  ) {
-    const result = callback(payload.message);
-    if (result === false && typeof result === "boolean") {
-      return false;
-    }
-
-    let mutatedPayload = {
-      ...payload,
-      message: result,
-    };
-    lastMessage = mutatedPayload.message;
-    return {
-      eventName,
-      payload: mutatedPayload,
-    };
-  }
+const createStore = (config: storeConfig) => {
+  const store = new Map<string, StoreModel>();
+  const logger = createStoreLogger(store, config.log);
   return {
-    open: (message?: any) => {
-      publishHandler(true, message);
-    },
-    close: (message?: any) => {
-      publishHandler(false, message);
-    },
-    subscribe: (
-      eventName: EventName.ON_CHANGE,
-      callback: (payload: EventPayload) => void
-    ) => {
-      return messageBroker.subscribe({
-        scope,
-        eventName,
-        callback,
+    createModel: logger.logStore((params: toggleConfigType) => {
+      if (store.has(params.id)) return;
+      const model = toggleModel(params, config.log);
+      store.set(params.id, {
+        model,
       });
+    }),
+    getModel: (id: string) => {
+      if (!store.has(id)) {
+        throw new Error(`Toggle ${id} not found`);
+      }
+      const model = store.get(id)!.model;
+      return model;
     },
-    interceptor: (
-      callback: (payload: any) => boolean | { payload: any },
-      action?: InterceptorAction
-    ) => {
-      return messageBroker.interceptor({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        onPublish: ({ eventName, payload }) => {
-          let obj = {
-            open: true,
-            close: false,
-          };
-          if (action && obj[action] === payload.open) {
-            return handleInterceptor(callback, payload, eventName);
-          }
-          if (!action) {
-            return handleInterceptor(callback, payload, eventName);
-          }
-          return {
-            eventName,
-            payload,
-          };
-        },
+    hasModel: (id: string) => {
+      return store.has(id);
+    },
+    deleteModel: (id: string) => {
+      logger.logStore(() => {
+        store.delete(id);
       });
-    },
-    onChangeSync: (notify: () => void) => {
-      return messageBroker.subscribe({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        callback: ({ payload }: EventPayload) => {
-          const { open } = payload;
-          value = open;
-          notify();
-        },
-      });
-    },
-    onChange: (callback: (payload: EventPayload) => void) => {
-      return messageBroker.subscribe({
-        scope,
-        eventName: EventName.ON_CHANGE,
-        callback,
-      });
-    },
-    getMessage: () => {
-      return lastMessage;
-    },
-    setValue: (params: boolean) => {
-      value = params;
-    },
-    getValue: () => {
-      return value;
     },
   };
 };

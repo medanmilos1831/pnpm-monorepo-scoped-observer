@@ -20,44 +20,58 @@ npm install @med1802/react-toggle-observer
 import { createReactToggleObserver } from "@med1802/react-toggle-observer";
 import { Button, Modal } from "antd";
 
-// Create toggle observers with logger configuration
+// Create toggle observer with logging enabled
 const toggleObservers = createReactToggleObserver({
-  userModal: {
-    logger: (params) => {
-      console.log("MODAL LOGGER", params);
-    },
-  },
-  authModal: {
-    logger: (params) => {
-      console.log("AUTH MODAL LOGGER", params);
-    },
-  },
+  log: true,
 });
 
-// Destructure the observers
-const { userModal, authModal } = toggleObservers;
-const { useToggle: useUserModal, useInterceptor: useUserModalInterceptor } =
-  userModal;
+const { useToggle, useInterceptor } = toggleObservers.reactHooks;
 
 // Use in components
-const UserModalComponent = () => {
-  const [value, close, message] = useUserModal(false);
+const ModalComponent = ({ id, initialState }: { id: string; initialState: boolean }) => {
+  const [isOpen, close, message] = useToggle({ id, initialState });
   return (
-    <Modal open={value} onCancel={() => close()} onOk={() => close()}>
-      <h1>User Modal</h1>
-      {message && <p>{message}</p>}
+    <Modal open={isOpen} onCancel={() => close("close message")} onOk={() => close()}>
+      <div>
+        <h1>Modal</h1>
+        {message && <p>{JSON.stringify(message)}</p>}
+      </div>
     </Modal>
   );
 };
 
 const SomeComponent = () => {
-  return <Button onClick={() => userModal.open()}>Open Modal</Button>;
+  const toggle = toggleObservers.getToggleClient("test");
+  const toggle2 = toggleObservers.getToggleClient("test2");
+  return (
+    <>
+      <Button
+        onClick={() =>
+          toggle.open({
+            message: "Hello from button!",
+          })
+        }
+      >
+        Open Modal
+      </Button>
+      <Button
+        onClick={() =>
+          toggle2.open({
+            message: "Hello from button 2!",
+          })
+        }
+      >
+        Open Modal 2
+      </Button>
+    </>
+  );
 };
 
 const HomePage = () => {
   return (
     <>
-      <UserModalComponent />
+      <ModalComponent id="test" initialState={false} />
+      <ModalComponent id="test2" initialState={false} />
       <SomeComponent />
     </>
   );
@@ -75,20 +89,17 @@ import { createReactToggleObserver } from "@med1802/react-toggle-observer";
 import { Modal } from "antd";
 
 const toggleObservers = createReactToggleObserver({
-  userModal: {
-    logger: (params) => console.log("User modal:", params),
-  },
+  log: true,
 });
 
-const { userModal } = toggleObservers;
-const { useToggle } = userModal;
+const { useToggle } = toggleObservers.reactHooks;
 
-const UserModalComponent = () => {
-  const [value, close, message] = useToggle(false);
+const UserModalComponent = ({ id }: { id: string }) => {
+  const [isOpen, close, message] = useToggle({ id, initialState: false });
   return (
-    <Modal open={value} onCancel={close} onOk={close}>
+    <Modal open={isOpen} onCancel={close} onOk={close}>
       <h1>User Modal</h1>
-      {message && <p>Message: {message}</p>}
+      {message && <p>Message: {JSON.stringify(message)}</p>}
     </Modal>
   );
 };
@@ -98,12 +109,16 @@ const UserModalComponent = () => {
 
 ```tsx
 const ControlPanel = () => {
+  const toggle = toggleObservers.getToggleClient("test");
+  
   return (
     <>
-      <Button onClick={() => userModal.open("Hello from button!")}>
+      <Button onClick={() => toggle.open({ message: "Hello from button!" })}>
         Open Modal
       </Button>
-      <Button onClick={() => userModal.close("Goodbye!")}>Close Modal</Button>
+      <Button onClick={() => toggle.close({ message: "Goodbye!" })}>
+        Close Modal
+      </Button>
     </>
   );
 };
@@ -113,28 +128,25 @@ const ControlPanel = () => {
 
 ```tsx
 const SomeComponent = () => {
-  const { useInterceptor } = userModal;
-
-  // Intercept all actions (open and close)
-  useInterceptor((payload) => {
-    console.log("Intercepted:", payload);
-    // You can modify the payload here
-    return {
-      ...payload,
-      message: "Modified message",
-    };
+  const [counter, setCounter] = useState(0);
+  
+  useInterceptor({
+    id: "test",
+    callback: (payload) => {
+      return {
+        ...payload,
+        counter,
+      };
+    },
+    action: "open", // Only intercept open actions
   });
 
-  // Or intercept only specific actions
-  useInterceptor(
-    (payload) => {
-      console.log("Opening with:", payload);
-      return payload;
-    },
-    "open" // Only intercept open actions
+  return (
+    <>
+      <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
+      <p>Counter: {counter}</p>
+    </>
   );
-
-  return <div>Some Component</div>;
 };
 ```
 
@@ -143,7 +155,8 @@ const SomeComponent = () => {
 ```tsx
 const WatcherComponent = () => {
   useEffect(() => {
-    const unsubscribe = userModal.onChange((payload) => {
+    const toggle = toggleObservers.getToggleClient("test");
+    const unsubscribe = toggle.onChange((payload) => {
       console.log("State changed:", payload);
       // payload contains: { payload: { open: boolean, message?: any }, eventName, scope }
     });
@@ -159,26 +172,18 @@ const WatcherComponent = () => {
 
 ```tsx
 const toggleObservers = createReactToggleObserver({
-  userModal: {
-    logger: (params) => console.log("User modal:", params),
-  },
-  authModal: {
-    logger: (params) => console.log("Auth modal:", params),
-  },
-  drawer: {
-    logger: (params) => console.log("Drawer:", params),
-  },
+  log: true,
 });
 
-const { userModal, authModal, drawer } = toggleObservers;
+const { useToggle } = toggleObservers.reactHooks;
 
-// Each toggle is independent
+// Each toggle is identified by unique ID
 const App = () => {
   return (
     <>
-      <UserModalComponent />
-      <AuthModalComponent />
-      <DrawerComponent />
+      <ModalComponent id="userModal" initialState={false} />
+      <ModalComponent id="authModal" initialState={false} />
+      <ModalComponent id="drawer" initialState={false} />
       <ControlPanel />
     </>
   );
@@ -189,144 +194,132 @@ const App = () => {
 
 ## 🔧 API Reference
 
-### `createReactToggleObserver<T>(params)`
+### `createReactToggleObserver(config)`
 
-Creates toggle observers for multiple scopes.
+Creates a toggle observer store with React hooks.
 
 **Parameters:**
 
-- `params` - An object where keys are scope names and values are configuration objects with:
-  - `logger: (params: LoggerParams) => void` - Logger function called on state changes
+- `config` - Configuration object:
+  - `log: boolean` - Enable/disable logging (shows toggle state table in console)
 
 **Returns:**
-An object where keys are scope names and values are `Channel` objects.
+
+An object with:
+- `reactHooks` - Object containing React hooks:
+  - `useToggle` - Hook for using toggle in components
+  - `useInterceptor` - Hook for intercepting toggle actions
+- `getToggleClient(id: string)` - Get toggle client by ID
+- `createToggle(params)` - Manually create a toggle
+- `deleteToggle(id: string)` - Delete a toggle by ID
 
 **Example:**
 
 ```tsx
-const observers = createReactToggleObserver({
-  modal: {
-    logger: (params) => console.log(params),
-  },
+const toggleObservers = createReactToggleObserver({
+  log: true,
 });
 ```
 
-### Channel API
+### React Hooks
 
-Each channel provides the following methods and hooks:
+#### `useToggle(params) => [boolean, (message?: any) => void, any]`
 
-#### `open(message?: any) => void`
+React hook that manages toggle state in a component. Automatically creates the toggle on mount and cleans it up on unmount.
 
-Opens the toggle and optionally sets a message.
+**Parameters:**
 
-```tsx
-userModal.open(); // Open without message
-userModal.open("Hello!"); // Open with message
-```
-
-#### `close(message?: any) => void`
-
-Closes the toggle and optionally sets a message.
-
-```tsx
-userModal.close(); // Close without message
-userModal.close("Goodbye!"); // Close with message
-```
-
-#### `useToggle(initialValue?: boolean) => [boolean, () => void, any]`
-
-React hook that returns the current toggle state, close function, and message.
+- `params` - Toggle configuration:
+  - `id: string` - Unique identifier for the toggle
+  - `initialState: boolean` - Initial open/closed state
 
 **Returns:**
 
 - `[value, close, message]` - Tuple containing:
   - `value` - Current boolean state
-  - `close` - Function to close the toggle
+  - `close` - Function to close the toggle (optionally accepts a message)
   - `message` - Current message (if any)
 
 **Example:**
 
 ```tsx
-const [isOpen, close, message] = useToggle(false);
+const [isOpen, close, message] = useToggle({ id: "test", initialState: false });
 ```
 
-#### `useInterceptor(callback, action?) => void`
+#### `useInterceptor({ id, callback, action? }) => void`
 
-React hook for intercepting toggle actions.
+React hook for intercepting toggle actions. Automatically subscribes on mount and unsubscribes on unmount.
 
 **Parameters:**
 
-- `callback: (payload: onChangePayload) => onChangePayload` - Callback that receives and can modify the payload
+- `id: string` - Toggle ID to intercept
+- `callback: (payload: any) => boolean | { payload: any }` - Callback that receives and can modify the payload
 - `action?: "open" | "close"` - Optional action filter (if not provided, intercepts all actions)
 
 **Example:**
 
 ```tsx
-useInterceptor((payload) => {
-  console.log("Intercepted:", payload);
-  return payload; // Return modified or original payload
-}, "open"); // Only intercept open actions
+useInterceptor({
+  id: "test",
+  callback: (payload) => {
+    console.log("Intercepted:", payload);
+    return {
+      ...payload,
+      customField: "value",
+    };
+  },
+  action: "open", // Only intercept open actions
+});
 ```
 
-#### `onChange(callback) => () => void`
+### Toggle Client API
 
-Subscribe to state changes. Returns an unsubscribe function.
+#### `getToggleClient(id: string)`
 
-**Parameters:**
-
-- `callback: (payload: EventPayload) => void` - Callback function
+Gets a toggle client by ID. Throws an error if toggle doesn't exist.
 
 **Returns:**
 
-- Unsubscribe function
+An object with:
+- `open(message?: any) => void` - Open the toggle with optional message
+- `close(message?: any) => void` - Close the toggle with optional message
+- `onChange(callback) => () => void` - Subscribe to state changes
+- `getValue() => boolean` - Get current state synchronously
+- `getMessage() => any` - Get current message synchronously
 
 **Example:**
 
 ```tsx
-const unsubscribe = userModal.onChange((payload) => {
-  console.log("Changed:", payload);
-});
-// Later...
-unsubscribe();
-```
-
-#### `getValue() => boolean`
-
-Gets the current toggle state synchronously.
-
-```tsx
-const isOpen = userModal.getValue();
-```
-
-#### `getMessage() => any`
-
-Gets the current message synchronously.
-
-```tsx
-const message = userModal.getMessage();
+const toggle = toggleObservers.getToggleClient("test");
+toggle.open({ message: "Hello!" });
+toggle.close();
+const isOpen = toggle.getValue();
+const message = toggle.getMessage();
 ```
 
 ---
 
 ## ✨ Features
 
-- ✅ **Type-safe** - Full TypeScript support with generics
-- ✅ **Multiple scopes** - Manage multiple independent toggles
+- ✅ **Type-safe** - Full TypeScript support
+- ✅ **ID-based toggles** - Manage multiple independent toggles by unique IDs
 - ✅ **React hooks** - Built-in `useToggle` and `useInterceptor` hooks
 - ✅ **Interceptors** - Modify payloads before state updates
-- ✅ **Logging** - Built-in logger support for debugging
+- ✅ **Logging** - Built-in console logging with formatted tables
 - ✅ **Message support** - Pass and retrieve messages with state changes
 - ✅ **Event subscriptions** - Listen to state changes with `onChange`
+- ✅ **Automatic cleanup** - Toggles are automatically cleaned up on unmount
 - ✅ **Concurrent-safe** - Built on `useSyncExternalStore` for React 18+ compatibility
 
 ---
 
 ## 📝 Notes
 
-- Each toggle instance is identified by a unique scope name
+- Each toggle instance is identified by a unique ID
+- Toggles created with `useToggle` are automatically cleaned up when the component unmounts
 - Interceptors can modify payloads before they're applied
-- Loggers are called on every state change
-- Messages are optional and can be any type
+- Logging shows a formatted table in the console with all toggle states
+- Messages can be any type (string, object, etc.)
 - The `useToggle` hook automatically subscribes and unsubscribes on mount/unmount
 
 ---

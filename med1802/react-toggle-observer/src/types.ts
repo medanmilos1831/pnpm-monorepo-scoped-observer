@@ -1,8 +1,8 @@
 enum EventName {
   ON_CHANGE = "onChange",
 }
-type onChangePayload = {
-  open: boolean;
+export type onChangePayload = {
+  payload: { open: boolean; message?: any };
   message?: any;
 };
 type EventPayload = {
@@ -11,25 +11,38 @@ type EventPayload = {
   scope: string;
 };
 
-export type LoggerParams = {
-  scope: string;
-  eventName: string;
-  payload: any;
-};
-
 export type InterceptorAction = "open" | "close";
 
-type Channel = {
-  open: (message?: any) => void;
-  close: (message?: any) => void;
-  onChange: (callback: (payload: EventPayload) => void) => () => void;
-  useToggle: (
-    initialValue?: boolean
-  ) => [boolean, (message?: any) => void, message: any];
-  useInterceptor: (callback: any, action?: InterceptorAction) => void;
-  getMessage: () => any;
-  getValue: () => boolean;
+export type toggleConfigType = {
+  id: string;
+  initialState: boolean;
 };
 
-export type { Channel, EventPayload };
+export interface IToggleModel {
+  open: (message?: any) => void;
+  close: (message?: any) => void;
+  subscribe: (
+    eventName: EventName.ON_CHANGE,
+    callback: (payload: EventPayload) => void
+  ) => () => void;
+  interceptor: (
+    callback: (payload: any) => boolean | { payload: any },
+    action?: InterceptorAction
+  ) => () => void;
+  onChangeSync: (notify: () => void) => () => void;
+  onChange: (callback: (payload: EventPayload) => void) => () => void;
+  getMessage: () => any;
+  getValue: () => boolean;
+}
+
+export type storeConfig = {
+  log: boolean;
+};
+
+export type StoreModel = {
+  model: IToggleModel;
+};
+export type StoreType = Map<string, StoreModel>;
+
+export type { EventPayload };
 export { EventName };

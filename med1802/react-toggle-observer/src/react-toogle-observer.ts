@@ -1,40 +1,36 @@
-import { createScopedObserver, type ScopeNode } from "@med1802/scoped-observer";
-import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
-import { createReactHooks } from "./react-hooks";
+import { createReactAdapter } from "./react-adapter";
 import { createStore } from "./store";
-import type { Channel, LoggerParams } from "./types";
-const createReactToggleObserver = <
-  T extends {
-    [key: string]: {
-      logger: (params: LoggerParams) => void;
-    };
-  }
->(
-  params: T
-) => {
-  const scopes: ScopeNode[] = Object.keys(params).map((scope) => ({
-    scope,
-  }));
-  const scopedObserver = createScopedObserver(scopes);
-  const messageBroker = createMessageBroker(scopedObserver);
-  const obj = {} as Record<keyof T, Channel>;
-  Object.keys(params).forEach((key) => {
-    const store = createStore(key, messageBroker, params[key]);
-    const { useToggle, useInterceptor } = createReactHooks(store);
-    const { open, close, getMessage, getValue, onChange } = store;
-    obj[key as keyof T] = (() => {
+import type { storeConfig, toggleConfigType } from "./types";
+const createReactToggleObserver = (config: storeConfig) => {
+  const store = createStore(config);
+  const { useToggle, useInterceptor } = createReactAdapter(store);
+
+  return {
+    reactHooks: {
+      useToggle,
+      useInterceptor,
+    },
+    getToggleClient: (id: string) => {
+      if (!store.hasModel(id)) {
+        throw new Error(`Toggle ${id} not found`);
+      }
+      const { open, close, onChange, getMessage, getValue } =
+        store.getModel(id);
       return {
         open,
         close,
         onChange,
-        useToggle,
-        useInterceptor,
         getMessage,
         getValue,
       };
-    })();
-  });
-  return obj;
+    },
+    deleteToggle: (id: string) => {
+      return store.deleteModel(id);
+    },
+    createToggle: (params: toggleConfigType) => {
+      return store.createModel(params);
+    },
+  };
 };
 
 export { createReactToggleObserver };
