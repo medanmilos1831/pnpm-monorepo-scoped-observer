@@ -29,6 +29,7 @@ export interface IToggleModel {
     callback: (payload: any) => boolean | { payload: any },
     action?: InterceptorAction
   ) => () => void;
+  interceptorNew: ({ id, callback }: any) => () => void;
   onChangeSync: (notify: () => void) => () => void;
   onChange: (callback: (payload: EventPayload) => void) => () => void;
   getMessage: () => any;
@@ -37,6 +38,7 @@ export interface IToggleModel {
 
 export type storeConfig = {
   log: boolean;
+  applyMiddleware: { [key: string]: (store: any) => any };
 };
 
 export type StoreModel = {

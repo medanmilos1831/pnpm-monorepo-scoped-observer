@@ -2,13 +2,35 @@ import { useState } from "react";
 import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 import { Button, Modal } from "antd";
 
+// const someMiddleware = (store: any) => {
+//   return {
+//     ...store,
+//     someMiddleware: someMiddleware(store),
+//   };
+// };
 const toggleObservers = createReactToggleObserver({
-  log: true,
+  log: false,
+  applyMiddleware: {
+    someMiddleware: ({ resolve, reject, skip }: any) => {
+      // console.log("applyMiddleware HOME PAGE", resolve);
+      resolve((value: any, message: any) => {
+        return {
+          pera: value,
+          message: message,
+        };
+      });
+      // resolve("new value");
+    },
+  },
 });
 
-const { useToggle, useInterceptor } = toggleObservers.reactHooks;
+console.log(toggleObservers);
+
+const { useToggle, useInterceptor, useInterceptorNew } =
+  toggleObservers.reactHooks;
 const ModalComponent = (params: { id: string; initialState: boolean }) => {
   const [isOpen, close, message] = useToggle(params);
+  console.log("message", message);
   return (
     <Modal
       open={isOpen}
@@ -27,22 +49,10 @@ const SomeComponent = () => {
   const toggle2 = toggleObservers.getToggleClient("test2");
   return (
     <>
-      <Button
-        onClick={() =>
-          toggle.open({
-            message: "Hello from button!",
-          })
-        }
-      >
+      <Button onClick={() => toggle.open("Hello from button!")}>
         Open Modal
       </Button>
-      <Button
-        onClick={() =>
-          toggle2.open({
-            message: "Hello from button 2!",
-          })
-        }
-      >
+      <Button onClick={() => toggle2.open("hello from button 2")}>
         Open Modal 2
       </Button>
     </>
@@ -51,15 +61,10 @@ const SomeComponent = () => {
 
 const SomeOtherComponent = () => {
   const [counter, setCounter] = useState(0);
-  useInterceptor({
+  useInterceptorNew({
     id: "test",
-    callback: (payload) => {
-      return {
-        ...payload,
-        counter,
-      };
-    },
-    action: "open",
+    middleware: "someMiddleware",
+    value: counter,
   });
   return (
     <>
@@ -78,7 +83,7 @@ const HomePage = () => {
       <SomeOtherComponent />
       <SomeComponent />
       <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
-      <p>Counter: {counter}</p>
+      {/* <p>Counter: {counter}</p> */}
     </>
   );
 };

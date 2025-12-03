@@ -33,7 +33,16 @@ const createReactAdapter = (store: ReturnType<typeof createStore>) => {
     }) => {
       const model = store.getModel(id);
       useEffect(() => {
-        const unsubscribe = model.interceptor(callback, action);
+        // const unsubscribe = model.interceptor(callback, action);
+        // return () => {
+        //   unsubscribe();
+        // };
+      });
+    },
+    useInterceptorNew: ({ id, middleware, value }: any) => {
+      const model = store.getModel(id);
+      useEffect(() => {
+        const unsubscribe = model.interceptorNew({ middleware, value });
         return () => {
           unsubscribe();
         };

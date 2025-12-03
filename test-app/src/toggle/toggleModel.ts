@@ -4,14 +4,17 @@ import {
   EventName,
   type EventPayload,
   type InterceptorAction,
+  type storeConfig,
   type toggleConfigType,
 } from "./types";
 import { createModelLogger } from "./logger/modellogger";
+import { createInterceptor } from "./interceptor";
 
-const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
+const toggleModel = (params: toggleConfigType, config: storeConfig) => {
   const scopedObserver = createScopedObserver();
   const messageBroker = createMessageBroker(scopedObserver);
-  const logger = createModelLogger(params.id, activeLogger);
+  const logger = createModelLogger(params.id, config.log);
+  const interceptor = createInterceptor(config, messageBroker);
   let lastMessage = undefined as any;
   let initialState = params.initialState;
 
@@ -64,6 +67,7 @@ const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
         callback,
       });
     },
+    interceptorNew: interceptor.interceptorNew,
     interceptor: (
       callback: (payload: any) => boolean | { payload: any },
       action?: InterceptorAction
@@ -71,16 +75,16 @@ const toggleModel = (params: toggleConfigType, activeLogger: boolean) => {
       return messageBroker.interceptor({
         eventName: EventName.ON_CHANGE,
         onPublish: ({ eventName, payload }) => {
-          let obj = {
-            open: true,
-            close: false,
-          };
-          if (action && obj[action] === payload.open) {
-            return handleInterceptor(callback, payload, eventName);
-          }
-          if (!action) {
-            return handleInterceptor(callback, payload, eventName);
-          }
+          // let obj = {
+          //   open: true,
+          //   close: false,
+          // };
+          // if (action && obj[action] === payload.open) {
+          //   return handleInterceptor(callback, payload, eventName);
+          // }
+          // if (!action) {
+          //   return handleInterceptor(callback, payload, eventName);
+          // }
           return {
             eventName,
             payload,

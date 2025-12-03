@@ -12,7 +12,7 @@ const createStore = (config: storeConfig) => {
   return {
     createModel: logger.logStore((params: toggleConfigType) => {
       if (store.has(params.id)) return;
-      const model = toggleModel(params, config.log);
+      const model = toggleModel(params, config);
       store.set(params.id, {
         model,
       });
