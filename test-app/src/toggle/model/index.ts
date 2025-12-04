@@ -1,12 +1,12 @@
-import { createModelContext } from "./model/context";
 import {
   EventName,
   type IEvent,
   type storeConfig,
   type toggleConfigType,
-} from "./types";
+} from "../types";
+import { createModelContext } from "./context";
 
-const toggleModel = (params: toggleConfigType, config: storeConfig) => {
+const createModel = (params: toggleConfigType, config: storeConfig) => {
   const context = createModelContext(params, config);
   const {
     messageBroker,
@@ -16,7 +16,6 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
     getInitialState,
     publishHandler,
   } = context;
-
   return {
     open: logger.logAction((message?: any) => {
       return publishHandler(true, message);
@@ -45,4 +44,4 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
   };
 };
 
-export { toggleModel };
+export { createModel };

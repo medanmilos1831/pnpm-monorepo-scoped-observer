@@ -1,5 +1,6 @@
 import { createStoreLogger } from "./logger/storeLogger";
-import { toggleModel } from "./toggleModel";
+import { createModel } from "./model";
+
 import {
   type storeConfig,
   type StoreModel,
@@ -12,7 +13,7 @@ const createStore = (config: storeConfig) => {
   return {
     createModel: logger.logStore((params: toggleConfigType) => {
       if (store.has(params.id)) return;
-      const model = toggleModel(params, config);
+      const model = createModel(params, config);
       store.set(params.id, {
         model,
       });
