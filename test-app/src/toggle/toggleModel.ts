@@ -1,42 +1,22 @@
-import { createScopedObserver } from "@med1802/scoped-observer";
-import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
+import { createModelContext } from "./model/context";
 import {
   EventName,
   type IEvent,
   type storeConfig,
   type toggleConfigType,
 } from "./types";
-import { createModelLogger } from "./logger/modellogger";
-import { createMiddleware } from "./middleware";
-import { createMessageContainer } from "./messageContainer";
 
 const toggleModel = (params: toggleConfigType, config: storeConfig) => {
-  const scopedObserver = createScopedObserver();
-  const messageBroker = createMessageBroker(scopedObserver);
-  const logger = createModelLogger(params.id, config.log);
-  const messageContainer = createMessageContainer();
-  const middleware = config.middlewares
-    ? createMiddleware(config.middlewares, messageBroker, messageContainer)
-    : undefined;
-  let initialState = params.initialState;
+  const context = createModelContext(params, config);
+  const {
+    messageBroker,
+    logger,
+    messageContainer,
+    middleware,
+    getInitialState,
+    publishHandler,
+  } = context;
 
-  function publishHandler(open: boolean, message?: any) {
-    messageContainer.setMessage(message);
-    initialState = open;
-    const payload = {
-      open,
-      message,
-    };
-    messageBroker.publish({
-      eventName: EventName.ON_CHANGE,
-      payload,
-    });
-    return {
-      id: params.id,
-      eventName: EventName.ON_CHANGE,
-      payload,
-    };
-  }
   return {
     open: logger.logAction((message?: any) => {
       return publishHandler(true, message);
@@ -61,9 +41,7 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
     getMessage: () => {
       return messageContainer.getMessage();
     },
-    getValue: () => {
-      return initialState;
-    },
+    getValue: getInitialState,
   };
 };
 

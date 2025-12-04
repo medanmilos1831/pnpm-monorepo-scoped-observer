@@ -18,7 +18,9 @@ export type toggleConfigType = {
 export interface IToggleModel {
   open: (message?: any) => void;
   close: (message?: any) => void;
-  middleware: ({ use, value }: { use: string; value: any }) => () => void;
+  middleware:
+    | (({ use, value }: { use: string; value: any }) => () => void)
+    | undefined;
   onChangeSync: (notify: () => void) => () => void;
   onChange: (callback: (payload: IEvent) => void) => () => void;
   getMessage: () => any;
