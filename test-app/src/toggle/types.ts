@@ -27,7 +27,7 @@ export interface IToggleModel {
 
 export type storeConfig = {
   log: boolean;
-  middlewares: {
+  middlewares?: {
     [key: string]: (
       middleware: middlewareType,
       state: onChangePayload["open"]

@@ -15,7 +15,9 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
   const messageBroker = createMessageBroker(scopedObserver);
   const logger = createModelLogger(params.id, config.log);
   const messageContainer = createMessageContainer();
-  const middleware = createMiddleware(config, messageBroker, messageContainer);
+  const middleware = config.middlewares
+    ? createMiddleware(config.middlewares, messageBroker, messageContainer)
+    : undefined;
   let initialState = params.initialState;
 
   function publishHandler(open: boolean, message?: any) {

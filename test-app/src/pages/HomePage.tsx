@@ -5,7 +5,7 @@ import { Button, Modal } from "antd";
 const toggleObservers = createReactToggleObserver({
   log: false,
   middlewares: {
-    someMiddleware: ({ resolve, reject, skip }, state) => {
+    someMiddleware: ({ resolve, reject }, state) => {
       resolve((value: any, message: any) => {
         return value + message;
       });
