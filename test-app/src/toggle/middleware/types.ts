@@ -11,13 +11,15 @@ export type middlewareOnPublishResolveParamsType = (
   value: any,
   message: any
 ) => any;
-export type middlewareType = {
+export type middlewareTypeParams = {
   resolve: (params: middlewareOnPublishResolveParamsType) => void;
   reject: () => void;
 };
+
+export type middlewareType = (
+  middleware: middlewareTypeParams,
+  state: onChangePayload["open"]
+) => void;
 export type middlewareStoreConfigType = {
-  [key: string]: (
-    middleware: middlewareType,
-    state: onChangePayload["open"]
-  ) => void;
+  [key: string]: middlewareType;
 };

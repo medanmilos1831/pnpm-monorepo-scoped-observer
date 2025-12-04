@@ -1,11 +1,11 @@
-import type { middlewareType } from "./middleware/types";
+import type { middlewareStoreConfigType } from "./middleware/types";
 
 enum EventName {
   ON_CHANGE = "onChange",
 }
 export type onChangePayload = { open: boolean; message?: any };
 interface IEvent {
-  scope: string;
+  scope?: string;
   eventName: string;
   payload: onChangePayload;
 }
@@ -27,12 +27,7 @@ export interface IToggleModel {
 
 export type storeConfig = {
   log: boolean;
-  middlewares?: {
-    [key: string]: (
-      middleware: middlewareType,
-      state: onChangePayload["open"]
-    ) => void;
-  };
+  middlewares?: middlewareStoreConfigType;
 };
 
 export type StoreModel = {
