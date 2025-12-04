@@ -52,11 +52,6 @@ const SomeOtherComponent = () => {
     use: "someMiddleware",
     value: counter + 1,
   });
-  // useInterceptor({
-  //   id: "test",
-  //   middleware: "someMiddleware",
-  //   value: counter + 3,
-  // });
   return (
     <>
       <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
