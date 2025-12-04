@@ -1,10 +1,9 @@
 import { EventName } from "@med1802/react-toggle-observer/dist/types";
 import type { createMessageBroker } from "@med1802/scoped-observer-message-broker";
-import type { storeConfig } from "../types";
 import type { createMessageContainer } from "../messageContainer";
+import { createMiddlewareContainer } from "./container";
 import type {
   middlewareOnPublishParamsType,
-  middlewareOnPublishResolveParamsType,
   middlewareParamsType,
   middlewareStoreConfigType,
 } from "./types";
@@ -15,50 +14,26 @@ const createMiddleware = (
   messageContainer: ReturnType<typeof createMessageContainer>
 ) => {
   function onPublish(params: middlewareOnPublishParamsType) {
-    const { eventName, payload, use, value } = params;
-    let state = {
-      eventName,
-      payload,
-      use,
-      value,
-      status: true,
-    };
+    const container = createMiddlewareContainer(params);
+    const { payload, use } = params;
     middlewares[use](
       {
-        resolve(params: middlewareOnPublishResolveParamsType) {
-          let result = params(value, payload.message);
-          state = {
-            ...state,
-            payload: {
-              open: payload.open,
-              message: result,
-            },
-          };
-        },
-        reject() {
-          state = {
-            ...state,
-            status: false,
-          };
-        },
+        resolve: container.resolve,
+        reject: container.reject,
       },
       payload.open
     );
-    if (state.status) {
+    const state = container.result();
+    if (typeof state === "object") {
       messageContainer.setMessage(state.payload.message);
-      return {
-        eventName: state.eventName,
-        payload: state.payload,
-      };
     }
-    return state.status;
+    return state;
   }
   return ({ use, value }: middlewareParamsType) => {
     const unsubscribe = messageBroker.interceptor({
       eventName: EventName.ON_CHANGE,
       onPublish: ({ eventName, payload }) => {
         const result = onPublish({ eventName, payload, use, value });
-
         return result;
       },
     });

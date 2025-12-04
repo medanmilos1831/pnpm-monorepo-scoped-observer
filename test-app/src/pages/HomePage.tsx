@@ -6,6 +6,7 @@ const toggleObservers = createReactToggleObserver({
   log: false,
   middlewares: {
     someMiddleware: ({ resolve, reject }, state) => {
+      // reject();
       resolve((value: any, message: any) => {
         return value + message;
       });
