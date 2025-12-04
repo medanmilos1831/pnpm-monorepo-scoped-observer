@@ -1,4 +1,4 @@
-import type { onChangePayload } from "../types";
+import type { onChangePayload } from "../../types";
 
 const createModelLogger = (id: string, active: boolean) => {
   return {

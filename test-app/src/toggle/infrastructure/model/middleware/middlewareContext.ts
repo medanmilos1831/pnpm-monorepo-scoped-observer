@@ -1,4 +1,4 @@
-import type { onChangePayload } from "../types";
+import type { onChangePayload } from "../../../types";
 import type { middlewareType } from "./types";
 
 const createMiddlewareContext = (payload: onChangePayload, value: any) => {

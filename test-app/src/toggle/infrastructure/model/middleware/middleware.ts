@@ -1,6 +1,6 @@
 import { EventName } from "@med1802/react-toggle-observer/dist/types";
 import type { createMessageBroker } from "@med1802/scoped-observer-message-broker";
-import type { createMessageContainer } from "../messageContainer";
+import type { createMessageContainer } from "../infrastructure/model/messageContainer";
 import { createMiddlewareContext } from "./middlewareContext";
 import type { middlewareParamsType, middlewareStoreConfigType } from "./types";
 

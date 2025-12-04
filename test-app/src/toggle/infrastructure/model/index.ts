@@ -1,13 +1,12 @@
 import { createScopedObserver } from "@med1802/scoped-observer";
 import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 
-import { createModelLogger } from "../logger/modellogger";
-import { createMessageContainer } from "../messageContainer";
-import { createMiddleware } from "../middleware";
-import type { toggleConfigType } from "../types";
-import type { storeConfig } from "../types";
+import type { storeConfig, toggleConfigType } from "../../types";
+import { createModelLogger } from "./modellogger";
+import { createMessageContainer } from "./messageContainer";
+import { createMiddleware } from "./middleware";
 
-const createInfrastructure = (
+const createModelInfrastructure = (
   params: toggleConfigType,
   config: storeConfig
 ) => {
@@ -27,4 +26,4 @@ const createInfrastructure = (
   };
 };
 
-export { createInfrastructure };
+export { createModelInfrastructure };

@@ -1,4 +1,4 @@
-import type { middlewareStoreConfigType } from "./middleware/types";
+import type { middlewareStoreConfigType } from "./infrastructure/model/middleware/types";
 
 enum EventName {
   ON_CHANGE = "onChange",

@@ -1,4 +1,4 @@
-import type { onChangePayload } from "../types";
+import type { onChangePayload } from "../../../types";
 
 export type middlewareParamsType = { use: string; value: any };
 

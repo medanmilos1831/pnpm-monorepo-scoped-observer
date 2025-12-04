@@ -1,10 +1,10 @@
+import { createModelContext } from "../context/model";
 import {
   EventName,
   type IEvent,
   type storeConfig,
   type toggleConfigType,
 } from "../types";
-import { createModelContext } from "./context";
 
 const createModel = (params: toggleConfigType, config: storeConfig) => {
   const context = createModelContext(params, config);

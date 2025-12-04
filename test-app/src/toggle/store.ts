@@ -1,5 +1,5 @@
-import { createStoreLogger } from "./logger/storeLogger";
-import { createModel } from "./model";
+import { createStoreLogger } from "./infrastructure/store/storeLogger";
+import { createModel } from "./api/model";
 
 import {
   type storeConfig,

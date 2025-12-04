@@ -1,8 +1,8 @@
+import { createModelInfrastructure } from "../infrastructure";
 import { EventName, type storeConfig, type toggleConfigType } from "../types";
-import { createInfrastructure } from "./infrastructure";
 
 const createModelContext = (params: toggleConfigType, config: storeConfig) => {
-  const infrastructure = createInfrastructure(params, config);
+  const infrastructure = createModelInfrastructure(params, config);
   const {
     scopedObserver,
     messageBroker,
