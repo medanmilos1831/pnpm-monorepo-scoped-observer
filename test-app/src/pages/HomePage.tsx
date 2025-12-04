@@ -2,17 +2,10 @@ import { useState } from "react";
 import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 import { Button, Modal } from "antd";
 
-// const someMiddleware = (store: any) => {
-//   return {
-//     ...store,
-//     someMiddleware: someMiddleware(store),
-//   };
-// };
 const toggleObservers = createReactToggleObserver({
   log: false,
   applyMiddleware: {
-    someMiddleware: ({ resolve, reject, skip }: any) => {
-      // reject();
+    someMiddleware: ({ resolve, reject, skip }, state) => {
       resolve((value: any, message: any) => {
         return value + message;
       });

@@ -1,13 +1,12 @@
+import { EventName } from "@med1802/react-toggle-observer/dist/types";
 import type { createMessageBroker } from "@med1802/scoped-observer-message-broker";
+import type { createMessageContainer } from "./messageContainer";
 import type {
   interceptorParamsType,
-  onChangePayload,
   onPublishParamsType,
   onPublishResolveParamsType,
   storeConfig,
 } from "./types";
-import { EventName } from "@med1802/react-toggle-observer/dist/types";
-import type { createMessageContainer } from "./messageContainer";
 
 const createInterceptor = (
   config: storeConfig,
@@ -23,33 +22,35 @@ const createInterceptor = (
       value,
       status: true,
     };
-    config.applyMiddleware[middleware]({
-      resolve(params: onPublishResolveParamsType) {
-        let result = params(value, payload.message);
-        state = {
-          ...state,
-          payload: {
-            open: payload.open,
-            message: result,
-          },
-        };
-        messageContainer.setMessage(state.payload.message);
+    config.applyMiddleware[middleware](
+      {
+        resolve(params: onPublishResolveParamsType) {
+          let result = params(value, payload.message);
+          state = {
+            ...state,
+            payload: {
+              open: payload.open,
+              message: result,
+            },
+          };
+        },
+        reject() {
+          state = {
+            ...state,
+            status: false,
+          };
+        },
+        skip() {
+          state = {
+            ...state,
+            status: true,
+          };
+        },
       },
-      reject() {
-        state = {
-          ...state,
-          status: false,
-        };
-      },
-      skip() {
-        state = {
-          ...state,
-          status: true,
-        };
-        messageContainer.setMessage(state.payload.message);
-      },
-    });
+      payload.open
+    );
     if (state.status) {
+      messageContainer.setMessage(state.payload.message);
       return {
         eventName: state.eventName,
         payload: state.payload,

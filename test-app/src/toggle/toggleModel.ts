@@ -46,15 +46,6 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
     close: logger.logAction((message?: any) => {
       return publishHandler(false, message);
     }),
-    subscribe: (
-      eventName: EventName.ON_CHANGE,
-      callback: (event: IEvent) => void
-    ) => {
-      return messageBroker.subscribe({
-        eventName,
-        callback,
-      });
-    },
     interceptor: interceptor.interceptor,
 
     onChangeSync: (callback: () => void) => {
