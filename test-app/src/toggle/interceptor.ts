@@ -20,31 +20,45 @@ const createInterceptor = (
     value: any;
   }) {
     let state = {
-      eventName,
+      eventName: EventName.ON_CHANGE,
       payload,
-    } as any;
+      middleware,
+      value,
+      status: true,
+    };
     config.applyMiddleware[middleware]({
       resolve(params: any) {
         let result = params(value, payload.message);
         state = {
-          eventName,
+          ...state,
           payload: {
             open: payload.open,
             message: result,
           },
         };
+        messageContainer.setMessage(state.payload.message);
       },
       reject() {
-        state = false;
+        state = {
+          ...state,
+          status: false,
+        };
       },
       skip() {
         state = {
-          eventName,
-          payload,
+          ...state,
+          status: true,
         };
+        messageContainer.setMessage(state.payload.message);
       },
     });
-    return state;
+    if (state.status) {
+      return {
+        eventName: state.eventName,
+        payload: state.payload,
+      };
+    }
+    return state.status;
   }
   return {
     interceptor: ({ middleware, value }: any) => {
@@ -52,7 +66,6 @@ const createInterceptor = (
         eventName: EventName.ON_CHANGE,
         onPublish: ({ eventName, payload }) => {
           const result = onPublish({ eventName, payload, middleware, value });
-          messageContainer.setMessage(result.payload.message);
           return result;
         },
       });
