@@ -1,10 +1,12 @@
 import type { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 import type { storeConfig } from "./types";
 import { EventName } from "@med1802/react-toggle-observer/dist/types";
+import type { createMessageContainer } from "./messageContainer";
 
 const createInterceptor = (
   config: storeConfig,
-  messageBroker: ReturnType<typeof createMessageBroker>
+  messageBroker: ReturnType<typeof createMessageBroker>,
+  messageContainer: ReturnType<typeof createMessageContainer>
 ) => {
   function onPublish({
     eventName,
@@ -42,18 +44,21 @@ const createInterceptor = (
         };
       },
     });
-    console.log("state", state);
     return state;
   }
   return {
-    interceptorNew: ({ middleware, value }: any) => {
-      return messageBroker.interceptor({
+    interceptor: ({ middleware, value }: any) => {
+      const unsubscribe = messageBroker.interceptor({
         eventName: EventName.ON_CHANGE,
         onPublish: ({ eventName, payload }) => {
           const result = onPublish({ eventName, payload, middleware, value });
+          messageContainer.setMessage(result.payload.message);
           return result;
         },
       });
+      return () => {
+        unsubscribe();
+      };
     },
   };
 };

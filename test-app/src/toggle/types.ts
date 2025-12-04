@@ -25,11 +25,13 @@ export interface IToggleModel {
     eventName: EventName.ON_CHANGE,
     callback: (payload: EventPayload) => void
   ) => () => void;
-  interceptor: (
-    callback: (payload: any) => boolean | { payload: any },
-    action?: InterceptorAction
-  ) => () => void;
-  interceptorNew: ({ id, callback }: any) => () => void;
+  interceptor: ({
+    middleware,
+    value,
+  }: {
+    middleware: string;
+    value: any;
+  }) => () => void;
   onChangeSync: (notify: () => void) => () => void;
   onChange: (callback: (payload: EventPayload) => void) => () => void;
   getMessage: () => any;

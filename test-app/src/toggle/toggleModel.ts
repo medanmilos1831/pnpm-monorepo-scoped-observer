@@ -9,17 +9,22 @@ import {
 } from "./types";
 import { createModelLogger } from "./logger/modellogger";
 import { createInterceptor } from "./interceptor";
+import { createMessageContainer } from "./messageContainer";
 
 const toggleModel = (params: toggleConfigType, config: storeConfig) => {
   const scopedObserver = createScopedObserver();
   const messageBroker = createMessageBroker(scopedObserver);
   const logger = createModelLogger(params.id, config.log);
-  const interceptor = createInterceptor(config, messageBroker);
-  let lastMessage = undefined as any;
+  const messageContainer = createMessageContainer();
+  const interceptor = createInterceptor(
+    config,
+    messageBroker,
+    messageContainer
+  );
   let initialState = params.initialState;
 
   function publishHandler(open: boolean, message?: any) {
-    lastMessage = message;
+    messageContainer.setMessage(message);
     initialState = open;
     const payload = {
       open,
@@ -33,22 +38,6 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
       payload,
       eventName: EventName.ON_CHANGE,
       id: params.id,
-    };
-  }
-  function handleInterceptor(
-    callback: (payload: any) => boolean | { payload: any },
-    payload: { open: boolean; message: any },
-    eventName: string
-  ) {
-    const result = callback(payload.message);
-    if (result === false && typeof result === "boolean") {
-      return false;
-    }
-    payload.message = result;
-    lastMessage = result;
-    return {
-      eventName,
-      payload,
     };
   }
   return {
@@ -67,31 +56,8 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
         callback,
       });
     },
-    interceptorNew: interceptor.interceptorNew,
-    interceptor: (
-      callback: (payload: any) => boolean | { payload: any },
-      action?: InterceptorAction
-    ) => {
-      return messageBroker.interceptor({
-        eventName: EventName.ON_CHANGE,
-        onPublish: ({ eventName, payload }) => {
-          // let obj = {
-          //   open: true,
-          //   close: false,
-          // };
-          // if (action && obj[action] === payload.open) {
-          //   return handleInterceptor(callback, payload, eventName);
-          // }
-          // if (!action) {
-          //   return handleInterceptor(callback, payload, eventName);
-          // }
-          return {
-            eventName,
-            payload,
-          };
-        },
-      });
-    },
+    interceptor: interceptor.interceptor,
+
     onChangeSync: (callback: () => void) => {
       return messageBroker.subscribe({
         eventName: EventName.ON_CHANGE,
@@ -105,7 +71,7 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
       });
     },
     getMessage: () => {
-      return lastMessage;
+      return messageContainer.getMessage();
     },
     getValue: () => {
       return initialState;

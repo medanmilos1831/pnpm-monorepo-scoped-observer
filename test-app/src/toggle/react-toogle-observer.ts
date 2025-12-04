@@ -3,14 +3,12 @@ import { createStore } from "./store";
 import type { storeConfig, toggleConfigType } from "./types";
 const createReactToggleObserver = (config: storeConfig) => {
   const store = createStore(config);
-  const { useToggle, useInterceptor, useInterceptorNew } =
-    createReactAdapter(store);
+  const { useToggle, useInterceptor } = createReactAdapter(store);
 
   return {
     reactHooks: {
       useToggle,
       useInterceptor,
-      useInterceptorNew,
     },
     getToggleClient: (id: string) => {
       if (!store.hasModel(id)) {

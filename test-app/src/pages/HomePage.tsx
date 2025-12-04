@@ -12,22 +12,19 @@ const toggleObservers = createReactToggleObserver({
   log: false,
   applyMiddleware: {
     someMiddleware: ({ resolve, reject, skip }: any) => {
-      // console.log("applyMiddleware HOME PAGE", resolve);
       resolve((value: any, message: any) => {
         return {
-          pera: value,
+          someComponentValue: value,
           message: message,
         };
       });
-      // resolve("new value");
     },
   },
 });
 
 console.log(toggleObservers);
 
-const { useToggle, useInterceptor, useInterceptorNew } =
-  toggleObservers.reactHooks;
+const { useToggle, useInterceptor } = toggleObservers.reactHooks;
 const ModalComponent = (params: { id: string; initialState: boolean }) => {
   const [isOpen, close, message] = useToggle(params);
   console.log("message", message);
@@ -61,10 +58,10 @@ const SomeComponent = () => {
 
 const SomeOtherComponent = () => {
   const [counter, setCounter] = useState(0);
-  useInterceptorNew({
+  useInterceptor({
     id: "test",
     middleware: "someMiddleware",
-    value: counter,
+    value: counter + 1,
   });
   return (
     <>

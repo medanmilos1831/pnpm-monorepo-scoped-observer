@@ -22,27 +22,11 @@ const createReactAdapter = (store: ReturnType<typeof createStore>) => {
         any
       ];
     },
-    useInterceptor: ({
-      id,
-      callback,
-      action,
-    }: {
-      id: string;
-      callback: (payload: any) => boolean | { payload: any };
-      action?: InterceptorAction;
-    }) => {
+
+    useInterceptor: ({ id, middleware, value }: any) => {
       const model = store.getModel(id);
       useEffect(() => {
-        // const unsubscribe = model.interceptor(callback, action);
-        // return () => {
-        //   unsubscribe();
-        // };
-      });
-    },
-    useInterceptorNew: ({ id, middleware, value }: any) => {
-      const model = store.getModel(id);
-      useEffect(() => {
-        const unsubscribe = model.interceptorNew({ middleware, value });
+        const unsubscribe = model.interceptor({ middleware, value });
         return () => {
           unsubscribe();
         };
