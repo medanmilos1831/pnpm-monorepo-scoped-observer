@@ -14,10 +14,7 @@ const toggleObservers = createReactToggleObserver({
     someMiddleware: ({ resolve, reject, skip }: any) => {
       // reject();
       resolve((value: any, message: any) => {
-        return {
-          someComponentValue: value,
-          message: message,
-        };
+        return value + message;
       });
     },
   },
@@ -47,9 +44,7 @@ const SomeComponent = () => {
   const toggle2 = toggleObservers.getToggleClient("test2");
   return (
     <>
-      <Button onClick={() => toggle.open("Hello from button!")}>
-        Open Modal
-      </Button>
+      <Button onClick={() => toggle.open(1)}>Open Modal</Button>
       <Button onClick={() => toggle2.open("hello from button 2")}>
         Open Modal 2
       </Button>
@@ -64,11 +59,11 @@ const SomeOtherComponent = () => {
     middleware: "someMiddleware",
     value: counter + 1,
   });
-  useInterceptor({
-    id: "test",
-    middleware: "someMiddleware",
-    value: counter + 3,
-  });
+  // useInterceptor({
+  //   id: "test",
+  //   middleware: "someMiddleware",
+  //   value: counter + 3,
+  // });
   return (
     <>
       <Button onClick={() => setCounter(counter + 1)}>Increment</Button>

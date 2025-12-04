@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
-import type { InterceptorAction, toggleConfigType } from "./types";
+import type { toggleConfigType } from "./types";
 
 const createReactAdapter = (store: ReturnType<typeof createStore>) => {
   return {

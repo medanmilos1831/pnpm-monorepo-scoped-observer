@@ -1,5 +1,11 @@
 import type { createMessageBroker } from "@med1802/scoped-observer-message-broker";
-import type { storeConfig } from "./types";
+import type {
+  interceptorParamsType,
+  onChangePayload,
+  onPublishParamsType,
+  onPublishResolveParamsType,
+  storeConfig,
+} from "./types";
 import { EventName } from "@med1802/react-toggle-observer/dist/types";
 import type { createMessageContainer } from "./messageContainer";
 
@@ -8,26 +14,17 @@ const createInterceptor = (
   messageBroker: ReturnType<typeof createMessageBroker>,
   messageContainer: ReturnType<typeof createMessageContainer>
 ) => {
-  function onPublish({
-    eventName,
-    payload,
-    middleware,
-    value,
-  }: {
-    eventName: string;
-    payload: any;
-    middleware: string;
-    value: any;
-  }) {
+  function onPublish(params: onPublishParamsType) {
+    const { eventName, payload, middleware, value } = params;
     let state = {
-      eventName: EventName.ON_CHANGE,
+      eventName,
       payload,
       middleware,
       value,
       status: true,
     };
     config.applyMiddleware[middleware]({
-      resolve(params: any) {
+      resolve(params: onPublishResolveParamsType) {
         let result = params(value, payload.message);
         state = {
           ...state,
@@ -61,11 +58,12 @@ const createInterceptor = (
     return state.status;
   }
   return {
-    interceptor: ({ middleware, value }: any) => {
+    interceptor: ({ middleware, value }: interceptorParamsType) => {
       const unsubscribe = messageBroker.interceptor({
         eventName: EventName.ON_CHANGE,
         onPublish: ({ eventName, payload }) => {
           const result = onPublish({ eventName, payload, middleware, value });
+
           return result;
         },
       });
