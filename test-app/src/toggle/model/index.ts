@@ -1,4 +1,4 @@
-import { createModelContext } from "../context/model";
+import { createModelContext } from "./context";
 import {
   EventName,
   type IEvent,

@@ -1,10 +1,9 @@
 import { createScopedObserver } from "@med1802/scoped-observer";
 import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
-
-import type { storeConfig, toggleConfigType } from "../../types";
-import { createModelLogger } from "./modellogger";
-import { createMessageContainer } from "./messageContainer";
-import { createMiddleware } from "./middleware";
+import { createMessageContainer } from "../infrastructure/messageContainer";
+import { createMiddleware } from "../infrastructure/middleware";
+import { createModelLogger } from "../infrastructure/modellogger";
+import type { toggleConfigType, storeConfig } from "../types";
 
 const createModelInfrastructure = (
   params: toggleConfigType,

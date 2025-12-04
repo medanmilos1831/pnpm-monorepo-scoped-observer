@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
 import type { toggleConfigType } from "./types";
-import type { middlewareParamsType } from "./infrastructure/model/middleware/types";
+import type { middlewareParamsType } from "./infrastructure/middleware/types";
 
 const createReactAdapter = (store: ReturnType<typeof createStore>) => {
   return {
