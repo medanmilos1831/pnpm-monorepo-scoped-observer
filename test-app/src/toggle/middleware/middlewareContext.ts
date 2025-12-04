@@ -1,8 +1,5 @@
 import type { onChangePayload } from "../types";
-import type {
-  middlewareOnPublishResolveParamsType,
-  middlewareType,
-} from "./types";
+import type { middlewareType } from "./types";
 
 const createMiddlewareContext = (payload: onChangePayload, value: any) => {
   let state = {
@@ -12,7 +9,7 @@ const createMiddlewareContext = (payload: onChangePayload, value: any) => {
   return (middleware: middlewareType) => {
     middleware(
       {
-        resolve: (params: middlewareOnPublishResolveParamsType) => {
+        resolve: (params) => {
           let result = params(value, payload.message);
           state.payload.message = result;
         },
