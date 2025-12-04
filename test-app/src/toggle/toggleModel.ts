@@ -2,8 +2,7 @@ import { createScopedObserver } from "@med1802/scoped-observer";
 import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 import {
   EventName,
-  type EventPayload,
-  type InterceptorAction,
+  type IOnChangeEvent,
   type storeConfig,
   type toggleConfigType,
 } from "./types";
@@ -31,13 +30,14 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
       message,
     };
     messageBroker.publish({
+      scope: params.id,
       eventName: EventName.ON_CHANGE,
       payload,
     });
     return {
-      payload,
-      eventName: EventName.ON_CHANGE,
       id: params.id,
+      eventName: EventName.ON_CHANGE,
+      payload,
     };
   }
   return {
@@ -49,7 +49,7 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
     }),
     subscribe: (
       eventName: EventName.ON_CHANGE,
-      callback: (payload: EventPayload) => void
+      callback: (payload: IOnChangeEvent) => void
     ) => {
       return messageBroker.subscribe({
         eventName,
@@ -64,7 +64,7 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
         callback,
       });
     },
-    onChange: (callback: (payload: EventPayload) => void) => {
+    onChange: (callback: (payload: IOnChangeEvent) => void) => {
       return messageBroker.subscribe({
         eventName: EventName.ON_CHANGE,
         callback,

@@ -1,15 +1,12 @@
 enum EventName {
   ON_CHANGE = "onChange",
 }
-export type onChangePayload = {
-  payload: { open: boolean; message?: any };
-  message?: any;
-};
-type EventPayload = {
-  payload: onChangePayload;
-  eventName: string;
+export type onChangePayload = { open: boolean; message?: any };
+interface IOnChangeEvent {
   scope: string;
-};
+  eventName: EventName.ON_CHANGE;
+  payload: onChangePayload;
+}
 
 export type InterceptorAction = "open" | "close";
 
@@ -23,7 +20,7 @@ export interface IToggleModel {
   close: (message?: any) => void;
   subscribe: (
     eventName: EventName.ON_CHANGE,
-    callback: (payload: EventPayload) => void
+    callback: (payload: IOnChangeEvent) => void
   ) => () => void;
   interceptor: ({
     middleware,
@@ -33,7 +30,7 @@ export interface IToggleModel {
     value: any;
   }) => () => void;
   onChangeSync: (notify: () => void) => () => void;
-  onChange: (callback: (payload: EventPayload) => void) => () => void;
+  onChange: (callback: (payload: IOnChangeEvent) => void) => () => void;
   getMessage: () => any;
   getValue: () => boolean;
 }
@@ -48,5 +45,5 @@ export type StoreModel = {
 };
 export type StoreType = Map<string, StoreModel>;
 
-export type { EventPayload };
+export type { IOnChangeEvent };
 export { EventName };
