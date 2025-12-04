@@ -1,3 +1,5 @@
+import type { middlewareType } from "./middleware/types";
+
 enum EventName {
   ON_CHANGE = "onChange",
 }
@@ -12,25 +14,6 @@ export type toggleConfigType = {
   id: string;
   initialState: boolean;
 };
-
-// MIDDLEWARE TYPES
-export type middlewareParamsType = { use: string; value: any };
-export type middlewareOnPublishParamsType = {
-  eventName: string;
-  payload: onChangePayload;
-  use: string;
-  value: any;
-};
-export type middlewareOnPublishResolveParamsType = (
-  value: any,
-  message: any
-) => any;
-export type middlewareType = {
-  resolve: (params: middlewareOnPublishResolveParamsType) => void;
-  reject: () => void;
-  skip: () => void;
-};
-// END MIDDLEWARE TYPES
 
 export interface IToggleModel {
   open: (message?: any) => void;
