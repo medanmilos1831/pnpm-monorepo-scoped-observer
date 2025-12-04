@@ -14,16 +14,19 @@ export type toggleConfigType = {
 };
 
 // MIDDLEWARE TYPES
-export type interceptorParamsType = { middleware: string; value: any };
-export type onPublishParamsType = {
+export type middlewareParamsType = { use: string; value: any };
+export type middlewareOnPublishParamsType = {
   eventName: string;
   payload: onChangePayload;
-  middleware: string;
+  use: string;
   value: any;
 };
-export type onPublishResolveParamsType = (value: any, message: any) => any;
+export type middlewareOnPublishResolveParamsType = (
+  value: any,
+  message: any
+) => any;
 export type middlewareType = {
-  resolve: (params: onPublishResolveParamsType) => void;
+  resolve: (params: middlewareOnPublishResolveParamsType) => void;
   reject: () => void;
   skip: () => void;
 };
@@ -32,13 +35,7 @@ export type middlewareType = {
 export interface IToggleModel {
   open: (message?: any) => void;
   close: (message?: any) => void;
-  interceptor: ({
-    middleware,
-    value,
-  }: {
-    middleware: string;
-    value: any;
-  }) => () => void;
+  middleware: ({ use, value }: { use: string; value: any }) => () => void;
   onChangeSync: (notify: () => void) => () => void;
   onChange: (callback: (payload: IEvent) => void) => () => void;
   getMessage: () => any;
@@ -47,7 +44,7 @@ export interface IToggleModel {
 
 export type storeConfig = {
   log: boolean;
-  applyMiddleware: {
+  middlewares: {
     [key: string]: (
       middleware: middlewareType,
       state: onChangePayload["open"]

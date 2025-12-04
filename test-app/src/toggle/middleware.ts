@@ -2,29 +2,29 @@ import { EventName } from "@med1802/react-toggle-observer/dist/types";
 import type { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 import type { createMessageContainer } from "./messageContainer";
 import type {
-  interceptorParamsType,
-  onPublishParamsType,
-  onPublishResolveParamsType,
+  middlewareParamsType,
+  middlewareOnPublishParamsType,
+  middlewareOnPublishResolveParamsType,
   storeConfig,
 } from "./types";
 
-const createInterceptor = (
+const createMiddleware = (
   config: storeConfig,
   messageBroker: ReturnType<typeof createMessageBroker>,
   messageContainer: ReturnType<typeof createMessageContainer>
 ) => {
-  function onPublish(params: onPublishParamsType) {
-    const { eventName, payload, middleware, value } = params;
+  function onPublish(params: middlewareOnPublishParamsType) {
+    const { eventName, payload, use, value } = params;
     let state = {
       eventName,
       payload,
-      middleware,
+      use,
       value,
       status: true,
     };
-    config.applyMiddleware[middleware](
+    config.middlewares[use](
       {
-        resolve(params: onPublishResolveParamsType) {
+        resolve(params: middlewareOnPublishResolveParamsType) {
           let result = params(value, payload.message);
           state = {
             ...state,
@@ -58,21 +58,19 @@ const createInterceptor = (
     }
     return state.status;
   }
-  return {
-    interceptor: ({ middleware, value }: interceptorParamsType) => {
-      const unsubscribe = messageBroker.interceptor({
-        eventName: EventName.ON_CHANGE,
-        onPublish: ({ eventName, payload }) => {
-          const result = onPublish({ eventName, payload, middleware, value });
+  return ({ use, value }: middlewareParamsType) => {
+    const unsubscribe = messageBroker.interceptor({
+      eventName: EventName.ON_CHANGE,
+      onPublish: ({ eventName, payload }) => {
+        const result = onPublish({ eventName, payload, use, value });
 
-          return result;
-        },
-      });
-      return () => {
-        unsubscribe();
-      };
-    },
+        return result;
+      },
+    });
+    return () => {
+      unsubscribe();
+    };
   };
 };
 
-export { createInterceptor };
+export { createMiddleware };

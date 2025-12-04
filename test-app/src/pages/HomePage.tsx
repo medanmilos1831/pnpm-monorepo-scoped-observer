@@ -4,7 +4,7 @@ import { Button, Modal } from "antd";
 
 const toggleObservers = createReactToggleObserver({
   log: false,
-  applyMiddleware: {
+  middlewares: {
     someMiddleware: ({ resolve, reject, skip }, state) => {
       resolve((value: any, message: any) => {
         return value + message;
@@ -15,7 +15,7 @@ const toggleObservers = createReactToggleObserver({
 
 console.log(toggleObservers);
 
-const { useToggle, useInterceptor } = toggleObservers.reactHooks;
+const { useToggle, useMiddleware } = toggleObservers.reactHooks;
 const ModalComponent = (params: { id: string; initialState: boolean }) => {
   const [isOpen, close, message] = useToggle(params);
   console.log("ModalComponent", message);
@@ -47,9 +47,9 @@ const SomeComponent = () => {
 
 const SomeOtherComponent = () => {
   const [counter, setCounter] = useState(0);
-  useInterceptor({
-    id: "test",
-    middleware: "someMiddleware",
+  useMiddleware({
+    toggleId: "test",
+    use: "someMiddleware",
     value: counter + 1,
   });
   // useInterceptor({

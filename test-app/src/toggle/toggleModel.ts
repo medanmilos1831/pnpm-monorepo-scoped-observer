@@ -7,7 +7,7 @@ import {
   type toggleConfigType,
 } from "./types";
 import { createModelLogger } from "./logger/modellogger";
-import { createInterceptor } from "./interceptor";
+import { createMiddleware } from "./middleware";
 import { createMessageContainer } from "./messageContainer";
 
 const toggleModel = (params: toggleConfigType, config: storeConfig) => {
@@ -15,11 +15,7 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
   const messageBroker = createMessageBroker(scopedObserver);
   const logger = createModelLogger(params.id, config.log);
   const messageContainer = createMessageContainer();
-  const interceptor = createInterceptor(
-    config,
-    messageBroker,
-    messageContainer
-  );
+  const middleware = createMiddleware(config, messageBroker, messageContainer);
   let initialState = params.initialState;
 
   function publishHandler(open: boolean, message?: any) {
@@ -46,7 +42,7 @@ const toggleModel = (params: toggleConfigType, config: storeConfig) => {
     close: logger.logAction((message?: any) => {
       return publishHandler(false, message);
     }),
-    interceptor: interceptor.interceptor,
+    middleware,
 
     onChangeSync: (callback: () => void) => {
       return messageBroker.subscribe({
