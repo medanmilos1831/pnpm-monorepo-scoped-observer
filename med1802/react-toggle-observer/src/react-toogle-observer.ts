@@ -1,14 +1,16 @@
+import { model } from "./model";
 import { createReactAdapter } from "./react-adapter";
 import { createStore } from "./store";
 import type { storeConfig, toggleConfigType } from "./types";
 const createReactToggleObserver = (config: storeConfig) => {
-  const store = createStore(config);
-  const { useToggle, useInterceptor } = createReactAdapter(store);
-
+  const store = createStore(config, {
+    defineModel: model,
+  });
+  const { useToggle, useMiddleware } = createReactAdapter(store);
   return {
     reactHooks: {
       useToggle,
-      useInterceptor,
+      useMiddleware,
     },
     getToggleClient: (id: string) => {
       if (!store.hasModel(id)) {
@@ -30,6 +32,7 @@ const createReactToggleObserver = (config: storeConfig) => {
     createToggle: (params: toggleConfigType) => {
       return store.createModel(params);
     },
+    middleware: config.middlewares,
   };
 };
 

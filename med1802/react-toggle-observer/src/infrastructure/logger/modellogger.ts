@@ -1,10 +1,10 @@
-import type { onChangePayload } from "../types";
+import type { onChangePayload } from "../../types";
 
 const createModelLogger = (id: string, active: boolean) => {
   return {
     logAction: <
       T extends (...args: any[]) => {
-        payload: onChangePayload["payload"];
+        payload: onChangePayload;
         eventName: string;
       }
     >(

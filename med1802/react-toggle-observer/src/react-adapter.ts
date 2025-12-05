@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 import type { createStore } from "./store";
-import type { InterceptorAction, toggleConfigType } from "./types";
+import type { toggleConfigType } from "./types";
+import type { middlewareParamsType } from "./infrastructure/middleware/types";
 
 const createReactAdapter = (store: ReturnType<typeof createStore>) => {
   return {
@@ -22,19 +23,24 @@ const createReactAdapter = (store: ReturnType<typeof createStore>) => {
         any
       ];
     },
-    useInterceptor: ({
-      id,
-      callback,
-      action,
+
+    useMiddleware: ({
+      toggleId,
+      use,
+      value,
     }: {
-      id: string;
-      callback: (payload: any) => boolean | { payload: any };
-      action?: InterceptorAction;
-    }) => {
-      const model = store.getModel(id);
+      toggleId: string;
+    } & middlewareParamsType) => {
+      const model = store.getModel(toggleId);
       useEffect(() => {
-        const unsubscribe = model.interceptor(callback, action);
+        if (!model.middleware) {
+          return;
+        }
+        const unsubscribe = model.middleware({ use, value });
         return () => {
+          if (!model.middleware) {
+            return;
+          }
           unsubscribe();
         };
       });
