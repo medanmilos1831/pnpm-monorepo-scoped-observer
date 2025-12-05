@@ -16,10 +16,6 @@
   "references": [
     { "path": "./med1802/scoped-observer" },
     { "path": "./med1802/scoped-observer-message-broker" },
-    { "path": "./med1802/react-toggle-observer" },
-    {"path": "./med1802/quantum-ui-react"},
-    { "path": "./med1802/quantum-ui" },
-    { "path": "./med1802/quantum-toggle" },
-    { "path": "./med1802/quantum-scrollium" }
+    { "path": "./med1802/react-toggle-observer" }
   ]
 }
