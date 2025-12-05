@@ -2,7 +2,7 @@ import { createScopedObserver } from "@med1802/scoped-observer";
 import { createMessageBroker } from "@med1802/scoped-observer-message-broker";
 import { createMessageContainer } from "../infrastructure/messageContainer";
 import { createMiddleware } from "../infrastructure/middleware";
-import { createModelLogger } from "../infrastructure/modellogger";
+import { createModelLogger } from "../infrastructure/logger/modellogger";
 import type { toggleConfigType, storeConfig } from "../types";
 
 const createModelInfrastructure = (

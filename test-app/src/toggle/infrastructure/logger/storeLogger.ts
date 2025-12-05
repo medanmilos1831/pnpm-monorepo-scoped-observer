@@ -1,4 +1,4 @@
-import type { StoreType } from "../types";
+import type { StoreType } from "../../types";
 
 const createStoreLogger = (store: StoreType, active: boolean) => {
   return {
