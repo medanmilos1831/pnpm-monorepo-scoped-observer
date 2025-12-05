@@ -1,15 +1,24 @@
-import { createModel } from "../model";
+import type { createModel } from "../model";
 import type { storeConfig, toggleConfigType } from "../types";
 import { createStoreContext } from "./context";
 
-const createStore = (config: storeConfig) => {
+const createStore = (
+  config: storeConfig,
+  {
+    defineModel,
+  }: {
+    defineModel: (
+      params: toggleConfigType,
+      config: storeConfig
+    ) => ReturnType<typeof createModel>;
+  }
+) => {
   const context = createStoreContext(config);
   return {
-    createModel: context.storeLogger.logStore((params: toggleConfigType) => {
+    createModel: context.storeLogger.logStore((params) => {
       if (context.store.has(params.id)) return;
-      const model = createModel(params, config);
       context.store.set(params.id, {
-        model,
+        model: defineModel(params, config),
       });
     }),
     getModel: (id: string) => {
