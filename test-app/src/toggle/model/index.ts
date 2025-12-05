@@ -6,7 +6,7 @@ import {
   type toggleConfigType,
 } from "../types";
 
-const createModel = (params: toggleConfigType, config: storeConfig) => {
+const model = (params: toggleConfigType, config: storeConfig) => {
   const context = createModelContext(params, config);
   const {
     messageBroker,
@@ -44,4 +44,4 @@ const createModel = (params: toggleConfigType, config: storeConfig) => {
   };
 };
 
-export { createModel };
+export { model };

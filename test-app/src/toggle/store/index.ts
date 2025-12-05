@@ -1,21 +1,17 @@
-import type { createModel } from "../model";
-import type { storeConfig, toggleConfigType } from "../types";
+import type { storeConfig } from "../types";
 import { createStoreContext } from "./context";
 
-const createStore = (
+function createStore<T, A extends { id: string; initialState: any }>(
   config: storeConfig,
   {
     defineModel,
   }: {
-    defineModel: (
-      params: toggleConfigType,
-      config: storeConfig
-    ) => ReturnType<typeof createModel>;
+    defineModel(params: A, config: storeConfig): T;
   }
-) => {
-  const context = createStoreContext(config);
+) {
+  const context = createStoreContext<T>(config);
   return {
-    createModel: context.storeLogger.logStore((params) => {
+    createModel: context.storeLogger.logStore((params: A) => {
       if (context.store.has(params.id)) return;
       context.store.set(params.id, {
         model: defineModel(params, config),
@@ -37,6 +33,6 @@ const createStore = (
       });
     },
   };
-};
+}
 
 export { createStore };

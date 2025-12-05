@@ -1,13 +1,12 @@
-import { createModel } from "./model";
+import { model } from "./model";
 import { createReactAdapter } from "./react-adapter";
 import { createStore } from "./store";
 import type { storeConfig, toggleConfigType } from "./types";
 const createReactToggleObserver = (config: storeConfig) => {
   const store = createStore(config, {
-    defineModel: createModel,
+    defineModel: model,
   });
   const { useToggle, useMiddleware } = createReactAdapter(store);
-
   return {
     reactHooks: {
       useToggle,

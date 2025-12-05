@@ -32,10 +32,10 @@ export type storeConfig = {
   middlewares?: middlewareStoreConfigType;
 };
 
-export type StoreModel = {
-  model: IToggleModel;
+export type StoreModel<T> = {
+  model: T;
 };
-export type StoreType = Map<string, StoreModel>;
+export type StoreType<T> = Map<string, StoreModel<T>>;
 
 export type { IEvent };
 export { EventName };
