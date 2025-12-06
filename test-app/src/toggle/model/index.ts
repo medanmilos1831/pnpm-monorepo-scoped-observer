@@ -9,36 +9,53 @@ import {
 const model = (params: toggleConfigType, config: storeConfig) => {
   const context = createModelContext(params, config);
   const {
-    messageBroker,
-    logger,
-    messageContainer,
+    setMessage,
+    getMessage,
     middleware,
     getInitialState,
-    publishHandler,
+    setInitialState,
+    publish,
+    subscribe,
+    logAction,
   } = context;
+  function publishHandler(open: boolean, message?: any) {
+    setMessage(message);
+    setInitialState(open);
+    const payload = {
+      open,
+      message,
+    };
+    publish({
+      eventName: EventName.ON_CHANGE,
+      payload,
+    });
+    return {
+      id: params.id,
+      eventName: EventName.ON_CHANGE,
+      payload,
+    };
+  }
   return {
-    open: logger.logAction((message?: any) => {
+    open: logAction((message?: any) => {
       return publishHandler(true, message);
     }),
-    close: logger.logAction((message?: any) => {
+    close: logAction((message?: any) => {
       return publishHandler(false, message);
     }),
     middleware,
     onChangeSync: (callback: () => void) => {
-      return messageBroker.subscribe({
+      return subscribe({
         eventName: EventName.ON_CHANGE,
         callback,
       });
     },
     onChange: (callback: (event: IEvent) => void) => {
-      return messageBroker.subscribe({
+      return subscribe({
         eventName: EventName.ON_CHANGE,
         callback,
       });
     },
-    getMessage: () => {
-      return messageContainer.getMessage();
-    },
+    getMessage: getMessage,
     getValue: getInitialState,
   };
 };
