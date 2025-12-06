@@ -24,7 +24,6 @@ const model = (params: toggleConfigType, config: storeConfig) => {
       return publishHandler(false, message);
     }),
     middleware,
-
     onChangeSync: (callback: () => void) => {
       return messageBroker.subscribe({
         eventName: EventName.ON_CHANGE,

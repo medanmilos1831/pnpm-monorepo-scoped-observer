@@ -36,6 +36,12 @@ export type StoreModel<T> = {
   model: T;
 };
 export type StoreType<T> = Map<string, StoreModel<T>>;
+export interface IStore<T> {
+  createModel: (params: toggleConfigType) => void;
+  getModel: (id: string) => T;
+  hasModel: (id: string) => boolean;
+  deleteModel: (id: string) => void;
+}
 
 export type { IEvent };
 export { EventName };

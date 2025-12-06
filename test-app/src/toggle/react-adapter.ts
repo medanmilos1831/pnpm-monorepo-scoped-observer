@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
-import type { createStore } from "./store";
-import type { toggleConfigType } from "./types";
+import type { IStore, IToggleModel, toggleConfigType } from "./types";
 import type { middlewareParamsType } from "./infrastructure/middleware/types";
 
-const createReactAdapter = (store: ReturnType<typeof createStore>) => {
+function createReactAdapter<S extends IToggleModel>(store: IStore<S>) {
   return {
     useToggle: (params: toggleConfigType) => {
       const [toggle] = useState(() => {
@@ -46,6 +45,6 @@ const createReactAdapter = (store: ReturnType<typeof createStore>) => {
       });
     },
   };
-};
+}
 
 export { createReactAdapter };
