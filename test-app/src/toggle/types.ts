@@ -1,10 +1,10 @@
 import type { middlewareStoreConfigType } from "./infrastructure/middleware/types";
 
-enum EventName {
+export enum EventName {
   ON_CHANGE = "onChange",
 }
 export type onChangePayload = { open: boolean; message?: any };
-interface IEvent {
+export interface IEvent {
   scope?: string;
   eventName: string;
   payload: onChangePayload;
@@ -42,6 +42,3 @@ export interface IStore<T> {
   hasModel: (id: string) => boolean;
   deleteModel: (id: string) => void;
 }
-
-export type { IEvent };
-export { EventName };

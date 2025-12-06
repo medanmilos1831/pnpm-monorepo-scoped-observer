@@ -3,7 +3,7 @@ import { createReactToggleObserver } from "../toggle/react-toogle-observer";
 import { useState } from "react";
 
 const toggleObservers = createReactToggleObserver({
-  log: false,
+  log: true,
   middlewares: {
     someMiddleware: ({ resolve, reject }, state) => {
       resolve((value, message) => {

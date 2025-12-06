@@ -18,13 +18,10 @@ const model = (params: toggleConfigType, config: storeConfig) => {
     subscribe,
     logAction,
   } = context;
-  function publishHandler(open: boolean, message?: any) {
+  function publishHandler(payload: { open: boolean; message?: any }) {
+    const { open, message } = payload;
     setMessage(message);
     setInitialState(open);
-    const payload = {
-      open,
-      message,
-    };
     publish({
       eventName: EventName.ON_CHANGE,
       payload,
@@ -36,12 +33,20 @@ const model = (params: toggleConfigType, config: storeConfig) => {
     };
   }
   return {
-    open: logAction((message?: any) => {
-      return publishHandler(true, message);
-    }),
-    close: logAction((message?: any) => {
-      return publishHandler(false, message);
-    }),
+    open: (message?: any) => {
+      const decoratedPublishHandler = logAction(publishHandler);
+      decoratedPublishHandler({
+        open: true,
+        message,
+      });
+    },
+    close: (message?: any) => {
+      const decoratedPublishHandler = logAction(publishHandler);
+      decoratedPublishHandler({
+        open: false,
+        message,
+      });
+    },
     middleware,
     onChangeSync: (callback: () => void) => {
       return subscribe({
